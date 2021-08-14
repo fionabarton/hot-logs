@@ -1,0 +1,520 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class BattleQTE : MonoBehaviour {
+	[Header("Set in Inspector")]
+	// QTE Progress bar
+	public ProgressBar healthBar;
+
+	[Header("Set Dynamically")]
+	// Singleton
+	private static BattleQTE _S;
+	public static BattleQTE S { get { return _S; } set { _S = value; } }
+
+	// QTE Mode/Type
+	public int qteType = 2; // 0: Mash, 1: Hold, 2: Sequence, 3: Stop, 4: Block
+
+	// Max value of progress bar
+	const float max = 100; 
+	// Current value of progress bar
+	public float val = 50;
+
+	// Downward force applied to the progress bar
+	public int downwardForce = 20;
+	// Force player can apply to value progress bar 
+	public int playerForce = 500;
+
+	///////////////////////////////// QTE HOLD /////////////////////////////////
+	public bool buttonDown = false;
+
+	///////////////////////////////// QTE SEQUENCE /////////////////////////////////
+	// Amount of commands to press
+	int inputAmount = 1;
+
+	// Timer
+	public float tooLateTime = 0;
+	public float tooLateTimeDone = 0;
+
+	// Strings 
+	public string inputString = "";
+	public string goalString = "";
+
+	// Helps determine if a horizontal or vertical axis was pressed down during a frame
+	bool horizontalAxisIsInUse, verticalAxisIsInUse;
+
+	///////////////////////////////// QTE STOP /////////////////////////////////
+	bool barIsDecreasing;
+
+	///////////////////////////////// QTE BLOCK /////////////////////////////////
+	// Index of the party member that is blocking
+	public int blockerNdx;
+
+	public Animator QTEInputSprite;
+
+	[Header("Set Dynamically")]
+	private Battle _;
+
+	void Awake() {
+		// Singleton
+		S = this;
+	}
+
+	void Start() {
+		_ = Battle.S;
+	}
+
+	// Start QTE: switch mode & provide instructions to user
+	public void StartQTE() {
+		// Switch mode
+		_.battleMode = eBattleMode.qteInitialize;
+
+		// Reset points
+		_.bonusDamage = 0;
+
+		// Randomly select QTE Mode/Type
+		qteType = Random.Range(0, 4);
+
+		// Provide instructions to player
+		switch (qteType) {
+            case 0:
+				BattleDialogue.S.displayMessageTextTop.text = "Get ready to MASH!";
+				BattleDialogue.S.DisplayText("MASH the action button 'til the progress bar is completely full!");
+				break;
+            case 1:
+				BattleDialogue.S.displayMessageTextTop.text = "Get ready to HOLD!";
+				BattleDialogue.S.DisplayText("HOLD the action button DOWN 'til the progress bar is nearly full... then LET GO!");
+                break;
+            case 2:
+				BattleDialogue.S.displayMessageTextTop.text = "Get ready to SEQUENCE!";
+				BattleDialogue.S.DisplayText("Before time's up, INPUT the following sequence of directions!");
+				break;
+			case 3:
+				BattleDialogue.S.displayMessageTextTop.text = "Get ready to STOP!";
+				BattleDialogue.S.DisplayText("WAIT until the progress bar is nearly full, then press the action button!");
+				break;
+		}
+    }
+
+	// Reset or initialize fields
+	public void Initialize() {
+		// Enable progress bar
+		healthBar.gameObject.transform.parent.gameObject.SetActive(true);
+
+		switch (qteType) {
+			case 0: /////////// MASH ///////////
+				// Reset 
+				val = 50;
+				playerForce = 500;
+				downwardForce = 20;
+
+				// Display Text
+				BattleDialogue.S.displayMessageTextTop.text = "<color=#FF0000FF>MASH</color>\nTHAT BUTTON!";
+				break;
+			case 1: /////////// HOLD ///////////
+				// Reset 
+				val = 0;
+				playerForce = 75;
+				buttonDown = false;
+
+				// Display Text
+				BattleDialogue.S.displayMessageTextTop.text = "<color=#FF0000>HOLD</color>\nTHAT BUTTON!";
+				break;
+			case 2: /////////// SEQUENCE ///////////
+				// Reset Strings
+				BattleDialogue.S.displayMessageTextTop.text = "";
+				inputString = "";
+				goalString = "";
+
+				// Set Timer
+				tooLateTime = 2;
+				tooLateTimeDone = Time.time + tooLateTime;
+
+				inputAmount = 3;
+
+				// Set Goal
+				StartCoroutine("SetGoals", inputAmount);
+				break;
+			case 3: /////////// STOP ///////////
+				// Reset settings
+				val = 0;
+				downwardForce = 100;
+
+				// Display Text
+				BattleDialogue.S.displayMessageTextTop.text = "<color=#FF0000>STOP</color>\nTHAT BUTTON!";
+				break;
+			case 4: /////////// BLOCK ///////////
+				// Activate Text
+				BattleDialogue.S.displayMessageTextTop.gameObject.transform.parent.gameObject.SetActive(true);
+
+				// Reset Strings
+				BattleDialogue.S.displayMessageTextTop.text = "";
+				inputString = "";
+				goalString = "";
+
+				// Set Goal (only ONE input)
+				int directionToType = Random.Range(0, 4);
+				goalString += directionToType.ToString();
+				BattleDialogue.S.displayMessageTextTop.text = "Press " + ConvertDirections(goalString[0]);
+
+				// Set Timer
+				tooLateTime = 1.5f;
+				tooLateTimeDone = Time.time + tooLateTime;
+
+				// Display Arrow Sprite
+				QTEInputSprite.gameObject.SetActive(true);
+                switch (directionToType) {
+					case 0:
+						QTEInputSprite.CrossFade("QTEInputSprite_Right", 0);
+						break;
+					case 1:
+						QTEInputSprite.CrossFade("QTEInputSprite_Up", 0);
+						break;
+					case 2:
+						QTEInputSprite.CrossFade("QTEInputSprite_Left", 0);
+						break;
+					case 3:
+						QTEInputSprite.CrossFade("QTEInputSprite_Down", 0);
+						break;
+				}
+				break;
+		}
+	}
+
+	public void Loop() {
+        switch (_.battleMode) {
+			case eBattleMode.qteInitialize:
+				if (Input.GetButtonDown("SNES A Button")) {
+					Initialize();
+
+					// Animation: QTE CHARGE
+					_.playerAnimator[_.animNdx].CrossFade("QTE_Charge", 0);
+
+					_.battleMode = eBattleMode.qte;
+				}
+				break;
+			case eBattleMode.qte:
+				switch (qteType) {
+					case 0: /////////// MASH ///////////
+						// Increase bar while held down
+						if (Input.GetButtonDown("SNES A Button")) {
+							val += (playerForce * Time.fixedDeltaTime);
+						}
+						break;
+					case 1: /////////// HOLD ///////////	
+						if (!buttonDown) {
+							// Start holding button down
+							if (Input.GetButton("SNES A Button")) {
+								buttonDown = true;
+							}
+						} else {
+							// If user released button, check result
+							if (Input.GetButtonUp("SNES A Button")) {
+								if (val >= 50) {
+									Result(true);
+								} else {
+									Result(false);
+								}
+							}		
+						}
+						break;
+					case 2: /////////// SEQUENCE ///////////	
+						DirectionalButtonsDown();
+						break;
+					case 3: /////////// STOP ///////////
+						// Stop cursor
+						if (Input.GetButtonDown("SNES A Button")) {
+							if (val >= 50) {
+								Result(true);
+							} else {
+								Result(false);
+							}
+						}
+						break;
+				}
+				break;
+        }
+	}
+
+	// Separate loop for blocking: Accept input to block regardless of BattleDialogue.S.dialogueFinished
+	public void BlockLoop() {
+		DirectionalButtonsDown();
+	}
+
+	// Update timer/health bar
+	public void FixedLoop() {
+		switch (_.battleMode) {
+			case eBattleMode.qte:
+				switch (qteType) {
+					case 0: /////////// MASH ///////////
+						// Update health bar UI
+						healthBar.UpdateBar(val, max);
+
+						// Decrease bar
+						val -= (downwardForce * Time.fixedDeltaTime);
+
+						// Win.. or LOSE!
+						if (val >= max) {
+							Result(true);
+						} else if (val <= 0) {
+							Result(false);
+						}
+						break;
+					case 1: /////////// HOLD ///////////	
+						// Update health bar UI
+						healthBar.UpdateBar(val, max);
+
+						if (buttonDown) {
+							if (val <= max + 1) {
+								// Increase bar while held down
+								val += playerForce * Time.fixedDeltaTime;
+							}
+							// Held too long! BAD!
+							else {
+								Result(false);
+							}
+						}
+						break;
+					case 2: /////////// SEQUENCE ///////////				
+					case 4: /////////// BLOCK ///////////	
+						// Update health bar UI
+						float timeLeft = tooLateTimeDone - Time.time;
+						healthBar.UpdateBar(timeLeft, tooLateTime);
+
+						// Time's up!
+						if (Time.time >= tooLateTimeDone) {
+							Result(false);
+						}
+						break;
+					case 3: /////////// STOP ///////////
+						// Increase or decrease bar
+						if (barIsDecreasing) {
+							val -= (downwardForce * Time.fixedDeltaTime);
+						} else {
+							val += (downwardForce * Time.fixedDeltaTime);
+						}
+
+						// Update health bar UI
+						healthBar.UpdateBar(val, max);
+
+						// Reached limit, so change direction
+						if (val >= max) {
+							barIsDecreasing = true;
+						} else if (val <= 0) {
+							barIsDecreasing = false;
+						}
+						break;
+				}
+				break;
+		}
+	}
+
+	// Handle GetButtonDown-like directional input 
+	void DirectionalButtonsDown() {
+		// Vertical axis input
+		if (Input.GetAxisRaw("Vertical") == 0) {
+			verticalAxisIsInUse = false;
+		} else {
+			if (Input.GetAxisRaw("Vertical") > 0) {
+				if (!verticalAxisIsInUse) {
+					BuildInputString("1");
+					verticalAxisIsInUse = true;
+				}
+			} else if (Input.GetAxisRaw("Vertical") < 0) {
+				if (!verticalAxisIsInUse) {
+					BuildInputString("3");
+					verticalAxisIsInUse = true;
+				}
+			}
+		}
+
+		// Horizontal axis input
+		if (Input.GetAxisRaw("Horizontal") == 0) {
+			horizontalAxisIsInUse = false;
+		} else {
+			if (Input.GetAxisRaw("Horizontal") > 0) {
+				if (!horizontalAxisIsInUse) {
+					BuildInputString("0");
+					horizontalAxisIsInUse = true;
+				}
+			} else if (Input.GetAxisRaw("Horizontal") < 0) {
+				if (!horizontalAxisIsInUse) {
+					BuildInputString("2");
+					horizontalAxisIsInUse = true;
+				}
+			}
+		}
+	}
+
+	// End QTE: Result of the user's QTE performance
+	public void Result(bool goodOrBad) {
+		// Deactivate progress bar
+		healthBar.gameObject.transform.parent.gameObject.SetActive(false);
+
+		// Floating score to indicate bonus points
+
+		if (goodOrBad) {
+			if (qteType != 4) {
+				// POSITIVE Result Message
+				BattleDialogue.S.displayMessageTextTop.text = "<color=#00FF00>NICE!</color>";
+
+				// Animation: QTE SUCCESS
+				_.playerAnimator[_.animNdx].CrossFade("QTE_Success", 0);
+            } 
+
+			// Calculate bonus damage
+			switch (qteType) {
+				case 0: /////////// MASH ///////////
+					_.bonusDamage = (int)1.5f * Stats.S.LVL[_.PlayerNdx()];
+					break;
+				case 1: /////////// HOLD ///////////
+				case 3: /////////// STOP ///////////
+					// Divide Bonus Damage into thirds
+					int bonus = (int)1.5f * Stats.S.LVL[_.PlayerNdx()] / 3;
+
+					if (val >= 90 && val <= 100) {
+						if(bonus < 3) { 
+							_.bonusDamage = 3;
+                        } else {
+							_.bonusDamage = bonus;
+						}
+					} else if (val >= 75 && val <= 90) {
+						if (bonus < 2) {
+							_.bonusDamage = 2;
+						} else {
+							_.bonusDamage = bonus;
+						}
+
+					} else if (val >= 50 && val <= 75) {
+						if (bonus < 1) {
+							_.bonusDamage = 1;
+						} else {
+							_.bonusDamage = bonus;
+						}
+					} 
+					break;
+				case 2: /////////// SEQUENCE ///////////	
+					_.bonusDamage = (int)1.5f * Stats.S.LVL[_.PlayerNdx()];
+					break;
+				case 4: /////////// BLOCK ///////////	
+					// Calculate HP bonus 
+					int amountToHeal = (int)1.5f * Stats.S.LVL[blockerNdx];
+
+					// Add HP to Player that is blocking
+					RPG.S.AddPlayerHP(blockerNdx, amountToHeal);
+
+					// Get and position Poof game object
+					GameObject poof = ObjectPool.S.GetPooledObject("Poof");
+					ObjectPool.S.PosAndEnableObj(poof, _.playerSprite[blockerNdx]);
+
+					// Display Floating Score
+					RPG.S.InstantiateFloatingScore(_.playerSprite[blockerNdx], amountToHeal, Color.green);
+					break;
+			}
+        } else {
+			if (qteType != 4) {
+				// NEGATIVE Result Message
+				BattleDialogue.S.displayMessageTextTop.text = "<color=#FF0000FF>FAIL!</color>";
+
+				// Animation: QTE FAIL
+				_.playerAnimator[_.animNdx].CrossFade("QTE_Fail", 0);
+            } 	
+		}
+
+		if(qteType != 4) {
+			// Attack Enemy with bonus damage
+			BattlePlayerActions.S.AttackEnemy(_.targetNdx);
+        } else {
+			// Deactivate Battle Text
+			BattleDialogue.S.displayMessageTextTop.gameObject.transform.parent.gameObject.SetActive(false);
+
+			// Deactivate Arrow Sprite
+			QTEInputSprite.gameObject.SetActive(false);
+
+			_.NextTurn();
+		}
+	}
+
+	///////////////////////////////// QTE SEQUENCE /////////////////////////////////
+	// Convert direction char (0, 1, etc.) to string ("Right", "Up", etc.)
+	string ConvertDirections(char letter) {
+		string word = "";
+		switch (letter) {
+			case '0':
+				word = "Right ";
+				break;
+			case '1':
+				word = "Up ";
+				break;
+			case '2':
+				word = "Left ";
+				break;
+			case '3':
+				word = "Down ";
+				break;
+		}
+		return word;
+	}
+
+	// Get a random string of directions and stagger the text
+	IEnumerator SetGoals(int inputAmount) { // Called in DelayedInitiative()
+		// build random goal string of directions
+		for (int i = 0; i < inputAmount; i++) {
+			int directionToType = Random.Range(0, 4);
+			goalString += directionToType.ToString();
+		}
+		
+		// stagger display of UI text
+		for (int i = 0; i < goalString.Length; i++) {
+			BattleDialogue.S.displayMessageTextTop.text += ConvertDirections(goalString[i]);
+			yield return new WaitForSeconds(0.25f);
+		}
+	}
+
+	// Build a string of directions based off user input and check if it matches the goal
+	void BuildInputString(string buttonName) {
+		StopAllCoroutines();
+
+		// Add to inputString
+		inputString += buttonName;
+
+		// Check inputString against goalString if they're same length 
+		if (inputString.Length >= goalString.Length) {
+			if (inputString == goalString) {
+				Result(true);
+            } else {
+				Result(false);
+			}
+		}
+		// Check last element of inputString against last element of goalString 
+		else {
+			switch (inputAmount) {
+				case 2:
+					if (inputString[0] != goalString[0]) { // 1st char of string
+						Result(false);
+					} else {
+						BattleDialogue.S.displayMessageTextTop.text = "<color=#00FF00>" + ConvertDirections(goalString[0]) + "</color>" + ConvertDirections(goalString[1]);
+					}
+					break;
+				case 3:
+					switch (inputString.Length) {
+						case 1:
+							if (inputString[0] != goalString[0]) { // 1st char of string
+								Result(false);
+							} else {
+								BattleDialogue.S.displayMessageTextTop.text = "<color=#00FF00>" + ConvertDirections(goalString[0]) + "</color>" + ConvertDirections(goalString[1]) + ConvertDirections(goalString[2]);
+							}
+							break;
+						case 2:
+							if (inputString[1] != goalString[1]) { // 2nd char of string
+								Result(false);
+							} else {
+								BattleDialogue.S.displayMessageTextTop.text = "<color=#00FF00>" + ConvertDirections(goalString[0]) + ConvertDirections(goalString[1]) + "</color>" + ConvertDirections(goalString[2]);
+							}
+							break;
+					}
+					break;
+			}
+		}
+	}
+}
