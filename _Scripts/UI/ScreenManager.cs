@@ -42,16 +42,16 @@ public class ScreenManager : MonoBehaviour {
 	// ************ PAUSE ************ \\
 	public void Pause(){
 		// If SubMenu enabled when Paused, re-select this GO when Unpaused
-		if (UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject == SubMenu.S.subMenuButtonGO[0] || 
-			UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject == SubMenu.S.subMenuButtonGO[1] || 
-			UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject == SubMenu.S.subMenuButtonGO[2] || 
-			UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject == SubMenu.S.subMenuButtonGO[3]) {
+		if (UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject == SubMenu.S.buttonCS[0] || 
+			UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject == SubMenu.S.buttonCS[1] || 
+			UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject == SubMenu.S.buttonCS[2] || 
+			UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject == SubMenu.S.buttonCS[3]) {
 
 			previousSelectedGameObject = UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject;
-			SubMenu.S.subMenuButtonCS[0].interactable = false;
-			SubMenu.S.subMenuButtonCS[1].interactable = false;
-			SubMenu.S.subMenuButtonCS[2].interactable = false;
-			SubMenu.S.subMenuButtonCS[3].interactable = false;
+			SubMenu.S.buttonCS[0].interactable = false;
+			SubMenu.S.buttonCS[1].interactable = false;
+			SubMenu.S.buttonCS[2].interactable = false;
+			SubMenu.S.buttonCS[3].interactable = false;
 		}
 
 		// Overworld Player Stats
@@ -87,16 +87,16 @@ public class ScreenManager : MonoBehaviour {
 		PauseMessage.S.gameObject.SetActive (false);
 
 		// If SubMenu enabled when Paused, re-select this GO when Unpaused
-		if (previousSelectedGameObject == SubMenu.S.subMenuButtonGO[0] || 
-			previousSelectedGameObject == SubMenu.S.subMenuButtonGO[1] || 
-			previousSelectedGameObject == SubMenu.S.subMenuButtonGO[2] || 
-			previousSelectedGameObject == SubMenu.S.subMenuButtonGO[3]) {
+		if (previousSelectedGameObject == SubMenu.S.buttonCS[0] || 
+			previousSelectedGameObject == SubMenu.S.buttonCS[1] || 
+			previousSelectedGameObject == SubMenu.S.buttonCS[2] || 
+			previousSelectedGameObject == SubMenu.S.buttonCS[3]) {
 
 			Utilities.S.SetSelectedGO (previousSelectedGameObject);
-			SubMenu.S.subMenuButtonCS[0].interactable = true;
-			SubMenu.S.subMenuButtonCS[1].interactable = true;
-			SubMenu.S.subMenuButtonCS[2].interactable = true;
-			SubMenu.S.subMenuButtonCS[3].interactable = true;
+			SubMenu.S.buttonCS[0].interactable = true;
+			SubMenu.S.buttonCS[1].interactable = true;
+			SubMenu.S.buttonCS[2].interactable = true;
+			SubMenu.S.buttonCS[3].interactable = true;
 		}
 
 		// Update Delegate

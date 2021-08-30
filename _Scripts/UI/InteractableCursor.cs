@@ -16,19 +16,24 @@ public class InteractableCursor : MonoBehaviour{
 	public GameObject cursorGO;
 
 	void Awake() {
-		// Singleton
 		S = this;
 	}
 
-	// Activate, position, and set parent of cursor
-	public void Activate (bool activateCursor, GameObject otherGO = null) {
-		if (activateCursor) {
-			Utilities.S.SetPosition(cursorGO, otherGO.transform.position.x, otherGO.transform.position.y + 0.5f);
-			cursorGO.transform.SetParent(otherGO.transform);
-			cursorGO.SetActive(activateCursor);
-		} else {
-			cursorGO.transform.SetParent(CamManager.S.transform);
-			cursorGO.SetActive(activateCursor);
-		}	
+	// Activate and initialize cursor gameObject
+	public void Activate(GameObject newParentGO) {
+		// Set position
+		Utilities.S.SetPosition(cursorGO, newParentGO.transform.position.x, newParentGO.transform.position.y + 0.5f);
+		// Set parent
+		cursorGO.transform.SetParent(newParentGO.transform);
+		// Activate gameObject
+		cursorGO.SetActive(true);
+	}
+
+	// Dectivate cursor gameObject 
+	public void Deactivate() {
+		// Set parent
+		cursorGO.transform.SetParent(CamManager.S.transform);
+		// Deactivate gameObject
+		cursorGO.SetActive(false);
 	}
 }

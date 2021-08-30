@@ -39,9 +39,8 @@ public class Player : MonoBehaviour {
 	private bool				facingRight = true;
 
 	// Last Direction Faced
-	public int					lastDirection; 
-	// 0 = right, 1 = up, 2 = left, 3 = down
-	// 4 = Down Right, 5 = Up Right, 6 = Up Left, 7 = Down Left
+	public int					lastDirection;
+	// 0 = right, 1 = up, 2 = left, 3 = down, 4 = Down/Right, 5 = Up/Right, 6 = Up/Left, 7 = Down/Left
 
 	public bool 				canMove = true;
 
@@ -57,8 +56,7 @@ public class Player : MonoBehaviour {
 	private Vector3             previousPos;
 	public int                  stepsCount = 0;// Used in PauseScreen.cs to get/set Steps
 
-	// Prevent Multiple Triggers 
-	public bool					alreadyTriggered;
+	public bool					alreadyTriggered; // Prevents triggering multiple triggers
 	public bool					isBattling;
 
 	// What ground level the Player is on, used in SwapLayerTrigger.cs
@@ -91,11 +89,7 @@ public class Player : MonoBehaviour {
 	}
 	public void SpriteFlash() {
 		// Enable SpriteRenderers
-		if (sRend.enabled) {
-			sRend.enabled = false;
-		} else {
-			sRend.enabled = true;
-		}
+		sRend.enabled = !sRend.enabled;
 
 		flashRate -= 0.01f;
 		Invoke("SpriteFlash", flashRate);
@@ -153,8 +147,7 @@ public class Player : MonoBehaviour {
 					}
 					if (Input.GetAxisRaw ("Vertical") > 0f) { // Walk Up Left
 						SwitchMode (eRPGMode.walkUpLeft);
-					}
-					if (Input.GetAxisRaw ("Vertical") < 0f) { // Walk Down Left
+					} else if (Input.GetAxisRaw ("Vertical") < 0f) { // Walk Down Left
 						SwitchMode (eRPGMode.walkDownLeft);
 					}
 					break;
@@ -167,8 +160,7 @@ public class Player : MonoBehaviour {
 					}
 					if (Input.GetAxisRaw ("Vertical") > 0f) { // Walk Up Right
 						SwitchMode (eRPGMode.walkUpRight);
-					}
-					if (Input.GetAxisRaw ("Vertical") < 0f) { // Walk Down Right
+					} else if (Input.GetAxisRaw ("Vertical") < 0f) { // Walk Down Right
 						SwitchMode (eRPGMode.walkDownRight);
 					}
 					break;
@@ -207,8 +199,7 @@ public class Player : MonoBehaviour {
 					}
 					if (Input.GetAxisRaw ("Vertical") > 0f) { // Walk Up Left
 						SwitchMode (eRPGMode.walkUpLeft);
-					}
-					if (Input.GetAxisRaw ("Vertical") < 0f) { // Walk Down Left
+					} else if (Input.GetAxisRaw ("Vertical") < 0f) { // Walk Down Left
 						SwitchMode (eRPGMode.walkDownLeft);
 					}
 					break;
@@ -219,11 +210,9 @@ public class Player : MonoBehaviour {
 					if (Input.GetAxisRaw ("SNES B Button") <= 0) { // Walk Right
 						SwitchMode (eRPGMode.walkRight);
 					}
-					// Up/Down Right
-					if (Input.GetAxisRaw ("Vertical") > 0f) { 
+					if (Input.GetAxisRaw ("Vertical") > 0f) { // Up Right 
 						SwitchMode (eRPGMode.walkUpRight);
-					}
-					if (Input.GetAxisRaw ("Vertical") < 0f) { 
+					} else if (Input.GetAxisRaw ("Vertical") < 0f) { // Down Right
 						SwitchMode (eRPGMode.walkDownRight);
 					}
 					break;
@@ -234,10 +223,9 @@ public class Player : MonoBehaviour {
 					if (Input.GetAxisRaw ("SNES B Button") <= 0) { // Walk Up
 						SwitchMode (eRPGMode.walkUp);
 					}
-					// Up Left/Right
-					if (Input.GetAxisRaw ("Horizontal") < 0) {
+					if (Input.GetAxisRaw ("Horizontal") < 0) { // Up Left
 						SwitchMode (eRPGMode.walkUpLeft);
-					} else if (Input.GetAxisRaw ("Horizontal") > 0f) {
+					} else if (Input.GetAxisRaw ("Horizontal") > 0f) { // Up Right
 						SwitchMode (eRPGMode.walkUpRight);
 					}
 					break;
@@ -315,17 +303,14 @@ public class Player : MonoBehaviour {
 		// Overworld Player Stats UI
 		if (!RPG.S.paused && !DialogueManager.S.TextBoxSpriteGO.activeInHierarchy) {
 			if (RPG.S.currentSceneName != "Battle"){
-				switch (mode){
-					case eRPGMode.idle:
-						// Set amount of time for Player Stats to stay onscreen
-						playerUITimer = Time.time + 1.5f;
-						break;
-					default:
-						// Deactivate Player Stats
-						if (ScreenManager.S.playerButtonsGO.activeInHierarchy){
-							ScreenManager.S.playerButtonsGO.SetActive(false);
-						}
-						break;
+				if (mode == eRPGMode.idle) {
+					// Set amount of time for Player Stats to stay onscreen
+					playerUITimer = Time.time + 1.5f;
+                } else {
+					// Deactivate Player Stats
+					if (ScreenManager.S.playerButtonsGO.activeInHierarchy) {
+						ScreenManager.S.playerButtonsGO.SetActive(false);
+					}
 				}
 			}
 		}
@@ -337,7 +322,8 @@ public class Player : MonoBehaviour {
 
 		// Set Anim
 		if (gameObject.activeInHierarchy) {
-			RPG.S.SetAnim(anim, animName, animSpeed);
+			anim.speed = animSpeed;
+			anim.CrossFade(animName, 0);
 		}
 
 		lastDirection = tLastDirection;
@@ -359,10 +345,9 @@ public class Player : MonoBehaviour {
 			if (!RPG.S.paused) {
 				if (gameObject.activeInHierarchy) {
 					// ************ FLIP ************ \\
-					if (Input.GetAxisRaw("Horizontal") > 0 && !facingRight) {
-						Flip();
-					} else if (Input.GetAxisRaw("Horizontal") < 0 && facingRight) {
-						Flip();
+					if (Input.GetAxisRaw("Horizontal") > 0 && !facingRight ||
+						Input.GetAxisRaw("Horizontal") < 0 && facingRight) {
+						Utilities.S.Flip(gameObject, ref facingRight);
 					}
 
 					// Overworld Player Stats UI
@@ -476,10 +461,4 @@ public class Player : MonoBehaviour {
 		}
 	}
     #endregion
-
-    // ************ FLIP ************ \\
-    void Flip(){
-		facingRight = !facingRight;
-		Utilities.S.SetScale(gameObject, transform.localScale.x * -1, transform.localScale.y);
-	}
 }

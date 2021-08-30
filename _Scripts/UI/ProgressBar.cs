@@ -5,11 +5,11 @@ using UnityEngine;
 [RequireComponent(typeof(GameObject))]
 public class ProgressBar : MonoBehaviour {
 	[Header("Set in Inspector")]
-	public GameObject currentBar;
+	public GameObject	currentBar;
 
 	[Header("Set Dynamically")]
-	float progressBarMaxWidth;
-	SpriteRenderer sRend;
+	float				progressBarMaxWidth;
+	SpriteRenderer		sRend;
 
 	void Awake()
 	{
@@ -18,10 +18,10 @@ public class ProgressBar : MonoBehaviour {
 		sRend = GetComponent<SpriteRenderer>();
 	}
 
-	public void UpdateBar (float currentHP, float maxHP) {
+	public void UpdateBar(float currentHP, float maxHP) {
 		// Scale
 		Vector3 scale = currentBar.transform.localScale;
-		scale.x = map(0, maxHP, 0, progressBarMaxWidth, currentHP);
+		scale.x = Utilities.S.Map(0, maxHP, 0, progressBarMaxWidth, currentHP);
 		currentBar.transform.localScale = scale;
 
 		// Position
@@ -42,15 +42,5 @@ public class ProgressBar : MonoBehaviour {
         {
 			sRend.color = Color.red;
 		}
-	}
-
-
-	public float map(float OldMin, float OldMax, float NewMin, float NewMax, float valueToMap)
-	{
-		float OldRange = (OldMax - OldMin);
-		float NewRange = (NewMax - NewMin);
-		float NewValue = (((valueToMap - OldMin) * NewRange) / OldRange) + NewMin;
-
-		return (NewValue);
 	}
 }

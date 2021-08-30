@@ -5,9 +5,7 @@ using System;
 public enum eItem { hpPotion, mpPotion, assSword, crap, nothing, assArmor, assHelmet, assOther, crapSword,
                     assWand, berry, smallKey, bug1, bug2, bug3, bug4, bug5, bug6 };
 public enum eItemType { weapon, armor, helmet, other, healing, ingredient, important, nothing };
-public enum eItemStatEffect { HP, MP, 
-                              STR, DEF, WIS, AGI, 
-                              nothing };
+public enum eItemStatEffect { HP, MP, STR, DEF, WIS, AGI, nothing };
 
 public class ItemManager : MonoBehaviour {
 	[Header("Set in Inspector")]
@@ -22,7 +20,6 @@ public class ItemManager : MonoBehaviour {
 	public Item[] 				items;
 
 	void Awake() {
-		// Singleton
 		S = this;
 
         // Initialize array of Items
@@ -137,13 +134,13 @@ public class Item {
                 eItemType itemType, eItemStatEffect itemStatEffect, 
                 int itemStatEffectValue, int itemValue, 
 				string itemDescription, Sprite itemSprite, bool itemIsEquipped = false) {
-		            name = itemName;
-		            type = itemType;
-		            statEffect = itemStatEffect;
-		            statEffectValue = itemStatEffectValue;
-		            value = itemValue;
-		            description = itemDescription;
-		            sprite = itemSprite;
-                    isEquipped = itemIsEquipped;
+	    name = itemName;
+	    type = itemType;
+	    statEffect = itemStatEffect;
+	    statEffectValue = itemStatEffectValue;
+	    value = itemValue;
+	    description = itemDescription;
+	    sprite = itemSprite;
+        isEquipped = itemIsEquipped;
 	}
 }

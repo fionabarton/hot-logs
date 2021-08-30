@@ -3,119 +3,114 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// Dialogue menu that offers the player to choose from multiple options (up to 4)
+/// </summary>
 public class SubMenu : MonoBehaviour {
-	[Header ("Set in Inspector")]
+	[Header("Set in Inspector")]
+	// Option Buttons and GameObjects
+	public List<GameObject> buttonGO;
+	public List<Button>		buttonCS;
+
+	// Text
+	public List<Text>		text;
+
+	// Frame Position
+	public RectTransform	frameRT;
 	// Cursor Position
-	public RectTransform		cursorRT;
-
-	// Sub Menu Button
-	public List <GameObject>	subMenuButtonGO;
-	public List <Button>		subMenuButtonCS;
-
-	// Sub Menu Text
-	public List <Text>			subMenuText;
-
-	// Sub Menu Frame
-	public RectTransform		subMenuFrameRT;
+	public RectTransform	cursorRT;
 
 	[Header("Set Dynamically")]
 	// Singleton
-	private static SubMenu _S;
-	public static SubMenu S { get { return _S; } set { _S = value; } }
+	private static SubMenu	_S;
+	public static SubMenu	S { get { return _S; } set { _S = value; } }
 
-	// Frame & Cursor Position
-	private Vector2 			tPos;
-
-	public bool 				canUpdate;
+	private bool			canUpdate;
 
 	void Awake() {
-		// Singleton
 		S = this;
 	}
 
-	void OnEnable () {
+	void OnEnable() {
 		canUpdate = true;
 	}
 
-	// Cursor Position set to Selected Button
-	public void Loop () {
+	public void Loop() {
 		// Reset canUpdate
-		if (Input.GetAxisRaw ("Horizontal") != 0f || Input.GetAxisRaw ("Vertical") != 0f) { 
+		if (Input.GetAxisRaw("Horizontal") != 0f || Input.GetAxisRaw("Vertical") != 0f) {
 			canUpdate = true;
 		}
 
+		// Set Cursor Position to Selected Button
 		if (canUpdate) {
-			// Set Cursor Position to Selected Button
-			if (UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject == subMenuButtonGO[0]) {
-				tPos.x = subMenuButtonGO[0].GetComponent<RectTransform> ().anchoredPosition.x;
-				tPos.y = subMenuButtonGO[0].GetComponent<RectTransform> ().anchoredPosition.y;
-			} else if (UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject == subMenuButtonGO[1]) {
-				tPos.x = subMenuButtonGO[1].GetComponent<RectTransform> ().anchoredPosition.x;
-				tPos.y = subMenuButtonGO[1].GetComponent<RectTransform> ().anchoredPosition.y;
-			}else if (UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject == subMenuButtonGO[2]) {
-				tPos.x = subMenuButtonGO[2].GetComponent<RectTransform> ().anchoredPosition.x;
-				tPos.y = subMenuButtonGO[2].GetComponent<RectTransform> ().anchoredPosition.y;
-			}else if (UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject == subMenuButtonGO[3]) {
-				tPos.x = subMenuButtonGO[3].GetComponent<RectTransform> ().anchoredPosition.x;
-				tPos.y = subMenuButtonGO[3].GetComponent<RectTransform> ().anchoredPosition.y;
+			Vector2 selectedButtonPos = Vector2.zero;
+
+			if (UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject == buttonGO[0]) {
+				selectedButtonPos.x = buttonGO[0].GetComponent<RectTransform>().anchoredPosition.x;
+				selectedButtonPos.y = buttonGO[0].GetComponent<RectTransform>().anchoredPosition.y;
+			} else if (UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject == buttonGO[1]) {
+				selectedButtonPos.x = buttonGO[1].GetComponent<RectTransform>().anchoredPosition.x;
+				selectedButtonPos.y = buttonGO[1].GetComponent<RectTransform>().anchoredPosition.y;
+			} else if (UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject == buttonGO[2]) {
+				selectedButtonPos.x = buttonGO[2].GetComponent<RectTransform>().anchoredPosition.x;
+				selectedButtonPos.y = buttonGO[2].GetComponent<RectTransform>().anchoredPosition.y;
+			} else if (UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject == buttonGO[3]) {
+				selectedButtonPos.x = buttonGO[3].GetComponent<RectTransform>().anchoredPosition.x;
+				selectedButtonPos.y = buttonGO[3].GetComponent<RectTransform>().anchoredPosition.y;
 			}
+			cursorRT.anchoredPosition = new Vector2((selectedButtonPos.x + 150), (selectedButtonPos.y));
 
-			cursorRT.anchoredPosition = new Vector2 ((tPos.x + 150), (tPos.y));
-
+			// Prevent contents of this if statement from being called until next user directional input
 			canUpdate = false;
 		}
 	}
 
-	public void SetText(string option1 = "Yes", string option2 = "No", string option3 = "3 sides?", string option4 = "No, 4!", int optionAmount = 2){ 
-
+	public void SetText(string option1 = "Yes", string option2 = "No", string option3 = "3rd", string option4 = "4th", int optionAmount = 2) {
 		// Set Selected GameObject
-		switch (option1) {
-		case "Yes":
-			Utilities.S.SetSelectedGO(subMenuButtonGO[1]);
-			break;
-		default:
-			Utilities.S.SetSelectedGO(subMenuButtonGO[0]);
-			break;
+		if (option1 == "Yes") {
+			Utilities.S.SetSelectedGO(buttonGO[1]);
+		} else {
+			Utilities.S.SetSelectedGO(buttonGO[0]);
 		}
-			
-		// Get Sprite Frame Position
-		tPos = subMenuFrameRT.anchoredPosition;
+
+		// Get Frame Sprite Position
+		Vector2 frameSpritePos = frameRT.anchoredPosition;
 
 		// Set Text
-		subMenuText[0].text = option1;
-		subMenuText[1].text = option2;
-		subMenuText[2].text = option3;
-		subMenuText[3].text = option4;
+		text[0].text = option1;
+		text[1].text = option2;
+		text[2].text = option3;
+		text[3].text = option4;
 
 		switch (optionAmount) {
-		case 2:               
-			SetTextHelper (false, false, false, false, 150, 0);
-			break;
-		case 3:
-			SetTextHelper (true, false, true, false, 200, -25);
-			break;
-		case 4:
-			SetTextHelper (true, true, true, true, 250, -50);
-			break;
+			case 2:
+				SetTextHelper(false, false, 150);
+				frameSpritePos.y = 0;
+				break;
+			case 3:
+				SetTextHelper(true, false, 200);
+				frameSpritePos.y = -25;
+				break;
+			case 4:
+				SetTextHelper(true, true, 250);
+				frameSpritePos.y = -50;
+				break;
 		}
 
 		// Set Sprite Frame Position
-		subMenuFrameRT.anchoredPosition = tPos;
+		frameRT.anchoredPosition = frameSpritePos;
 	}
 
-	void SetTextHelper(bool option3Active, bool option4Active, bool is3Interactable, bool is4Interactable, int frameSizeY, int framePosY){
-		// Activate Text
-		subMenuText [2].gameObject.SetActive (option3Active);
-		subMenuText [3].gameObject.SetActive (option4Active);
+	void SetTextHelper(bool has3Options, bool has4Options, int frameSizeY) {
+		// Activate Text gameObjects
+		text[2].gameObject.SetActive(has3Options);
+		text[3].gameObject.SetActive(has4Options);
 
-		// Interactable
-		subMenuButtonCS[2].interactable = is3Interactable;
-		subMenuButtonCS[3].interactable = is4Interactable;
+		// Buttons Interactable
+		buttonCS[2].interactable = has3Options;
+		buttonCS[3].interactable = has4Options;
 
 		// Set Frame Height
-		subMenuFrameRT.sizeDelta = new Vector2(400, frameSizeY);
-
-		// Set Frame Position
-		tPos.y = framePosY;
+		frameRT.sizeDelta = new Vector2(400, frameSizeY);
 	}
 }

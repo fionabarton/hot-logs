@@ -33,10 +33,10 @@ public class ShopkeeperTrigger : ActivateOnButtonPress {
 		DialogueManager.S.grayOutTextBox = true;
 
 		// Set OnClick Methods
-        Utilities.S.RemoveListeners(SubMenu.S.subMenuButtonCS);
-        SubMenu.S.subMenuButtonCS[0].onClick.AddListener(Buy);
-        SubMenu.S.subMenuButtonCS[1].onClick.AddListener(Sell);
-        SubMenu.S.subMenuButtonCS[2].onClick.AddListener(No);
+        Utilities.S.RemoveListeners(SubMenu.S.buttonCS);
+        SubMenu.S.buttonCS[0].onClick.AddListener(Buy);
+        SubMenu.S.buttonCS[1].onClick.AddListener(Sell);
+        SubMenu.S.buttonCS[2].onClick.AddListener(No);
         //SubMenu.S.subMenuButtonCS[3].onClick.AddListener(Option3);
     }
 

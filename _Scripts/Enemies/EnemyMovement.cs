@@ -29,8 +29,7 @@ public class EnemyMovement : MonoBehaviour {
 	private bool		isWalking;
 	private int			walkDirection;
 	private int			nextWalkDirection = 999;
-	// 0 = right, 1 = up, 2 = left, 3 = down
-	// 4 = Down Right, 5 = Up Right, 6 = Up Left, 7 = Down Left
+	// 0 = right, 1 = up, 2 = left, 3 = down, 4 = Down Right, 5 = Up Right, 6 = Up Left, 7 = Down Left
 
 	private float		walkCounter = 0;
 	private float		waitCounter = 0;
@@ -51,14 +50,6 @@ public class EnemyMovement : MonoBehaviour {
 
 		StartCoroutine("FixedUpdateCoroutine");
 	}
-	//void OnBecameVisible() {
-	//	canMove = true;
-	//	StartCoroutine("FixedUpdateCoroutine");
-	//}
-	//void OnBecameInvisible() {
-	//	canMove = false;
-	//	StopCoroutine("FixedUpdateCoroutine");
-	//}
 
 	// Walk or Wait Loop
 	public IEnumerator FixedUpdateCoroutine() {
@@ -67,10 +58,8 @@ public class EnemyMovement : MonoBehaviour {
 			// if not Paused, no Dialogue Text Box
 			if (!RPG.S.paused && !DialogueManager.S.TextBoxSpriteGO.activeInHierarchy) {
 				// Flip
-				if (rigid.velocity.x < 0 && !facingRight) {
-					Flip();
-				} else if (rigid.velocity.x > 0 && facingRight) {
-					Flip();
+				if ((rigid.velocity.x < 0 && !facingRight) || (rigid.velocity.x > 0 && facingRight)) {
+					Utilities.S.Flip(gameObject, ref facingRight);
 				}
 
 				switch (mode) {
@@ -153,13 +142,17 @@ public class EnemyMovement : MonoBehaviour {
 						}
 						break;
 					case eMovement.pursueWalk:
-						if (Player.S.gameObject.transform.position.x < transform.position.x && XDeltaY()) { // Left
+						if (Player.S.gameObject.transform.position.x < transform.position.x &&
+							!Utilities.S.isCloserHorizontally(gameObject, Player.S.gameObject)) { // Left
 							rigid.velocity = new Vector2(-speed, 0);
-						} else if (Player.S.gameObject.transform.position.x > transform.position.x && XDeltaY()) { // Right
+						} else if (Player.S.gameObject.transform.position.x > transform.position.x &&
+							!Utilities.S.isCloserHorizontally(gameObject, Player.S.gameObject)) { // Right
 							rigid.velocity = new Vector2(speed, 0);
-						} else if (Player.S.gameObject.transform.position.y < transform.position.y && !XDeltaY()) { // Down
+						} else if (Player.S.gameObject.transform.position.y < transform.position.y &&
+							Utilities.S.isCloserHorizontally(gameObject, Player.S.gameObject)) { // Down
 							rigid.velocity = new Vector2(0, -speed);
-						} else if (Player.S.gameObject.transform.position.y > transform.position.y && !XDeltaY()) { // Up
+						} else if (Player.S.gameObject.transform.position.y > transform.position.y &&
+							Utilities.S.isCloserHorizontally(gameObject, Player.S.gameObject)) { // Up
 							rigid.velocity = new Vector2(0, speed);
 						}
 						break;
@@ -256,25 +249,5 @@ public class EnemyMovement : MonoBehaviour {
 				}
 			}
 		}
-	}
-
-	// X Distance between Player & Enemy is more than Y Distance (used for eMovement.pursueWalk)
-	bool XDeltaY() {
-		float tX = Mathf.Abs(transform.position.x - Player.S.gameObject.transform.position.x);
-		float tY = Mathf.Abs(transform.position.y - Player.S.gameObject.transform.position.y);
-
-		if (tX > tY) {
-			return (true);
-		} else {
-			return (false);
-		}
-	}
-
-    // Flip sprite scale
-    void Flip() {
-        facingRight = !facingRight;
-		Vector3 theScale = transform.localScale;
-		theScale.x *= -1;
-		transform.localScale = theScale;
 	}
 }

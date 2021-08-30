@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Provides access to both the party and enemy's battle progress bars
+/// </summary>
 public class ProgressBars : MonoBehaviour
 {
     [Header("Set in Inspector")]

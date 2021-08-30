@@ -36,11 +36,6 @@ public class RPG : MonoBehaviour {
 	public string 				previousSceneName;
 	private string				previousPreviousSceneName;
 
-	public void SetAnim(Animator anim, string animName, int speed) {
-		anim.speed = speed;
-		anim.CrossFade(animName, 0);
-	}
-
 	void Awake() {
 		// Singleton
 		S = this;
@@ -79,7 +74,7 @@ public class RPG : MonoBehaviour {
 		previousSceneName = currentScene.name;
 
 		// Ensures InteractableCursor is child object of camera, otherwise it can be destroyed on scene change
-		InteractableCursor.S.Activate(false);
+		InteractableCursor.S.Deactivate();
 
 		canInput = false;
 

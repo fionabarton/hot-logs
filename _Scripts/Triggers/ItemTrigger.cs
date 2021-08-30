@@ -22,7 +22,7 @@ public class ItemTrigger : ActivateOnButtonPress {
 		ObjectPool.S.PosAndEnableObj(poof, gameObject);
 
 		// Interactable Trigger (without this, occasionally results in console warning)
-		InteractableCursor.S.Activate(false);
+		InteractableCursor.S.Deactivate();
 
 		// Add Item to Inventory
 		Inventory.S.AddItemToInventory(ItemManager.S.items[(int)item]);

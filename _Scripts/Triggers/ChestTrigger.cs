@@ -2,15 +2,19 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Trigger that opens or closes a chest OnButtonPress
+/// </summary>
 public class ChestTrigger : ActivateOnButtonPress {
 	[Header ("Set in Inspector")]
+	// Item within this chest
 	public eItem			item;
 
-	// Gives the index of which chest has already been opened to ChestManager.cs
+	// Used by ChestManager.cs to track whether or not this chest has been opened
 	public int				ndx;
 
+	// Sprites
 	public Sprite			openChestTop, closedChestTop;
-
 	public SpriteRenderer	sRendTop;
 
 	[Header("Set Dynamically")]
@@ -41,7 +45,7 @@ public class ChestTrigger : ActivateOnButtonPress {
 
 		chestIsOpen = true;
 
-		// Chest Manager
+		// Inform ChestManager.cs that this chest has been opened 
 		ChestManager.S.isOpen[ndx] = true;
 	}
 }

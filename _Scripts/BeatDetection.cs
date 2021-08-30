@@ -31,7 +31,7 @@ public class BeatDetection : MonoBehaviour
 
     private void Start() {
         // Map beats from (0s to 60s) to (0% to 100%)
-        float mappedBeats = (Utilities.S.map(0, 60, 0, 100, songDurations[songNdx])) / 100;
+        float mappedBeats = (Utilities.S.Map(0, 60, 0, 100, songDurations[songNdx])) / 100;
 
         // Get total amount of beats
         float amountOfBeats = mappedBeats * tempos[songNdx];
