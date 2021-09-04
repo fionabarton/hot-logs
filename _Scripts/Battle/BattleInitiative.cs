@@ -43,7 +43,7 @@ public class BattleInitiative : MonoBehaviour {
 		_.turnNdx = 0;
 
 		// Set Party Amount to partyNdx
-		_.partyQty = Stats.S.partyNdx;
+		_.partyQty = PartyStats.S.partyNdx;
 
 		//////////////////////////////////////////// PARTY MEMBERS ////////////////////////////////////////////
 		// De/Activate Party Member Stats/Sprite
@@ -56,10 +56,10 @@ public class BattleInitiative : MonoBehaviour {
 			_.playerDead[1] = true;
 
 			// Update Health Bars
-			ProgressBars.S.playerHealthBarsCS[0].UpdateBar(Stats.S.HP[0], Stats.S.maxHP[0]);
+			ProgressBars.S.playerHealthBarsCS[0].UpdateBar(PartyStats.S.HP[0], PartyStats.S.maxHP[0]);
 
 			// Update Magic Bars
-			ProgressBars.S.playerMagicBarsCS[0].UpdateBar(Stats.S.MP[0], Stats.S.maxMP[0]);
+			ProgressBars.S.playerMagicBarsCS[0].UpdateBar(PartyStats.S.MP[0], PartyStats.S.maxMP[0]);
 
 		} else if (_.partyQty >= 1) {
 			BattlePlayerActions.S.PlayerButtonAndStatsSetActive (0, true);
@@ -70,12 +70,12 @@ public class BattleInitiative : MonoBehaviour {
 			_.playerDead[1] = false;
 
 			// Update Health Bars
-			ProgressBars.S.playerHealthBarsCS[0].UpdateBar(Stats.S.HP[0], Stats.S.maxHP[0]);
-			ProgressBars.S.playerHealthBarsCS[1].UpdateBar(Stats.S.HP[1], Stats.S.maxHP[1]);
+			ProgressBars.S.playerHealthBarsCS[0].UpdateBar(PartyStats.S.HP[0], PartyStats.S.maxHP[0]);
+			ProgressBars.S.playerHealthBarsCS[1].UpdateBar(PartyStats.S.HP[1], PartyStats.S.maxHP[1]);
 
 			// Update Magic Bars
-			ProgressBars.S.playerMagicBarsCS[0].UpdateBar(Stats.S.MP[0], Stats.S.maxMP[0]);
-			ProgressBars.S.playerMagicBarsCS[1].UpdateBar(Stats.S.MP[1], Stats.S.maxMP[1]);
+			ProgressBars.S.playerMagicBarsCS[0].UpdateBar(PartyStats.S.MP[0], PartyStats.S.maxMP[0]);
+			ProgressBars.S.playerMagicBarsCS[1].UpdateBar(PartyStats.S.MP[1], PartyStats.S.maxMP[1]);
 		}
 
 		//////////////////////////////////////////// ENEMIES ////////////////////////////////////////////
@@ -202,7 +202,7 @@ public class BattleInitiative : MonoBehaviour {
 			} else if (_.randomFactor < 50) {
 				// Party goes first!
 				if (_.randomFactor < 25) {
-					BattleDialogue.S.DisplayText(Stats.S.playerName[0] + " surprises the Enemy!");
+					BattleDialogue.S.DisplayText(PartyStats.S.playerName[0] + " surprises the Enemy!");
 
                     // Calculate Initiative
                     CalculateInitiative ("party");
@@ -225,10 +225,10 @@ public class BattleInitiative : MonoBehaviour {
 		// For all characters to engage in battle, calculate their turn order
 
 		// Player 1
-		RollInitiative (Stats.S.playerName[0], Stats.S.AGI[0], Stats.S.LVL [0], true, whoGoesFirst);
+		RollInitiative (PartyStats.S.playerName[0], PartyStats.S.AGI[0], PartyStats.S.LVL [0], true, whoGoesFirst);
 		// Player 2
 		if (_.partyQty >= 1) {
-			RollInitiative (Stats.S.playerName[1], Stats.S.AGI[1], Stats.S.LVL [1], true, whoGoesFirst);
+			RollInitiative (PartyStats.S.playerName[1], PartyStats.S.AGI[1], PartyStats.S.LVL [1], true, whoGoesFirst);
 		}
 			
 		// Enemy 1

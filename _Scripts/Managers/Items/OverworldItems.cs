@@ -13,7 +13,6 @@ public class OverworldItems : MonoBehaviour {
 	public static OverworldItems S { get { return _S; } set { _S = value; } }
 
 	void Awake() {
-		// Singleton
 		S = this;
 	}
 
@@ -37,7 +36,7 @@ public class OverworldItems : MonoBehaviour {
 	}
 
 	public void HPPotion(int ndx) { 
-		if (Stats.S.HP[ndx] < Stats.S.maxHP[ndx]) {
+		if (PartyStats.S.HP[ndx] < PartyStats.S.maxHP[ndx]) {
 			// Remove from Inventory
 			Inventory.S.RemoveItemFromInventory(ItemManager.S.items[0]);
 
@@ -46,20 +45,20 @@ public class OverworldItems : MonoBehaviour {
 			RPG.S.AddPlayerHP(ndx, randomValue);
 
 			// Display Text
-			if (Stats.S.HP[ndx] >= Stats.S.maxHP[ndx]) {
-				PauseMessage.S.DisplayText("Used Heal Potion!\nHealed " + Stats.S.playerName[ndx] + " back to Max HP!");
+			if (PartyStats.S.HP[ndx] >= PartyStats.S.maxHP[ndx]) {
+				PauseMessage.S.DisplayText("Used Heal Potion!\nHealed " + PartyStats.S.playerName[ndx] + " back to Max HP!");
 			} else {
-				PauseMessage.S.DisplayText("Used Heal Potion!\nHealed " + Stats.S.playerName[ndx] + " for " + randomValue + " HP!");
+				PauseMessage.S.DisplayText("Used Heal Potion!\nHealed " + PartyStats.S.playerName[ndx] + " for " + randomValue + " HP!");
 			}
 		} else {
 			// Display Text
-			PauseMessage.S.DisplayText(Stats.S.playerName[ndx] + " already at full health...\n...no need to use this potion!");
+			PauseMessage.S.DisplayText(PartyStats.S.playerName[ndx] + " already at full health...\n...no need to use this potion!");
 		}
 		ClickedButtonHelper();
 	}
 
 	public void MPPotion(int ndx) { 
-		if (Stats.S.MP[ndx] < Stats.S.maxMP[ndx]) {
+		if (PartyStats.S.MP[ndx] < PartyStats.S.maxMP[ndx]) {
 			// Remove from Inventory
 			Inventory.S.RemoveItemFromInventory(ItemManager.S.items[1]);
 
@@ -68,14 +67,14 @@ public class OverworldItems : MonoBehaviour {
 			RPG.S.AddPlayerMP(ndx, randomValue);
 
 			// Display Text
-			if (Stats.S.MP[ndx] >= Stats.S.maxMP[ndx]) {
-				PauseMessage.S.DisplayText("Used Magic Potion!\n" + Stats.S.playerName[ndx] + " back to Max MP!");
+			if (PartyStats.S.MP[ndx] >= PartyStats.S.maxMP[ndx]) {
+				PauseMessage.S.DisplayText("Used Magic Potion!\n" + PartyStats.S.playerName[ndx] + " back to Max MP!");
 			} else {
-				PauseMessage.S.DisplayText("Used Magic Potion!\n" + Stats.S.playerName[ndx] + " gained " + randomValue + " MP!");
+				PauseMessage.S.DisplayText("Used Magic Potion!\n" + PartyStats.S.playerName[ndx] + " gained " + randomValue + " MP!");
 			}
 		} else {
 			// Display Text
-			PauseMessage.S.DisplayText(Stats.S.playerName[ndx] + " already at full magic...\n...no need to use this potion!");
+			PauseMessage.S.DisplayText(PartyStats.S.playerName[ndx] + " already at full magic...\n...no need to use this potion!");
 		}
 		ClickedButtonHelper();
 	}
@@ -96,6 +95,9 @@ public class OverworldItems : MonoBehaviour {
 
 		// Switch ScreenMode 
 		ItemScreen.S.itemScreenMode = eItemScreenMode.usedItem;
+
+		// Set animation to idle
+		PlayerButtons.S.SetAnim("Idle");
 	}
 
 	public void CantUseItem() {

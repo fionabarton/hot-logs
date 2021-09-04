@@ -39,10 +39,10 @@ public class BattleUI : MonoBehaviour {
 		// Position Cursor
 		// - dynamically set for Enemies, but explicitly set for Party Members: 
 		//	 in case function is called when Party is still running to their positions
-		if (_.turnNdx == _.turnOrder.IndexOf(Stats.S.playerName[0])) { // Player 1
+		if (_.turnNdx == _.turnOrder.IndexOf(PartyStats.S.playerName[0])) { // Player 1
 			Vector2 t = new Vector2(-4.5f, 2.75f);
 			turnCursor.transform.localPosition = t;
-		} else if (_.turnNdx == _.turnOrder.IndexOf(Stats.S.playerName[1])) { // Player 2
+		} else if (_.turnNdx == _.turnOrder.IndexOf(PartyStats.S.playerName[1])) { // Player 2
 			Vector2 t = new Vector2(-6, 0.75f);
 			turnCursor.transform.localPosition = t;
 		} else { // Enemies

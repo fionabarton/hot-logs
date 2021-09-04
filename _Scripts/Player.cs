@@ -308,8 +308,8 @@ public class Player : MonoBehaviour {
 					playerUITimer = Time.time + 1.5f;
                 } else {
 					// Deactivate Player Stats
-					if (ScreenManager.S.playerButtonsGO.activeInHierarchy) {
-						ScreenManager.S.playerButtonsGO.SetActive(false);
+					if (PlayerButtons.S.gameObject.activeInHierarchy) {
+						PlayerButtons.S.gameObject.SetActive(false);
 					}
 				}
 			}
@@ -355,9 +355,9 @@ public class Player : MonoBehaviour {
 						case eRPGMode.idle:
 							if (!RPG.S.paused && !DialogueManager.S.TextBoxSpriteGO.activeInHierarchy) {
 								if (RPG.S.currentSceneName != "Battle") {
-									if (!ScreenManager.S.playerButtonsGO.activeInHierarchy) {
+									if (!PlayerButtons.S.gameObject.activeInHierarchy) {
 										if (Time.time >= playerUITimer) {
-											ScreenManager.S.playerButtonsGO.SetActive(true);
+											PlayerButtons.S.gameObject.SetActive(true);
 										}
 									}
 								}

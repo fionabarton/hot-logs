@@ -58,9 +58,9 @@ public class BattleEnemyActions : MonoBehaviour {
 		// Calculate Attack Damage
 		Battle.S.CalculateAttackDamage(_.enemyStats[_.EnemyNdx()].LVL, 
 									   _.enemyStats[_.EnemyNdx()].STR, _.enemyStats[_.EnemyNdx()].AGI, 
-									   Stats.S.DEF[playerToAttack], Stats.S.AGI[playerToAttack], 
-									   _.enemyStats[_.EnemyNdx()].name, Stats.S.playerName[playerToAttack],
-									   Stats.S.HP[playerToAttack]);
+									   PartyStats.S.DEF[playerToAttack], PartyStats.S.AGI[playerToAttack], 
+									   _.enemyStats[_.EnemyNdx()].name, PartyStats.S.playerName[playerToAttack],
+									   PartyStats.S.HP[playerToAttack]);
 
 		// Subtract Player Health
 		RPG.S.SubtractPlayerHP (playerToAttack, _.attackDamage);
@@ -80,7 +80,7 @@ public class BattleEnemyActions : MonoBehaviour {
 		RPG.S.InstantiateFloatingScore(_.playerSprite[playerToAttack], _.attackDamage, Color.red);
 
 		// Player Death or Next Turn
-		if (Stats.S.HP [playerToAttack] < 1) {
+		if (PartyStats.S.HP [playerToAttack] < 1) {
 			BattleEnd.S.PlayerDeath (playerToAttack);
 		} else {
 			// BLOCK!!!
@@ -199,7 +199,7 @@ public class BattleEnemyActions : MonoBehaviour {
 			// Miss/Dodge
 			// 5% chance to Miss/Dodge...
 			// ...but 25% chance if Defender WIS is more than Attacker's 
-			if (Random.value <= 0.05f || (_.enemyStats [_.EnemyNdx()].WIS > Stats.S.WIS[0] && Random.value < 0.25f)) {
+			if (Random.value <= 0.05f || (_.enemyStats [_.EnemyNdx()].WIS > PartyStats.S.WIS[0] && Random.value < 0.25f)) {
 				if (Random.value <= 0.5f) {
 					BattleDialogue.S.DisplayText (_.enemyStats [_.EnemyNdx()].name + " attempted to cast Crap Blast... but missed the party completely!");
 				} else {
@@ -226,12 +226,12 @@ public class BattleEnemyActions : MonoBehaviour {
 				int totalAttackDamage = 0;
 
 				// Loop through Players
-				for (int i = 0; i < (Stats.S.partyNdx + 1); i++) {
+				for (int i = 0; i < (PartyStats.S.partyNdx + 1); i++) {
 					// Subtract Player's DEF from Damage
-					_.attackDamage -= Stats.S.DEF [i];
+					_.attackDamage -= PartyStats.S.DEF [i];
 
 					// If DEFENDING, cut AttackDamage in HALF
-					_.CheckIfDefending (Stats.S.playerName [i]);
+					_.CheckIfDefending (PartyStats.S.playerName [i]);
 
 					if (_.attackDamage < 0) {
 						_.attackDamage = 0;
@@ -257,7 +257,7 @@ public class BattleEnemyActions : MonoBehaviour {
 					_.attackDamage = tAttackDamage;
 
 					// If Player HP < 0, DEAD!
-					if (Stats.S.HP [i] < 1 && !_.playerDead [i]) {
+					if (PartyStats.S.HP [i] < 1 && !_.playerDead [i]) {
 						qtyKilled += 1;
 						tDead [i] = true;
 					}
@@ -286,8 +286,8 @@ public class BattleEnemyActions : MonoBehaviour {
 		case 2: BattleDialogue.S.DisplayText ("Used Crap BLAST Spell!\nHit ENTIRE party for an average of " + Utilities.S.CalculateAverage (totalAttackDamage, (_.partyQty + 3)) + " HP!" + "\nTwo party members have been felled!"); break;
 		}
 
-		if (player1) { PlayersDeathHelper (0, Stats.S.playerName[0]); }
-		if (player2) { PlayersDeathHelper (1, Stats.S.playerName[1]); }
+		if (player1) { PlayersDeathHelper (0, PartyStats.S.playerName[0]); }
+		if (player2) { PlayersDeathHelper (1, PartyStats.S.playerName[1]); }
 
 		// Add PartyDeath or NextTurn
 		if (_.partyQty < 0) { _.battleMode = eBattleMode.partyDeath;} else { _.NextTurn (); }

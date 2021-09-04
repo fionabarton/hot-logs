@@ -166,78 +166,78 @@ public class PasswordManager : MonoBehaviour {
 			if ((tInt1 >= 1 && tInt1 <= 10) && (tInt2 >= 1 && tInt2 <= 10)) {
 
 				// Player 1 EXP
-				for (int i = 0; i < Stats.S.p1Lvl.Length; i++) {
-					Stats.S.p1Lvl [i] = false;
+				for (int i = 0; i < PartyStats.S.p1Lvl.Length; i++) {
+					PartyStats.S.p1Lvl [i] = false;
 				}
 				for (int i = 0; i < tInt1; i++) {
-					Stats.S.p1Lvl [i] = true;
+					PartyStats.S.p1Lvl [i] = true;
 				}
 				switch (tInt1) {
 				case 2:
-					Stats.S.EXP [0] = 8;
+					PartyStats.S.EXP [0] = 8;
 					break;
 				case 3:
-					Stats.S.EXP [0] = 24;
+					PartyStats.S.EXP [0] = 24;
 					break;
 				case 4:
-					Stats.S.EXP [0] = 48;
+					PartyStats.S.EXP [0] = 48;
 					break;
 				case 5:
-					Stats.S.EXP [0] = 111;
+					PartyStats.S.EXP [0] = 111;
 					break;
 				case 6:
-					Stats.S.EXP [0] = 221;
+					PartyStats.S.EXP [0] = 221;
 					break;
 				case 7:
-					Stats.S.EXP [0] = 451;
+					PartyStats.S.EXP [0] = 451;
 					break;
 				case 8:
-					Stats.S.EXP [0] = 801;
+					PartyStats.S.EXP [0] = 801;
 					break;
 				case 9:
-					Stats.S.EXP [0] = 1300;
+					PartyStats.S.EXP [0] = 1300;
 					break;
 				case 10:
-					Stats.S.EXP [0] = 2001;
+					PartyStats.S.EXP [0] = 2001;
 					break;
 				default:
 					break;
 				}
 
 				// Player 2 EXP
-				for (int i = 0; i < Stats.S.p2Lvl.Length; i++) {
-					Stats.S.p2Lvl [i] = false;
+				for (int i = 0; i < PartyStats.S.p2Lvl.Length; i++) {
+					PartyStats.S.p2Lvl [i] = false;
 				}
 				for (int i = 0; i < tInt2; i++) {
-					Stats.S.p2Lvl [i] = true;
+					PartyStats.S.p2Lvl [i] = true;
 				}
 				switch (tInt2) {
 				case 2:
-					Stats.S.EXP [1] = 10;
+					PartyStats.S.EXP [1] = 10;
 					break;
 				case 3:
-					Stats.S.EXP [1] = 24;
+					PartyStats.S.EXP [1] = 24;
 					break;
 				case 4:
-					Stats.S.EXP [1] = 56;
+					PartyStats.S.EXP [1] = 56;
 					break;
 				case 5:
-					Stats.S.EXP [1] = 111;
+					PartyStats.S.EXP [1] = 111;
 					break;
 				case 6:
-					Stats.S.EXP [1] = 251;
+					PartyStats.S.EXP [1] = 251;
 					break;
 				case 7:
-					Stats.S.EXP [1] = 451;
+					PartyStats.S.EXP [1] = 451;
 					break;
 				case 8:
-					Stats.S.EXP [1] = 851;
+					PartyStats.S.EXP [1] = 851;
 					break;
 				case 9:
-					Stats.S.EXP [1] = 1301;
+					PartyStats.S.EXP [1] = 1301;
 					break;
 				case 10:
-					Stats.S.EXP [1] = 2101;
+					PartyStats.S.EXP [1] = 2101;
 					break;
 				default:
 					break;
@@ -247,7 +247,7 @@ public class PasswordManager : MonoBehaviour {
 
 				// Gold
 				int tInt3 = System.Convert.ToInt32 (gold);
-				Stats.S.Gold = tInt3 * 100;
+				PartyStats.S.Gold = tInt3 * 100;
 
 			} else {
 				passwordText.text = "Password: INVALID!";
@@ -274,9 +274,9 @@ public class PasswordManager : MonoBehaviour {
 
 	void CheckLevelUp(){
 		// Level Up
-		Stats.S.CheckForLevelUp ();
-		Stats.S.hasLevelledUp[0] = false;
-		Stats.S.hasLevelledUp[1] = false;
+		PartyStats.S.CheckForLevelUp ();
+		PartyStats.S.hasLevelledUp[0] = false;
+		PartyStats.S.hasLevelledUp[1] = false;
 
 		passwordText.text = "Password: ACCEPTED!";
 	}

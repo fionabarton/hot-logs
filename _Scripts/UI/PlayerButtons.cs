@@ -10,65 +10,67 @@ public class PlayerButtons : MonoBehaviour {
 	private static PlayerButtons _S;
 	public static PlayerButtons S { get { return _S; } set { _S = value; } }
 
-	public RectTransform rectTrans;
+	public RectTransform	rectTrans;
 
 	[Header ("Set in Inspector")]
-	public Text[] 		statName = new Text[2];
-	public Text[] 		statValue = new Text[2];
+	public Text[] 			statName = new Text[2];
+	public Text[] 			statValue = new Text[2];
 
 	public List<GameObject> buttonsGO;
 	public List<Button> 	buttonsCS;
 	public List<Animator>	anim;
 
 	[Header("Set Dynamically")]
-	public Text			goldValue;
+	public Text				goldValue;
 
 	void Awake() {
-		// Singleton
 		S = this;
 	}
 
     void OnEnable () {
 		UpdateGUI ();
 
-        // Set Position
-        if (ScreenManager.S) {
-			if (RPG.S.paused) {
-				rectTrans.anchoredPosition = new Vector2(0, 0);
-			} else {
-				rectTrans.anchoredPosition = new Vector2(0, 650);
-			}
+        // Set position 
+		if (RPG.S.paused) {
+			rectTrans.anchoredPosition = new Vector2(0, 0);
+		} else {
+			rectTrans.anchoredPosition = new Vector2(0, 650);
 		}
 	}
 
+	// Display the party's current HP, MP, and Gold
     public void UpdateGUI(){
 		statName [0].text = "HP\nMP";
 		statName [1].text = "HP\nMP";
 		// Weapon: STR, Armor: DEF
 
 		try{
-		statValue [0].text = Stats.S.HP [0] + "/" + Stats.S.maxHP [0] + "\n" + Stats.S.MP [0] + "/" + Stats.S.maxMP [0] + "\n";
-		statValue [1].text = Stats.S.HP [1] + "/" + Stats.S.maxHP [1] + "\n" + Stats.S.MP [1] + "/" + Stats.S.maxMP [1] + "\n";
+			statValue [0].text = 
+				PartyStats.S.HP [0] + "/" + 
+				PartyStats.S.maxHP [0] + "\n" + 
+				PartyStats.S.MP [0] + "/" + 
+				PartyStats.S.maxMP [0] + "\n";
+
+			statValue [1].text = 
+				PartyStats.S.HP [1] + "/" + 
+				PartyStats.S.maxHP [1] + "\n" + 
+				PartyStats.S.MP [1] + "/" + 
+				PartyStats.S.maxMP [1] + "\n";
 		
-		goldValue.text = "" + Stats.S.Gold; 
+			goldValue.text = "" + PartyStats.S.Gold; 
 
 		}catch(NullReferenceException){}
-			
-		// Current Stat, Arrow Sprite, Potential Stat
 	}
 
-	public void PositionCursor(){
-		for (int i = 0; i < buttonsCS.Count; i++) {
-			if (UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject == buttonsCS [i].gameObject) {
-				// Cursor Position set to Selected Button
-				float tPosX = buttonsCS [i].gameObject.GetComponent<RectTransform> ().anchoredPosition.x;
-				float tPosY = buttonsCS [i].gameObject.GetComponent<RectTransform> ().anchoredPosition.y;
-
-				float tParentX = buttonsCS [i].gameObject.transform.parent.GetComponent<RectTransform> ().anchoredPosition.x;
-				float tParentY = buttonsCS [i].gameObject.transform.parent.GetComponent<RectTransform> ().anchoredPosition.y;
-
-				ScreenCursor.S.rectTrans.anchoredPosition = new Vector2 ((tPosX + tParentX + 60), (tPosY + tParentY));
+	public void SetAnim(string animName) {
+		for(int i = 0; i < buttonsCS.Count; i++) {
+            if (anim[i]) {
+				if (UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject == buttonsCS[i].gameObject) {
+					anim[i].CrossFade(animName, 0);
+				} else {
+					anim[i].CrossFade("Idle", 0);
+				}
 			}
 		}
-	}
+    }
 }

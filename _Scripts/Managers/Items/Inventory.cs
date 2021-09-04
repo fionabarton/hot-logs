@@ -15,26 +15,27 @@ public class Inventory : MonoBehaviour
 	public Dictionary<Item, int>	items = new Dictionary<Item, int>();
 
 	void Awake() {
-		// Singleton
 		S = this;
 	}
 
-	// Add HP & MP potions to inventory
 	void Start() {
-        AddItemToInventory(ItemManager.S.items[0]);
-        AddItemToInventory(ItemManager.S.items[0]);
+        // Add items to inventory
+        //AddItemToInventory(ItemManager.S.items[0]);
+        //AddItemToInventory(ItemManager.S.items[0]);
         AddItemToInventory(ItemManager.S.items[1]);
         AddItemToInventory(ItemManager.S.items[1]);
-		AddItemToInventory(ItemManager.S.items[2]);
-		AddItemToInventory(ItemManager.S.items[5]);
-		AddItemToInventory(ItemManager.S.items[6]);
-		AddItemToInventory(ItemManager.S.items[8]);
-		AddItemToInventory(ItemManager.S.items[9]);
-		AddItemToInventory(ItemManager.S.items[15]);
+        AddItemToInventory(ItemManager.S.items[2]);
+        AddItemToInventory(ItemManager.S.items[5]);
+        AddItemToInventory(ItemManager.S.items[6]);
+        AddItemToInventory(ItemManager.S.items[8]);
+        AddItemToInventory(ItemManager.S.items[9]);
         AddItemToInventory(ItemManager.S.items[15]);
-    } 
+        AddItemToInventory(ItemManager.S.items[15]);
+        AddItemToInventory(ItemManager.S.items[0]);
+        AddItemToInventory(ItemManager.S.items[0]);
+    }
 
-	public void AddItemToInventory(Item name) {
+    public void AddItemToInventory(Item name) {
 		if (items.ContainsKey(name)) {
 			items[name] += 1;
 		} else {

@@ -88,10 +88,10 @@ public class BattlePlayerActions : MonoBehaviour
 
 	public void AttackEnemy(int ndx) {
 		// Calculate Attack Damage
-		_.CalculateAttackDamage(Stats.S.LVL[_.PlayerNdx()], 
-								Stats.S.STR[_.PlayerNdx()], Stats.S.AGI[_.PlayerNdx()],
+		_.CalculateAttackDamage(PartyStats.S.LVL[_.PlayerNdx()], 
+								PartyStats.S.STR[_.PlayerNdx()], PartyStats.S.AGI[_.PlayerNdx()],
 								_.enemyStats[ndx].DEF, _.enemyStats[ndx].AGI,
-								Stats.S.playerName[_.PlayerNdx()], _.enemyStats[ndx].name,
+								PartyStats.S.playerName[_.PlayerNdx()], _.enemyStats[ndx].name,
 								_.enemyStats[ndx].HP);
 
 		// Subtract Enemy Health
@@ -151,7 +151,7 @@ public class BattlePlayerActions : MonoBehaviour
 				if (_.partyQty >= 1) {
 					BattleDialogue.S.DisplayText("The party has fled the battle!");
 				} else {
-					BattleDialogue.S.DisplayText(Stats.S.playerName[_.PlayerNdx()] + " has fled the battle!");
+					BattleDialogue.S.DisplayText(PartyStats.S.playerName[_.PlayerNdx()] + " has fled the battle!");
 				}
 
 				// Animation: Party RUN
@@ -192,13 +192,13 @@ public class BattlePlayerActions : MonoBehaviour
 		ButtonsDisableAll();
 
 		// Defend until next turn
-		_.AddDefender(Stats.S.playerName[_.PlayerNdx()]);
+		_.AddDefender(PartyStats.S.playerName[_.PlayerNdx()]);
 
 		// TBR
 		// Animation: Player DEFEND
 		_.playerShields[_.PlayerNdx()].SetActive(true);
 
-		BattleDialogue.S.DisplayText(Stats.S.playerName[_.PlayerNdx()] + " defends themself until their next turn!");
+		BattleDialogue.S.DisplayText(PartyStats.S.playerName[_.PlayerNdx()] + " defends themself until their next turn!");
 		_.NextTurn();
 
 		// Audio: Confirm
@@ -208,7 +208,7 @@ public class BattlePlayerActions : MonoBehaviour
 	public void SpellButton() {
 		ButtonsDisableAll();
 
-		if (Stats.S.spellNdx[_.PlayerNdx()] > 0) {
+		if (PartyStats.S.spellNdx[_.PlayerNdx()] > 0) {
 
 			BattleUI.S.targetCursor.SetActive(false);
 
@@ -218,13 +218,13 @@ public class BattlePlayerActions : MonoBehaviour
 			PauseMessage.S.gameObject.SetActive(true);
 
 			// Open Spells Screen
-			SpellsScreen.S.LoadSpells(_.PlayerNdx());
+			SpellScreen.S.LoadSpells(_.PlayerNdx());
 
 			// Update Delgate
-			UpdateManager.updateDelegate += SpellsScreen.S.Loop;
+			UpdateManager.updateDelegate += SpellScreen.S.Loop;
 		} else {
 			// Knows no Spells, go back to Player Turn
-			BattleDialogue.S.DisplayText(Stats.S.playerName[_.PlayerNdx()] + " doesn't know any spells!");
+			BattleDialogue.S.DisplayText(PartyStats.S.playerName[_.PlayerNdx()] + " doesn't know any spells!");
 
 			// Switch Mode
 			_.battleMode = eBattleMode.playerTurn;
@@ -248,10 +248,10 @@ public class BattlePlayerActions : MonoBehaviour
 			PauseMessage.S.gameObject.SetActive(true);
 
 			// Open Item Screen
-			ScreenManager.S.ItemScreenOn();
+			ItemScreen.S.gameObject.SetActive(true);
 		} else {
 			// Has no Items, go back to Player Turn 
-			BattleDialogue.S.DisplayText(Stats.S.playerName[_.PlayerNdx()] + " has no items!");
+			BattleDialogue.S.DisplayText(PartyStats.S.playerName[_.PlayerNdx()] + " has no items!");
 
 			// Switch Mode
 			_.battleMode = eBattleMode.playerTurn;

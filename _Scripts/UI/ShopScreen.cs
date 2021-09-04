@@ -7,57 +7,98 @@ using System;
 public enum eShopScreenMode { pickItem, selectQuantity, itemPurchased, endOfTransaction };
 
 public class ShopScreen : MonoBehaviour {
-
 	[Header("Set in Inspector")]
-	// Item "Buttons"	
-	public List<Button> 	itemButtons;
-	public List<Text> 		itemButtonNameTexts;
+	// Inventory Buttons
+	public List<Button> 	inventoryButtons;
+	public List<Text> 		inventoryButtonsText;
 
 	[Header("Set Dynamically")]
 	// Singleton
 	private static ShopScreen _S;
 	public static ShopScreen S { get { return _S; } set { _S = value; } }
 
-	// Set in RPGEventTrigger
 	public List<Item> 		inventory = new List<Item>();
 
 	// For Input & Display Message
 	public eShopScreenMode  shopScreenMode = eShopScreenMode.pickItem;
 
+	public bool				buyOrSellMode;
+
+	// Allows parts of Loop() to be called once rather than repeatedly every frame.
 	public bool 			canUpdate;
 
 	void Awake() {
-		// Singleton
 		S = this;
 	}
 
 	void OnEnable () {
-		// Switch ScreenMode
+		// Set ScreenMode
 		shopScreenMode = eShopScreenMode.pickItem;
 
+		// Reimport inventory if an item was sold
+        if (!buyOrSellMode) {
+			ImportInventory(Inventory.S.GetItemList());
+		}
+
 		DeactivateUnusedItemSlots ();
-		AssignItemNames (); // In case other than final item was used: assigns proper Button Name
-		StartCoroutine("AssignItemEffect");
+		AssignItemNames ();
+		AssignItemEffect();
 
 		canUpdate = true;
 
-		try{
-			// Activate PlayerButtons
-			ScreenManager.S.playerButtonsGO.SetActive(true);
+		// Set Selected GameObject (Save Screen: Shop Slot 1)
+		Utilities.S.SetSelectedGO(inventoryButtons[0].gameObject);
 
+		// Freeze Player
+		RPG.S.paused = true;
+		Player.S.mode = eRPGMode.idle;
+
+		// Add Loop() to Update Delgate
+		UpdateManager.updateDelegate += Loop;
+
+		try {
+			// Activate PlayerButtons
+			PlayerButtons.S.gameObject.SetActive(true);
 			Utilities.S.ButtonsInteractable(PlayerButtons.S.buttonsCS, false);
+
+			// If Inventory Empty... 
+			if (Inventory.S.GetItemList().Count == 0) {
+				PauseMessage.S.DisplayText("You have nothing to sell, fool!");
+
+				// Deactivate Cursor
+				ScreenCursor.S.cursorGO.SetActive(false);
+			} else {
+				// Set Selected GameObject (Shop Screen: Item Slot 1)
+				Utilities.S.SetSelectedGO(inventoryButtons[0].gameObject);
+
+				// Activate Cursor
+				ScreenCursor.S.cursorGO.SetActive(true);
+			}
 
 			// Activate PauseScreen
 			PauseMessage.S.gameObject.SetActive (true);
-		
-			// Activate Cursor
-			ScreenCursor.S.cursorGO.SetActive (true);
 		}catch(NullReferenceException){}
 	}
 
 	void OnDisable () {
 		// Deactivate Cursor
 		ScreenCursor.S.cursorGO.SetActive (false);
+
+		// Unpause
+		RPG.S.paused = false;
+
+		// Deactivate PauseMessage and PlayerButtons
+		PauseMessage.S.gameObject.SetActive(false);
+		PlayerButtons.S.gameObject.SetActive(false);
+
+		// Remove Loop() from Update Delgate
+		UpdateManager.updateDelegate -= Loop;
+
+		// Set Camera to Player gameObject
+		CamManager.S.ChangeTarget(Player.S.gameObject, true);
+
+		// Broadcast event
+		EventManager.ShopScreenDeactivated();
 	}
 
 	public void Loop () {
@@ -67,8 +108,8 @@ public class ShopScreen : MonoBehaviour {
 		}
 
 		// Deactivate EquipScreen
-		if(Input.GetButtonDown ("SNES B Button")) { 
-			ScreenManager.S.ShopScreenOff(); 
+		if(Input.GetButtonDown ("SNES B Button")) {
+			gameObject.SetActive(false);
 		}
 
 		switch (shopScreenMode) {
@@ -93,90 +134,108 @@ public class ShopScreen : MonoBehaviour {
 	}
 
 	void DeactivateUnusedItemSlots () {
-		for (int i = 0; i <= itemButtons.Count - 1; i++) {
+		for (int i = 0; i < inventoryButtons.Count; i++) {
 			if (i < inventory.Count) {
-				itemButtons [i].gameObject.SetActive (true);
+				inventoryButtons [i].gameObject.SetActive (true);
 			} else {
-				itemButtons [i].gameObject.SetActive (false);
+				inventoryButtons [i].gameObject.SetActive (false);
 			} 
 		}
 	}
 
-	// This is a coroutine so PurchaseItem(inventory[0]) isn't called when Listener is Added
-	public IEnumerator AssignItemEffect(){
-
-		for (int i = 0; i <= itemButtons.Count - 1; i++) {
+	public void AssignItemEffect() {
+		for (int i = 0; i < inventoryButtons.Count; i++) {
 			int copy = i;
-			itemButtons [i].onClick.RemoveAllListeners ();
+			inventoryButtons[i].onClick.RemoveAllListeners();
 
-			itemButtons[copy].onClick.AddListener(delegate { PurchaseItem(inventory[copy]); });
-		}
-
-		yield return new WaitForEndOfFrame ();
-	}
-
-	void AssignItemNames () {
-		for (int i = 0; i <= inventory.Count - 1; i++) {
-			itemButtonNameTexts [i].text = inventory[i].name + " " + inventory[i].value + " Gold";
-		}
-	}
-
-	public void DisplayItemDescriptions () {
-		for (int i = 0; i <= inventory.Count - 1; i++) {
-			if (UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject == itemButtons [i].gameObject) {
-
-				PauseMessage.S.SetText(inventory[i].description);
-
-				// Cursor Position set to Selected Button
-				float tPosX = itemButtons [i].gameObject.GetComponent<RectTransform> ().anchoredPosition.x;
-				float tPosY = itemButtons [i].gameObject.GetComponent<RectTransform> ().anchoredPosition.y;
-
-				float tParentX = itemButtons [i].gameObject.transform.parent.GetComponent<RectTransform> ().anchoredPosition.x;
-				float tParentY = itemButtons [i].gameObject.transform.parent.GetComponent<RectTransform> ().anchoredPosition.y;
-
-				ScreenCursor.S.rectTrans.anchoredPosition = new Vector2 ((tPosX + tParentX + 160), (tPosY + tParentY));
+			if (buyOrSellMode) {
+				inventoryButtons[copy].onClick.AddListener(delegate { PurchaseItem(inventory[copy]); });
+			} else {
+				inventoryButtons[copy].onClick.AddListener(delegate { SellItem(inventory[copy]); });
 			}
 		}
 	}
 
-	void PurchaseItem (Item tItem) {
+	void AssignItemNames () {
+		for (int i = 0; i <= inventory.Count - 1; i++) {
+			inventoryButtonsText[i].text = inventory[i].name;
+		}
+	}
+
+	public void DisplayItemDescriptions () {
+		for (int i = 0; i < inventory.Count; i++) {
+			if (UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject == inventoryButtons[i].gameObject) {
+				PauseMessage.S.SetText(inventory[i].description);
+
+				// Cursor Position set to Selected Button
+				Utilities.S.PositionCursor(inventoryButtons[i].gameObject, 160);
+			}
+		}
+	}
+
+	void PurchaseItem (Item item) {
 		canUpdate = true;
 
 		// Switch ScreenMode 
 		shopScreenMode = eShopScreenMode.itemPurchased;
 
-		if (Stats.S.Gold >= tItem.value) {
+		if (PartyStats.S.Gold >= item.value) {
 			// Added to Player Inventory
-			Inventory.S.AddItemToInventory(tItem);
+			Inventory.S.AddItemToInventory(item);
 
 			// Dialogue
-			PauseMessage.S.DisplayText("Purchased!" + " For " + tItem.value + " gold!");
+			PauseMessage.S.DisplayText("Purchased!" + " For " + item.value + " gold!");
 
 			// Subtract item price from Player's Gold
-			Stats.S.Gold -= tItem.value;
+			PartyStats.S.Gold -= item.value;
 
 			// Update Gold 
-			PlayerButtons.S.goldValue.text = Stats.S.Gold.ToString();
+			PlayerButtons.S.goldValue.text = PartyStats.S.Gold.ToString();
 		} else {
 			// Dialogue
 			PauseMessage.S.DisplayText("Not enough money!");
 		}
 
 		// Remove Listeners
-		Utilities.S.RemoveListeners(itemButtons);
+		Utilities.S.RemoveListeners(inventoryButtons);
 
 		// Deactivate Cursor
 		ScreenCursor.S.cursorGO.SetActive (false);
 	}
 
-	// Called in ShopkeeperTrigger
-	public void ImportInventory(List<eItem> sellerInventory){
+    void SellItem(Item item) {
+		canUpdate = true;
+
+		// Switch ScreenMode 
+		shopScreenMode = eShopScreenMode.itemPurchased;
+
+		//Remove item from Inventory
+		Inventory.S.RemoveItemFromInventory(item);
+
+		// Dialogue
+		PauseMessage.S.DisplayText("Sold!" + " For " + item.value + " gold!" + " Cha - CHING!");
+
+		// Subtract item price from Player's Gold
+		PartyStats.S.Gold += item.value;
+
+		// Update Gold 
+		PlayerButtons.S.goldValue.text = PartyStats.S.Gold.ToString();
+
+		// Remove Listeners
+		Utilities.S.RemoveListeners(inventoryButtons);
+
+		// Deactivate Cursor
+		ScreenCursor.S.cursorGO.SetActive(false);
+    }
+
+	// Import inventory from shopkeeper or party 
+	public void ImportInventory(List<Item> inventoryToImport) {
 		// Clear Inventory
-		inventory.Clear ();
+		inventory.Clear();
 
 		// Import Inventory
-		for (int i = 0; i < sellerInventory.Count; i++) {
-			inventory.Add (ItemManager.S.GetItem(sellerInventory [i]));
+		for (int i = 0; i < inventoryToImport.Count; i++) {
+			inventory.Add(inventoryToImport[i]);
 		}
 	}
 }

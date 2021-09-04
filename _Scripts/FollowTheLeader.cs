@@ -26,6 +26,7 @@ public class FollowTheLeader : MonoBehaviour {
     }
 
     void FixedUpdate() {
+        // Method 1
         // record position of leader
         if (Player.S.mode != eRPGMode.idle) {
             record.Enqueue(leader.transform.localPosition);
@@ -36,6 +37,17 @@ public class FollowTheLeader : MonoBehaviour {
             transform.localPosition = record.Dequeue();
         }
 
+
+
+        //// Method 2
+        //// Vector3.MoveTowards
+        //if (Vector3.Distance(transform.position, Player.S.transform.position) >= steps) {
+        //    transform.position = Vector3.MoveTowards(transform.position, Player.S.transform.position, 4 * Time.deltaTime);
+        //}
+
+
+
+        //// Method 3
         //if (Vector2.Distance(transform.localPosition, leader.transform.localPosition) > stoppingDistance) {
         //    transform.localPosition = Vector2.MoveTowards(transform.localPosition, leader.transform.localPosition, speed * Time.fixedDeltaTime);
         //}

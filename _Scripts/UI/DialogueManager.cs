@@ -76,7 +76,7 @@ public class DialogueManager : MonoBehaviour {
 		StartCoroutine (DisplayTextCo (text, moveDown));
 
 		// Deactivate Overworld Player Stats
-		ScreenManager.S.playerButtonsGO.SetActive (false);
+		PlayerButtons.S.gameObject.SetActive(false);
 	}
 	IEnumerator DisplayTextCo(List<string> text, bool moveDown = false) {
 		UpdateManager.updateDelegate += ThisLoop;

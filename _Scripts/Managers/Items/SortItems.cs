@@ -13,17 +13,15 @@ public class SortItems : MonoBehaviour
     private static SortItems _S;
     public static SortItems S { get { return _S; } set { _S = value; } }
 
-    // Temp Items List (For Item/Equip Screens: Sort by ItemType: Weapon, Armor, Helmet, Other, Healing)
+    // Temporary Items List (For Item/Equip Screens: Sort by ItemType: Weapon, Armor, Helmet, Other, Healing)
     public List<Item> tItems;
 
     void Awake() {
-        // Singleton
         S = this;
     }
 
 	// Sort Items Alphabetically
 	public Dictionary<Item, int> SortByABC(Dictionary<Item, int> items) {
-
 		// Copy Item List
 		tItems = new List<Item>(items.Keys);
 

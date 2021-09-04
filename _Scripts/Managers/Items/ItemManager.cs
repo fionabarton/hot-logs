@@ -97,21 +97,21 @@ public class ItemManager : MonoBehaviour {
         items[17] = new Item("Bumble Bee", eItemType.ingredient, eItemStatEffect.nothing, 0, 15,
         "A tasty bumble bee. Eat me!!!" + "\n Value: 15 Gold", itemSprite[17]);
 
-        // Nothing Weapon
-        items[18] = new Item("Nothing", eItemType.nothing, eItemStatEffect.nothing, 0, 0,
-        "Press the action button to select a weapon to equip.", itemSprite[18]);
+        // Blah Weapon
+        items[18] = new Item("Blah Weapon", eItemType.weapon, eItemStatEffect.STR, 1, 5,
+        "Bad weapon." + "\n Value: 5 Gold", itemSprite[18], true);
 
-        // Nothing Armor
-        items[19] = new Item("Nothing", eItemType.nothing, eItemStatEffect.nothing, 0, 0,
-        "Press the action button to select a set of armor to equip.", itemSprite[19]);
+        // Blah Armor
+        items[19] = new Item("Blah Armor", eItemType.armor, eItemStatEffect.DEF, 1, 5,
+        "Crummy armor." + "\n Value: 5 Gold", itemSprite[19], true);
 
-        // Nothing Helmet
-        items[20] = new Item("Nothing", eItemType.nothing, eItemStatEffect.nothing, 0, 0,
-        "Press the action button to select a helmet to equip.", itemSprite[20]);
+        // Blah Helmet
+        items[20] = new Item("Blah Helmet", eItemType.helmet, eItemStatEffect.DEF, 1, 5,
+        "Terrible helmet." + "\n Value: 5 Gold", itemSprite[20], true);
 
-        // Nothing Other
-        items[21] = new Item("Nothing", eItemType.nothing, eItemStatEffect.nothing, 0, 0,
-        "Press the action button to select an item to equip.", itemSprite[21]);
+        // Blah Other
+        items[21] = new Item("Blah Other", eItemType.other, eItemStatEffect.AGI, 1, 5,
+        "Stupid other." + "\n Value: 5 Gold", itemSprite[21], true);
     }
 
     public Item GetItem(eItem itemNdx){

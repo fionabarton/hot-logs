@@ -365,12 +365,12 @@ public class BattleQTE : MonoBehaviour {
 			// Calculate bonus damage
 			switch (qteType) {
 				case 0: /////////// MASH ///////////
-					_.bonusDamage = (int)1.5f * Stats.S.LVL[_.PlayerNdx()];
+					_.bonusDamage = (int)1.5f * PartyStats.S.LVL[_.PlayerNdx()];
 					break;
 				case 1: /////////// HOLD ///////////
 				case 3: /////////// STOP ///////////
 					// Divide Bonus Damage into thirds
-					int bonus = (int)1.5f * Stats.S.LVL[_.PlayerNdx()] / 3;
+					int bonus = (int)1.5f * PartyStats.S.LVL[_.PlayerNdx()] / 3;
 
 					if (val >= 90 && val <= 100) {
 						if(bonus < 3) { 
@@ -394,11 +394,11 @@ public class BattleQTE : MonoBehaviour {
 					} 
 					break;
 				case 2: /////////// SEQUENCE ///////////	
-					_.bonusDamage = (int)1.5f * Stats.S.LVL[_.PlayerNdx()];
+					_.bonusDamage = (int)1.5f * PartyStats.S.LVL[_.PlayerNdx()];
 					break;
 				case 4: /////////// BLOCK ///////////	
 					// Calculate HP bonus 
-					int amountToHeal = (int)1.5f * Stats.S.LVL[blockerNdx];
+					int amountToHeal = (int)1.5f * PartyStats.S.LVL[blockerNdx];
 
 					// Add HP to Player that is blocking
 					RPG.S.AddPlayerHP(blockerNdx, amountToHeal);

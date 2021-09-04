@@ -105,6 +105,25 @@ public class Utilities : MonoBehaviour
 		}
 	}
 
+	// Set cursor position to currently selected button/gameObject
+	public void PositionCursor(GameObject selectedGO, int xAxisDistanceFromCenter, int yAxisDistanceFromCenter = 0, int directionToFace = 2) {
+		// Get position
+		float tPosX = selectedGO.GetComponent<RectTransform>().anchoredPosition.x;
+		float tPosY = selectedGO.GetComponent<RectTransform>().anchoredPosition.y;
+		float tParentX = selectedGO.transform.parent.GetComponent<RectTransform>().anchoredPosition.x;
+		float tParentY = selectedGO.transform.parent.GetComponent<RectTransform>().anchoredPosition.y;
+
+		// Set position
+		ScreenCursor.S.rectTrans.anchoredPosition = new Vector2(
+			(tPosX + tParentX + xAxisDistanceFromCenter), 
+			(tPosY + tParentY + yAxisDistanceFromCenter)
+		);
+
+		// Set rotation
+		int angle = (directionToFace + 1) * 90;
+		ScreenCursor.S.cursorGO.transform.localEulerAngles = new Vector3(0, 0, angle);
+	}
+
 	////////////////////////////////////////////////////////////////////////////////
 	// Returns true if this gameObject is closer to another gameObject
 	// horizontally than it is vertically
@@ -113,5 +132,19 @@ public class Utilities : MonoBehaviour
 		float tY = Mathf.Abs(gameObject1.transform.position.y - gameObject2.transform.position.y);
 
 		if (tX < tY) { return true; } else { return false; }
+	}
+
+	////////////////////////////////////////////////////////////////////////////////
+	// Set a single button's text color
+	public void SetTextColor(Button button, Color32 color) {
+		List<Button> buttons = new List<Button> { button };
+		SetTextColor(button, color);
+}
+
+	// Set multiple buttons' text color
+	public void SetTextColor(List<Button> buttons, Color32 color) {
+		for (int i = 0; i < buttons.Count; i++) {
+			buttons[i].GetComponentInChildren<Text>().color = color;
+		}
 	}
 }

@@ -16,7 +16,6 @@ public class BattleItems : MonoBehaviour {
 	private Battle _;
 
 	void Awake() {
-		// Singleton
 		S = this;
 	}
 
@@ -25,7 +24,7 @@ public class BattleItems : MonoBehaviour {
 	}
 
 	public void AddFunctionToButton(Action<int> functionToPass, string messageToDisplay) {
-		ScreenManager.S.ItemScreenOff();
+		ItemScreen.S.gameObject.SetActive(false);
 
 		// Deactivate PauseMessage
 		PauseMessage.S.gameObject.SetActive (false);
@@ -48,7 +47,7 @@ public class BattleItems : MonoBehaviour {
 	public void HPPotion(int ndx){
 		if (_.playerDead[ndx]) {
 			// Display Text
-			BattleDialogue.S.DisplayText(Stats.S.playerName[ndx] + " is dead...\n...and dead folk can't be healed, dummy!");
+			BattleDialogue.S.DisplayText(PartyStats.S.playerName[ndx] + " is dead...\n...and dead folk can't be healed, dummy!");
 
 			// Switch Mode
 			_.battleMode = eBattleMode.playerTurn;
@@ -59,10 +58,10 @@ public class BattleItems : MonoBehaviour {
 		}
 
 		// If HP is less than maxHP
-		if (Stats.S.HP [ndx] < Stats.S.maxHP [ndx]) {
+		if (PartyStats.S.HP [ndx] < PartyStats.S.maxHP [ndx]) {
 			// Get amount and max amount to heal
 			int amountToHeal = UnityEngine.Random.Range(30, 45);
-			int maxAmountToHeal = Stats.S.maxHP[ndx] - Stats.S.HP[ndx];
+			int maxAmountToHeal = PartyStats.S.maxHP[ndx] - PartyStats.S.HP[ndx];
 
 			// Add 30-45 HP to TARGET Player's HP
 			RPG.S.AddPlayerHP (ndx, amountToHeal);
@@ -72,12 +71,12 @@ public class BattleItems : MonoBehaviour {
 
 			// Display Text
 			if (amountToHeal >= maxAmountToHeal) {
-				BattleDialogue.S.DisplayText ("Used Health Potion!\nHealed " + Stats.S.playerName [ndx] + " back to Max HP!");
+				BattleDialogue.S.DisplayText ("Used Health Potion!\nHealed " + PartyStats.S.playerName [ndx] + " back to Max HP!");
 
 				// Prevents Floating Score being higher than the acutal amount healed
 				amountToHeal = maxAmountToHeal;
 			} else {
-				BattleDialogue.S.DisplayText ("Used Health Potion!\nHealed " + Stats.S.playerName [ndx] + " for " + amountToHeal + " HP!");
+				BattleDialogue.S.DisplayText ("Used Health Potion!\nHealed " + PartyStats.S.playerName [ndx] + " for " + amountToHeal + " HP!");
 			}
 
 			// Get and position Poof game object
@@ -89,7 +88,7 @@ public class BattleItems : MonoBehaviour {
 
 			_.NextTurn ();
 		} else {
-			BattleDialogue.S.DisplayText (Stats.S.playerName [ndx] + " already at full health...\n...no need to use this potion!");
+			BattleDialogue.S.DisplayText (PartyStats.S.playerName [ndx] + " already at full health...\n...no need to use this potion!");
 
 			// Switch Mode
 			_.battleMode = eBattleMode.playerTurn;
@@ -100,7 +99,7 @@ public class BattleItems : MonoBehaviour {
 	public void MPPotion(int ndx){
 		if (_.playerDead[ndx]) {
 			// Display Text
-			BattleDialogue.S.DisplayText(Stats.S.playerName[ndx] + " is dead...\n...and dead folk can't be healed, dummy!");
+			BattleDialogue.S.DisplayText(PartyStats.S.playerName[ndx] + " is dead...\n...and dead folk can't be healed, dummy!");
 
 			// Switch Mode
 			_.battleMode = eBattleMode.playerTurn;
@@ -111,10 +110,10 @@ public class BattleItems : MonoBehaviour {
 		}
 
 		// If MP is less than maxMP
-		if (Stats.S.MP [ndx] < Stats.S.maxMP [ndx]) {
+		if (PartyStats.S.MP [ndx] < PartyStats.S.maxMP [ndx]) {
 			// Get amount and max amount to heal
 			int amountToHeal = UnityEngine.Random.Range(30, 45);
-			int maxAmountToHeal = Stats.S.maxMP[ndx] - Stats.S.MP[ndx];
+			int maxAmountToHeal = PartyStats.S.maxMP[ndx] - PartyStats.S.MP[ndx];
 
 			// Add 30-45 MP to TARGET Player's MP
 			RPG.S.AddPlayerMP(ndx, amountToHeal);
@@ -124,12 +123,12 @@ public class BattleItems : MonoBehaviour {
 
 			// Display Text
 			if (amountToHeal >= maxAmountToHeal) {
-				BattleDialogue.S.DisplayText ("Used Magic Potion!\n" + Stats.S.playerName [ndx] + " back to Max MP!");
+				BattleDialogue.S.DisplayText ("Used Magic Potion!\n" + PartyStats.S.playerName [ndx] + " back to Max MP!");
 
 				// Prevents Floating Score being higher than the acutal amount healed
 				amountToHeal = maxAmountToHeal;
 			} else {
-				BattleDialogue.S.DisplayText ("Used Magic Potion!\n" + Stats.S.playerName [ndx] + " gained " + amountToHeal + " MP!");
+				BattleDialogue.S.DisplayText ("Used Magic Potion!\n" + PartyStats.S.playerName [ndx] + " gained " + amountToHeal + " MP!");
 			}
 
 			// Get and position Poof game object
@@ -141,7 +140,7 @@ public class BattleItems : MonoBehaviour {
 
 			_.NextTurn ();
 		} else {
-			BattleDialogue.S.DisplayText (Stats.S.playerName [ndx] + " already at full magic...\n...no need to use this potion!");
+			BattleDialogue.S.DisplayText (PartyStats.S.playerName [ndx] + " already at full magic...\n...no need to use this potion!");
 
 			// Switch Mode
 			_.battleMode = eBattleMode.playerTurn;
@@ -152,10 +151,13 @@ public class BattleItems : MonoBehaviour {
 	public void ClickedButtonHelper() {
 		BattlePlayerActions.S.ButtonsDisableAll();
 		Utilities.S.RemoveListeners(BattlePlayerActions.S.playerButtonCS);
+
+		// Set animation to idle
+		PlayerButtons.S.SetAnim("Idle");
 	}
 
 	public void CantUseItem() {
-		ScreenManager.S.ItemScreenOff();
+		ItemScreen.S.gameObject.SetActive(false);
 
 		// Deactivate PauseMessage
 		PauseMessage.S.gameObject.SetActive(false);

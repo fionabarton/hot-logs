@@ -102,7 +102,7 @@ public class BattleEnemyAI : MonoBehaviour {
 	// Check if Attack Damage = 0 (currently used in BattleEnemyActions.cs)
 	public void CheckIfAttackIsUseless() {
 		// Calculate Max Damage ((Lvl * 4) + Str - Def)
-		int maxAttackerDamage = (_.enemyStats[_.EnemyNdx()].LVL * 4) + _.enemyStats[_.EnemyNdx()].STR - Stats.S.DEF[0];
+		int maxAttackerDamage = (_.enemyStats[_.EnemyNdx()].LVL * 4) + _.enemyStats[_.EnemyNdx()].STR - PartyStats.S.DEF[0];
 
 		// Fight or Run
 		if (maxAttackerDamage <= 0) {

@@ -36,6 +36,16 @@ public class SaveScreen : MonoBehaviour {
 	}
 
 	void OnEnable () {
+		// Set Selected GameObject (Save Screen: Save Slot 1)
+		Utilities.S.SetSelectedGO(loadButton.gameObject);
+
+		// Freeze Player
+		RPG.S.paused = true;
+		Player.S.mode = eRPGMode.idle;
+
+		// Update Delgate
+		UpdateManager.updateDelegate += Loop;
+
 		// Switch ScreenMode /////////////////////
 		saveScreenMode = eSaveScreenMode.pickAction;
 
@@ -43,7 +53,11 @@ public class SaveScreen : MonoBehaviour {
 			RemoveListeners_UpdateGUI ();
 
 			PauseMessage.S.DisplayText("Would you like to\nLoad, Save, or Delete a file?");
-		}catch(NullReferenceException){}
+
+			// Buttons Interactable
+			Utilities.S.ButtonsInteractable(PauseScreen.S.buttonCS, false);
+		}
+		catch(NullReferenceException){}
 
 		ButtonsInteractable (false, false, false, true, true, true);
 
@@ -53,17 +67,33 @@ public class SaveScreen : MonoBehaviour {
 		deleteButton.onClick.AddListener (delegate{ClickedLoadSaveOrDelete (2);});
 
         if (Utilities.S) {
-			Utilities.S.SetSelectedGO(SaveScreen.S.loadButton.gameObject);
+			Utilities.S.SetSelectedGO(loadButton.gameObject);
 		}
 	}
 
-	public void Loop(){
-		PositionCursor ();
+    private void OnDisable() {
+		if (RPG.S.currentSceneName != "Battle") {
+			// Buttons Interactable
+			Utilities.S.ButtonsInteractable(PauseScreen.S.buttonCS, true);
+			// Set Selected Gameobject (Pause Screen: Save Button)
+			Utilities.S.SetSelectedGO(PauseScreen.S.buttonGO[3]);
+
+			PauseMessage.S.DisplayText ("Welcome to the Pause Screen!");
+
+			PauseScreen.S.canUpdate = true;
+		}
+
+		// Update Delegate
+		UpdateManager.updateDelegate -= Loop;
+	}
+
+    public void Loop(){
+		Utilities.S.PositionCursor(UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject, 100);
 
 		switch (saveScreenMode) {
 		case eSaveScreenMode.pickAction:
 			if (Input.GetButtonDown ("SNES B Button")) {
-				ScreenManager.S.SaveScreenOff ();
+				gameObject.SetActive(false);
 			}
 			break;
 		case eSaveScreenMode.pickFile:
@@ -80,19 +110,6 @@ public class SaveScreen : MonoBehaviour {
 				}
 			}
 			break;
-		}
-	}
-
-	public void PositionCursor () {
-		if (UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject != null) {
-			// Cursor Position set to Selected Button
-			float tPosX = UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject.GetComponent<RectTransform> ().anchoredPosition.x;
-			float tPosY = UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject.GetComponent<RectTransform> ().anchoredPosition.y;
-
-			float tParentX = UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject.transform.parent.GetComponent<RectTransform> ().anchoredPosition.x;
-			float tParentY = UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject.transform.parent.GetComponent<RectTransform> ().anchoredPosition.y;
-
-			ScreenCursor.S.rectTrans.anchoredPosition = new Vector2 ((tPosX + tParentX + 100), (tPosY + tParentY));
 		}
 	}
 
@@ -123,15 +140,15 @@ public class SaveScreen : MonoBehaviour {
 
 	void LoadFile(int ndx){
 		// Slot 1
-		if(PlayerPrefs.HasKey("Player1Exp")){ Stats.S.EXP[0] = PlayerPrefs.GetInt ("Player1Exp"); }
-		if(PlayerPrefs.HasKey("Player2Exp")){ Stats.S.EXP[1] = PlayerPrefs.GetInt ("Player2Exp"); }
+		if(PlayerPrefs.HasKey("Player1Exp")){ PartyStats.S.EXP[0] = PlayerPrefs.GetInt ("Player1Exp"); }
+		if(PlayerPrefs.HasKey("Player2Exp")){ PartyStats.S.EXP[1] = PlayerPrefs.GetInt ("Player2Exp"); }
 		if(PlayerPrefs.HasKey("Minutes")){ PauseScreen.S.minutes = PlayerPrefs.GetInt ("Minutes"); }
 		if (PlayerPrefs.HasKey("Seconds")) { PauseScreen.S.seconds = PlayerPrefs.GetInt("Seconds"); }
 
 		// Level Up
-		Stats.S.CheckForLevelUp ();
-		Stats.S.hasLevelledUp[0] = false;
-		Stats.S.hasLevelledUp[1] = false;
+		PartyStats.S.CheckForLevelUp ();
+		PartyStats.S.hasLevelledUp[0] = false;
+		PartyStats.S.hasLevelledUp[1] = false;
 
 		RemoveListeners_UpdateGUI ();
 
@@ -143,9 +160,9 @@ public class SaveScreen : MonoBehaviour {
 	}
 	void SaveFile(int ndx){
 		// Slot 1
-		PlayerPrefs.SetInt ("Player1Exp", Stats.S.EXP[0]);
-		PlayerPrefs.SetInt ("Player2Exp", Stats.S.EXP[1]);
-		PlayerPrefs.SetInt ("Gold", Stats.S.Gold);
+		PlayerPrefs.SetInt ("Player1Exp", PartyStats.S.EXP[0]);
+		PlayerPrefs.SetInt ("Player2Exp", PartyStats.S.EXP[1]);
+		PlayerPrefs.SetInt ("Gold", PartyStats.S.Gold);
 		PlayerPrefs.SetInt("Minutes", PauseScreen.S.minutes);
 		PlayerPrefs.SetInt("Seconds", PauseScreen.S.seconds);
 

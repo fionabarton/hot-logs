@@ -36,6 +36,9 @@ public class RPG : MonoBehaviour {
 	public string 				previousSceneName;
 	private string				previousPreviousSceneName;
 
+	// Cache previously selected gameObject (used in EquipScreen)
+	public GameObject			previousSelectedGameObject;
+
 	void Awake() {
 		// Singleton
 		S = this;
@@ -64,10 +67,32 @@ public class RPG : MonoBehaviour {
 
 		//LoadSettings ();
 		StartCoroutine("LoadSettingsCo");
+
+		// Add Loop() to UpdateManager
+		UpdateManager.updateDelegate += Loop;
 	}
 
-	// Load Level
-	public void LoadLevel (string levelToLoad){
+	public void Loop() {
+		// Pause Screen input
+		if (!ItemScreen.S.gameObject.activeInHierarchy &&
+			!SpellScreen.S.gameObject.activeInHierarchy &&
+			!EquipScreen.S.gameObject.activeInHierarchy &&
+			!ShopScreen.S.gameObject.activeInHierarchy &&
+			!SaveScreen.S.gameObject.activeInHierarchy) {
+			if (!paused && currentSceneName != "Battle") {
+				if (Input.GetButtonDown("Pause")) {
+					PauseScreen.S.Pause();
+				}
+			} else {
+				if (Input.GetButtonDown("Pause") || Input.GetButtonDown("SNES B Button")) {
+					PauseScreen.S.UnPause();
+				}
+			}
+		}
+	}
+
+    // Load Level
+    public void LoadLevel (string levelToLoad){
 		previousPreviousSceneName = previousSceneName;
 
 		currentScene = SceneManager.GetActiveScene();
@@ -101,21 +126,20 @@ public class RPG : MonoBehaviour {
 		DialogueManager.S.DeactivateTextBox();
 
 		// Deactivate Pause Screen
-		ScreenManager.S.UnPause();
-        // Deactivate Item Screen
-        ScreenManager.S.ItemScreenOff();
+		PauseScreen.S.UnPause();
+		// Deactivate Item Screen
+		ItemScreen.S.gameObject.SetActive(false);
 		// Deactivate Spells Screen
-		ScreenManager.S.SpellsScreenOff();
+		SpellScreen.S.gameObject.SetActive(false);
 		// Deactivate Equip Screen
-		//ScreenManager.S.EquipScreenOff();
 		EquipScreen.S.gameObject.SetActive(false);
 		// Deactivate Save Screen
-		ScreenManager.S.SaveScreenOff();
+		SaveScreen.S.gameObject.SetActive(false);
 		// Deactivate Shop Screen
-		ScreenManager.S.ShopScreenOff();
+		ShopScreen.S.gameObject.SetActive(false);
 
 		// Deactivate PlayerButtons
-		ScreenManager.S.playerButtonsGO.SetActive(false);
+		PlayerButtons.S.gameObject.SetActive(false);
 
 		// Deactivate Sub Menu 
 		SubMenu.S.gameObject.SetActive(false);
@@ -313,17 +337,17 @@ public class RPG : MonoBehaviour {
 
 	// ************ Add/Subtract PLAYER HP ************ \\
 	public void AddSubtractPlayerHP(int ndx, bool addOrSubtract, int amount){
-		if (addOrSubtract) { Stats.S.HP[ndx] += amount; } else { Stats.S.HP[ndx] -= amount; }
+		if (addOrSubtract) { PartyStats.S.HP[ndx] += amount; } else { PartyStats.S.HP[ndx] -= amount; }
 
 		// Prevent going above Max HP & below Min HP
-		if (Stats.S.HP[ndx] > Stats.S.maxHP[ndx]) {
-			Stats.S.HP[ndx] = Stats.S.maxHP[ndx];
-		} else if (Stats.S.HP[ndx] <= 0){
-			Stats.S.HP[ndx] = 0;
+		if (PartyStats.S.HP[ndx] > PartyStats.S.maxHP[ndx]) {
+			PartyStats.S.HP[ndx] = PartyStats.S.maxHP[ndx];
+		} else if (PartyStats.S.HP[ndx] <= 0){
+			PartyStats.S.HP[ndx] = 0;
 		}
 
 		// Update Health Bars
-		ProgressBars.S.playerHealthBarsCS[ndx].UpdateBar(Stats.S.HP[ndx], Stats.S.maxHP[ndx]);
+		ProgressBars.S.playerHealthBarsCS[ndx].UpdateBar(PartyStats.S.HP[ndx], PartyStats.S.maxHP[ndx]);
 	}
 
 	public void AddPlayerHP(int ndx, int amount) {
@@ -335,17 +359,17 @@ public class RPG : MonoBehaviour {
 
 	// ************ Add/Subtract PLAYER MP ************ \\
 	public void AddSubtractPlayerMP(int ndx, bool addOrSubtract, int amount) {
-		if (addOrSubtract) { Stats.S.MP[ndx] += amount; } else { Stats.S.MP[ndx] -= amount; }
+		if (addOrSubtract) { PartyStats.S.MP[ndx] += amount; } else { PartyStats.S.MP[ndx] -= amount; }
 
 		// Prevent going above Max MP & below Min MP
-		if (Stats.S.MP[ndx] > Stats.S.maxMP[ndx]) {
-			Stats.S.MP[ndx] = Stats.S.maxMP[ndx];
-		} else if (Stats.S.MP[ndx] <= 0) {
-			Stats.S.MP[ndx] = 0;
+		if (PartyStats.S.MP[ndx] > PartyStats.S.maxMP[ndx]) {
+			PartyStats.S.MP[ndx] = PartyStats.S.maxMP[ndx];
+		} else if (PartyStats.S.MP[ndx] <= 0) {
+			PartyStats.S.MP[ndx] = 0;
 		}
 		
 		// Update Magic Bars
-		ProgressBars.S.playerMagicBarsCS[ndx].UpdateBar(Stats.S.MP[ndx], Stats.S.maxMP[ndx]);
+		ProgressBars.S.playerMagicBarsCS[ndx].UpdateBar(PartyStats.S.MP[ndx], PartyStats.S.maxMP[ndx]);
 	}
 
 	public void AddPlayerMP(int ndx, int amount) {

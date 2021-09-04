@@ -89,7 +89,7 @@ public class ActivateOnButtonPress : MonoBehaviour {
         }
 	}
 
-    void ResetTrigger() {
+    public void ResetTrigger() {
         firstButtonPressed = false;
 
         // Activate Interactable Trigger
@@ -106,7 +106,7 @@ public class ActivateOnButtonPress : MonoBehaviour {
         }
     }
 
-    // Function implemented in child class that's called when button's pressed
+    // Function implemented in child class that's called OnButtonPress
     protected virtual void Action() {
 
     }

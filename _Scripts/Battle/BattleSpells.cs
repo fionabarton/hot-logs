@@ -53,7 +53,7 @@ public class BattleSpells : MonoBehaviour {
 	public void HealSpell(int ndx){
         if (_.playerDead[ndx]) {
 			// Display Text
-			BattleDialogue.S.DisplayText(Stats.S.playerName[ndx] + " is dead...\n...and dead folk can't be healed, dummy!");
+			BattleDialogue.S.DisplayText(PartyStats.S.playerName[ndx] + " is dead...\n...and dead folk can't be healed, dummy!");
 
 			// Switch Mode
 			_.battleMode = eBattleMode.playerTurn;
@@ -63,27 +63,27 @@ public class BattleSpells : MonoBehaviour {
 			return;
 		}
 
-		if (Stats.S.HP [ndx] < Stats.S.maxHP [ndx]) {
+		if (PartyStats.S.HP [ndx] < PartyStats.S.maxHP [ndx]) {
 			// Subtract Spell cost from Player's MP
 			RPG.S.SubtractPlayerMP (_.PlayerNdx(), 3);
 
 			// Get amount and max amount to heal
 			int amountToHeal = UnityEngine.Random.Range(30, 45);
-			int maxAmountToHeal = Stats.S.maxHP[ndx] - Stats.S.HP[ndx];
+			int maxAmountToHeal = PartyStats.S.maxHP[ndx] - PartyStats.S.HP[ndx];
 			// Add Player's WIS to Heal Amount
-			amountToHeal += Stats.S.WIS [ndx];
+			amountToHeal += PartyStats.S.WIS [ndx];
 
 			// Add 30-45 MP to TARGET Player's MP
 			RPG.S.AddPlayerHP (ndx, amountToHeal);
 
 			// Display Text
 			if (amountToHeal >= maxAmountToHeal) {
-				BattleDialogue.S.DisplayText ("Used Heal Spell!\nHealed " + Stats.S.playerName [ndx] + " back to Max HP!");
+				BattleDialogue.S.DisplayText ("Used Heal Spell!\nHealed " + PartyStats.S.playerName [ndx] + " back to Max HP!");
 
 				// Prevents Floating Score being higher than the acutal amount healed
 				amountToHeal = maxAmountToHeal;
 			} else {
-				BattleDialogue.S.DisplayText ("Used Heal Spell!\nHealed " + Stats.S.playerName [ndx] + " for " + amountToHeal + " HP!");
+				BattleDialogue.S.DisplayText ("Used Heal Spell!\nHealed " + PartyStats.S.playerName [ndx] + " for " + amountToHeal + " HP!");
 			}
 
 			// Get and position Poof game object
@@ -96,7 +96,7 @@ public class BattleSpells : MonoBehaviour {
 			_.NextTurn ();
 		} else {
 			// Display Text
-			BattleDialogue.S.DisplayText (Stats.S.playerName [ndx] + " already at full health...\n...no need to cast this spell!");
+			BattleDialogue.S.DisplayText (PartyStats.S.playerName [ndx] + " already at full health...\n...no need to cast this spell!");
 
 			// Switch Mode
 			_.battleMode = eBattleMode.playerTurn;
@@ -131,18 +131,18 @@ public class BattleSpells : MonoBehaviour {
 		// Miss/Dodge
 		// 5% chance to Miss/Dodge...
 		// ...but 25% chance if Defender WIS is more than Attacker's 
-		if (Random.value <= 0.05f || (_.enemyStats [ndx].WIS > Stats.S.WIS [_.PlayerNdx()] && Random.value < 0.25f)) {
+		if (Random.value <= 0.05f || (_.enemyStats [ndx].WIS > PartyStats.S.WIS [_.PlayerNdx()] && Random.value < 0.25f)) {
 			if (Random.value <= 0.5f) {
-				BattleDialogue.S.DisplayText (Stats.S.playerName [_.PlayerNdx()] + " attempted the spell... but missed " + _.enemyStats [ndx].name + " completely!");
+				BattleDialogue.S.DisplayText (PartyStats.S.playerName [_.PlayerNdx()] + " attempted the spell... but missed " + _.enemyStats [ndx].name + " completely!");
 			} else {
-				BattleDialogue.S.DisplayText (Stats.S.playerName [_.PlayerNdx()] + " cast the spell, but " + _.enemyStats [ndx].name + " deftly dodged out of the way!");
+				BattleDialogue.S.DisplayText (PartyStats.S.playerName [_.PlayerNdx()] + " cast the spell, but " + _.enemyStats [ndx].name + " deftly dodged out of the way!");
 			}
 			_.NextTurn ();
 		} else {
 			// Subtract 8-12 HP
 			_.attackDamage = Random.Range (8, 12);
 			// Add Player's WIS to Damage
-			_.attackDamage += Stats.S.WIS [_.PlayerNdx()];
+			_.attackDamage += PartyStats.S.WIS [_.PlayerNdx()];
 			// Subtract Enemy's DEF from Damage
 			_.attackDamage -= _.enemyStats [ndx].DEF;
 
@@ -168,7 +168,7 @@ public class BattleSpells : MonoBehaviour {
 
 			if (_.enemyStats [ndx].HP < 1) {
 				// Deactivate Spells Screen then Enemy Death
-				SpellsScreen.S.ScreenOffEnemyDeath (ndx);
+				SpellScreen.S.ScreenOffEnemyDeath (ndx);
 			} else {
 				// Deactivate Spells Screen then Enemy Turn
 				BattleDialogue.S.DisplayText ("Used Fire Spell!\nHit " + _.enemyStats [ndx].name + " for " + _.attackDamage + " HP!");
@@ -195,11 +195,11 @@ public class BattleSpells : MonoBehaviour {
 		// Miss/Dodge
 		// 5% chance to Miss/Dodge...
 		// ...but 25% chance if Defender WIS is more than Attacker's 
-		if (Random.value <= 0.05f || (_.enemyStats [0].WIS > Stats.S.WIS [_.PlayerNdx()] && Random.value < 0.25f)) {
+		if (Random.value <= 0.05f || (_.enemyStats [0].WIS > PartyStats.S.WIS [_.PlayerNdx()] && Random.value < 0.25f)) {
 			if (Random.value <= 0.5f) {
-				BattleDialogue.S.DisplayText (Stats.S.playerName [_.PlayerNdx()] + " attempted the spell... but missed those goons completely!");
+				BattleDialogue.S.DisplayText (PartyStats.S.playerName [_.PlayerNdx()] + " attempted the spell... but missed those goons completely!");
 			} else {
-				BattleDialogue.S.DisplayText (Stats.S.playerName [_.PlayerNdx()] + " cast the spell, but these dummies you're fighting deftly dodged out of the way!");
+				BattleDialogue.S.DisplayText (PartyStats.S.playerName [_.PlayerNdx()] + " cast the spell, but these dummies you're fighting deftly dodged out of the way!");
 			}
 			_.NextTurn ();
 		} else {
@@ -209,7 +209,7 @@ public class BattleSpells : MonoBehaviour {
 			// Subtract 12-20 HP
 			_.attackDamage = Random.Range (12, 20);
 			// Add Player's WIS to Damage
-			_.attackDamage += Stats.S.WIS [_.PlayerNdx()];
+			_.attackDamage += PartyStats.S.WIS [_.PlayerNdx()];
 
 			// Cache AttackDamage. When more than one Defender, prevents splitting it in 1/2 more than once.
 			int tAttackDamage = _.attackDamage;
