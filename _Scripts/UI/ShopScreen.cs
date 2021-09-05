@@ -80,7 +80,7 @@ public class ShopScreen : MonoBehaviour {
 		}catch(NullReferenceException){}
 	}
 
-	void OnDisable () {
+	public void Deactivate() {
 		// Deactivate Cursor
 		ScreenCursor.S.cursorGO.SetActive (false);
 
@@ -99,6 +99,9 @@ public class ShopScreen : MonoBehaviour {
 
 		// Broadcast event
 		EventManager.ShopScreenDeactivated();
+
+		// Deactivate this gameObject
+		gameObject.SetActive(false);
 	}
 
 	public void Loop () {
@@ -109,7 +112,7 @@ public class ShopScreen : MonoBehaviour {
 
 		// Deactivate EquipScreen
 		if(Input.GetButtonDown ("SNES B Button")) {
-			gameObject.SetActive(false);
+			Deactivate();
 		}
 
 		switch (shopScreenMode) {
@@ -168,7 +171,13 @@ public class ShopScreen : MonoBehaviour {
 				PauseMessage.S.SetText(inventory[i].description);
 
 				// Cursor Position set to Selected Button
-				Utilities.S.PositionCursor(inventoryButtons[i].gameObject, 160);
+				Utilities.S.PositionCursor(inventoryButtons[i].gameObject, -160, 0, 0);
+
+				// Set selected button text color	
+				inventoryButtons[i].gameObject.GetComponentInChildren<Text>().color = new Color32(205, 208, 0, 255);
+			} else {
+				// Set non-selected button text color
+				inventoryButtons[i].gameObject.GetComponentInChildren<Text>().color = new Color32(255, 255, 255, 255);
 			}
 		}
 	}

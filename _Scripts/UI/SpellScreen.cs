@@ -76,16 +76,8 @@ public class SpellScreen : MonoBehaviour {
 		}catch(NullReferenceException){}
 	}
 
-	void OnDisable () {
-		if (!RPG.S.paused) {
-			// Deactivate Cursor
-			ScreenCursor.S.cursorGO.SetActive (false);
-		} else {
-			// Activate Cursor
-			ScreenCursor.S.cursorGO.SetActive (true);
-		}
-
-		// Set Turn Cursor sorting layer ABOVE UI
+	public void Deactivate () {
+		// Set Battle Turn Cursor sorting layer ABOVE UI
 		BattleUI.S.turnCursorSRend.sortingLayerName = "Above UI";
 
 		// Remove Listeners
@@ -97,7 +89,12 @@ public class SpellScreen : MonoBehaviour {
 			// Set Selected Gameobject (Pause Screen: Spells Button)
 			Utilities.S.SetSelectedGO(PauseScreen.S.buttonGO[2]);
 
+			PauseMessage.S.DisplayText("Welcome to the Pause Screen!");
+
 			PauseScreen.S.canUpdate = true;
+
+			// Activate Cursor
+			ScreenCursor.S.cursorGO.SetActive(true);
 		} else {
 			// If Player didn't use a Spell, go back to Player Turn
 			if (spellScreenMode != eSpellScreenMode.pickSpell) {
@@ -105,6 +102,9 @@ public class SpellScreen : MonoBehaviour {
 					Battle.S.PlayerTurn();
 				}
 			}
+
+			// Deactivate Cursor
+			ScreenCursor.S.cursorGO.SetActive(false);
 		}
 
 		// Deactivate PlayerButtons
@@ -112,6 +112,9 @@ public class SpellScreen : MonoBehaviour {
 
 		// Remove Loop() from Update Delgate
 		UpdateManager.updateDelegate -= Loop;
+
+		// Deactivate this gameObject
+		gameObject.SetActive(false);
 	}
 
 	public void Loop () {
@@ -124,7 +127,7 @@ public class SpellScreen : MonoBehaviour {
 		if (RPG.S.currentSceneName != "Battle") {
 			if (spellScreenMode == eSpellScreenMode.pickWhichSpellsToDisplay) {
 				if (Input.GetButtonDown ("SNES B Button")) {
-					gameObject.SetActive(false);
+					Deactivate();
 				}
 			}
 		} else {
@@ -192,6 +195,9 @@ public class SpellScreen : MonoBehaviour {
 		case eSpellScreenMode.usedSpell:
 			if (PauseMessage.S.dialogueFinished) {
 				if (Input.GetButtonDown ("SNES A Button")) {
+					// Set animation to idle
+					PlayerButtons.S.SetAnim("Idle");
+
 					LoadSpells(playerNdx);
 				}
 			}
@@ -269,7 +275,13 @@ public class SpellScreen : MonoBehaviour {
 				}
 
 				// Cursor Position set to Selected Button
-				Utilities.S.PositionCursor(spellsButtons[i].gameObject, 160);
+				Utilities.S.PositionCursor(spellsButtons[i].gameObject, -160, 0, 0);
+
+				// Set selected button text color	
+				spellsButtons[i].gameObject.GetComponentInChildren<Text>().color = new Color32(205, 208, 0, 255);
+			} else {
+				// Set non-selected button text color
+				spellsButtons[i].gameObject.GetComponentInChildren<Text>().color = new Color32(255, 255, 255, 255);
 			}
 		}
 	}
@@ -359,6 +371,9 @@ public class SpellScreen : MonoBehaviour {
 	}
 	public void HealSpell(int ndx){ // Overworld
 		if (PartyStats.S.HP [ndx] < PartyStats.S.maxHP [ndx]) {
+			// Set animation to success
+			PlayerButtons.S.anim[ndx].CrossFade("Success", 0);
+
 			// Subtract Spell cost from CASTING Player's MP 
 			RPG.S.SubtractPlayerMP (playerNdx, 3);
 
@@ -395,9 +410,6 @@ public class SpellScreen : MonoBehaviour {
 
 		// Switch ScreenMode 
 		spellScreenMode = eSpellScreenMode.usedSpell;
-
-		// Set animation to idle
-		PlayerButtons.S.SetAnim("Idle");
 	}
 
 	// Battle ONLY Spells 
@@ -475,14 +487,15 @@ public class SpellScreen : MonoBehaviour {
 	public void ScreenOffPlayerTurn (){
 		PauseMessage.S.gameObject.SetActive (false);
 
-		gameObject.SetActive(false);
+		Deactivate();
+
 		if (Battle.S.battleMode == eBattleMode.itemOrSpellMenu) {
 			Battle.S.PlayerTurn();
 		}
 	}
 
 	public void ScreenOffEnemyDeath (int enemyNdx){
-		gameObject.SetActive(false);
+		Deactivate();
 
 		BattleEnd.S.EnemyDeath (enemyNdx); 
 	}

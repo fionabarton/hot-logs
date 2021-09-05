@@ -31,7 +31,6 @@ public class SaveScreen : MonoBehaviour {
 	public eSaveScreenMode  saveScreenMode = eSaveScreenMode.pickAction;
 
 	void Awake() {
-		// Singleton
 		S = this;
 	}
 
@@ -71,7 +70,7 @@ public class SaveScreen : MonoBehaviour {
 		}
 	}
 
-    private void OnDisable() {
+	public void Deactivate() {
 		if (RPG.S.currentSceneName != "Battle") {
 			// Buttons Interactable
 			Utilities.S.ButtonsInteractable(PauseScreen.S.buttonCS, true);
@@ -85,6 +84,9 @@ public class SaveScreen : MonoBehaviour {
 
 		// Update Delegate
 		UpdateManager.updateDelegate -= Loop;
+
+		// Deactivate this gameObject
+		gameObject.SetActive(false);
 	}
 
     public void Loop(){
@@ -93,7 +95,7 @@ public class SaveScreen : MonoBehaviour {
 		switch (saveScreenMode) {
 		case eSaveScreenMode.pickAction:
 			if (Input.GetButtonDown ("SNES B Button")) {
-				gameObject.SetActive(false);
+				Deactivate();
 			}
 			break;
 		case eSaveScreenMode.pickFile:

@@ -75,7 +75,7 @@ public class ItemScreen : MonoBehaviour {
 		sortButton.onClick.AddListener (delegate { Inventory.S.items = SortItems.S.SortByABC (Inventory.S.items);});
 	}
 
-	void OnDisable () {
+	public void Deactivate () {
 		// Deactivate Cursor if in Battle or Sell Mode
 		if (!RPG.S.paused) {
 			ScreenCursor.S.cursorGO.SetActive(false);
@@ -110,6 +110,9 @@ public class ItemScreen : MonoBehaviour {
 
 		// Remove Loop() from Update Delgate
 		UpdateManager.updateDelegate -= Loop;
+
+		// Deactivate this gameObject
+		gameObject.SetActive(false);
 	}
 
 	public void Loop () {
@@ -122,7 +125,7 @@ public class ItemScreen : MonoBehaviour {
 		if (RPG.S.currentSceneName != "Battle") { 
 			if (itemScreenMode == eItemScreenMode.pickItem) {
 				if (Input.GetButtonDown ("SNES B Button")) {
-					gameObject.SetActive(false);
+					Deactivate();
 				}
 			}
 		} else {
@@ -167,7 +170,10 @@ public class ItemScreen : MonoBehaviour {
 			case eItemScreenMode.usedItem:
 				if (PauseMessage.S.dialogueFinished) {
 					if (Input.GetButtonDown("SNES A Button")) {
-						OnEnable();
+                        // Set animation to idle
+                        PlayerButtons.S.SetAnim("Idle");
+
+                        OnEnable();
 					}
 				}
 				break;
@@ -200,18 +206,24 @@ public class ItemScreen : MonoBehaviour {
 	}
 
 	public void AssignItemNames () {
-		for (int i = 0; i <= Inventory.S.GetItemList().Count - 1; i++) {
+		for (int i = 0; i < Inventory.S.GetItemList().Count; i++) {
 			itemButtonsText[i].text = Inventory.S.GetItemList()[i].name + "(" + Inventory.S.GetItemCount (Inventory.S.GetItemList()[i]) + ")";
 		}
 	}
 
 	public void DisplayItemDescriptions () {
-		for (int i = 0; i <= Inventory.S.GetItemList().Count - 1; i++) {
+		for (int i = 0; i < Inventory.S.GetItemList().Count; i++) {
 			if (UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject == itemButtons [i].gameObject) {
 				PauseMessage.S.SetText (Inventory.S.GetItemList()[i].description);
 
 				// Set Cursor Position set to Selected Button
-				Utilities.S.PositionCursor(itemButtons[i].gameObject, 160);
+				Utilities.S.PositionCursor(itemButtons[i].gameObject, -170, 0, 0);
+
+				// Set selected button text color	
+				itemButtons[i].gameObject.GetComponentInChildren<Text>().color = new Color32(205, 208, 0, 255);
+			} else {
+				// Set non-selected button text color
+				itemButtons[i].gameObject.GetComponentInChildren<Text>().color = new Color32(255, 255, 255, 255);
 			}
 		}
 	}

@@ -65,7 +65,7 @@ public class EquipScreen : MonoBehaviour {
 		PlayerButtons.S.anim[0].CrossFade("Walk", 0);
 	}
 
-	void OnDisable () {
+	public void Deactivate() {
 		// Activate Cursor
 		ScreenCursor.S.cursorGO.SetActive(true);
 
@@ -87,6 +87,9 @@ public class EquipScreen : MonoBehaviour {
 		
 		// Remove Loop() from Update Delgate
 		UpdateManager.updateDelegate -= Loop;
+
+		// Deactivate this gameObject
+		gameObject.SetActive(false);
 	}
 
 	public void Loop(){

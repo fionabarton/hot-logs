@@ -32,6 +32,9 @@ public class BattleSpells : MonoBehaviour {
 
 	// Heal
 	public void ClickedHealSpellButton(){
+		// Deactivate Cursor
+		ScreenCursor.S.cursorGO.SetActive(false);
+
 		// Deactivate PauseMessage
 		PauseMessage.S.gameObject.SetActive (false);
 
@@ -106,6 +109,9 @@ public class BattleSpells : MonoBehaviour {
 
 	// Fire BALL
 	public void ClickedFireSpellButton () {
+		// Deactivate Cursor
+		ScreenCursor.S.cursorGO.SetActive(false);
+
 		// Deactivate PauseMessage
 		PauseMessage.S.gameObject.SetActive (false);
 
@@ -183,6 +189,9 @@ public class BattleSpells : MonoBehaviour {
 
 	// Fire BLAST
 	public void FireblastSpell () {
+		// Deactivate Cursor
+		ScreenCursor.S.cursorGO.SetActive(false);
+
 		// Deactivate PauseMessage
 		PauseMessage.S.gameObject.SetActive (false);
 

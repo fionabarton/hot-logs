@@ -64,12 +64,13 @@ public class PlayerButtons : MonoBehaviour {
 
 	public void SetAnim(string animName) {
 		for(int i = 0; i < buttonsCS.Count; i++) {
-            if (anim[i]) {
-				if (UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject == buttonsCS[i].gameObject) {
-					anim[i].CrossFade(animName, 0);
-				} else {
+			if (UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject == buttonsCS[i].gameObject) {
+				anim[i].CrossFade(animName, 0);
+			} else {
+                try {
 					anim[i].CrossFade("Idle", 0);
 				}
+				catch (NullReferenceException) { }
 			}
 		}
     }

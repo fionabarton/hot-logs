@@ -16,7 +16,7 @@ public class Battle : MonoBehaviour {
 	public List<GameObject>		playerSprite;
 	public List<SpriteRenderer> enemySprite;
 
-	// Player/Enemy Fefense Shields
+	// Player/Enemy Defense Shields
 	public List<GameObject>	playerShields;
 	public List<GameObject>	enemyShields;
 
@@ -96,8 +96,18 @@ public class Battle : MonoBehaviour {
 			if (BattleDialogue.S.dialogueNdx <= 0) {
 				switch (battleMode) {
 					case eBattleMode.actionButtons:
+                        // Set buttons' text color
+                        for (int i = 0; i < BattlePlayerActions.S.buttonsCS.Count; i++) {
+                            if (UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject == BattlePlayerActions.S.buttonsGO[i]) {
+								// Set selected button text color	
+								BattlePlayerActions.S.buttonsGO[i].GetComponentInChildren<Text>().color = new Color32(205, 208, 0, 255);
+                            } else {
+								// Set non-selected button text color
+								BattlePlayerActions.S.buttonsGO[i].GetComponentInChildren<Text>().color = new Color32(39, 201, 255, 255);
+                            }
+                        }
 
-						break;
+                        break;
 					case eBattleMode.canGoBackToFightButton:
 						if (Input.GetButtonDown("SNES B Button")) {
 							BattlePlayerActions.S.GoBackToFightButton();
@@ -292,6 +302,9 @@ public class Battle : MonoBehaviour {
 		// Clear Dropped Items
 		droppedItems.Clear();
 
+		// Reset BattlePlayerActions.S.buttonsCS text color
+		Utilities.S.SetTextColor(BattlePlayerActions.S.buttonsCS, new Color32(39, 201, 255, 255));
+
 		// Switch Mode
 		battleMode = eBattleMode.actionButtons;
 
@@ -359,7 +372,7 @@ public class Battle : MonoBehaviour {
 		BattlePlayerActions.S.ButtonsInitialInteractable();
 
 		// Set Selected Button
-		Utilities.S.SetSelectedGO(BattlePlayerActions.S.fightGO);
+		Utilities.S.SetSelectedGO(BattlePlayerActions.S.buttonsGO[0]);
 
 		// If Defended previous turn, remove from Defenders list
 		RemoveDefender(PartyStats.S.playerName[PlayerNdx()]);
@@ -376,6 +389,9 @@ public class Battle : MonoBehaviour {
 
     // Enemy is about to act!
     public void EnemyTurn () { // if (Input.GetButtonDown ("Submit"))
+		// Reset BattlePlayerActions.S.buttonsCS text color
+		Utilities.S.SetTextColor(BattlePlayerActions.S.buttonsCS, new Color32(39, 201, 255, 255));
+
 		// Deactivate Text, was just displaying whether QTE Attack was successful or failed
 		BattleDialogue.S.displayMessageTextTop.gameObject.transform.parent.gameObject.SetActive(false);
 

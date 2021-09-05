@@ -128,15 +128,15 @@ public class RPG : MonoBehaviour {
 		// Deactivate Pause Screen
 		PauseScreen.S.UnPause();
 		// Deactivate Item Screen
-		ItemScreen.S.gameObject.SetActive(false);
+		ItemScreen.S.Deactivate();
 		// Deactivate Spells Screen
-		SpellScreen.S.gameObject.SetActive(false);
+		SpellScreen.S.Deactivate();
 		// Deactivate Equip Screen
-		EquipScreen.S.gameObject.SetActive(false);
+		EquipScreen.S.Deactivate();
 		// Deactivate Save Screen
-		SaveScreen.S.gameObject.SetActive(false);
+		SaveScreen.S.Deactivate();
 		// Deactivate Shop Screen
-		ShopScreen.S.gameObject.SetActive(false);
+		ShopScreen.S.Deactivate();
 
 		// Deactivate PlayerButtons
 		PlayerButtons.S.gameObject.SetActive(false);
@@ -286,6 +286,10 @@ public class RPG : MonoBehaviour {
 				if (currentSceneName == "Motel_1" || currentSceneName == "Shop_1"){
 					// Freeze Camera
 					CamManager.S.camMode = eCamMode.freezeCam;
+
+                } else {
+					// Set camera to Player position
+					Camera.main.transform.position = Player.S.gameObject.transform.position;
 				}
 			break;
 		}

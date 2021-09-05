@@ -88,9 +88,15 @@ public class PauseScreen : MonoBehaviour {
 
 			if (canUpdate) {
 				for (int i = 0; i < buttonGO.Count; i++) {
-					if (UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject == buttonGO [i]) {
+					if (UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject == buttonGO[i]) {
 						// Set Cursor Position to Selected Button
 						Utilities.S.PositionCursor(buttonGO[i], 160);
+
+						// Set selected button text color	
+						buttonGO[i].gameObject.GetComponentInChildren<Text>().color = new Color32(205, 208, 0, 255);
+					} else {
+						// Set selected button text color	
+						buttonGO[i].gameObject.GetComponentInChildren<Text>().color = new Color32(255, 255, 255, 255);
 					}
 				}
                 canUpdate = false;
@@ -162,8 +168,6 @@ public class PauseScreen : MonoBehaviour {
 		// Overworld Player Stats
 		Player.S.playerUITimer = Time.time + 1.5f;
 
-		gameObject.SetActive(false);
-
 		// Unpause
 		RPG.S.paused = false;
 
@@ -181,6 +185,8 @@ public class PauseScreen : MonoBehaviour {
 
 		// Update Delegate
 		UpdateManager.updateDelegate -= Loop;
+
+		gameObject.SetActive(false);
 	}
 
 	// Display Time, Steps, & Gold

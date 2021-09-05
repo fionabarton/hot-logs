@@ -16,12 +16,9 @@ public class BattlePlayerActions : MonoBehaviour
 	public GameObject		itemGO; 
 	public GameObject		runGO;
 
-	// For each Button, in Inspector, assign BattlePlayerActions._______Button to OnClick
-	public Button			spellButton;
-	public Button			fightButton; 
-	public Button			itemButton; 
-	public Button			defendButton; 
-	public Button			runButton; 
+	// Fight, Spell, Item, Defend, Run
+	public List<GameObject> buttonsGO;
+	public List<Button>		buttonsCS;
 
 	// Player Buttons (invisible, used to select party member)
 	public List<GameObject> playerButtonGO;
@@ -262,11 +259,12 @@ public class BattlePlayerActions : MonoBehaviour
 	}
 
 	public void ButtonsInteractable(bool fight, bool spell, bool defend, bool run, bool item, bool eButton1, bool eButton2, bool eButton3, bool pButton1, bool pButton2) {
-		fightButton.interactable = fight;
-		spellButton.interactable = spell;
-		defendButton.interactable = defend;
-		runButton.interactable = run;
-		itemButton.interactable = item;
+		buttonsCS[0].interactable = fight;
+		buttonsCS[1].interactable = spell;
+		buttonsCS[2].interactable = defend;
+		buttonsCS[3].interactable = run;
+		buttonsCS[4].interactable = item;
+
 		enemyButtonCS[0].interactable = eButton1;
 		enemyButtonCS[1].interactable = eButton2;
 		enemyButtonCS[2].interactable = eButton3;
