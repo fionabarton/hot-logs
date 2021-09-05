@@ -20,7 +20,7 @@ public class ItemScreen : MonoBehaviour {
 	public static ItemScreen S { get { return _S; } set { _S = value; } }
 
 	// For Input & Display Message
-	public eItemScreenMode  itemScreenMode = eItemScreenMode.pickItem;
+	public eItemScreenMode  itemScreenMode;
 
 	// Allows parts of Loop() to be called once rather than repeatedly every frame.
 	public bool 			canUpdate;
@@ -29,50 +29,11 @@ public class ItemScreen : MonoBehaviour {
 		S = this;
 	}
 
-	void OnEnable () {
-		itemScreenMode = eItemScreenMode.pickItem;
+	public void OnEnable () {
+		// Ensures first slot is selected when screen enabled
+		RPG.S.previousSelectedGameObject = itemButtons[0].gameObject;
 
-		DeactivateUnusedItemSlots ();
-		AssignItemNames (); 
-		AssignItemEffect ();
-
-		// Buttons Interactable
-		Utilities.S.ButtonsInteractable(itemButtons, true);
-
-		// Add Loop() to Update Delgate
-		UpdateManager.updateDelegate += Loop;
-
-		canUpdate = true;
-		
-		try {
-			// Activate PlayerButtons
-			PlayerButtons.S.gameObject.SetActive(true);
-			Utilities.S.ButtonsInteractable(PlayerButtons.S.buttonsCS, false);
-			Utilities.S.ButtonsInteractable(PauseScreen.S.buttonCS, false);
-
-			// If Inventory Empty 
-			if (Inventory.S.GetItemList().Count == 0) {
-				PauseMessage.S.DisplayText("You have no items, fool!");
-
-				// Deactivate Cursor
-				ScreenCursor.S.cursorGO.SetActive (false);
-			} else {
-				// Set Selected GameObject (Item Screen: Item Slot 1)
-				Utilities.S.SetSelectedGO(itemButtons[0].gameObject);
-
-				// Activate Cursor
-				ScreenCursor.S.cursorGO.SetActive (true);
-			}
-
-			// Set Battle Turn Cursor sorting layer BELOW UI
-			BattleUI.S.turnCursorSRend.sortingLayerName = "0";
-		}
-		catch(NullReferenceException){}
-			
-		// Remove Listeners
-		sortButton.onClick.RemoveAllListeners();
-		// Assign Listener (Sort Button)
-		sortButton.onClick.AddListener (delegate { Inventory.S.items = SortItems.S.SortByABC (Inventory.S.items);});
+		ItemScreen_PickItemMode.S.Setup(S);
 	}
 
 	public void Deactivate () {
@@ -125,48 +86,13 @@ public class ItemScreen : MonoBehaviour {
 
 		switch (itemScreenMode) {
 			case eItemScreenMode.pickItem:
-				if (Inventory.S.GetItemList().Count > 0) {
-					if (canUpdate) {
-						DisplayItemDescriptions();
-						canUpdate = false;
-					}
-				}
-
-				if (RPG.S.currentSceneName != "Battle") {
-					if (Input.GetButtonDown("SNES B Button")) {
-						Deactivate();
-					}
-				}
-
+				ItemScreen_PickItemMode.S.Loop(S);
 				break;
 			case eItemScreenMode.pickPartyMember:
-				if (canUpdate) {
-					Utilities.S.PositionCursor(UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject, 0, 60, 3);
-
-					// Set animation to walk
-					PlayerButtons.S.SetAnim("Walk");
-
-					canUpdate = false;
-				}
-		
-				if (PauseMessage.S.dialogueFinished) {
-					if (Input.GetButtonDown("SNES B Button")) {
-                        // Set animation to idle
-                        PlayerButtons.S.SetAnim("Idle");
-
-                        OnEnable(); // Go Back
-					}
-				}
+				ItemScreen_PickPartyMemberMode.S.Loop(S);
 				break;
 			case eItemScreenMode.usedItem:
-				if (PauseMessage.S.dialogueFinished) {
-					if (Input.GetButtonDown("SNES A Button")) {
-                        // Set animation to idle
-                        PlayerButtons.S.SetAnim("Idle");
-
-                        OnEnable();
-					}
-				}
+				ItemScreen_UsedItemMode.S.Loop(S);
 				break;
 		}
 
@@ -174,16 +100,6 @@ public class ItemScreen : MonoBehaviour {
 		if (Input.GetKeyDown (KeyCode.X)) {
 			//_items = SortItems.S.SortByABC(_items);
 			Inventory.S.items = SortItems.S.SortByValue(Inventory.S.items);
-		}
-	}
-
-	void DeactivateUnusedItemSlots () {
-		for (int i = 0; i <= itemButtons.Count - 1; i++) {
-			if (i < Inventory.S.GetItemList().Count) {
-				itemButtons [i].gameObject.SetActive (true);
-			} else {
-				itemButtons [i].gameObject.SetActive (false);
-			} 
 		}
 	}
 
@@ -199,23 +115,6 @@ public class ItemScreen : MonoBehaviour {
 	public void AssignItemNames () {
 		for (int i = 0; i < Inventory.S.GetItemList().Count; i++) {
 			itemButtonsText[i].text = Inventory.S.GetItemList()[i].name + "(" + Inventory.S.GetItemCount (Inventory.S.GetItemList()[i]) + ")";
-		}
-	}
-
-	public void DisplayItemDescriptions () {
-		for (int i = 0; i < Inventory.S.GetItemList().Count; i++) {
-			if (UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject == itemButtons [i].gameObject) {
-				PauseMessage.S.SetText (Inventory.S.GetItemList()[i].description);
-
-				// Set Cursor Position set to Selected Button
-				Utilities.S.PositionCursor(itemButtons[i].gameObject, -170, 0, 0);
-
-				// Set selected button text color	
-				itemButtons[i].gameObject.GetComponentInChildren<Text>().color = new Color32(205, 208, 0, 255);
-			} else {
-				// Set non-selected button text color
-				itemButtons[i].gameObject.GetComponentInChildren<Text>().color = new Color32(255, 255, 255, 255);
-			}
 		}
 	}
 
