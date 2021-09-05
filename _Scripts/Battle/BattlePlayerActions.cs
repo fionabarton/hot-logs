@@ -46,6 +46,9 @@ public class BattlePlayerActions : MonoBehaviour
 
 	// choose an enemy to attack
 	public void FightButton() {
+		// Cache Selected Gameobject (Fight Button) 
+		RPG.S.previousSelectedGameObject = buttonsGO[0];
+
 		BattleDialogue.S.DisplayText("Attack which enemy?");
 		ButtonsInteractable(false, false, false, false, false, true, true, true, false, false);
 
@@ -138,6 +141,9 @@ public class BattlePlayerActions : MonoBehaviour
 	public void RunButton() {
 		ButtonsDisableAll();
 
+		// Cache Selected Gameobject (Run Button) 
+		RPG.S.previousSelectedGameObject = buttonsGO[4];
+
 		// Not a "boss battle", so the party can attempt to run
 		if (_.enemyStats[0].questNdx == 0) {
 			if (Random.value < _.chanceToRun) {     // || Stats.S.LVL[0] - enemyStats[0].LVL >= 5
@@ -205,6 +211,9 @@ public class BattlePlayerActions : MonoBehaviour
 	public void SpellButton() {
 		ButtonsDisableAll();
 
+		// Cache Selected Gameobject (Spell Button) 
+		RPG.S.previousSelectedGameObject = buttonsGO[1];
+
 		if (PartyStats.S.spellNdx[_.PlayerNdx()] > 0) {
 
 			BattleUI.S.targetCursor.SetActive(false);
@@ -233,6 +242,9 @@ public class BattlePlayerActions : MonoBehaviour
 	// Item Button
 	public void ItemButton() {
 		ButtonsDisableAll();
+
+		// Cache Selected Gameobject (Item Button) 
+		RPG.S.previousSelectedGameObject = buttonsGO[2];
 
 		// If Player has an Item 
 		if (Inventory.S.GetItemList().Count > 0) {

@@ -96,14 +96,7 @@ public class ItemScreen : MonoBehaviour {
 			PauseMessage.S.DisplayText("Welcome to the Pause Screen!");
 
 			PauseScreen.S.canUpdate = true;
-		} else {
-			// If Player didn't use an Item, go back to Player Turn
-			if (itemScreenMode != eItemScreenMode.pickPartyMember) {
-				if (Battle.S.battleMode == eBattleMode.itemOrSpellMenu) {
-					Battle.S.PlayerTurn();
-				}
-			}
-		}
+		} 
 
 		// Deactivate PlayerButtons
 		PlayerButtons.S.gameObject.SetActive(false);
@@ -121,20 +114,12 @@ public class ItemScreen : MonoBehaviour {
 			canUpdate = true;
 		}
 		
-		// Deactivate ItemScreen in Overworld and Battle
-		if (RPG.S.currentSceneName != "Battle") { 
-			if (itemScreenMode == eItemScreenMode.pickItem) {
-				if (Input.GetButtonDown ("SNES B Button")) {
-					Deactivate();
-				}
-			}
-		} else {
+		// Deactivate ItemScreen during Battle
+		if (RPG.S.currentSceneName == "Battle") {
 			if (Input.GetButtonDown ("SNES B Button")) {
 				PauseMessage.S.gameObject.SetActive(false);
-				gameObject.SetActive(false);
-				if (Battle.S.battleMode == eBattleMode.itemOrSpellMenu) {
-					Battle.S.PlayerTurn();
-				}
+				Deactivate();
+				Battle.S.PlayerTurn();
 			}
 		}
 
@@ -144,6 +129,12 @@ public class ItemScreen : MonoBehaviour {
 					if (canUpdate) {
 						DisplayItemDescriptions();
 						canUpdate = false;
+					}
+				}
+
+				if (RPG.S.currentSceneName != "Battle") {
+					if (Input.GetButtonDown("SNES B Button")) {
+						Deactivate();
 					}
 				}
 

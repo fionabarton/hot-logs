@@ -285,6 +285,9 @@ public class Battle : MonoBehaviour {
 
 	// Called in RPGLevelManager.LoadSettings when Scene changes to Battle
 	public void InitializeBattle() {
+		// Ensures Fight button is selected for first player turn
+		RPG.S.previousSelectedGameObject = BattlePlayerActions.S.buttonsGO[0];
+
 		BattlePlayerActions.S.ButtonsDisableAll();
 		
 		// Reset Dialogue
@@ -349,6 +352,9 @@ public class Battle : MonoBehaviour {
 
 		BattleUI.S.targetCursor.SetActive(false);
 
+		// Reset button to be selected (Fight Button)
+		RPG.S.previousSelectedGameObject = BattlePlayerActions.S.buttonsGO[0];
+
 		// Switch mode (playerTurn or enemyTurn) based off of turnNdx
 		if (turnNdx == turnOrder.IndexOf(PartyStats.S.playerName[0]) || turnNdx == turnOrder.IndexOf(PartyStats.S.playerName[1])) {
 			battleMode = eBattleMode.playerTurn;
@@ -371,8 +377,8 @@ public class Battle : MonoBehaviour {
 
 		BattlePlayerActions.S.ButtonsInitialInteractable();
 
-		// Set Selected Button
-		Utilities.S.SetSelectedGO(BattlePlayerActions.S.buttonsGO[0]);
+		// Set Selected Button 
+		Utilities.S.SetSelectedGO(RPG.S.previousSelectedGameObject);
 
 		// If Defended previous turn, remove from Defenders list
 		RemoveDefender(PartyStats.S.playerName[PlayerNdx()]);

@@ -25,36 +25,36 @@ public class SpellManager : MonoBehaviour {
 		_spells [0].spellDescription = "Replenishes at least 30 HP! What a heal spell!" + "\n Cost: 3 MP";
 		_spells [0].spellSprite = spellSprite [0];
 
-		// Warp
-		_spells [1] = new Spell ();
-		_spells [1].spellName = "Warp";
-		_spells [1].spellType = eSpellType.overWorld;
-		_spells [1].spellStatEffect = eSpellStatEffect.none;
-		_spells [1].spellStatEffectValue = 0;
-		_spells [1].spellCost = 1;
-		_spells [1].spellDescription = "Warp to a previously visited land!" + "\n Cost: 1 MP";
-		_spells [1].spellSprite = spellSprite [1];
+        // Warp
+        _spells[1] = new Spell();
+        _spells[1].spellName = "Warp";
+        _spells[1].spellType = eSpellType.overWorld;
+        _spells[1].spellStatEffect = eSpellStatEffect.none;
+        _spells[1].spellStatEffectValue = 0;
+        _spells[1].spellCost = 1;
+        _spells[1].spellDescription = "Warp to a previously visited land!" + "\n Cost: 1 MP";
+        _spells[1].spellSprite = spellSprite[1];
 
-		// Fireball
-		_spells [2] = new Spell ();
-		_spells [2].spellName = "Fireball";
-		_spells [2].spellType = eSpellType.offensive;
-		_spells [2].spellStatEffect = eSpellStatEffect.HP;
-		_spells [2].spellStatEffectValue = Random.Range(8, 12); // +WIS
-		_spells [2].spellCost = 2;
-		_spells [2].spellDescription = "Blasts Enemy for at least 8 HP! What a damage spell!" + "\n Cost: 2 MP";
-		_spells [2].spellSprite = spellSprite [2];
+        // Fireball
+        _spells[2] = new Spell();
+        _spells[2].spellName = "Fireball";
+        _spells[2].spellType = eSpellType.offensive;
+        _spells[2].spellStatEffect = eSpellStatEffect.HP;
+        _spells[2].spellStatEffectValue = Random.Range(8, 12); // +WIS
+        _spells[2].spellCost = 2;
+        _spells[2].spellDescription = "Blasts Enemy for at least 8 HP! What a damage spell!" + "\n Cost: 2 MP";
+        _spells[2].spellSprite = spellSprite[2];
 
-		// Fireblast
-		_spells [3] = new Spell ();
-		_spells [3].spellName = "Fireblast";
-		_spells [3].spellType = eSpellType.offensive;
-		_spells [3].spellStatEffect = eSpellStatEffect.HP;
-		_spells [3].spellStatEffectValue = Random.Range (12, 20); // +WIS
-		_spells [3].spellCost = 3;
-		_spells [3].spellDescription = "Blasts ALL enemies for at least 12 HP! Hot damn!" + "\n Cost: 3 MP";
-		_spells [3].spellSprite = spellSprite [3];
-	}
+        // Fireblast
+        _spells[3] = new Spell();
+        _spells[3].spellName = "Fireblast";
+        _spells[3].spellType = eSpellType.offensive;
+        _spells[3].spellStatEffect = eSpellStatEffect.HP;
+        _spells[3].spellStatEffectValue = Random.Range(12, 20); // +WIS
+        _spells[3].spellCost = 3;
+        _spells[3].spellDescription = "Blasts ALL enemies for at least 12 HP! Hot damn!" + "\n Cost: 3 MP";
+        _spells[3].spellSprite = spellSprite[3];
+    }
 
 	public Spell GetSpell(string spellName){
 		Spell tSpell;
