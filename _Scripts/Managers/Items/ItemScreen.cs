@@ -25,15 +25,20 @@ public class ItemScreen : MonoBehaviour {
 	// Allows parts of Loop() to be called once rather than repeatedly every frame.
 	public bool 			canUpdate;
 
+	public GameObject		previousSelectedGameObject;
+
 	void Awake() {
 		S = this;
 	}
 
 	public void OnEnable () {
 		// Ensures first slot is selected when screen enabled
-		RPG.S.previousSelectedGameObject = itemButtons[0].gameObject;
+		previousSelectedGameObject = itemButtons[0].gameObject;
 
 		ItemScreen_PickItemMode.S.Setup(S);
+
+		// Add Loop() to Update Delgate
+		UpdateManager.updateDelegate += Loop;
 	}
 
 	public void Deactivate () {

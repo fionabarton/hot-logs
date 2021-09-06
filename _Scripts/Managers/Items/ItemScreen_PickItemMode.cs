@@ -26,9 +26,6 @@ public class ItemScreen_PickItemMode : MonoBehaviour {
 		// Buttons Interactable
 		Utilities.S.ButtonsInteractable(itemScreen.itemButtons, true);
 
-		// Add Loop() to Update Delgate
-		UpdateManager.updateDelegate += itemScreen.Loop;
-
 		itemScreen.canUpdate = true;
 
 		try {
@@ -45,9 +42,9 @@ public class ItemScreen_PickItemMode : MonoBehaviour {
 				ScreenCursor.S.cursorGO.SetActive(false);
 			} else {
 				// If previousSelectedGameObject is enabled...
-				if (RPG.S.previousSelectedGameObject.activeInHierarchy) {
+				if (ItemScreen.S.previousSelectedGameObject.activeInHierarchy) {
 					// Select previousSelectedGameObject
-					Utilities.S.SetSelectedGO(RPG.S.previousSelectedGameObject);
+					Utilities.S.SetSelectedGO(ItemScreen.S.previousSelectedGameObject);
 				} else {
 					// Select previous itemButton in the list
 					Utilities.S.SetSelectedGO(itemScreen.itemButtons[previousSelectedNdx - 1].gameObject);
@@ -95,7 +92,7 @@ public class ItemScreen_PickItemMode : MonoBehaviour {
 				itemScreen.itemButtons[i].gameObject.GetComponentInChildren<Text>().color = new Color32(205, 208, 0, 255);
 
 				// Cache Selected Gameobject 
-				RPG.S.previousSelectedGameObject = itemScreen.itemButtons[i].gameObject;
+				ItemScreen.S.previousSelectedGameObject = itemScreen.itemButtons[i].gameObject;
 				// Cache Selected Gameobject's index 
 				previousSelectedNdx = i;
 			} else {
