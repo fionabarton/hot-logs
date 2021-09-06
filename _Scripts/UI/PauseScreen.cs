@@ -33,10 +33,10 @@ public class PauseScreen : MonoBehaviour {
 	float               timeWhenEnabled;
     float				timeWhenDisabled;
 
-	GameObject			previousSelectedGameObject;
-
 	// Allows parts of Loop() to be called once rather than repeatedly every frame.
 	public bool 		canUpdate;
+
+	GameObject			previousSelectedGameObject;
 
 	void Awake() {
 		S = this;
@@ -108,26 +108,19 @@ public class PauseScreen : MonoBehaviour {
 		// If Active
 		if (isActiveAndEnabled) {
 			// Increment seconds & reset timer
-			if (timeDone <= Time.time)
-			{
+			if (timeDone <= Time.time) {
 				seconds += 1;
 				timeDone = 1 + Time.time;
 			}
 
 			// Increment minutes & reset seconds
-			if (seconds > 59)
-			{
+			if (seconds > 59) {
 				minutes += 1;
 				seconds = 0;
 			}
 
 			// Display Time, Step Count, & Gold
-			// Add 0 to Seconds if necessary ("Time: 0:01" rather than "Time 0:1")
-			if (seconds > 9) {
-				Time_Steps_Gold_TXT ();
-			} else {
-				Time_Steps_Gold_TXT ("0");
-			}
+			Time_Steps_Gold_TXT ();
 		}
 		yield return new WaitForFixedUpdate ();
 		StartCoroutine ("FixedUpdateCoroutine");
@@ -189,11 +182,21 @@ public class PauseScreen : MonoBehaviour {
 		gameObject.SetActive(false);
 	}
 
+	public string GetTime() {
+		string zeroString = "";
+
+		if (seconds < 10) {
+			zeroString = "0";
+		} 
+
+		return minutes.ToString() + ":" + zeroString + seconds.ToString();
+	}
+
 	// Display Time, Steps, & Gold
-	void Time_Steps_Gold_TXT (string zeroString = null) {
+	void Time_Steps_Gold_TXT () {
         if (Player.S) {
 			// Time
-			fileStatsNumText.text = minutes.ToString() + ":" + zeroString + seconds.ToString() + "\n" +
+			fileStatsNumText.text = GetTime() + "\n" +
 			// Steps Count
 			Player.S.stepsCount + "\n" +
 			// Gold
