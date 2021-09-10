@@ -18,16 +18,17 @@ public class RainSpawner : MonoBehaviour {
 	public static RainSpawner S { get { return _S; } set { _S = value; } }
 
 	public bool 			isRaining;
-
 	private int 			dropNdx;
+	private int				amountOfDropsToSpawnPerFrame = 5;
 
 	void Awake() {
 		S = this;
 	}
 
-	public void StartRaining() {
+	public void StartRaining(int amountOfDropsToSpawnPerFrame = 5) {
 		isRaining = true;
 		darkFilter.SetActive(true);
+		this.amountOfDropsToSpawnPerFrame = amountOfDropsToSpawnPerFrame;
 
 		// Add FixedLoop() to Fixed Update Delgate
 		UpdateManager.fixedUpdateDelegate += FixedLoop;
@@ -49,8 +50,8 @@ public class RainSpawner : MonoBehaviour {
         }
 	}
 
-	void SpawnRain(int amountOfDropToSpawn = 5){
-		for(int i = 0; i < amountOfDropToSpawn; i++) {
+	void SpawnRain(){
+		for(int i = 0; i < amountOfDropsToSpawnPerFrame; i++) {
 			if (!rainDrops[dropNdx].activeInHierarchy) {
 				// Randomly Set X & Y
 				float xPos = Random.Range(-12f, 12f);
