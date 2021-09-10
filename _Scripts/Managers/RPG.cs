@@ -36,9 +36,6 @@ public class RPG : MonoBehaviour {
 	public string 				previousSceneName;
 	private string				previousPreviousSceneName;
 
-	// Cache previously selected gameObject (used in EquipScreen)
-	public GameObject			previousSelectedGameObject;
-
 	void Awake() {
 		// Singleton
 		S = this;
@@ -172,13 +169,10 @@ public class RPG : MonoBehaviour {
 				if (Random.value > 0.5f){
 					switch (previousSceneName){
 						case "Cave_1":
-							RainSpawner.S.isRaining = false;
-							RainSpawner.S.darkFilter.SetActive(false);
+							RainSpawner.S.StopRaining();
 							break;
 						default:
-							RainSpawner.S.StartCoroutine("FixedUpdateCoroutine");
-							RainSpawner.S.isRaining = true;
-							RainSpawner.S.darkFilter.SetActive(true);
+							RainSpawner.S.StartRaining();
 							break;
 					}
 				}else{
@@ -186,8 +180,7 @@ public class RPG : MonoBehaviour {
 				}
 				break;
 			default:
-				RainSpawner.S.isRaining = false;
-				RainSpawner.S.darkFilter.SetActive(false);
+				RainSpawner.S.StopRaining();
 				break;
 		}
 
