@@ -17,7 +17,7 @@ public class RainDrop : MonoBehaviour {
 
 	void OnEnable(){
 		// Randomly Set Lifetime
-		lifeTime = Random.Range (0.1f, 0.75f);
+		lifeTime = Random.Range (0.25f, 1f);
 
 		// Set TimeToDie
 		timeToDie = Time.time + lifeTime;
@@ -31,7 +31,7 @@ public class RainDrop : MonoBehaviour {
 
 		// Randomly Set Opacity
 		Color tColor = sRend.color;
-		tColor.a = Random.Range (0.5f, 1f);
+		tColor.a = Random.Range (0.25f, 1f);
 		sRend.color = tColor;
 
 		if (isFalling) {
@@ -49,15 +49,12 @@ public class RainDrop : MonoBehaviour {
 		StopCoroutine ("FixedUpdateCoroutine");
 	}
 
-
 	public IEnumerator FixedUpdateCoroutine () {
-		// if not Paused
+		// If not Paused
 		if (!RPG.S.paused) {
 			if (isFalling) {
 				// Move Down
-				Vector2 tPos = transform.position;
-				tPos.y -= speed * Time.fixedDeltaTime;
-				transform.position = tPos;
+				Utilities.S.MoveYPosition(gameObject, -speed);
 			} 
 
 			// Deactivate

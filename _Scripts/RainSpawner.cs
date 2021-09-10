@@ -17,58 +17,57 @@ public class RainSpawner : MonoBehaviour {
 	private static RainSpawner _S;
 	public static RainSpawner S { get { return _S; } set { _S = value; } }
 
-	private float 			xPos, yPos;
-
 	public bool 			isRaining;
-
-	private float 			timeToWaitToSpawn;
-	private float 			timeToSpawn;
 
 	private int 			dropNdx;
 
 	void Awake() {
-		// Singleton
 		S = this;
 	}
 
-	public IEnumerator FixedUpdateCoroutine () {
-		// if not Paused
-		if (!RPG.S.paused) {
-			if (isRaining) {
-				if (Time.time >= timeToSpawn) {
-					SpawnRain ();
-				}
-			}
-		}
+	public void StartRaining() {
+		isRaining = true;
+		darkFilter.SetActive(true);
 
-		yield return new WaitForFixedUpdate ();
-		StartCoroutine ("FixedUpdateCoroutine");
+		// Add FixedLoop() to Fixed Update Delgate
+		UpdateManager.fixedUpdateDelegate += FixedLoop;
 	}
 
-	void SpawnRain(){
-		if (!rainDrops [dropNdx].activeInHierarchy) {
-			// Randomly Set X & Y
-			xPos = Random.Range(-12f, 12f);
-			yPos = Random.Range(-5f, 10f);
+	public void StopRaining() {
+		isRaining = false;
+		darkFilter.SetActive(false);
 
-			// Set Position
-			Utilities.S.SetLocalPosition (rainDrops [dropNdx], xPos, yPos);
+		// Remove FixedLoop() from Fixed Update Delgate
+		UpdateManager.fixedUpdateDelegate -= FixedLoop;
+	}
 
-			// Randomly timeToWaitToSpawn
-			//timeToWaitToSpawn = Random.Range(0.001f, 0.005f);
-			timeToWaitToSpawn = 0.001f;
+	private void FixedLoop() {
+		if (!RPG.S.paused) {
+            if (isRaining) {
+				SpawnRain();
+			}
+        }
+	}
 
-			// Set timeToSpawn
-			timeToSpawn = Time.time + timeToWaitToSpawn;
+	void SpawnRain(int amountOfDropToSpawn = 5){
+		for(int i = 0; i < amountOfDropToSpawn; i++) {
+			if (!rainDrops[dropNdx].activeInHierarchy) {
+				// Randomly Set X & Y
+				float xPos = Random.Range(-12f, 12f);
+				float yPos = Random.Range(-5f, 10f);
 
-			// Activate
-			rainDrops [dropNdx].SetActive (true);
+				// Set Position
+				Utilities.S.SetLocalPosition(rainDrops[dropNdx], xPos, yPos);
 
-			// Next RainDrop to Drop
-			if (dropNdx >= rainDrops.Count - 1) {
-				dropNdx = 0;
-			} else {
-				dropNdx += 1;
+				// Activate gameObject
+				rainDrops[dropNdx].SetActive(true);
+
+				// Next RainDrop to Drop
+				if (dropNdx >= rainDrops.Count - 1) {
+					dropNdx = 0;
+				} else {
+					dropNdx += 1;
+				}
 			}
 		}
 	}
