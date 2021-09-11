@@ -36,8 +36,11 @@ public class SpellScreen_PickWhichSpellsToDisplay : MonoBehaviour {
 				// Activate PlayerButtons
 				PlayerButtons.S.gameObject.SetActive(true);
 
-				// Set Selected
-				Utilities.S.SetSelectedGO(PlayerButtons.S.buttonsCS[0].gameObject);
+				// Set Selected gameObject
+				Utilities.S.SetSelectedGO(spellScreen.previousSelectedPlayerGO);
+
+				// Reset which spell to select
+				spellScreen.previousSelectedSpellGO = spellScreen.spellsButtons[0].gameObject;
 
 				// Display Text
 				PauseMessage.S.DisplayText("Use whose spells?!");
@@ -62,7 +65,11 @@ public class SpellScreen_PickWhichSpellsToDisplay : MonoBehaviour {
 				if (UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject == PlayerButtons.S.buttonsCS[i].gameObject) {
 					spellScreen.DeactivateUnusedSpellsSlots(i);
 					spellScreen.DisplaySpellsDescriptions(i);
+					spellScreen.AssignSpellsNames(i);
 					Utilities.S.PositionCursor(PlayerButtons.S.buttonsCS[i].gameObject, 0, 60, 3);
+
+					// Cache Selected Gameobject 
+					spellScreen.previousSelectedPlayerGO = PlayerButtons.S.buttonsCS[i].gameObject;
 				}
 			}
 
