@@ -36,6 +36,8 @@ public class EquipScreen : MonoBehaviour {
 	// Allows parts of Loop() to be called once rather than repeatedly every frame.
 	public bool				canUpdate;
 
+	public GameObject		previousSelectedGameObject;
+
 	void Awake() {
 		S = this;
 	}
@@ -53,7 +55,7 @@ public class EquipScreen : MonoBehaviour {
 
     void OnEnable () {
 		playerNdx = 0;
-		RPG.S.previousSelectedGameObject = null;
+		previousSelectedGameObject = null;
 
 		EquipScreen_PickPartyMemberMode.S.SetUp(S);
 
@@ -128,7 +130,7 @@ public class EquipScreen : MonoBehaviour {
 				EquipScreen_PickTypeToEquipMode.S.SetUp(playerNdx, S);
 
 				// Set Selected Gameobject 
-				Utilities.S.SetSelectedGO(RPG.S.previousSelectedGameObject);
+				Utilities.S.SetSelectedGO(previousSelectedGameObject);
 
 				// Activate Cursor
 				ScreenCursor.S.cursorGO.SetActive(true);
@@ -141,9 +143,9 @@ public class EquipScreen : MonoBehaviour {
 	
 	// Display member's name and current stats
 	public void DisplayCurrentStats(int playerNdx){
-		playerName.text = PartyStats.S.playerName [playerNdx];
-		currentStats.text = PartyStats.S.LVL [playerNdx] + "\n" + PartyStats.S.HP [playerNdx] + "/" + PartyStats.S.maxHP[playerNdx] + "\n" + PartyStats.S.MP [playerNdx] + "/" + PartyStats.S.maxMP[playerNdx];
-		EquipStatsEffect.S.currentAttributeAmounts.text = PartyStats.S.STR[playerNdx] + "\n" + PartyStats.S.DEF[playerNdx] + "\n" + PartyStats.S.WIS[playerNdx] + "\n" + PartyStats.S.AGI[playerNdx];
+		playerName.text = Party.stats[playerNdx].name;
+		currentStats.text = Party.stats[playerNdx].LVL + "\n" + Party.stats[playerNdx].HP + "/" + Party.stats[playerNdx].maxHP + "\n" + Party.stats[playerNdx].MP + "/" + Party.stats[playerNdx].maxMP;
+		EquipStatsEffect.S.currentAttributeAmounts.text = Party.stats[playerNdx].STR + "\n" + Party.stats[playerNdx].DEF + "\n" + Party.stats[playerNdx].WIS + "\n" + Party.stats[playerNdx].AGI;
 		EquipStatsEffect.S.potentialStats.text = "";
 	}
 
@@ -182,7 +184,8 @@ public class EquipScreen : MonoBehaviour {
 		// Equip new item
 		playerEquipment[playerNdx][(int)item.type] = item;
 
-		PauseMessage.S.DisplayText(PartyStats.S.playerName[playerNdx] + " equipped " + item.name + "!");
+		//PauseMessage.S.DisplayText(Stats.S.playerName[playerNdx] + " equipped " + item.name + "!");
+		PauseMessage.S.DisplayText(Party.stats[playerNdx].name + " equipped " + item.name + "!");
 
 		// Add Item StatEffect
 		EquipStatsEffect.S.AddItemEffect(playerNdx, item);

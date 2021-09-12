@@ -41,8 +41,7 @@ public class WorldSpells : MonoBehaviour {
 
 	// Select which party member to heal
 	public void SelectPartyMemberToHeal() { // Overworld
-		//if (Stats.S.MP[SpellScreen.S.playerNdx] >= 3) {
-		if (Stats.member[SpellScreen.S.playerNdx].MP >= 3) {
+		if (Party.stats[SpellScreen.S.playerNdx].MP >= 3) {
 			// Set animation to idle
 			PlayerButtons.S.SetAnim("Idle");
 
@@ -69,8 +68,7 @@ public class WorldSpells : MonoBehaviour {
 
 	// Heal the selected party member 
 	public void HealSelectedPartyMember(int ndx) { // Overworld
-		//if (Stats.S.HP[ndx] < Stats.S.maxHP[ndx]) {
-		if (Stats.member[ndx].HP < Stats.member[ndx].maxHP) {
+		if (Party.stats[ndx].HP < Party.stats[ndx].maxHP) {
 			// Set animation to success
 			PlayerButtons.S.anim[ndx].CrossFade("Success", 0);
 
@@ -82,18 +80,14 @@ public class WorldSpells : MonoBehaviour {
 			RPG.S.AddPlayerHP(ndx, randomValue);
 
 			// Display Text
-			//if (Stats.S.HP[ndx] >= Stats.S.maxHP[ndx]) {
-			if (Stats.member[ndx].HP >= Stats.member[ndx].maxHP) {
-				//PauseMessage.S.DisplayText("Used Heal Spell!\nHealed " + Stats.S.playerName[ndx] + " back to Max HP!");
-				PauseMessage.S.DisplayText("Used Heal Spell!\nHealed " + Stats.member[ndx].name + " back to Max HP!");
+			if (Party.stats[ndx].HP >= Party.stats[ndx].maxHP) {
+				PauseMessage.S.DisplayText("Used Heal Spell!\nHealed " + Party.stats[ndx].name + " back to Max HP!");
 			} else {
-				//PauseMessage.S.DisplayText("Used Heal Spell!\nHealed " + Stats.S.playerName[ndx] + " for " + randomValue + " HP!");
-				PauseMessage.S.DisplayText("Used Heal Spell!\nHealed " + Stats.member[ndx].name + " for " + randomValue + " HP!");
+				PauseMessage.S.DisplayText("Used Heal Spell!\nHealed " + Party.stats[ndx].name + " for " + randomValue + " HP!");
 			}
 		} else {
 			// Display Text
-			//PauseMessage.S.DisplayText(Stats.S.playerName[ndx] + " already at full health...\n...no need to cast this spell!");
-			PauseMessage.S.DisplayText(Stats.member[ndx].name + " already at full health...\n...no need to cast this spell!");
+			PauseMessage.S.DisplayText(Party.stats[ndx].name + " already at full health...\n...no need to cast this spell!");
 		}
 		SpellManager.S.SpellHelper();
 	}
@@ -103,8 +97,7 @@ public class WorldSpells : MonoBehaviour {
 	//////////////////////////////////////////////////////////
 
 	public void WarpSpell() {
-		//if (Stats.S.MP[0] >= 3) {
-		if (Stats.member[0].MP >= 3) {
+		if (Party.stats[0].MP >= 3) {
 			// Warp to a random location...
 			// ...but this should open a list of destinations to choose from instead 
 			if (UnityEngine.Random.value > 0.5f) {

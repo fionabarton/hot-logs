@@ -136,7 +136,7 @@ public class ItemScreen : MonoBehaviour {
 				if (RPG.S.currentSceneName == "Battle") { // if Battle
 					BattleItems.S.AddFunctionToButton(BattleItems.S.HPPotion, "Use potion on which party member?");
 				} else { // if Overworld
-					OverworldItems.S.AddFunctionToButton(OverworldItems.S.HPPotion, "Heal which party member?");
+					WorldItems.S.AddFunctionToButton(WorldItems.S.HPPotion, "Heal which party member?");
 				}
 			break;
 			case "Magic Potion":
@@ -146,14 +146,14 @@ public class ItemScreen : MonoBehaviour {
 				if (RPG.S.currentSceneName == "Battle") { // if Battle
 					BattleItems.S.AddFunctionToButton(BattleItems.S.MPPotion, "Use potion on which party member?");
 				} else { // if Overworld
-					OverworldItems.S.AddFunctionToButton(OverworldItems.S.MPPotion, "Use MP potion on which party member?");
+					WorldItems.S.AddFunctionToButton(WorldItems.S.MPPotion, "Use MP potion on which party member?");
 				}
 			break;
 			default: // Items that can't be used...
 				if (RPG.S.currentSceneName == "Battle") { // if Battle
 					BattleItems.S.CantUseItem();
 				} else { // if Overworld
-					OverworldItems.S.CantUseItem();
+					WorldItems.S.CantUseItem();
 				}
 				break;
 			}

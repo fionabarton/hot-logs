@@ -2,6 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// ItemScreen Mode/Step 3: UsedItemMode
+/// - Consumed an item
+/// </summary>
 public class ItemScreen_UsedItemMode : MonoBehaviour { 
 	[Header("Set Dynamically")]
 	// Singleton

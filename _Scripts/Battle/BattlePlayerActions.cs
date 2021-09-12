@@ -36,7 +36,6 @@ public class BattlePlayerActions : MonoBehaviour
 	private Battle _;
 
 	void Awake() {
-		// Singleton
 		S = this;
 	}
 
@@ -47,7 +46,7 @@ public class BattlePlayerActions : MonoBehaviour
 	// choose an enemy to attack
 	public void FightButton() {
 		// Cache Selected Gameobject (Fight Button) 
-		RPG.S.previousSelectedGameObject = buttonsGO[0];
+		Battle.S.previousSelectedGameObject = buttonsGO[0];
 
 		BattleDialogue.S.DisplayText("Attack which enemy?");
 		ButtonsInteractable(false, false, false, false, false, true, true, true, false, false);
@@ -88,10 +87,10 @@ public class BattlePlayerActions : MonoBehaviour
 
 	public void AttackEnemy(int ndx) {
 		// Calculate Attack Damage
-		_.CalculateAttackDamage(PartyStats.S.LVL[_.PlayerNdx()], 
-								PartyStats.S.STR[_.PlayerNdx()], PartyStats.S.AGI[_.PlayerNdx()],
+		_.CalculateAttackDamage(Party.stats[_.PlayerNdx()].LVL,
+								Party.stats[_.PlayerNdx()].STR, Party.stats[_.PlayerNdx()].AGI,
 								_.enemyStats[ndx].DEF, _.enemyStats[ndx].AGI,
-								PartyStats.S.playerName[_.PlayerNdx()], _.enemyStats[ndx].name,
+								Party.stats[_.PlayerNdx()].name, _.enemyStats[ndx].name,
 								_.enemyStats[ndx].HP);
 
 		// Subtract Enemy Health
@@ -142,7 +141,7 @@ public class BattlePlayerActions : MonoBehaviour
 		ButtonsDisableAll();
 
 		// Cache Selected Gameobject (Run Button) 
-		RPG.S.previousSelectedGameObject = buttonsGO[4];
+		Battle.S.previousSelectedGameObject = buttonsGO[4];
 
 		// Not a "boss battle", so the party can attempt to run
 		if (_.enemyStats[0].questNdx == 0) {
@@ -154,7 +153,7 @@ public class BattlePlayerActions : MonoBehaviour
 				if (_.partyQty >= 1) {
 					BattleDialogue.S.DisplayText("The party has fled the battle!");
 				} else {
-					BattleDialogue.S.DisplayText(PartyStats.S.playerName[_.PlayerNdx()] + " has fled the battle!");
+					BattleDialogue.S.DisplayText(Party.stats[_.PlayerNdx()].name + " has fled the battle!");
 				}
 
 				// Animation: Party RUN
@@ -195,13 +194,14 @@ public class BattlePlayerActions : MonoBehaviour
 		ButtonsDisableAll();
 
 		// Defend until next turn
-		_.AddDefender(PartyStats.S.playerName[_.PlayerNdx()]);
+		_.AddDefender(Party.stats[_.PlayerNdx()].name);
 
 		// TBR
 		// Animation: Player DEFEND
 		_.playerShields[_.PlayerNdx()].SetActive(true);
 
-		BattleDialogue.S.DisplayText(PartyStats.S.playerName[_.PlayerNdx()] + " defends themself until their next turn!");
+		BattleDialogue.S.DisplayText(Party.stats[_.PlayerNdx()].name + " defends themself until their next turn!");
+
 		_.NextTurn();
 
 		// Audio: Confirm
@@ -212,9 +212,9 @@ public class BattlePlayerActions : MonoBehaviour
 		ButtonsDisableAll();
 
 		// Cache Selected Gameobject (Spell Button) 
-		RPG.S.previousSelectedGameObject = buttonsGO[1];
+		Battle.S.previousSelectedGameObject = buttonsGO[1];
 
-		if (PartyStats.S.spellNdx[_.PlayerNdx()] > 0) {
+		if (Party.stats[_.PlayerNdx()].spellNdx > 0) {
 
 			BattleUI.S.targetCursor.SetActive(false);
 
@@ -230,7 +230,7 @@ public class BattlePlayerActions : MonoBehaviour
 			UpdateManager.updateDelegate += SpellScreen.S.Loop;
 		} else {
 			// Knows no Spells, go back to Player Turn
-			BattleDialogue.S.DisplayText(PartyStats.S.playerName[_.PlayerNdx()] + " doesn't know any spells!");
+			BattleDialogue.S.DisplayText(Party.stats[_.PlayerNdx()].name + " doesn't know any spells!");
 
 			// Switch Mode
 			_.battleMode = eBattleMode.playerTurn;
@@ -244,7 +244,7 @@ public class BattlePlayerActions : MonoBehaviour
 		ButtonsDisableAll();
 
 		// Cache Selected Gameobject (Item Button) 
-		RPG.S.previousSelectedGameObject = buttonsGO[2];
+		Battle.S.previousSelectedGameObject = buttonsGO[2];
 
 		// If Player has an Item 
 		if (Inventory.S.GetItemList().Count > 0) {
@@ -260,7 +260,7 @@ public class BattlePlayerActions : MonoBehaviour
 			ItemScreen.S.gameObject.SetActive(true);
 		} else {
 			// Has no Items, go back to Player Turn 
-			BattleDialogue.S.DisplayText(PartyStats.S.playerName[_.PlayerNdx()] + " has no items!");
+			BattleDialogue.S.DisplayText(Party.stats[_.PlayerNdx()].name + " has no items!");
 
 			// Switch Mode
 			_.battleMode = eBattleMode.playerTurn;

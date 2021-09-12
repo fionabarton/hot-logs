@@ -12,7 +12,6 @@ public class BattleEnemyActions : MonoBehaviour {
 	private Battle _;
 
 	void Awake() {
-		// Singleton
 		S = this;
 	}
 
@@ -56,11 +55,11 @@ public class BattleEnemyActions : MonoBehaviour {
 		Battle.S.battleUIAnim.CrossFade ("BattleUI_Shake", 0); 
 
 		// Calculate Attack Damage
-		Battle.S.CalculateAttackDamage(_.enemyStats[_.EnemyNdx()].LVL, 
-									   _.enemyStats[_.EnemyNdx()].STR, _.enemyStats[_.EnemyNdx()].AGI, 
-									   PartyStats.S.DEF[playerToAttack], PartyStats.S.AGI[playerToAttack], 
-									   _.enemyStats[_.EnemyNdx()].name, PartyStats.S.playerName[playerToAttack],
-									   PartyStats.S.HP[playerToAttack]);
+		Battle.S.CalculateAttackDamage(_.enemyStats[_.EnemyNdx()].LVL,
+									   _.enemyStats[_.EnemyNdx()].STR, _.enemyStats[_.EnemyNdx()].AGI,
+									   Party.stats[playerToAttack].DEF, Party.stats[playerToAttack].AGI,
+									   _.enemyStats[_.EnemyNdx()].name, Party.stats[playerToAttack].name,
+										Party.stats[playerToAttack].HP);
 
 		// Subtract Player Health
 		RPG.S.SubtractPlayerHP (playerToAttack, _.attackDamage);
@@ -80,7 +79,7 @@ public class BattleEnemyActions : MonoBehaviour {
 		RPG.S.InstantiateFloatingScore(_.playerSprite[playerToAttack], _.attackDamage, Color.red);
 
 		// Player Death or Next Turn
-		if (PartyStats.S.HP [playerToAttack] < 1) {
+		if (Party.stats[playerToAttack].HP < 1) {
 			BattleEnd.S.PlayerDeath (playerToAttack);
 		} else {
 			// BLOCK!!!
@@ -135,9 +134,6 @@ public class BattleEnemyActions : MonoBehaviour {
 			if (_.enemyStats [_.EnemyNdx()].HP < _.enemyStats [_.EnemyNdx()].maxHP) {
 				// Subtract Spell cost from Enemy's MP
 				_.enemyStats [_.EnemyNdx()].MP -= 3;
-
-				// Add 30-45 HP to TARGET Player's HP
-				//int healAmount = Random.Range(30, 45);
 
 				// Get amount and max amount to heal
 				int amountToHeal = UnityEngine.Random.Range(30, 45);
@@ -199,7 +195,7 @@ public class BattleEnemyActions : MonoBehaviour {
 			// Miss/Dodge
 			// 5% chance to Miss/Dodge...
 			// ...but 25% chance if Defender WIS is more than Attacker's 
-			if (Random.value <= 0.05f || (_.enemyStats [_.EnemyNdx()].WIS > PartyStats.S.WIS[0] && Random.value < 0.25f)) {
+			if (Random.value <= 0.05f || (_.enemyStats[_.EnemyNdx()].WIS > Party.stats[0].WIS && Random.value < 0.25f)) {
 				if (Random.value <= 0.5f) {
 					BattleDialogue.S.DisplayText (_.enemyStats [_.EnemyNdx()].name + " attempted to cast Crap Blast... but missed the party completely!");
 				} else {
@@ -217,7 +213,7 @@ public class BattleEnemyActions : MonoBehaviour {
 				_.attackDamage = Random.Range (10, 15);
 
 				// Add Enemy's WIS to Damage
-				_.attackDamage += _.enemyStats [_.EnemyNdx()].WIS;
+				_.attackDamage += _.enemyStats[_.EnemyNdx()].WIS;
 
 				// Cache AttackDamage. When more than one Defender, prevents splitting it in 1/2 more than once.
 				int tAttackDamage = _.attackDamage;
@@ -226,12 +222,12 @@ public class BattleEnemyActions : MonoBehaviour {
 				int totalAttackDamage = 0;
 
 				// Loop through Players
-				for (int i = 0; i < (PartyStats.S.partyNdx + 1); i++) {
+				for (int i = 0; i < (Party.S.partyNdx + 1); i++) {
 					// Subtract Player's DEF from Damage
-					_.attackDamage -= PartyStats.S.DEF [i];
+					_.attackDamage -= Party.stats[i].DEF;
 
 					// If DEFENDING, cut AttackDamage in HALF
-					_.CheckIfDefending (PartyStats.S.playerName [i]);
+					_.CheckIfDefending(Party.stats[i].name);
 
 					if (_.attackDamage < 0) {
 						_.attackDamage = 0;
@@ -257,7 +253,7 @@ public class BattleEnemyActions : MonoBehaviour {
 					_.attackDamage = tAttackDamage;
 
 					// If Player HP < 0, DEAD!
-					if (PartyStats.S.HP [i] < 1 && !_.playerDead [i]) {
+					if (Party.stats[i].HP < 1 && !_.playerDead[i]) {
 						qtyKilled += 1;
 						tDead [i] = true;
 					}
@@ -286,8 +282,8 @@ public class BattleEnemyActions : MonoBehaviour {
 		case 2: BattleDialogue.S.DisplayText ("Used Crap BLAST Spell!\nHit ENTIRE party for an average of " + Utilities.S.CalculateAverage (totalAttackDamage, (_.partyQty + 3)) + " HP!" + "\nTwo party members have been felled!"); break;
 		}
 
-		if (player1) { PlayersDeathHelper (0, PartyStats.S.playerName[0]); }
-		if (player2) { PlayersDeathHelper (1, PartyStats.S.playerName[1]); }
+		if (player1) { PlayersDeathHelper(0, Party.stats[0].name); }
+		if (player2) { PlayersDeathHelper(1, Party.stats[1].name); }
 
 		// Add PartyDeath or NextTurn
 		if (_.partyQty < 0) { _.battleMode = eBattleMode.partyDeath;} else { _.NextTurn (); }

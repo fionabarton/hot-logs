@@ -4,6 +4,10 @@ using UnityEngine;
 using UnityEngine.UI;
 using System;
 
+/// <summary>
+/// ItemScreen Mode/Step 1: PickItem
+/// - Select an item to use
+/// </summary>
 public class ItemScreen_PickItemMode : MonoBehaviour {
 	[Header("Set Dynamically")]
 	// Singleton

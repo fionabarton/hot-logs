@@ -42,7 +42,7 @@ public class EquipScreen_PickTypeToEquipMode : MonoBehaviour {
 		if (equipScreen.canUpdate) {
 			DisplayCurrentEquipmentDescriptions(equipScreen.playerNdx, equipScreen);
 			// Cache Selected Gameobject 
-			RPG.S.previousSelectedGameObject = UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject;
+			EquipScreen.S.previousSelectedGameObject = UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject;
 			equipScreen.canUpdate = false;
 
 			// Display items in the inventory of the currently selected equipment type
