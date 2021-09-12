@@ -35,7 +35,6 @@ public class CamManager : MonoBehaviour {
 	public bool				canLerp;
 
 	void Awake () {
-		// Singleton
 		S = this;
 
 		// DontDestroyOnLoad

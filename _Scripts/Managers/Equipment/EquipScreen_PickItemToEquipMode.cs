@@ -19,9 +19,6 @@ public class EquipScreen_PickItemToEquipMode : MonoBehaviour {
 	}
 
 	public void SetUp(eItemType itemType, EquipScreen equipScreen) {
-		// Reset equippedButtons text color
-		Utilities.S.SetTextColor(equipScreen.equippedButtons, new Color32(39, 201, 255, 255));
-
 		// Buttons Interactable
 		Utilities.S.ButtonsInteractable(equipScreen.inventoryButtons, true);
 		Utilities.S.ButtonsInteractable(equipScreen.equippedButtons, false);

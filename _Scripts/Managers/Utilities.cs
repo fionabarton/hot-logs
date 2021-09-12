@@ -135,12 +135,6 @@ public class Utilities : MonoBehaviour
 	}
 
 	////////////////////////////////////////////////////////////////////////////////
-	// Set a single button's text color
-	public void SetTextColor(Button button, Color32 color) {
-		List<Button> buttons = new List<Button> { button };
-		SetTextColor(button, color);
-}
-
 	// Set multiple buttons' text color
 	public void SetTextColor(List<Button> buttons, Color32 color) {
 		for (int i = 0; i < buttons.Count; i++) {

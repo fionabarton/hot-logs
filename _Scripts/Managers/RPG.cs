@@ -36,9 +36,6 @@ public class RPG : MonoBehaviour {
 	public string 				previousSceneName;
 	private string				previousPreviousSceneName;
 
-	// Cache previously selected gameObject (used in EquipScreen)
-	public GameObject			previousSelectedGameObject;
-
 	void Awake() {
 		// Singleton
 		S = this;
@@ -128,15 +125,15 @@ public class RPG : MonoBehaviour {
 		// Deactivate Pause Screen
 		PauseScreen.S.UnPause();
 		// Deactivate Item Screen
-		ItemScreen.S.gameObject.SetActive(false);
+		ItemScreen.S.Deactivate();
 		// Deactivate Spells Screen
-		SpellScreen.S.gameObject.SetActive(false);
+		SpellScreen.S.Deactivate();
 		// Deactivate Equip Screen
-		EquipScreen.S.gameObject.SetActive(false);
+		EquipScreen.S.Deactivate();
 		// Deactivate Save Screen
-		SaveScreen.S.gameObject.SetActive(false);
+		SaveScreen.S.Deactivate();
 		// Deactivate Shop Screen
-		ShopScreen.S.gameObject.SetActive(false);
+		ShopScreen.S.Deactivate();
 
 		// Deactivate PlayerButtons
 		PlayerButtons.S.gameObject.SetActive(false);
@@ -172,13 +169,10 @@ public class RPG : MonoBehaviour {
 				if (Random.value > 0.5f){
 					switch (previousSceneName){
 						case "Cave_1":
-							RainSpawner.S.isRaining = false;
-							RainSpawner.S.darkFilter.SetActive(false);
+							RainSpawner.S.StopRaining();
 							break;
 						default:
-							RainSpawner.S.StartCoroutine("FixedUpdateCoroutine");
-							RainSpawner.S.isRaining = true;
-							RainSpawner.S.darkFilter.SetActive(true);
+							RainSpawner.S.StartRaining();
 							break;
 					}
 				}else{
@@ -186,8 +180,7 @@ public class RPG : MonoBehaviour {
 				}
 				break;
 			default:
-				RainSpawner.S.isRaining = false;
-				RainSpawner.S.darkFilter.SetActive(false);
+				RainSpawner.S.StopRaining();
 				break;
 		}
 
@@ -286,6 +279,10 @@ public class RPG : MonoBehaviour {
 				if (currentSceneName == "Motel_1" || currentSceneName == "Shop_1"){
 					// Freeze Camera
 					CamManager.S.camMode = eCamMode.freezeCam;
+
+                } else {
+					// Set camera to Player position
+					Camera.main.transform.position = Player.S.gameObject.transform.position;
 				}
 			break;
 		}

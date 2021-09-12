@@ -50,6 +50,9 @@ public class OverworldItems : MonoBehaviour {
 			} else {
 				PauseMessage.S.DisplayText("Used Heal Potion!\nHealed " + PartyStats.S.playerName[ndx] + " for " + randomValue + " HP!");
 			}
+
+			// Set animation to success
+			PlayerButtons.S.anim[ndx].CrossFade("Success", 0);
 		} else {
 			// Display Text
 			PauseMessage.S.DisplayText(PartyStats.S.playerName[ndx] + " already at full health...\n...no need to use this potion!");
@@ -72,6 +75,9 @@ public class OverworldItems : MonoBehaviour {
 			} else {
 				PauseMessage.S.DisplayText("Used Magic Potion!\n" + PartyStats.S.playerName[ndx] + " gained " + randomValue + " MP!");
 			}
+
+			// Set animation to success
+			PlayerButtons.S.anim[ndx].CrossFade("Success", 0);
 		} else {
 			// Display Text
 			PauseMessage.S.DisplayText(PartyStats.S.playerName[ndx] + " already at full magic...\n...no need to use this potion!");
@@ -95,9 +101,6 @@ public class OverworldItems : MonoBehaviour {
 
 		// Switch ScreenMode 
 		ItemScreen.S.itemScreenMode = eItemScreenMode.usedItem;
-
-		// Set animation to idle
-		PlayerButtons.S.SetAnim("Idle");
 	}
 
 	public void CantUseItem() {

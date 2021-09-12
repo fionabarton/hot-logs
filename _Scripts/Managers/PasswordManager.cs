@@ -153,49 +153,44 @@ public class PasswordManager : MonoBehaviour {
 
 		if (tString.Length >= 5) {
 			// Seperate password
-			string exp1 = tString.Substring (0, 2);
-			string exp2 = tString.Substring (2, 2);
+			string lvl1 = tString.Substring (0, 2);
+			string lvl2 = tString.Substring (2, 2);
 			string gold = tString.Substring (4);
 
-			// Player 1 EXP
-			int tInt1 = System.Convert.ToInt32 (exp1);
+			// Convert strings into ints
+			int tLvl1 = System.Convert.ToInt32 (lvl1);
+			int tLvl2 = System.Convert.ToInt32 (lvl2);
 
-			// Player 2 EXP
-			int tInt2 = System.Convert.ToInt32 (exp2);
+			// Ensures Levels are between 1 and 10
+			if ((tLvl1 >= 1 && tLvl1 <= 10) && (tLvl2 >= 1 && tLvl2 <= 10)) {
+				// Set Player 1 Lvl
+				PartyStats.S.LVL[0] = tLvl1;
 
-			if ((tInt1 >= 1 && tInt1 <= 10) && (tInt2 >= 1 && tInt2 <= 10)) {
-
-				// Player 1 EXP
-				for (int i = 0; i < PartyStats.S.p1Lvl.Length; i++) {
-					PartyStats.S.p1Lvl [i] = false;
-				}
-				for (int i = 0; i < tInt1; i++) {
-					PartyStats.S.p1Lvl [i] = true;
-				}
-				switch (tInt1) {
+				// Set Player 1 Exp
+				switch (tLvl1) {
 				case 2:
-					PartyStats.S.EXP [0] = 8;
+					PartyStats.S.EXP[0] = 8;
 					break;
 				case 3:
-					PartyStats.S.EXP [0] = 24;
+					PartyStats.S.EXP[0] = 24;
 					break;
 				case 4:
-					PartyStats.S.EXP [0] = 48;
+					PartyStats.S.EXP[0] = 48;
 					break;
 				case 5:
-					PartyStats.S.EXP [0] = 111;
+					PartyStats.S.EXP[0] = 111;
 					break;
 				case 6:
-					PartyStats.S.EXP [0] = 221;
+					PartyStats.S.EXP[0] = 221;
 					break;
 				case 7:
-					PartyStats.S.EXP [0] = 451;
+					PartyStats.S.EXP[0] = 451;
 					break;
 				case 8:
-					PartyStats.S.EXP [0] = 801;
+					PartyStats.S.EXP[0] = 801;
 					break;
 				case 9:
-					PartyStats.S.EXP [0] = 1300;
+					PartyStats.S.EXP[0] = 1300;
 					break;
 				case 10:
 					PartyStats.S.EXP [0] = 2001;
@@ -204,40 +199,37 @@ public class PasswordManager : MonoBehaviour {
 					break;
 				}
 
-				// Player 2 EXP
-				for (int i = 0; i < PartyStats.S.p2Lvl.Length; i++) {
-					PartyStats.S.p2Lvl [i] = false;
-				}
-				for (int i = 0; i < tInt2; i++) {
-					PartyStats.S.p2Lvl [i] = true;
-				}
-				switch (tInt2) {
+				// Set Player 2 Lvl
+				PartyStats.S.LVL[1] = tLvl2;
+
+				// Set Player 2 Exp
+				switch (tLvl2) {
 				case 2:
 					PartyStats.S.EXP [1] = 10;
 					break;
 				case 3:
-					PartyStats.S.EXP [1] = 24;
+					PartyStats.S.EXP[1] = 24;
 					break;
 				case 4:
-					PartyStats.S.EXP [1] = 56;
+					PartyStats.S.EXP[1] = 56;
 					break;
 				case 5:
-					PartyStats.S.EXP [1] = 111;
+					PartyStats.S.EXP[1] = 111;
 					break;
 				case 6:
-					PartyStats.S.EXP [1] = 251;
+					PartyStats.S.EXP[1] = 251;
 					break;
 				case 7:
-					PartyStats.S.EXP [1] = 451;
+					PartyStats.S.EXP[1] = 451;
 					break;
 				case 8:
-					PartyStats.S.EXP [1] = 851;
+					PartyStats.S.EXP[1] = 851;
 					break;
 				case 9:
-					PartyStats.S.EXP [1] = 1301;
+					PartyStats.S.EXP[1] = 1301;
 					break;
 				case 10:
-					PartyStats.S.EXP [1] = 2101;
+					PartyStats.S.EXP[1] = 2101;
 					break;
 				default:
 					break;

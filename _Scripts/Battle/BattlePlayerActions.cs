@@ -16,12 +16,9 @@ public class BattlePlayerActions : MonoBehaviour
 	public GameObject		itemGO; 
 	public GameObject		runGO;
 
-	// For each Button, in Inspector, assign BattlePlayerActions._______Button to OnClick
-	public Button			spellButton;
-	public Button			fightButton; 
-	public Button			itemButton; 
-	public Button			defendButton; 
-	public Button			runButton; 
+	// Fight, Spell, Item, Defend, Run
+	public List<GameObject> buttonsGO;
+	public List<Button>		buttonsCS;
 
 	// Player Buttons (invisible, used to select party member)
 	public List<GameObject> playerButtonGO;
@@ -49,6 +46,9 @@ public class BattlePlayerActions : MonoBehaviour
 
 	// choose an enemy to attack
 	public void FightButton() {
+		// Cache Selected Gameobject (Fight Button) 
+		RPG.S.previousSelectedGameObject = buttonsGO[0];
+
 		BattleDialogue.S.DisplayText("Attack which enemy?");
 		ButtonsInteractable(false, false, false, false, false, true, true, true, false, false);
 
@@ -141,6 +141,9 @@ public class BattlePlayerActions : MonoBehaviour
 	public void RunButton() {
 		ButtonsDisableAll();
 
+		// Cache Selected Gameobject (Run Button) 
+		RPG.S.previousSelectedGameObject = buttonsGO[4];
+
 		// Not a "boss battle", so the party can attempt to run
 		if (_.enemyStats[0].questNdx == 0) {
 			if (Random.value < _.chanceToRun) {     // || Stats.S.LVL[0] - enemyStats[0].LVL >= 5
@@ -208,6 +211,9 @@ public class BattlePlayerActions : MonoBehaviour
 	public void SpellButton() {
 		ButtonsDisableAll();
 
+		// Cache Selected Gameobject (Spell Button) 
+		RPG.S.previousSelectedGameObject = buttonsGO[1];
+
 		if (PartyStats.S.spellNdx[_.PlayerNdx()] > 0) {
 
 			BattleUI.S.targetCursor.SetActive(false);
@@ -237,6 +243,9 @@ public class BattlePlayerActions : MonoBehaviour
 	public void ItemButton() {
 		ButtonsDisableAll();
 
+		// Cache Selected Gameobject (Item Button) 
+		RPG.S.previousSelectedGameObject = buttonsGO[2];
+
 		// If Player has an Item 
 		if (Inventory.S.GetItemList().Count > 0) {
 
@@ -262,11 +271,12 @@ public class BattlePlayerActions : MonoBehaviour
 	}
 
 	public void ButtonsInteractable(bool fight, bool spell, bool defend, bool run, bool item, bool eButton1, bool eButton2, bool eButton3, bool pButton1, bool pButton2) {
-		fightButton.interactable = fight;
-		spellButton.interactable = spell;
-		defendButton.interactable = defend;
-		runButton.interactable = run;
-		itemButton.interactable = item;
+		buttonsCS[0].interactable = fight;
+		buttonsCS[1].interactable = spell;
+		buttonsCS[2].interactable = defend;
+		buttonsCS[3].interactable = run;
+		buttonsCS[4].interactable = item;
+
 		enemyButtonCS[0].interactable = eButton1;
 		enemyButtonCS[1].interactable = eButton2;
 		enemyButtonCS[2].interactable = eButton3;

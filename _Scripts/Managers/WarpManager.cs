@@ -10,7 +10,6 @@ public class WarpManager : MonoBehaviour
     public static WarpManager S { get { return _S; } set { _S = value; } }
 
     void Awake() {
-        // Singleton
         S = this;
     }
 
@@ -32,6 +31,16 @@ public class WarpManager : MonoBehaviour
 			Player.S.respawnPos = tWarpPos;
 		}
 
+		// Camera Settings
+		if (tCamFollows) {
+			// Camera Follows Player
+			CamManager.S.camMode = eCamMode.followAll;
+		} else {
+			// Set Freeze Camera Position
+			CamManager.S.camMode = eCamMode.freezeCam;
+			CamManager.S.transform.position = tCamWarpPos;
+		}
+
 		// Wait for 0.5f seconds
 		yield return new WaitForSeconds(0.5f);
 
@@ -43,16 +52,6 @@ public class WarpManager : MonoBehaviour
 		} else {
 			// Load Scene
 			RPG.S.LoadLevel(tSceneName);
-		}
-
-		// Camera Settings
-		if (tCamFollows) {
-			// Camera Follows Player
-			CamManager.S.camMode = eCamMode.followAll;
-		} else {
-			// Set Freeze Camera Position
-			CamManager.S.camMode = eCamMode.freezeCam;
-			CamManager.S.transform.position = tCamWarpPos;
 		}
 	}
 }

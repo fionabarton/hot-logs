@@ -33,10 +33,10 @@ public class PauseScreen : MonoBehaviour {
 	float               timeWhenEnabled;
     float				timeWhenDisabled;
 
-	GameObject			previousSelectedGameObject;
-
 	// Allows parts of Loop() to be called once rather than repeatedly every frame.
 	public bool 		canUpdate;
+
+	GameObject			previousSelectedGameObject;
 
 	void Awake() {
 		S = this;
@@ -88,9 +88,15 @@ public class PauseScreen : MonoBehaviour {
 
 			if (canUpdate) {
 				for (int i = 0; i < buttonGO.Count; i++) {
-					if (UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject == buttonGO [i]) {
+					if (UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject == buttonGO[i]) {
 						// Set Cursor Position to Selected Button
 						Utilities.S.PositionCursor(buttonGO[i], 160);
+
+						// Set selected button text color	
+						buttonGO[i].gameObject.GetComponentInChildren<Text>().color = new Color32(205, 208, 0, 255);
+					} else {
+						// Set selected button text color	
+						buttonGO[i].gameObject.GetComponentInChildren<Text>().color = new Color32(255, 255, 255, 255);
 					}
 				}
                 canUpdate = false;
@@ -102,26 +108,19 @@ public class PauseScreen : MonoBehaviour {
 		// If Active
 		if (isActiveAndEnabled) {
 			// Increment seconds & reset timer
-			if (timeDone <= Time.time)
-			{
+			if (timeDone <= Time.time) {
 				seconds += 1;
 				timeDone = 1 + Time.time;
 			}
 
 			// Increment minutes & reset seconds
-			if (seconds > 59)
-			{
+			if (seconds > 59) {
 				minutes += 1;
 				seconds = 0;
 			}
 
 			// Display Time, Step Count, & Gold
-			// Add 0 to Seconds if necessary ("Time: 0:01" rather than "Time 0:1")
-			if (seconds > 9) {
-				Time_Steps_Gold_TXT ();
-			} else {
-				Time_Steps_Gold_TXT ("0");
-			}
+			Time_Steps_Gold_TXT ();
 		}
 		yield return new WaitForFixedUpdate ();
 		StartCoroutine ("FixedUpdateCoroutine");
@@ -162,8 +161,6 @@ public class PauseScreen : MonoBehaviour {
 		// Overworld Player Stats
 		Player.S.playerUITimer = Time.time + 1.5f;
 
-		gameObject.SetActive(false);
-
 		// Unpause
 		RPG.S.paused = false;
 
@@ -181,13 +178,25 @@ public class PauseScreen : MonoBehaviour {
 
 		// Update Delegate
 		UpdateManager.updateDelegate -= Loop;
+
+		gameObject.SetActive(false);
+	}
+
+	public string GetTime() {
+		string zeroString = "";
+
+		if (seconds < 10) {
+			zeroString = "0";
+		} 
+
+		return minutes.ToString() + ":" + zeroString + seconds.ToString();
 	}
 
 	// Display Time, Steps, & Gold
-	void Time_Steps_Gold_TXT (string zeroString = null) {
+	void Time_Steps_Gold_TXT () {
         if (Player.S) {
 			// Time
-			fileStatsNumText.text = minutes.ToString() + ":" + zeroString + seconds.ToString() + "\n" +
+			fileStatsNumText.text = GetTime() + "\n" +
 			// Steps Count
 			Player.S.stepsCount + "\n" +
 			// Gold
