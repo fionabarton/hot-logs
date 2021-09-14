@@ -23,7 +23,7 @@ public class BattleEnd : MonoBehaviour {
         _.enemyAmount -= 1;
 
 		// Deactivate Enemy Button & Shadow
-		BattlePlayerActions.S.EnemyButtonAndShadowSetActive(ndx, false);
+		BattlePlayerActions.S.EnemyButtonSetActive(ndx, false);
 
 		// Set Selected GameObject (Fight Button)
 		_.enemyStats[ndx].isDead = true;
@@ -196,7 +196,7 @@ public class BattleEnd : MonoBehaviour {
 		if (_.expToAdd <= 0) { _.expToAdd = 0; }
 
 		// Add Gold
-		Party.S.Gold += _.goldToAdd;
+		Party.S.gold += _.goldToAdd;
 
 		// Add EXP
 		if(Party.S.partyNdx >= 1) {

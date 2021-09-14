@@ -103,11 +103,11 @@ public class BattleInitiative : MonoBehaviour {
         // 1 Enemy
         if (_.enemyAmount >= 1) {
 			// Activate/Deactivate Enemy Buttons, Stats, Sprites
-			BattlePlayerActions.S.EnemyButtonAndShadowSetActive(0, true);
+			BattlePlayerActions.S.EnemyButtonSetActive(0, true);
 			_.enemySprite[0].enabled = true;
-			BattlePlayerActions.S.EnemyButtonAndShadowSetActive(1, false);
+			BattlePlayerActions.S.EnemyButtonSetActive(1, false);
 			_.enemySprite[1].enabled = false;
-			BattlePlayerActions.S.EnemyButtonAndShadowSetActive(2, false);
+			BattlePlayerActions.S.EnemyButtonSetActive(2, false);
 			_.enemySprite[2].enabled = false;
 
 			Battle.S.enemyAnimator[0].CrossFade("Arrival", 0);
@@ -136,7 +136,7 @@ public class BattleInitiative : MonoBehaviour {
 			// 2 enemies
 			if (_.enemyAmount >= 2) {
 				// Activate Enemy Buttons, Stats, Sprites
-				BattlePlayerActions.S.EnemyButtonAndShadowSetActive(1, true);
+				BattlePlayerActions.S.EnemyButtonSetActive(1, true);
 				_.enemySprite[1].enabled = true;
 
 				Battle.S.enemyAnimator[1].CrossFade("Arrival", 0);
@@ -162,7 +162,7 @@ public class BattleInitiative : MonoBehaviour {
 				// 3 Enemies
 				if (_.enemyAmount >= 3) {
 					// Activate Enemy Buttons, Stats, Sprites
-					BattlePlayerActions.S.EnemyButtonAndShadowSetActive(2, true);
+					BattlePlayerActions.S.EnemyButtonSetActive(2, true);
 					_.enemySprite[2].enabled = true;
 
 					Battle.S.enemyAnimator[2].CrossFade("Arrival", 0);

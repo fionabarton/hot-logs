@@ -27,8 +27,8 @@ public class BattleSpells : MonoBehaviour {
 	}
 
     public void AddFunctionToButton(Action<int> functionToPass, string messageToDisplay, Spell spell) {
-		if(spell.type == eSpellType.healing) {
-			if (Party.stats[Battle.S.PlayerNdx()].MP >= spell.cost) {
+		if (Party.stats[Battle.S.PlayerNdx()].MP >= spell.cost) {
+			if (spell.type == eSpellType.healing) {
 				BattlePlayerActions.S.ButtonsInteractable(false, false, false, false, false, false, false, false, true, true);
 
 				// Set a Player Button as Selected GameObject
@@ -37,11 +37,7 @@ public class BattleSpells : MonoBehaviour {
 				// Add Item Listeners to Player Buttons
 				BattlePlayerActions.S.playerButtonCS[0].onClick.AddListener(delegate { functionToPass(0); });
 				BattlePlayerActions.S.playerButtonCS[1].onClick.AddListener(delegate { functionToPass(1); });
-			} else {
-				SpellManager.S.CantUseSpell("Not enough MP to cast this spell!");
-			}
-		} else if(spell.type == eSpellType.offensive) {
-			if (Party.stats[Battle.S.PlayerNdx()].MP >= spell.cost) {
+			} else if (spell.type == eSpellType.offensive) {
 				BattlePlayerActions.S.ButtonsInteractable(false, false, false, false, false, true, true, true, false, false);
 
 				// Set an Enemy Button as Selected GameObject
@@ -51,11 +47,9 @@ public class BattleSpells : MonoBehaviour {
 				BattlePlayerActions.S.enemyButtonCS[0].onClick.AddListener(delegate { functionToPass(0); });
 				BattlePlayerActions.S.enemyButtonCS[1].onClick.AddListener(delegate { functionToPass(1); });
 				BattlePlayerActions.S.enemyButtonCS[2].onClick.AddListener(delegate { functionToPass(2); });
-			} else {
-				SpellManager.S.CantUseSpell("Not enough MP to cast this spell!");
 			}
-		} else if(spell.type == eSpellType.world) {
-			SpellManager.S.CantUseSpell("Can't use this spell during battle!");
+		} else {
+			SpellManager.S.CantUseSpell("Not enough MP to cast this spell!");
 			return;
 		}
 
@@ -78,43 +72,8 @@ public class BattleSpells : MonoBehaviour {
 	}
 
 	//////////////////////////////////////////////////////////
-	/// Heal
+	/// Heal - Heal the selected party member 
 	//////////////////////////////////////////////////////////
-
-	public void HealSpell() {
-		if (Party.stats[Battle.S.PlayerNdx()].MP >= 3) {
-			gameObject.SetActive(false);
-			SelectPartyMemberToHeal();
-		} else {
-			SpellManager.S.CantUseSpell("Not enough MP to cast this spell!");
-		}
-	}
-
-	// Select which party member to heal
-	public void SelectPartyMemberToHeal(){
-		// Deactivate Cursor
-		ScreenCursor.S.cursorGO.SetActive(false);
-
-		// Deactivate PauseMessage
-		PauseMessage.S.gameObject.SetActive (false);
-
-		BattlePlayerActions.S.ButtonsInteractable (false, false, false, false, false, false, false, false, true, true);
-
-		// Set a Player Button as Selected GameObject
-		BattlePlayerActions.S.SetSelectedPlayerButton ();
-
-		// Add HealSpell Listeners to Player Buttons
-		BattlePlayerActions.S.playerButtonCS[0].onClick.AddListener (delegate{HealSelectedPartyMember (0);});
-		BattlePlayerActions.S.playerButtonCS[1].onClick.AddListener (delegate{HealSelectedPartyMember (1);});
-
-		// Display Text
-		BattleDialogue.S.DisplayText ("Heal which party member?");
-
-		// Switch Mode
-		_.battleMode = eBattleMode.canGoBackToFightButton;
-	}
-
-	// Heal the selected party member 
 	public void HealSelectedPartyMember(int ndx){
         if (_.playerDead[ndx]) {
 			// Display Text
@@ -170,48 +129,12 @@ public class BattleSpells : MonoBehaviour {
 	}
 
 	//////////////////////////////////////////////////////////
-	/// Fireball
-	//////////////////////////////////////////////////////////
-
-	// Set up the Fireball button
-	public void FireballSpell(int i = 0) {
-		if (Party.stats[Battle.S.PlayerNdx()].MP >= 2) {
-			gameObject.SetActive(false);
-			SelectEnemyToAttack();
-		} else {
-			SpellManager.S.CantUseSpell("Not enough MP to cast this spell!");
-		}
-	}
-
-	// Select which enemy to attack
-	public void SelectEnemyToAttack() {
-		// Deactivate Cursor
-		ScreenCursor.S.cursorGO.SetActive(false);
-
-		// Deactivate PauseMessage
-		PauseMessage.S.gameObject.SetActive (false);
-
-		BattlePlayerActions.S.ButtonsInteractable (false, false, false, false, false, true, true, true, false, false);
-		BattlePlayerActions.S.SetSelectedEnemyButton ();
-
-		// Calls PlayerAttack() when you click the Enemy1, Enemy2, or Enemy3 Button
-		BattlePlayerActions.S.enemyButtonCS[0].onClick.AddListener (delegate{AttackSelectedEnemies (0);});
-		BattlePlayerActions.S.enemyButtonCS[1].onClick.AddListener (delegate{AttackSelectedEnemies (1);});
-		BattlePlayerActions.S.enemyButtonCS[2].onClick.AddListener (delegate{AttackSelectedEnemies (2);});
-
-		// Display Text
-		BattleDialogue.S.DisplayText ("Attack which enemy?");
-
-		// Switch Mode
-		_.battleMode = eBattleMode.canGoBackToFightButton;
-	}
-
-	// Attack the selected enemy 
-	public void AttackSelectedEnemies (int ndx){
+	/// Fireball - Attack the selected enemy
+	////////////////////////////////////////////////////////// 
+	public void AttackSelectedEnemies(int ndx){
 		// Subtract Spell cost from Player's MP
 		RPG.S.SubtractPlayerMP (_.PlayerNdx(), 2);
 
-		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Miss/Dodge
 		// 5% chance to Miss/Dodge...
 		// ...but 25% chance if Defender WIS is more than Attacker's 
@@ -266,35 +189,15 @@ public class BattleSpells : MonoBehaviour {
 	//////////////////////////////////////////////////////////
 	/// Fireblast
 	//////////////////////////////////////////////////////////
-
-	// Set up the Fireblast button
-	public void FireblastSpell() {
-		if (Party.stats[Battle.S.PlayerNdx()].MP >= 3) {
-			gameObject.SetActive(false);
-			AttackAllEnemies();
-		} else {
-			SpellManager.S.CantUseSpell("Not enough MP to cast this spell!");
-		}
-	}
-
-	// Attack all enemies 
-	public void AttackAllEnemies () {
-		// Deactivate Cursor
-		ScreenCursor.S.cursorGO.SetActive(false);
-
-		// Deactivate PauseMessage
-		PauseMessage.S.gameObject.SetActive (false);
-
+	public void AttackAllEnemies (int unusedIntBecauseOfAddFunctionToButtonParameter = 0) {
 		// Subtract Spell cost from Player's MP
 		RPG.S.SubtractPlayerMP (_.PlayerNdx(), 3);
 
-		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// *** TBR: Reference the Defender (still living) with the highest WIS ***
-		// 
+	
 		// Miss/Dodge
 		// 5% chance to Miss/Dodge...
 		// ...but 25% chance if Defender WIS is more than Attacker's 
-		//if (UnityEngine.Random.value <= 0.05f || (_.enemyStats [0].WIS > Stats.S.WIS [_.PlayerNdx()] && UnityEngine.Random.value < 0.25f)) {
 		if (UnityEngine.Random.value <= 0.05f || (_.enemyStats[0].WIS > Party.stats[_.PlayerNdx()].WIS && UnityEngine.Random.value < 0.25f)) {
 			if (UnityEngine.Random.value <= 0.5f) {
 				BattleDialogue.S.DisplayText(Party.stats[_.PlayerNdx()].name + " attempted the spell... but missed those goons completely!");
@@ -403,8 +306,12 @@ public class BattleSpells : MonoBehaviour {
 		// Deactivate Enemy Shield
 		_.enemyShields[enemyNdx].SetActive(false);
 
+		// Deactivate Cursors
+		BattleUI.S.turnCursor.SetActive(false); 
+		BattleUI.S.targetCursor.SetActive(false);
+
 		// Deactivate Enemy Button, Stats
-		BattlePlayerActions.S.EnemyButtonAndShadowSetActive(enemyNdx, false);
+		BattlePlayerActions.S.EnemyButtonSetActive(enemyNdx, false);
 		// Set Selected GameObject (Fight Button)
 		_.enemyStats[enemyNdx].isDead = true;
 		// Remove Enemy from Turn Order

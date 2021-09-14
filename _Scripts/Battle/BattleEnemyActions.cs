@@ -335,7 +335,7 @@ public class BattleEnemyActions : MonoBehaviour {
 		_.goldToAdd += _.enemyStats [enemyNdx].Gold;
 
 		// Activate/Deactivate Enemy Buttons, Stats, Sprites
-		BattlePlayerActions.S.EnemyButtonAndShadowSetActive(enemyNdx, true);
+		BattlePlayerActions.S.EnemyButtonSetActive(enemyNdx, true);
 		_.enemySprite [enemyNdx].enabled = true;
 
 		// Enable/Update Health Bars

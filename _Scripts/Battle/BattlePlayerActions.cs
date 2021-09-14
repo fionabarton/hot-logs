@@ -305,7 +305,7 @@ public class BattlePlayerActions : MonoBehaviour
 	}
 
 	// Activate/Deactivate Player/Enemy Buttons, Shadows, Progress Bars, Sprites/////////////////////////
-	public void EnemyButtonAndShadowSetActive(int enemyNdx, bool setActive) {
+	public void EnemyButtonSetActive(int enemyNdx, bool setActive) {
 		enemyButtonGO[enemyNdx].SetActive(setActive);
 		ProgressBars.S.enemyHealthBarsCS[enemyNdx].transform.parent.gameObject.SetActive(setActive);
 	}
