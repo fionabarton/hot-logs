@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-//using System;
+using System;
 
 /// <summary>
 /// Outside of battle, handles what happens when a spell button is clicked
@@ -16,57 +16,37 @@ public class WorldSpells : MonoBehaviour {
 		S = this;
 	}
 
-	//public void AddFunctionToButton(Action<int> functionToPass, string messageToDisplay) {
-	//	// Buttons Interactable
-	//	Utilities.S.ButtonsInteractable(PlayerButtons.S.buttonsCS, true);
-	//	Utilities.S.ButtonsInteractable(ItemScreen.S.itemButtons, false);
-
-	//	// Set Selected GameObject
-	//	Utilities.S.SetSelectedGO(PlayerButtons.S.buttonsCS[0].gameObject);
-
-	//	// Remove Listeners
-	//	Utilities.S.RemoveListeners(PlayerButtons.S.buttonsCS);
-
-	//	// Display Text
-	//	PauseMessage.S.DisplayText(messageToDisplay);
-
-	//	// Add Listeners
-	//	PlayerButtons.S.buttonsCS[0].onClick.AddListener(delegate { functionToPass(0); });
-	//	PlayerButtons.S.buttonsCS[1].onClick.AddListener(delegate { functionToPass(1); });
-	//}
-
-	//////////////////////////////////////////////////////////
-	/// Heal
-	//////////////////////////////////////////////////////////
-
-	// Select which party member to heal
-	public void SelectPartyMemberToHeal() { // Overworld
-		if (Party.stats[SpellScreen.S.playerNdx].MP >= 3) {
+    public void AddFunctionToButton(Action<int> functionToPass, string messageToDisplay, Spell spell) {
+		if (Party.stats[SpellScreen.S.playerNdx].MP >= spell.cost) {
 			// Set animation to idle
 			PlayerButtons.S.SetAnim("Idle");
 
 			// Buttons Interactable
 			Utilities.S.ButtonsInteractable(PlayerButtons.S.buttonsCS, true);
 			Utilities.S.ButtonsInteractable(SpellScreen.S.spellsButtons, false);
+
 			// Set Selected GameObject
 			Utilities.S.SetSelectedGO(SpellScreen.S.previousSelectedPlayerGO);
 
-			// Add Listeners
-			PlayerButtons.S.buttonsCS[0].onClick.AddListener(delegate { HealSelectedPartyMember(0); });
-			PlayerButtons.S.buttonsCS[1].onClick.AddListener(delegate { HealSelectedPartyMember(1); });
-
 			// Display Text
-			PauseMessage.S.DisplayText("Heal which party member?");
+			PauseMessage.S.DisplayText(messageToDisplay);
+
+			// Add Listeners
+			PlayerButtons.S.buttonsCS[0].onClick.AddListener(delegate { functionToPass(0); });
+			PlayerButtons.S.buttonsCS[1].onClick.AddListener(delegate { functionToPass(1); });
 
 			SpellScreen.S.canUpdate = true;
 			// Switch ScreenMode
 			SpellScreen.S.mode = eSpellScreenMode.pickWhichMemberToHeal;
 		} else {
 			SpellManager.S.CantUseSpell("Not enough MP to cast this spell!");
+			return;
 		}
-	}
+    }
 
-	// Heal the selected party member 
+	//////////////////////////////////////////////////////////
+	/// Heal - Heal the selected party member 
+	//////////////////////////////////////////////////////////
 	public void HealSelectedPartyMember(int ndx) { // Overworld
 		if (Party.stats[ndx].HP < Party.stats[ndx].maxHP) {
 			// Set animation to success
@@ -95,7 +75,6 @@ public class WorldSpells : MonoBehaviour {
 	//////////////////////////////////////////////////////////
 	/// Warp
 	//////////////////////////////////////////////////////////
-
 	public void WarpSpell() {
 		if (Party.stats[0].MP >= 3) {
 			// Warp to a random location...
