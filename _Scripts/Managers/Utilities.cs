@@ -141,4 +141,12 @@ public class Utilities : MonoBehaviour
 			buttons[i].GetComponentInChildren<Text>().color = color;
 		}
 	}
+
+	////////////////////////////////////////////////////////////////////////////////
+	// Activate or deactivate all of the gameObject elements stored within a list 
+	public void SetActiveList(List<GameObject> objects, bool isActive) {
+		for (int i = 0; i < objects.Count; i++) {
+			objects[i].SetActive(isActive);
+		}
+	}
 }
