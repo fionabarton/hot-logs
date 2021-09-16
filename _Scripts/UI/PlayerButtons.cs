@@ -61,12 +61,12 @@ public class PlayerButtons : MonoBehaviour {
 					Party.stats[1].maxMP + "\n";
 			}
 
-			goldValue.text = "" + Party.S.Gold; 
+			goldValue.text = "" + Party.S.gold; 
 
 		}catch(NullReferenceException){}
 	}
 
-	public void SetAnim(string animName) {
+	public void SetSelectedAnim(string animName) {
 		for(int i = 0; i < buttonsCS.Count; i++) {
 			if (UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject == buttonsCS[i].gameObject) {
 				anim[i].CrossFade(animName, 0);
@@ -78,4 +78,12 @@ public class PlayerButtons : MonoBehaviour {
 			}
 		}
     }
+
+	public void SetButtonsColor(List<Button> buttons, Color32 color) {
+		for(int i = 0; i < buttons.Count; i++) {
+			ColorBlock colorBlock = buttons[i].colors;
+			colorBlock.normalColor = color;
+			buttons[i].colors = colorBlock;
+		}
+	} 
 }
