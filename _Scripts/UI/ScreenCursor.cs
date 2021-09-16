@@ -13,12 +13,10 @@ public class ScreenCursor : MonoBehaviour
     public static ScreenCursor S { get { return _S; } set { _S = value; } }
     
     [Header("Set in Inspector")]
-    // Cursor GameObject
-    public GameObject cursorGO;
-    public RectTransform rectTrans;
+    public List<GameObject>     cursorGO = new List<GameObject>();
+    public List<RectTransform>  rectTrans = new List<RectTransform>();
 
     void Awake() {
-        // Singleton
         S = this;
     }
 }
