@@ -8,8 +8,9 @@ public class BattleUI : MonoBehaviour {
 	// Cursors
 	public GameObject		turnCursor;
 	public SpriteRenderer	turnCursorSRend;
-	public GameObject		targetCursor;
-	public Animator			targetCursorAnim;
+
+	public List<GameObject> targetCursors = new List<GameObject>();
+	public List<Animator>	targetCursorAnims = new List<Animator>();
 
 	// Turn Order UI
 	public Text				turnOrderTxt;
@@ -27,6 +28,12 @@ public class BattleUI : MonoBehaviour {
 
 	void Start() {
 		_ = Battle.S;
+	}
+
+	private void Update() {
+		if (Input.GetKeyDown(KeyCode.T)) {
+			TargetAllEnemies();
+		}
 	}
 
 	public void TurnCursorPosition(GameObject go) {
@@ -58,33 +65,61 @@ public class BattleUI : MonoBehaviour {
 
 	public void TargetCursorPosition(GameObject go, float y) {
 		// Activate Cursor
-		if (!targetCursor.activeInHierarchy) {
-			targetCursor.SetActive(true);
+		if (!targetCursors[0].activeInHierarchy) {
+			targetCursors[0].SetActive(true);
 		}
 
 		// Position Cursor & Set Anim
-		if (targetCursor.activeInHierarchy) {
+		if (targetCursors[0].activeInHierarchy) {
 			if (go == BattlePlayerActions.S.playerButtonGO[0]) {
-				targetCursor.transform.localPosition = new Vector2((_.playerSprite[0].transform.position.x + 1), (_.playerSprite[0].transform.position.y + y));
-				targetCursorAnim.CrossFade("Target_Cursor_Flash_Left", 0);
+				targetCursors[0].transform.localPosition = new Vector2((_.playerSprite[0].transform.position.x + 1), (_.playerSprite[0].transform.position.y + y));
+				targetCursorAnims[0].CrossFade("Target_Cursor_Flash_Left", 0);
 			} else if (go == BattlePlayerActions.S.playerButtonGO[1]) {
-				targetCursor.transform.localPosition = new Vector2((_.playerSprite[1].transform.position.x + 1), (_.playerSprite[1].transform.position.y + y));
-				targetCursorAnim.CrossFade("Target_Cursor_Flash_Left", 0);
+				targetCursors[0].transform.localPosition = new Vector2((_.playerSprite[1].transform.position.x + 1), (_.playerSprite[1].transform.position.y + y));
+				targetCursorAnims[0].CrossFade("Target_Cursor_Flash_Left", 0);
 			} else if (go == BattlePlayerActions.S.enemyButtonGO[0]) {
-				targetCursor.transform.localPosition = new Vector2((_.enemySprite[0].transform.position.x + -1), (_.enemySprite[0].transform.position.y + y));
-				targetCursorAnim.CrossFade("Target_Cursor_Flash_Right", 0);
+				targetCursors[0].transform.localPosition = new Vector2((_.enemySprite[0].transform.position.x + -1), (_.enemySprite[0].transform.position.y + y));
+				targetCursorAnims[0].CrossFade("Target_Cursor_Flash_Right", 0);
 			} else if (go == BattlePlayerActions.S.enemyButtonGO[1]) {
-				targetCursor.transform.localPosition = new Vector2((_.enemySprite[1].transform.position.x + -1), (_.enemySprite[1].transform.position.y + y));
-				targetCursorAnim.CrossFade("Target_Cursor_Flash_Right", 0);
+				targetCursors[0].transform.localPosition = new Vector2((_.enemySprite[1].transform.position.x + -1), (_.enemySprite[1].transform.position.y + y));
+				targetCursorAnims[0].CrossFade("Target_Cursor_Flash_Right", 0);
 			} else if (go == BattlePlayerActions.S.enemyButtonGO[2]) {
-				targetCursor.transform.localPosition = new Vector2((_.enemySprite[2].transform.position.x + -1), (_.enemySprite[2].transform.position.y + y));
-				targetCursorAnim.CrossFade("Target_Cursor_Flash_Right", 0);
+				targetCursors[0].transform.localPosition = new Vector2((_.enemySprite[2].transform.position.x + -1), (_.enemySprite[2].transform.position.y + y));
+				targetCursorAnims[0].CrossFade("Target_Cursor_Flash_Right", 0);
 			} else {
 				RectTransform rectTrans = go.GetComponent<RectTransform>();
 				if (rectTrans != null) {
-					targetCursor.transform.localPosition = new Vector2((rectTrans.position.x + 1), (rectTrans.position.y + y));
-					targetCursorAnim.CrossFade("Target_Cursor_Flash_Left", 0);
+					targetCursors[0].transform.localPosition = new Vector2((rectTrans.position.x + 1), (rectTrans.position.y + y));
+					targetCursorAnims[0].CrossFade("Target_Cursor_Flash_Left", 0);
 				}
+			}
+		}
+	}
+
+	public void TargetAllEnemies() {
+		for (int i = _.enemyStats.Count - 1; i >= 0; i--) {
+			if (!_.enemyStats[i].isDead) {
+				// Activate and set target cursor position
+				targetCursors[i].SetActive(true);
+				targetCursors[i].transform.localPosition = new Vector2((_.enemySprite[i].transform.position.x + -1), (_.enemySprite[i].transform.position.y));
+				targetCursorAnims[i].CrossFade("Target_Cursor_Flash_Right", 0);
+			} else {
+				//Deactivate target cursor
+				targetCursors[i].SetActive(false);
+			}
+		}
+	}
+
+	public void TargetAllPartyMembers() {
+		for (int i = _.playerDead.Count - 1; i >= 0; i--) {
+			if (!_.playerDead[i]) {
+				// Activate and set target cursor position
+				targetCursors[i].SetActive(true);
+				targetCursors[i].transform.localPosition = new Vector2((_.playerSprite[i].transform.position.x + 1), (_.playerSprite[i].transform.position.y));
+				targetCursorAnims[i].CrossFade("Target_Cursor_Flash_Left", 0);
+			} else {
+				//Deactivate target cursor
+				targetCursors[i].SetActive(false);
 			}
 		}
 	}
