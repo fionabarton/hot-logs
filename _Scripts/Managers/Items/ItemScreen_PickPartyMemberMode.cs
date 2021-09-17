@@ -2,6 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// ItemScreen Mode/Step 2: PickPartyMember
+/// - Select which party member to use an item on
+/// </summary>
 public class ItemScreen_PickPartyMemberMode : MonoBehaviour {
 	[Header("Set Dynamically")]
 	// Singleton

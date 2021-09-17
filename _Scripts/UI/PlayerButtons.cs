@@ -5,6 +5,16 @@ using UnityEngine.UI;
 using System;
 
 public class PlayerButtons : MonoBehaviour {
+	[Header("Set in Inspector")]
+	public Text[] statName;
+	public Text[] statValue;
+
+	public List<GameObject> buttonsGO;
+	public List<Button> buttonsCS;
+	public List<Animator> anim;
+
+	public Text goldValue;
+
 	[Header("Set Dynamically")]
 	// Singleton
 	private static PlayerButtons _S;
@@ -12,57 +22,51 @@ public class PlayerButtons : MonoBehaviour {
 
 	public RectTransform	rectTrans;
 
-	[Header ("Set in Inspector")]
-	public Text[] 			statName = new Text[2];
-	public Text[] 			statValue = new Text[2];
-
-	public List<GameObject> buttonsGO;
-	public List<Button> 	buttonsCS;
-	public List<Animator>	anim;
-
-	[Header("Set Dynamically")]
-	public Text				goldValue;
-
 	void Awake() {
 		S = this;
 	}
 
-    void OnEnable () {
-		UpdateGUI ();
+    void OnEnable() {
+        try {
+            UpdateGUI();
+        }
+        catch (NullReferenceException) { }
 
         // Set position 
-		if (RPG.S.paused) {
-			rectTrans.anchoredPosition = new Vector2(0, 0);
-		} else {
-			rectTrans.anchoredPosition = new Vector2(0, 650);
-		}
-	}
+        if (RPG.S.paused) {
+            rectTrans.anchoredPosition = new Vector2(0, 0);
+        } else {
+            rectTrans.anchoredPosition = new Vector2(0, 650);
+        }
+    }
 
-	// Display the party's current HP, MP, and Gold
+    // Display the party's current HP, MP, and Gold
     public void UpdateGUI(){
-		statName [0].text = "HP\nMP";
-		statName [1].text = "HP\nMP";
+		statName[0].text = "HP\nMP";
+		statName[1].text = "HP\nMP";
 		// Weapon: STR, Armor: DEF
 
 		try{
-			statValue [0].text = 
-				PartyStats.S.HP [0] + "/" + 
-				PartyStats.S.maxHP [0] + "\n" + 
-				PartyStats.S.MP [0] + "/" + 
-				PartyStats.S.maxMP [0] + "\n";
+			if(Party.stats.Count > 0) {
+				statValue[0].text =
+					Party.stats[0].HP + "/" +
+					Party.stats[0].maxHP + "\n" +
+					Party.stats[0].MP + "/" +
+					Party.stats[0].maxMP + "\n";
 
-			statValue [1].text = 
-				PartyStats.S.HP [1] + "/" + 
-				PartyStats.S.maxHP [1] + "\n" + 
-				PartyStats.S.MP [1] + "/" + 
-				PartyStats.S.maxMP [1] + "\n";
-		
-			goldValue.text = "" + PartyStats.S.Gold; 
+				statValue[1].text =
+					Party.stats[1].HP + "/" +
+					Party.stats[1].maxHP + "\n" +
+					Party.stats[1].MP + "/" +
+					Party.stats[1].maxMP + "\n";
+			}
+
+			goldValue.text = "" + Party.S.gold; 
 
 		}catch(NullReferenceException){}
 	}
 
-	public void SetAnim(string animName) {
+	public void SetSelectedAnim(string animName) {
 		for(int i = 0; i < buttonsCS.Count; i++) {
 			if (UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject == buttonsCS[i].gameObject) {
 				anim[i].CrossFade(animName, 0);
@@ -74,4 +78,12 @@ public class PlayerButtons : MonoBehaviour {
 			}
 		}
     }
+
+	public void SetButtonsColor(List<Button> buttons, Color32 color) {
+		for(int i = 0; i < buttons.Count; i++) {
+			ColorBlock colorBlock = buttons[i].colors;
+			colorBlock.normalColor = color;
+			buttons[i].colors = colorBlock;
+		}
+	} 
 }

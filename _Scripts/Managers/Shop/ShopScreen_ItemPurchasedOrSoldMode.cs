@@ -2,6 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// ShopScreen Mode/Step 2: ItemPurchasedOrSold
+/// - Buy or sell an item
+/// </summary>
 public class ShopScreen_ItemPurchasedOrSoldMode : MonoBehaviour {
 	[Header("Set Dynamically")]
 	// Singleton
@@ -26,7 +30,7 @@ public class ShopScreen_ItemPurchasedOrSoldMode : MonoBehaviour {
 		// Switch ScreenMode 
 		shopScreen.shopScreenMode = eShopScreenMode.itemPurchasedOrSold;
 
-		if (PartyStats.S.Gold >= item.value) {
+		if (Party.S.Gold >= item.value) {
 			// Added to Player Inventory
 			Inventory.S.AddItemToInventory(item);
 
@@ -34,10 +38,10 @@ public class ShopScreen_ItemPurchasedOrSoldMode : MonoBehaviour {
 			PauseMessage.S.DisplayText("Purchased!" + " For " + item.value + " gold!");
 
 			// Subtract item price from Player's Gold
-			PartyStats.S.Gold -= item.value;
+			Party.S.Gold -= item.value;
 
 			// Update Gold 
-			PlayerButtons.S.goldValue.text = PartyStats.S.Gold.ToString();
+			PlayerButtons.S.goldValue.text = Party.S.Gold.ToString();
 		} else {
 			// Dialogue
 			PauseMessage.S.DisplayText("Not enough money!");
@@ -63,10 +67,10 @@ public class ShopScreen_ItemPurchasedOrSoldMode : MonoBehaviour {
 		PauseMessage.S.DisplayText("Sold!" + " For " + item.value + " gold!" + " Cha - CHING!");
 
 		// Subtract item price from Player's Gold
-		PartyStats.S.Gold += item.value;
+		Party.S.Gold += item.value;
 
 		// Update Gold 
-		PlayerButtons.S.goldValue.text = PartyStats.S.Gold.ToString();
+		PlayerButtons.S.goldValue.text = Party.S.Gold.ToString();
 
 		// Remove Listeners
 		Utilities.S.RemoveListeners(shopScreen.inventoryButtons);

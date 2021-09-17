@@ -4,6 +4,10 @@ using UnityEngine;
 using UnityEngine.UI;
 using System;
 
+/// <summary>
+/// ShopScreen Mode/Step 1: PickItem
+/// - Select an item to buy or sell
+/// </summary>
 public class ShopScreen_PickItemMode : MonoBehaviour {
 	[Header("Set Dynamically")]
 	// Singleton

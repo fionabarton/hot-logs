@@ -27,7 +27,6 @@ public class BattleInitiative : MonoBehaviour {
 	private Dictionary<string, int> 	turnOrder = new Dictionary<string, int> ();
 
 	void Awake() {
-		// Singleton
 		S = this;
 	}
 
@@ -43,7 +42,7 @@ public class BattleInitiative : MonoBehaviour {
 		_.turnNdx = 0;
 
 		// Set Party Amount to partyNdx
-		_.partyQty = PartyStats.S.partyNdx;
+		_.partyQty = Party.S.partyNdx;
 
 		//////////////////////////////////////////// PARTY MEMBERS ////////////////////////////////////////////
 		// De/Activate Party Member Stats/Sprite
@@ -56,10 +55,10 @@ public class BattleInitiative : MonoBehaviour {
 			_.playerDead[1] = true;
 
 			// Update Health Bars
-			ProgressBars.S.playerHealthBarsCS[0].UpdateBar(PartyStats.S.HP[0], PartyStats.S.maxHP[0]);
+			ProgressBars.S.playerHealthBarsCS[0].UpdateBar(Party.stats[0].HP, Party.stats[0].maxHP);
 
 			// Update Magic Bars
-			ProgressBars.S.playerMagicBarsCS[0].UpdateBar(PartyStats.S.MP[0], PartyStats.S.maxMP[0]);
+			ProgressBars.S.playerMagicBarsCS[0].UpdateBar(Party.stats[0].MP, Party.stats[0].maxMP);
 
 		} else if (_.partyQty >= 1) {
 			BattlePlayerActions.S.PlayerButtonAndStatsSetActive (0, true);
@@ -70,12 +69,12 @@ public class BattleInitiative : MonoBehaviour {
 			_.playerDead[1] = false;
 
 			// Update Health Bars
-			ProgressBars.S.playerHealthBarsCS[0].UpdateBar(PartyStats.S.HP[0], PartyStats.S.maxHP[0]);
-			ProgressBars.S.playerHealthBarsCS[1].UpdateBar(PartyStats.S.HP[1], PartyStats.S.maxHP[1]);
+			ProgressBars.S.playerHealthBarsCS[0].UpdateBar(Party.stats[0].HP, Party.stats[0].maxHP);
+			ProgressBars.S.playerHealthBarsCS[1].UpdateBar(Party.stats[1].HP, Party.stats[1].maxHP);
 
 			// Update Magic Bars
-			ProgressBars.S.playerMagicBarsCS[0].UpdateBar(PartyStats.S.MP[0], PartyStats.S.maxMP[0]);
-			ProgressBars.S.playerMagicBarsCS[1].UpdateBar(PartyStats.S.MP[1], PartyStats.S.maxMP[1]);
+			ProgressBars.S.playerMagicBarsCS[0].UpdateBar(Party.stats[0].MP, Party.stats[0].maxMP);
+			ProgressBars.S.playerMagicBarsCS[1].UpdateBar(Party.stats[1].MP, Party.stats[1].maxMP);
 		}
 
 		//////////////////////////////////////////// ENEMIES ////////////////////////////////////////////
@@ -104,11 +103,11 @@ public class BattleInitiative : MonoBehaviour {
         // 1 Enemy
         if (_.enemyAmount >= 1) {
 			// Activate/Deactivate Enemy Buttons, Stats, Sprites
-			BattlePlayerActions.S.EnemyButtonAndShadowSetActive(0, true);
+			BattlePlayerActions.S.EnemyButtonSetActive(0, true);
 			_.enemySprite[0].enabled = true;
-			BattlePlayerActions.S.EnemyButtonAndShadowSetActive(1, false);
+			BattlePlayerActions.S.EnemyButtonSetActive(1, false);
 			_.enemySprite[1].enabled = false;
-			BattlePlayerActions.S.EnemyButtonAndShadowSetActive(2, false);
+			BattlePlayerActions.S.EnemyButtonSetActive(2, false);
 			_.enemySprite[2].enabled = false;
 
 			Battle.S.enemyAnimator[0].CrossFade("Arrival", 0);
@@ -137,7 +136,7 @@ public class BattleInitiative : MonoBehaviour {
 			// 2 enemies
 			if (_.enemyAmount >= 2) {
 				// Activate Enemy Buttons, Stats, Sprites
-				BattlePlayerActions.S.EnemyButtonAndShadowSetActive(1, true);
+				BattlePlayerActions.S.EnemyButtonSetActive(1, true);
 				_.enemySprite[1].enabled = true;
 
 				Battle.S.enemyAnimator[1].CrossFade("Arrival", 0);
@@ -163,7 +162,7 @@ public class BattleInitiative : MonoBehaviour {
 				// 3 Enemies
 				if (_.enemyAmount >= 3) {
 					// Activate Enemy Buttons, Stats, Sprites
-					BattlePlayerActions.S.EnemyButtonAndShadowSetActive(2, true);
+					BattlePlayerActions.S.EnemyButtonSetActive(2, true);
 					_.enemySprite[2].enabled = true;
 
 					Battle.S.enemyAnimator[2].CrossFade("Arrival", 0);
@@ -202,10 +201,10 @@ public class BattleInitiative : MonoBehaviour {
 			} else if (_.randomFactor < 50) {
 				// Party goes first!
 				if (_.randomFactor < 25) {
-					BattleDialogue.S.DisplayText(PartyStats.S.playerName[0] + " surprises the Enemy!");
+					BattleDialogue.S.DisplayText(Party.stats[0].name + " surprises the Enemy!");
 
-                    // Calculate Initiative
-                    CalculateInitiative ("party");
+					// Calculate Initiative
+					CalculateInitiative ("party");
 
 				// Enemies go first!
 				} else {
@@ -225,10 +224,10 @@ public class BattleInitiative : MonoBehaviour {
 		// For all characters to engage in battle, calculate their turn order
 
 		// Player 1
-		RollInitiative (PartyStats.S.playerName[0], PartyStats.S.AGI[0], PartyStats.S.LVL [0], true, whoGoesFirst);
+		RollInitiative(Party.stats[0].name, Party.stats[0].AGI, Party.stats[0].LVL, true, whoGoesFirst);
 		// Player 2
 		if (_.partyQty >= 1) {
-			RollInitiative (PartyStats.S.playerName[1], PartyStats.S.AGI[1], PartyStats.S.LVL [1], true, whoGoesFirst);
+			RollInitiative(Party.stats[1].name, Party.stats[0].AGI, Party.stats[0].LVL, true, whoGoesFirst);
 		}
 			
 		// Enemy 1

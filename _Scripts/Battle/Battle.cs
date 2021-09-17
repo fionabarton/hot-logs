@@ -74,8 +74,9 @@ public class Battle : MonoBehaviour {
 
 	public float			chanceToRun = 0.5f;
 
+	public GameObject		previousSelectedGameObject;
+
 	void Awake() {
-		// Singleton
 		S = this;
 
 		// DontDestroyOnLoad
@@ -225,10 +226,10 @@ public class Battle : MonoBehaviour {
 					BattleDialogue.S.displayMessageTextTop.gameObject.transform.parent.gameObject.SetActive(true);
 					// Display Player Stats
 					BattleDialogue.S.displayMessageTextTop.text =
-						PartyStats.S.playerName[0] + " HP: " + PartyStats.S.HP[0] + "/" + PartyStats.S.maxHP[0] +
-						" MP: " + PartyStats.S.MP[0] + "/" + PartyStats.S.maxMP[0] + "\n" +
-						PartyStats.S.playerName[1] + " HP: " + PartyStats.S.HP[1] + "/" + PartyStats.S.maxHP[1] +
-						" MP: " + PartyStats.S.MP[1] + "/" + PartyStats.S.maxMP[1];
+						Party.stats[0].name + " HP: " + Party.stats[0].HP + "/" + Party.stats[0].maxHP +
+						" MP: " + Party.stats[0].MP + "/" + Party.stats[0].maxMP + "\n" +
+						Party.stats[1].name + " HP: " + Party.stats[1].HP + "/" + Party.stats[1].maxHP +
+						" MP: " + Party.stats[1].MP + "/" + Party.stats[1].maxMP;
 					break;
 				case eBattleMode.canGoBackToFightButton:
 					// Set Target Cursor Position: Enemies or Party
@@ -248,10 +249,10 @@ public class Battle : MonoBehaviour {
 							BattleDialogue.S.displayMessageTextTop.text = enemyStats[2].name;
 							break;
 						case "Player1Button":
-							BattleDialogue.S.displayMessageTextTop.text = PartyStats.S.playerName[0];
+							BattleDialogue.S.displayMessageTextTop.text = Party.stats[0].name; 
 							break;
 						case "Player2Button":
-							BattleDialogue.S.displayMessageTextTop.text = PartyStats.S.playerName[1];
+							BattleDialogue.S.displayMessageTextTop.text = Party.stats[1].name;
 							break;
 					}
 					break;
@@ -286,7 +287,7 @@ public class Battle : MonoBehaviour {
 	// Called in RPGLevelManager.LoadSettings when Scene changes to Battle
 	public void InitializeBattle() {
 		// Ensures Fight button is selected for first player turn
-		RPG.S.previousSelectedGameObject = BattlePlayerActions.S.buttonsGO[0];
+		previousSelectedGameObject = BattlePlayerActions.S.buttonsGO[0];
 
 		BattlePlayerActions.S.ButtonsDisableAll();
 		
@@ -335,7 +336,7 @@ public class Battle : MonoBehaviour {
 		BattleInitiative.S.Initiative();
 
 		// Switch mode (playerTurn or enemyTurn) based off of turnNdx
-		if (turnNdx == turnOrder.IndexOf(PartyStats.S.playerName[0]) || turnNdx == turnOrder.IndexOf(PartyStats.S.playerName[1])) {
+		if (turnNdx == turnOrder.IndexOf(Party.stats[0].name) || turnNdx == turnOrder.IndexOf(Party.stats[1].name)) {
 			battleMode = eBattleMode.playerTurn;
 		} else if (turnNdx == turnOrder.IndexOf(enemyStats[0].name) || turnNdx == turnOrder.IndexOf(enemyStats[1].name) || turnNdx == turnOrder.IndexOf(enemyStats[2].name)) {
 			battleMode = eBattleMode.enemyTurn;
@@ -353,10 +354,10 @@ public class Battle : MonoBehaviour {
 		BattleUI.S.targetCursor.SetActive(false);
 
 		// Reset button to be selected (Fight Button)
-		RPG.S.previousSelectedGameObject = BattlePlayerActions.S.buttonsGO[0];
+		previousSelectedGameObject = BattlePlayerActions.S.buttonsGO[0];
 
 		// Switch mode (playerTurn or enemyTurn) based off of turnNdx
-		if (turnNdx == turnOrder.IndexOf(PartyStats.S.playerName[0]) || turnNdx == turnOrder.IndexOf(PartyStats.S.playerName[1])) {
+		if (turnNdx == turnOrder.IndexOf(Party.stats[0].name) || turnNdx == turnOrder.IndexOf(Party.stats[1].name)) {
 			battleMode = eBattleMode.playerTurn;
 		} else if (turnNdx == turnOrder.IndexOf(enemyStats[0].name) || turnNdx == turnOrder.IndexOf(enemyStats[1].name) || turnNdx == turnOrder.IndexOf(enemyStats[2].name)) {
 			battleMode = eBattleMode.enemyTurn;
@@ -365,7 +366,8 @@ public class Battle : MonoBehaviour {
 
 	// return current player turn index
 	public int PlayerNdx() {
-		if (turnNdx == turnOrder.IndexOf(PartyStats.S.playerName[0])) { return 0; } else if (turnNdx == turnOrder.IndexOf(PartyStats.S.playerName[1])) { return 1; } else { return 0; } }
+		if (turnNdx == turnOrder.IndexOf(Party.stats[0].name)) { return 0; } else if (turnNdx == turnOrder.IndexOf(Party.stats[1].name)) { return 1; } else { return 0; }
+	}
 
 	// return current enemy turn index																																						
 	public int EnemyNdx() {
@@ -378,13 +380,13 @@ public class Battle : MonoBehaviour {
 		BattlePlayerActions.S.ButtonsInitialInteractable();
 
 		// Set Selected Button 
-		Utilities.S.SetSelectedGO(RPG.S.previousSelectedGameObject);
+		Utilities.S.SetSelectedGO(previousSelectedGameObject);
 
 		// If Defended previous turn, remove from Defenders list
-		RemoveDefender(PartyStats.S.playerName[PlayerNdx()]);
+		RemoveDefender(Party.stats[PlayerNdx()].name);
 		playerShields[PlayerNdx()].SetActive(false);
-
-		BattleDialogue.S.DisplayText("What will you do, " + PartyStats.S.playerName[PlayerNdx()] + "?");
+		
+		BattleDialogue.S.DisplayText("What will you do, " + Party.stats[PlayerNdx()].name + "?");
 
 		// Switch Mode
 		battleMode = eBattleMode.actionButtons;

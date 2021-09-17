@@ -44,7 +44,7 @@ public class EquipScreen_PickPartyMemberMode : MonoBehaviour {
 	}
 
 	public void Loop(EquipScreen equipScreen) {
-		if (RPG.S.previousSelectedGameObject != UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject) {
+		if (EquipScreen.S.previousSelectedGameObject != UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject) {
 			// Position Cursor
 			Utilities.S.PositionCursor(UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject, 0, 60, 3);
 
@@ -55,7 +55,7 @@ public class EquipScreen_PickPartyMemberMode : MonoBehaviour {
 
 				if (UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject == PlayerButtons.S.buttonsCS[i].gameObject) {
 					// Cache Selected Gameobject 
-					RPG.S.previousSelectedGameObject = PlayerButtons.S.buttonsCS[i].gameObject;
+					EquipScreen.S.previousSelectedGameObject = PlayerButtons.S.buttonsCS[i].gameObject;
 
 					equipScreen.DisplayCurrentStats(i);
 					equipScreen.DisplayCurrentEquipmentNames(i);

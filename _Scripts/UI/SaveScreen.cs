@@ -148,33 +148,33 @@ public class SaveScreen : MonoBehaviour {
 
 	void LoadFile(int ndx){
 		// Slot 1
-		if (PlayerPrefs.HasKey("Player1Level")) { PartyStats.S.LVL[0] = PlayerPrefs.GetInt("Player1Level"); }
-		if (PlayerPrefs.HasKey("Player2Level")) { PartyStats.S.LVL[1] = PlayerPrefs.GetInt("Player2Level"); }
-		if (PlayerPrefs.HasKey("Player1Exp")){ PartyStats.S.EXP[0] = PlayerPrefs.GetInt ("Player1Exp"); }
-		if (PlayerPrefs.HasKey("Player2Exp")){ PartyStats.S.EXP[1] = PlayerPrefs.GetInt ("Player2Exp"); }
+		if (PlayerPrefs.HasKey("Player1Level")) { Party.stats[0].LVL = PlayerPrefs.GetInt("Player1Level"); }
+		if (PlayerPrefs.HasKey("Player2Level")) { Party.stats[1].LVL = PlayerPrefs.GetInt("Player2Level"); }
+		if (PlayerPrefs.HasKey("Player1Exp")){ Party.stats[0].EXP = PlayerPrefs.GetInt ("Player1Exp"); }
+		if (PlayerPrefs.HasKey("Player2Exp")){ Party.stats[1].EXP = PlayerPrefs.GetInt ("Player2Exp"); }
 		if (PlayerPrefs.HasKey("Time")){ PauseScreen.S.fileStatsNumText.text = PlayerPrefs.GetString ("Time"); } // Stores Time in 0:00 format
 		if (PlayerPrefs.HasKey("Seconds")) { PauseScreen.S.seconds = PlayerPrefs.GetInt("Seconds"); }
 		if (PlayerPrefs.HasKey("Minutes")) { PauseScreen.S.minutes = PlayerPrefs.GetInt("Minutes"); }
-		if (PlayerPrefs.HasKey("Name")) { PartyStats.S.playerName[0] = PlayerPrefs.GetString("Name"); }
+		if (PlayerPrefs.HasKey("Name")) { Party.stats[0].name = PlayerPrefs.GetString("Name"); }
 
 		// Level Up
-		PartyStats.S.CheckForLevelUp ();
-		PartyStats.S.hasLevelledUp[0] = false;
-		PartyStats.S.hasLevelledUp[1] = false;
+		Party.S.CheckForLevelUp ();
+		Party.stats[0].hasLeveledUp = false;
+		Party.stats[1].hasLeveledUp = false;
 
 		FileHelper("Loaded game!");
 	}
 	void SaveFile(int ndx){
 		// Slot 1
-		PlayerPrefs.SetInt("Player1Level", PartyStats.S.LVL[0]);
-		PlayerPrefs.SetInt("Player1Level", PartyStats.S.LVL[1]);
-		PlayerPrefs.SetInt("Player1Exp", PartyStats.S.EXP[0]);
-		PlayerPrefs.SetInt("Player2Exp", PartyStats.S.EXP[1]);
-		PlayerPrefs.SetInt("Gold", PartyStats.S.Gold);
+		PlayerPrefs.SetInt("Player1Level", Party.stats[0].LVL);
+		PlayerPrefs.SetInt("Player1Level", Party.stats[1].LVL);
+		PlayerPrefs.SetInt("Player1Exp", Party.stats[0].EXP);
+		PlayerPrefs.SetInt("Player2Exp", Party.stats[1].EXP);
+		PlayerPrefs.SetInt("Gold", Party.S.Gold);
 		PlayerPrefs.SetString("Time", PauseScreen.S.GetTime()); // Stores Time in 0:00 format
 		PlayerPrefs.SetInt("Seconds", PauseScreen.S.seconds);
 		PlayerPrefs.SetInt("Minutes", PauseScreen.S.minutes);
-		PlayerPrefs.SetString("Name", PartyStats.S.playerName[0]);
+		PlayerPrefs.SetString("Name", Party.stats[0].name);
 
 		FileHelper("Saved game!");
 	}

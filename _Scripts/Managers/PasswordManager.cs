@@ -7,7 +7,6 @@ using System.Linq;
 /// <summary>
 /// Loops in RPGUpdateManager.cs
 /// </summary>
-
 public enum ePasswordMode {inactive, inputPassword, checkPassword};
 
 public class Password {
@@ -72,7 +71,6 @@ public class PasswordManager : MonoBehaviour {
 	private List<string> 	passwords = new List<string>();
 
 	void Awake() {
-		// Singleton
 		S = this;
 	}
 
@@ -141,8 +139,6 @@ public class PasswordManager : MonoBehaviour {
 		}
 	}
 	////////////////////////////////////////////////////////////////////////////////////////////////////////
-	////////////////////////////////////////////////////////////////////////////////////////////////////////
-	////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     /// <summary>
     /// Example Passwords: 05051000 = Player 1: Level 5, Player 2: Level 5, 1000 Gold
@@ -164,72 +160,72 @@ public class PasswordManager : MonoBehaviour {
 			// Ensures Levels are between 1 and 10
 			if ((tLvl1 >= 1 && tLvl1 <= 10) && (tLvl2 >= 1 && tLvl2 <= 10)) {
 				// Set Player 1 Lvl
-				PartyStats.S.LVL[0] = tLvl1;
+				Party.stats[0].LVL = tLvl1;
 
 				// Set Player 1 Exp
 				switch (tLvl1) {
 				case 2:
-					PartyStats.S.EXP[0] = 8;
+					Party.stats[0].EXP = 8;
 					break;
 				case 3:
-					PartyStats.S.EXP[0] = 24;
+					Party.stats[0].EXP = 24;
 					break;
 				case 4:
-					PartyStats.S.EXP[0] = 48;
+					Party.stats[0].EXP = 48;
 					break;
 				case 5:
-					PartyStats.S.EXP[0] = 111;
+					Party.stats[0].EXP = 111;
 					break;
 				case 6:
-					PartyStats.S.EXP[0] = 221;
+					Party.stats[0].EXP = 221;
 					break;
 				case 7:
-					PartyStats.S.EXP[0] = 451;
+					Party.stats[0].EXP = 451;
 					break;
 				case 8:
-					PartyStats.S.EXP[0] = 801;
+					Party.stats[0].EXP = 801;
 					break;
 				case 9:
-					PartyStats.S.EXP[0] = 1300;
+					Party.stats[0].EXP = 1300;
 					break;
 				case 10:
-					PartyStats.S.EXP [0] = 2001;
+					Party.stats[0].EXP = 2001;
 					break;
 				default:
 					break;
 				}
 
 				// Set Player 2 Lvl
-				PartyStats.S.LVL[1] = tLvl2;
+				Party.stats[1].LVL = tLvl2;
 
 				// Set Player 2 Exp
 				switch (tLvl2) {
 				case 2:
-					PartyStats.S.EXP [1] = 10;
+					Party.stats[1].EXP = 10;
 					break;
 				case 3:
-					PartyStats.S.EXP[1] = 24;
+					Party.stats[1].EXP = 24;
 					break;
 				case 4:
-					PartyStats.S.EXP[1] = 56;
+					Party.stats[1].EXP = 56;
 					break;
 				case 5:
-					PartyStats.S.EXP[1] = 111;
+					Party.stats[1].EXP = 111;
 					break;
 				case 6:
-					PartyStats.S.EXP[1] = 251;
+					Party.stats[1].EXP = 251;
 					break;
 				case 7:
-					PartyStats.S.EXP[1] = 451;
+					Party.stats[1].EXP = 451;
 					break;
 				case 8:
-					PartyStats.S.EXP[1] = 851;
+					Party.stats[1].EXP = 851;
 					break;
 				case 9:
-					PartyStats.S.EXP[1] = 1301;
+					Party.stats[1].EXP = 1301;
 					break;
 				case 10:
-					PartyStats.S.EXP[1] = 2101;
+					Party.stats[1].EXP = 2101;
 					break;
 				default:
 					break;
@@ -239,7 +235,7 @@ public class PasswordManager : MonoBehaviour {
 
 				// Gold
 				int tInt3 = System.Convert.ToInt32 (gold);
-				PartyStats.S.Gold = tInt3 * 100;
+				Party.S.Gold = tInt3 * 100;
 
 			} else {
 				passwordText.text = "Password: INVALID!";
@@ -256,8 +252,6 @@ public class PasswordManager : MonoBehaviour {
 		DeactivatePassword();
 	}
 	////////////////////////////////////////////////////////////////////////////////////////////////////////
-	////////////////////////////////////////////////////////////////////////////////////////////////////////
-	////////////////////////////////////////////////////////////////////////////////////////////////////////
 	void DeactivatePassword(){
 		mode = ePasswordMode.inactive;
 		passwordGO.SetActive (false);
@@ -266,9 +260,9 @@ public class PasswordManager : MonoBehaviour {
 
 	void CheckLevelUp(){
 		// Level Up
-		PartyStats.S.CheckForLevelUp ();
-		PartyStats.S.hasLevelledUp[0] = false;
-		PartyStats.S.hasLevelledUp[1] = false;
+		Party.S.CheckForLevelUp ();
+		Party.stats[0].hasLeveledUp = false;
+		Party.stats[1].hasLeveledUp = false;
 
 		passwordText.text = "Password: ACCEPTED!";
 	}
@@ -285,7 +279,4 @@ public class PasswordManager : MonoBehaviour {
 			}
 		}
 	}
-	////////////////////////////////////////////////////////////////////////////////////////////////////////
-	////////////////////////////////////////////////////////////////////////////////////////////////////////
-	////////////////////////////////////////////////////////////////////////////////////////////////////////
 }

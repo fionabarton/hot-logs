@@ -33,15 +33,15 @@ public class InnkeeperTrigger : ActivateOnButtonPress {
 
 		int price = 10;
 
-		if (PartyStats.S.Gold >= price) {
+		if (Party.S.Gold >= price) {
 			// Subtract item price from Player's Gold
-			PartyStats.S.Gold -= price;
+			Party.S.Gold -= price;
 
 			// Max HP/MP
-			PartyStats.S.HP[0] = PartyStats.S.maxHP[0];
-			PartyStats.S.MP[0] = PartyStats.S.maxMP[0];
-			PartyStats.S.HP[1] = PartyStats.S.maxHP[1];
-			PartyStats.S.MP[1] = PartyStats.S.maxMP[1];
+			Party.stats[0].HP = Party.stats[0].maxHP;
+			Party.stats[0].MP = Party.stats[0].maxMP;
+			Party.stats[1].HP = Party.stats[1].maxHP;
+			Party.stats[1].MP = Party.stats[1].maxMP;
 
 			// Display Text: HP/MP Restored
 			DialogueManager.S.DisplayText("Health and magic restored. Bless your heart, babe!");

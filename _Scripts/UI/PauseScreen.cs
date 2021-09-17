@@ -50,7 +50,7 @@ public class PauseScreen : MonoBehaviour {
 			UpdateGUI ();
 
 			// (De)Activate Player2 Button
-			if (PartyStats.S.partyNdx >= 1) {
+			if (Party.S.partyNdx >= 1) {
 				player2PauseGO.SetActive (true);
 			} else {
 				player2PauseGO.SetActive (false);
@@ -200,28 +200,30 @@ public class PauseScreen : MonoBehaviour {
 			// Steps Count
 			Player.S.stepsCount + "\n" +
 			// Gold
-			PartyStats.S.Gold;
+			Party.S.Gold;
 		}
 	}
 
 	// Display Player Stats (Level, HP, MP, EXP)
 	public void UpdateGUI () {
-		// Player 1 ////////////////////////////////////
-		playerNameText[0].text = PartyStats.S.playerName[0];
+		if (Party.stats.Count > 0) {
+			// Player 1 ////////////////////////////////////
+			playerNameText[0].text = Party.stats[0].name;
 
-		statsNumText[0].text = PartyStats.S.LVL[0] + "\n" +
-			PartyStats.S.HP[0] + "/" + PartyStats.S.maxHP[0] + "\n" +
-			PartyStats.S.MP[0] + "/" + PartyStats.S.maxMP[0] + "\n" +
-			PartyStats.S.EXP[0];
+			statsNumText[0].text = Party.stats[0].LVL + "\n" +
+				Party.stats[0].HP + "/" + Party.stats[0].maxHP + "\n" +
+				Party.stats[0].MP + "/" + Party.stats[0].maxMP + "\n" +
+				Party.stats[0].EXP;
 
-        // Player 2 ////////////////////////////////////
-        playerNameText[1].text = PartyStats.S.playerName[1];
+			// Player 2 ////////////////////////////////////
+			playerNameText[1].text = Party.stats[1].name;
 
-		if (PartyStats.S.partyNdx >= 1) {
-			statsNumText[1].text = PartyStats.S.LVL[1] + "\n" +
-				PartyStats.S.HP[1] + "/" + PartyStats.S.maxHP[1] + "\n" +
-				PartyStats.S.MP[1] + "/" + PartyStats.S.maxMP[1] + "\n" +
-				PartyStats.S.EXP[1];
+			if (Party.S.partyNdx >= 1) {
+				statsNumText[1].text = Party.stats[1].LVL + "\n" +
+					Party.stats[1].HP + "/" + Party.stats[1].maxHP + "\n" +
+					Party.stats[1].MP + "/" + Party.stats[1].maxMP + "\n" +
+					Party.stats[1].EXP;
+			}
 		}
 	}
 }

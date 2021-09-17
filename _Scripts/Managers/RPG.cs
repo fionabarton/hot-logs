@@ -37,7 +37,6 @@ public class RPG : MonoBehaviour {
 	private string				previousPreviousSceneName;
 
 	void Awake() {
-		// Singleton
 		S = this;
 
 		// DontDestroyOnLoad
@@ -334,17 +333,17 @@ public class RPG : MonoBehaviour {
 
 	// ************ Add/Subtract PLAYER HP ************ \\
 	public void AddSubtractPlayerHP(int ndx, bool addOrSubtract, int amount){
-		if (addOrSubtract) { PartyStats.S.HP[ndx] += amount; } else { PartyStats.S.HP[ndx] -= amount; }
+		if (addOrSubtract) { Party.stats[ndx].HP += amount; } else { Party.stats[ndx].HP -= amount; }
 
 		// Prevent going above Max HP & below Min HP
-		if (PartyStats.S.HP[ndx] > PartyStats.S.maxHP[ndx]) {
-			PartyStats.S.HP[ndx] = PartyStats.S.maxHP[ndx];
-		} else if (PartyStats.S.HP[ndx] <= 0){
-			PartyStats.S.HP[ndx] = 0;
+		if (Party.stats[ndx].HP > Party.stats[ndx].maxHP) {
+			Party.stats[ndx].HP = Party.stats[ndx].maxHP;
+		} else if (Party.stats[ndx].HP <= 0) {
+			Party.stats[ndx].HP = 0;
 		}
 
 		// Update Health Bars
-		ProgressBars.S.playerHealthBarsCS[ndx].UpdateBar(PartyStats.S.HP[ndx], PartyStats.S.maxHP[ndx]);
+		ProgressBars.S.playerHealthBarsCS[ndx].UpdateBar(Party.stats[ndx].HP, Party.stats[ndx].maxHP);
 	}
 
 	public void AddPlayerHP(int ndx, int amount) {
@@ -356,17 +355,17 @@ public class RPG : MonoBehaviour {
 
 	// ************ Add/Subtract PLAYER MP ************ \\
 	public void AddSubtractPlayerMP(int ndx, bool addOrSubtract, int amount) {
-		if (addOrSubtract) { PartyStats.S.MP[ndx] += amount; } else { PartyStats.S.MP[ndx] -= amount; }
+		if (addOrSubtract) { Party.stats[ndx].MP += amount; } else { Party.stats[ndx].MP -= amount; }
 
 		// Prevent going above Max MP & below Min MP
-		if (PartyStats.S.MP[ndx] > PartyStats.S.maxMP[ndx]) {
-			PartyStats.S.MP[ndx] = PartyStats.S.maxMP[ndx];
-		} else if (PartyStats.S.MP[ndx] <= 0) {
-			PartyStats.S.MP[ndx] = 0;
+		if (Party.stats[ndx].MP > Party.stats[ndx].maxMP) {
+			Party.stats[ndx].MP = Party.stats[ndx].maxMP;
+		} else if (Party.stats[ndx].MP <= 0) {
+			Party.stats[ndx].MP = 0;
 		}
-		
+
 		// Update Magic Bars
-		ProgressBars.S.playerMagicBarsCS[ndx].UpdateBar(PartyStats.S.MP[ndx], PartyStats.S.maxMP[ndx]);
+		ProgressBars.S.playerMagicBarsCS[ndx].UpdateBar(Party.stats[ndx].MP, Party.stats[ndx].maxMP);
 	}
 
 	public void AddPlayerMP(int ndx, int amount) {
@@ -383,7 +382,7 @@ public class RPG : MonoBehaviour {
 		// Prevent going above Max HP & below Min HP
 		if (Battle.S.enemyStats[ndx].HP > Battle.S.enemyStats[ndx].maxHP) {
 			Battle.S.enemyStats[ndx].HP = Battle.S.enemyStats[ndx].maxHP;
-		} else if (Battle.S.enemyStats[ndx].HP <= 0){
+		} else if (Battle.S.enemyStats[ndx].HP <= 0) {
 			Battle.S.enemyStats[ndx].HP = 0;
 		}
 

@@ -35,14 +35,14 @@ public class PurchaseTrigger : ActivateOnButtonPress {
 
         Item tItem = ItemManager.S.items[(int)item];
 
-        if (PartyStats.S.Gold >= tItem.value) {
+        if (Party.S.Gold >= tItem.value) {
             // Added to Player Inventory
             Inventory.S.AddItemToInventory(tItem);
 
             DialogueManager.S.DisplayText("Yahoo! Thank you for purchasing me!");
 
             // Subtract item price from Player's Gold
-            PartyStats.S.Gold -= tItem.value;
+            Party.S.Gold -= tItem.value;
         } else {
             DialogueManager.S.DisplayText("You ain't got enough money, jerk!");
         }
