@@ -136,7 +136,7 @@ public class BattleUI : MonoBehaviour {
 			// Add a character to the string
 			if (i <= 0) {
 				// Start string with name of character whose turn it is
-				tText += _.turnOrder[tInt];
+				tText += "<color=#CDD000>" + _.turnOrder[tInt] + "</color>";
 			} else {
 				// For each subsequent character, add new line followed by their name
 				tText += "\n" + _.turnOrder[tInt];
