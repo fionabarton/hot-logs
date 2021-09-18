@@ -6,21 +6,21 @@ using System;
 
 public class PlayerButtons : MonoBehaviour {
 	[Header("Set in Inspector")]
-	public Text[] statName;
-	public Text[] statValue;
+	public Text[]			statName;
+	public Text[]			statValue;
 
 	public List<GameObject> buttonsGO;
-	public List<Button> buttonsCS;
-	public List<Animator> anim;
+	public List<Button>		buttonsCS;
+	public List<Animator>	anim;
 
-	public Text goldValue;
+	public Text				goldValue;
 
 	[Header("Set Dynamically")]
 	// Singleton
-	private static PlayerButtons _S;
-	public static PlayerButtons S { get { return _S; } set { _S = value; } }
+	private static PlayerButtons	_S;
+	public static PlayerButtons		S { get { return _S; } set { _S = value; } }
 
-	public RectTransform	rectTrans;
+	public RectTransform			rectTrans;
 
 	void Awake() {
 		S = this;
@@ -67,17 +67,16 @@ public class PlayerButtons : MonoBehaviour {
 	}
 
 	public void SetSelectedAnim(string animName) {
-		for(int i = 0; i < buttonsCS.Count; i++) {
-			if (UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject == buttonsCS[i].gameObject) {
-				anim[i].CrossFade(animName, 0);
-			} else {
-                try {
+        for (int i = 0; i < buttonsCS.Count; i++) {
+			if (buttonsCS[i].gameObject.activeInHierarchy) {
+				if (UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject == buttonsCS[i].gameObject) {
+					anim[i].CrossFade(animName, 0);
+				} else {
 					anim[i].CrossFade("Idle", 0);
 				}
-				catch (NullReferenceException) { }
 			}
-		}
-    }
+		}	
+	}
 
 	public void SetButtonsColor(List<Button> buttons, Color32 color) {
 		for(int i = 0; i < buttons.Count; i++) {
