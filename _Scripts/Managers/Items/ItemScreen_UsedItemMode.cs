@@ -20,7 +20,7 @@ public class ItemScreen_UsedItemMode : MonoBehaviour {
 		if (PauseMessage.S.dialogueFinished) {
 			if (Input.GetButtonDown("SNES A Button")) {
 				// Set animation to idle
-				PlayerButtons.S.SetAnim("Idle");
+				PlayerButtons.S.SetSelectedAnim("Idle");
 
 				// Go back to PickItem mode
 				ItemScreen_PickItemMode.S.Setup(ItemScreen.S);

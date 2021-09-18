@@ -21,7 +21,7 @@ public class ItemScreen_PickPartyMemberMode : MonoBehaviour {
 			Utilities.S.PositionCursor(UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject, 0, 60, 3);
 
 			// Set animation to walk
-			PlayerButtons.S.SetAnim("Walk");
+			PlayerButtons.S.SetSelectedAnim("Walk");
 
 			itemScreen.canUpdate = false;
 		}
@@ -29,7 +29,7 @@ public class ItemScreen_PickPartyMemberMode : MonoBehaviour {
 		if (PauseMessage.S.dialogueFinished) {
 			if (Input.GetButtonDown("SNES B Button")) {
 				// Set animation to idle
-				PlayerButtons.S.SetAnim("Idle");
+				PlayerButtons.S.SetSelectedAnim("Idle");
 
 				// Go back to PickItem mode
 				ItemScreen_PickItemMode.S.Setup(ItemScreen.S); 
