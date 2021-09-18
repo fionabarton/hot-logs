@@ -33,7 +33,12 @@ public class SpellManager : MonoBehaviour {
 		// Fireblast
 		spells[3] = new Spell("Fireblast",
 			eSpellType.offensive, eSpellStatEffect.HP, eSpellUseableMode.battle, 12, 20, 3,
-			"Blasts ALL enemies for at least 12 HP! Hot damn!" + "\n Cost: 3 MP");
+			"Blasts ALL enemies for at least 12 HP! Hot damn!" + "\n Cost: 3 MP", true);
+
+		// Heal All
+		spells[4] = new Spell("Heal All",
+			eSpellType.healing, eSpellStatEffect.HP, eSpellUseableMode.battle, 12, 20, 6,
+			"Heals ALL party members for at least 12 HP!" + "\n Cost: 6 MP", true);
 	}
 
 	// Spell Utilities ////////////////////////////////////////////
@@ -47,8 +52,8 @@ public class SpellManager : MonoBehaviour {
 		PlayerButtons.S.UpdateGUI();
 		PauseScreen.S.UpdateGUI();
 
-		// Deactivate Cursor
-		ScreenCursor.S.cursorGO.SetActive(false);
+		// Deactivate screen cursors
+		Utilities.S.SetActiveList(ScreenCursor.S.cursorGO, false);
 
 		SpellScreen.S.canUpdate = true;
 
@@ -85,11 +90,12 @@ public class Spell {
 	public int statEffectMaxValue;
 	public int cost;
 	public string description;
+	public bool multipleTargets;
 
 	public Spell(string spellName,
 				eSpellType spellType, eSpellStatEffect spellStatEffect, eSpellUseableMode spellUseableMode,
 				int spellStatEffectMinValue, int spellStatEffectMaxValue, int spellCost,
-				string spellDescription) {
+				string spellDescription, bool spellMultipleTargets = false) {
 		name = spellName;
 		type = spellType;
 		statEffect = spellStatEffect;
@@ -98,5 +104,6 @@ public class Spell {
 		statEffectMaxValue = spellStatEffectMaxValue;
 		cost = spellCost;
 		description = spellDescription;
+		multipleTargets = spellMultipleTargets;
 	}
 }

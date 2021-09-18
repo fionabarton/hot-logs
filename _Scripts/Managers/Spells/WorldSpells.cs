@@ -18,9 +18,6 @@ public class WorldSpells : MonoBehaviour {
 
     public void AddFunctionToButton(Action<int> functionToPass, string messageToDisplay, Spell spell) {
 		if (Party.stats[SpellScreen.S.playerNdx].MP >= spell.cost) {
-			// Set animation to idle
-			PlayerButtons.S.SetAnim("Idle");
-
 			// Buttons Interactable
 			Utilities.S.ButtonsInteractable(PlayerButtons.S.buttonsCS, true);
 			Utilities.S.ButtonsInteractable(SpellScreen.S.spellsButtons, false);
@@ -36,18 +33,40 @@ public class WorldSpells : MonoBehaviour {
 			PlayerButtons.S.buttonsCS[1].onClick.AddListener(delegate { functionToPass(1); });
 
 			SpellScreen.S.canUpdate = true;
-			// Switch ScreenMode
-			SpellScreen.S.mode = eSpellScreenMode.pickWhichMemberToHeal;
 		} else {
 			SpellManager.S.CantUseSpell("Not enough MP to cast this spell!");
 			return;
 		}
-    }
+
+		// If multiple targets
+		if (!spell.multipleTargets) {
+			// Set animation to idle
+			PlayerButtons.S.SetSelectedAnim("Idle");
+
+			SpellScreen.S.mode = eSpellScreenMode.pickWhichMemberToHeal;
+		} else {
+			// Set cursor positions
+			Utilities.S.PositionCursor(PlayerButtons.S.buttonsCS[0].gameObject, 0, 60, 3, 0);
+			Utilities.S.PositionCursor(PlayerButtons.S.buttonsCS[1].gameObject, 0, 60, 3, 1);
+			
+			// Set animations to walk
+			PlayerButtons.S.anim[0].CrossFade("Walk", 0);
+			PlayerButtons.S.anim[1].CrossFade("Walk", 0);
+
+			// Set button colors
+			PlayerButtons.S.SetButtonsColor(PlayerButtons.S.buttonsCS, new Color32(253, 255, 116, 255));
+
+			// Activate cursors
+			Utilities.S.SetActiveList(ScreenCursor.S.cursorGO, true);
+
+			SpellScreen.S.mode = eSpellScreenMode.pickAllMembersToHeal;
+		}
+	}
 
 	//////////////////////////////////////////////////////////
 	/// Heal - Heal the selected party member 
 	//////////////////////////////////////////////////////////
-	public void HealSelectedPartyMember(int ndx) { // Overworld
+	public void HealSelectedPartyMember(int ndx) { 
 		if (Party.stats[ndx].HP < Party.stats[ndx].maxHP) {
 			// Set animation to success
 			PlayerButtons.S.anim[ndx].CrossFade("Success", 0);
@@ -68,6 +87,9 @@ public class WorldSpells : MonoBehaviour {
 		} else {
 			// Display Text
 			PauseMessage.S.DisplayText(Party.stats[ndx].name + " already at full health...\n...no need to cast this spell!");
+
+			// Set animation to idle
+			PlayerButtons.S.anim[ndx].CrossFade("Idle", 0);
 		}
 		SpellManager.S.SpellHelper();
 	}
@@ -87,5 +109,59 @@ public class WorldSpells : MonoBehaviour {
 		} else {
 			SpellManager.S.CantUseSpell("Not enough MP to cast this spell!");
 		}
+	}
+
+	//////////////////////////////////////////////////////////
+	/// Heal All - Heal all party members 
+	//////////////////////////////////////////////////////////
+	public void HealAllPartyMembers(int unusedIntBecauseOfAddFunctionToButtonParameter = 0) {
+		int totalAmountToHeal = 0;
+
+		if (Party.stats[0].HP < Party.stats[0].maxHP ||
+			Party.stats[1].HP < Party.stats[1].maxHP) {
+			// Subtract Spell cost from Player's MP
+			RPG.S.SubtractPlayerMP(SpellScreen.S.playerNdx, 6);
+
+			for (int i = 0; i < Party.stats.Count; i++) {
+				// Get amount and max amount to heal
+				int amountToHeal = UnityEngine.Random.Range(12, 20);
+				int maxAmountToHeal = Party.stats[i].maxHP - Party.stats[i].HP;
+				// Add Player's WIS to Heal Amount
+				amountToHeal += Party.stats[i].WIS;
+
+				// Add 12-20 HP to TARGET Player's HP
+				RPG.S.AddPlayerHP(i, amountToHeal);
+
+				// Cap amountToHeal to maxAmountToHeal
+				if (amountToHeal >= maxAmountToHeal) {
+					amountToHeal = maxAmountToHeal;
+				}
+
+				totalAmountToHeal += amountToHeal;
+			}
+
+			// Display Text
+			PauseMessage.S.DisplayText("Used Heal All Spell!\nHealed ALL party members for an average of "
+				+ Utilities.S.CalculateAverage(totalAmountToHeal, Party.stats.Count) + " HP!");
+
+			// Set animations to success
+			PlayerButtons.S.anim[0].CrossFade("Success", 0);
+			PlayerButtons.S.anim[1].CrossFade("Success", 0);
+		} else {
+			// Display Text
+			PauseMessage.S.DisplayText("The party is already at full health...\n...no need to cast this spell!");
+
+			// Set animations to idle
+			PlayerButtons.S.anim[0].CrossFade("Idle", 0);
+			PlayerButtons.S.anim[1].CrossFade("Idle", 0);
+		}
+
+		// Reset button colors
+		PlayerButtons.S.SetButtonsColor(PlayerButtons.S.buttonsCS, new Color32(255, 255, 255, 200));
+
+		// Deactivate screen cursors
+		Utilities.S.SetActiveList(ScreenCursor.S.cursorGO, false);
+
+		SpellManager.S.SpellHelper();
 	}
 }
