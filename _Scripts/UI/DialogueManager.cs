@@ -16,9 +16,6 @@ public class DialogueManager : MonoBehaviour {
 	private Text 		dialogueTextCS;
 	private GameObject 	dialogueTextGO;
 
-	private string[]	dialogueWords;
-	private string      dialogueSentences;
-
 	public bool 		dialogueFinished = false;
 
 	public int 			ndx;
@@ -34,7 +31,6 @@ public class DialogueManager : MonoBehaviour {
 	public List<int>	linesWithMiddleAlignment = new List<int>();
 
 	void Awake() {
-		// Singleton
 		S = this;
 	}
 
@@ -115,14 +111,16 @@ public class DialogueManager : MonoBehaviour {
 		Player.S.canMove = false;
 		Player.S.mode = eRPGMode.idle;
 
+		string dialogueSentences = null;
+
 		// Split text argument w/ blank space
-		dialogueWords = text[0].Split (' ');
+		string[] dialogueWords = text[0].Split (' ');
         // Display text one word at a time
         for (int i = 0; i < dialogueWords.Length; i++) {
 			// Audio: Dialogue
 			AudioManager.S.sfxCS[0].Play();
 
-			dialogueSentences += dialogueWords [i] + " ";
+			dialogueSentences += dialogueWords[i] + " ";
 			dialogueTextCS.text = dialogueSentences;
 			yield return new WaitForSeconds (0.1f);
 		}
@@ -142,7 +140,7 @@ public class DialogueManager : MonoBehaviour {
 
 		// Gray Out Text Box
 		if (grayOutTextBox) {
-			GrayOutTextBox (true);
+			GrayOutTextBox(true);
 		}
 
 		ndx -= 1;
@@ -151,13 +149,10 @@ public class DialogueManager : MonoBehaviour {
 	}
 
 	public void ClearForNextLine() {
-		StopAllCoroutines ();
+		StopAllCoroutines();
 
 		// Deactivate Cursor
-		cursorGO.SetActive (false);
-
-		// Reset Dialogue
-		dialogueSentences = null;
+		cursorGO.SetActive(false);
     }
 
 	public void DeactivateTextBox(bool canMove = true){
@@ -167,16 +162,15 @@ public class DialogueManager : MonoBehaviour {
 		linesWithMiddleAlignment.Clear();
 
 		// Deactivate Text Box & Cursor
-		dialogueTextGO.SetActive (false);
+		dialogueTextGO.SetActive(false);
 		TextBoxSpriteGO.SetActive(false);
-		cursorGO.SetActive (false);
+		cursorGO.SetActive(false);
 		
 		// Reset Dialogue
-		dialogueSentences = null;
 		dialogueFinished = false;
 
 		// Reset Text Box Color
-		GrayOutTextBox (false);
+		GrayOutTextBox(false);
 
 		// Reset sub menu
 		ResetSubMenuSettings();

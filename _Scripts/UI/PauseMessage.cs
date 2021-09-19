@@ -13,13 +13,9 @@ public class PauseMessage : MonoBehaviour {
 	public GameObject	cursorGO;
 
 	[Header ("Set Dynamically")]
-	private string[]	dialogueWords;
-	private string      dialogueSentences;
-
 	public bool 		dialogueFinished;
 
 	void Awake() {
-		// Singleton
 		S = this;
 	}
 
@@ -34,12 +30,12 @@ public class PauseMessage : MonoBehaviour {
 		cursorGO.SetActive (false);
 
 		// Reset Text Strings
-		dialogueSentences = null;
+		string dialogueSentences = null;
 
 		dialogueFinished = false;
 
 		// Split text argument w/ blank space
-		dialogueWords = text.Split (' ');
+		string[] dialogueWords = text.Split (' ');
 		// Display text one word at a time
 		for (int i = 0; i < dialogueWords.Length; i++) {
 			dialogueSentences += dialogueWords [i] + " ";
