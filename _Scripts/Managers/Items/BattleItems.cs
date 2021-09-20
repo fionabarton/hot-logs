@@ -31,7 +31,7 @@ public class BattleItems : MonoBehaviour {
 		BattlePlayerActions.S.ButtonsInteractable (false, false, false, false, false, false, false, false, true, true);
 
 		// Set a Player Button as Selected GameObject
-		BattlePlayerActions.S.SetSelectedPlayerButton ();
+		Utilities.S.SetSelectedGO(BattlePlayerActions.S.playerButtonGO[_.PlayerNdx()].gameObject);
 
 		BattleDialogue.S.DisplayText (messageToDisplay);
 
