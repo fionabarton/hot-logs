@@ -21,6 +21,10 @@ public class Inventory : MonoBehaviour
 	void Start() {
         // Add items to inventory
         //AddItemToInventory(ItemManager.S.items[1]);
+        AddItemToInventory(ItemManager.S.items[22]);
+        AddItemToInventory(ItemManager.S.items[22]);
+        AddItemToInventory(ItemManager.S.items[22]);
+        AddItemToInventory(ItemManager.S.items[22]);
         AddItemToInventory(ItemManager.S.items[1]);
         AddItemToInventory(ItemManager.S.items[2]);
         AddItemToInventory(ItemManager.S.items[5]);

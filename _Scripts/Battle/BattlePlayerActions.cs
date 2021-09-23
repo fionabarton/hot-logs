@@ -130,6 +130,9 @@ public class BattlePlayerActions : MonoBehaviour
 		Utilities.S.RemoveListeners(playerButtonCS);
 		Utilities.S.RemoveListeners(enemyButtonCS);
 
+		// Deactivate target cursors
+		Utilities.S.SetActiveList(BattleUI.S.targetCursors, false);
+
 		_.PlayerTurn();
 
 		// Audio: Deny
@@ -147,7 +150,7 @@ public class BattlePlayerActions : MonoBehaviour
 		if (_.enemyStats[0].questNdx == 0) {
 			if (Random.value < _.chanceToRun) {     // || Stats.S.LVL[0] - enemyStats[0].LVL >= 5
 				BattleUI.S.turnCursor.SetActive(false);
-				BattleUI.S.targetCursor.SetActive(false);
+				Utilities.S.SetActiveList(BattleUI.S.targetCursors, false);
 
 				// Display Text
 				if (_.partyQty >= 1) {
@@ -164,9 +167,7 @@ public class BattlePlayerActions : MonoBehaviour
 				}
 
 				// Deactivate Player Shields
-				for (int i = 0; i < _.playerShields.Count; i++) {
-					_.playerShields[i].SetActive(false);
-				}
+				Utilities.S.SetActiveList(_.playerShields, false);
 
 				// You ran away, so the enemy is chasing after you!
 				EnemyManager.S.CacheEnemyMovement(eMovement.pursueRun);
@@ -183,7 +184,7 @@ public class BattlePlayerActions : MonoBehaviour
 		} else { // It's a "boss battle", so the party cannot run
 			_.battleMode = eBattleMode.triedToRunFromBoss;
 
-			BattleUI.S.targetCursor.SetActive(false);
+			Utilities.S.SetActiveList(BattleUI.S.targetCursors, false);
 			BattleDialogue.S.DisplayText(_.enemyStats[0].name + " is deadly serious...\n...there is ZERO chance of running away!");
 		}
 		
@@ -215,8 +216,7 @@ public class BattlePlayerActions : MonoBehaviour
 		Battle.S.previousSelectedGameObject = buttonsGO[1];
 
 		if (Party.stats[_.PlayerNdx()].spellNdx > 0) {
-
-			BattleUI.S.targetCursor.SetActive(false);
+			Utilities.S.SetActiveList(BattleUI.S.targetCursors, false);
 
 			// Switch Mode
 			_.battleMode = eBattleMode.itemOrSpellMenu;
@@ -248,8 +248,7 @@ public class BattlePlayerActions : MonoBehaviour
 
 		// If Player has an Item 
 		if (Inventory.S.GetItemList().Count > 0) {
-
-			BattleUI.S.targetCursor.SetActive(false);
+			Utilities.S.SetActiveList(BattleUI.S.targetCursors, false);
 
 			// Switch Mode
 			_.battleMode = eBattleMode.itemOrSpellMenu;
@@ -296,15 +295,15 @@ public class BattlePlayerActions : MonoBehaviour
 		}
 	}
 	
-	public void SetSelectedPlayerButton() {
-		for (int i = _.playerDead.Count - 1; i >= 0; i--) {
-			if (!_.playerDead[i]) {
-				Utilities.S.SetSelectedGO(playerButtonGO[i]);
-			}
-		}
-	}
+	//public void SetSelectedPlayerButton() {
+	//	for (int i = _.playerDead.Count - 1; i >= 0; i--) {
+	//		if (!_.playerDead[i]) {
+	//			Utilities.S.SetSelectedGO(playerButtonGO[i]);
+	//		}
+	//	}
+	//}
 
-	// Activate/Deactivate Player/Enemy Buttons, Shadows, Progress Bars, Sprites/////////////////////////
+	// Activate/Deactivate Player/Enemy Buttons, Shadows, Progress Bars, Sprites
 	public void EnemyButtonSetActive(int enemyNdx, bool setActive) {
 		enemyButtonGO[enemyNdx].SetActive(setActive);
 		ProgressBars.S.enemyHealthBarsCS[enemyNdx].transform.parent.gameObject.SetActive(setActive);

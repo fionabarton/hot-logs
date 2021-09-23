@@ -5,7 +5,8 @@ using UnityEngine.UI;
 using System.Linq;
 
 public enum eBattleMode {
-actionButtons, playerTurn, canGoBackToFightButton, qteInitialize, qte, itemOrSpellMenu, triedToRunFromBoss, 
+actionButtons, playerTurn, canGoBackToFightButton, canGoBackToFightButtonMultipleTargets,
+qteInitialize, qte, itemOrSpellMenu, triedToRunFromBoss, 
 enemyTurn, enemyAction, 
 dropItem, addExpAndGold, partyDeath, levelUp, multiLvlUp, returnToWorld };
 
@@ -96,20 +97,8 @@ public class Battle : MonoBehaviour {
 
 			if (BattleDialogue.S.dialogueNdx <= 0) {
 				switch (battleMode) {
-					case eBattleMode.actionButtons:
-                        // Set buttons' text color
-                        for (int i = 0; i < BattlePlayerActions.S.buttonsCS.Count; i++) {
-                            if (UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject == BattlePlayerActions.S.buttonsGO[i]) {
-								// Set selected button text color	
-								BattlePlayerActions.S.buttonsGO[i].GetComponentInChildren<Text>().color = new Color32(205, 208, 0, 255);
-                            } else {
-								// Set non-selected button text color
-								BattlePlayerActions.S.buttonsGO[i].GetComponentInChildren<Text>().color = new Color32(39, 201, 255, 255);
-                            }
-                        }
-
-                        break;
 					case eBattleMode.canGoBackToFightButton:
+					case eBattleMode.canGoBackToFightButtonMultipleTargets:
 						if (Input.GetButtonDown("SNES B Button")) {
 							BattlePlayerActions.S.GoBackToFightButton();
 						}
@@ -209,14 +198,28 @@ public class Battle : MonoBehaviour {
 			}	
 		}
 
-		// Separate loop for blocking: Accept input to block regardless of BattleDialogue.S.dialogueFinished
-		if (battleMode == eBattleMode.qte) {
-            BattleQTE.S.BlockLoop();
-        }
+		// Separate loop that ignores if BattleDialogue.S.dialogueFinished
+		switch (battleMode) {
+			case eBattleMode.actionButtons:
+				// Set buttons' text color
+				for (int i = 0; i < BattlePlayerActions.S.buttonsCS.Count; i++) {
+					if (UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject == BattlePlayerActions.S.buttonsGO[i]) {
+						// Set selected button text color	
+						BattlePlayerActions.S.buttonsGO[i].GetComponentInChildren<Text>().color = new Color32(205, 208, 0, 255);
+					} else {
+						// Set non-selected button text color
+						BattlePlayerActions.S.buttonsGO[i].GetComponentInChildren<Text>().color = new Color32(39, 201, 255, 255);
+					}
+				}
+			break;
+			case eBattleMode.qte:
+				BattleQTE.S.BlockLoop();
+			break;
+		}
     }
 
 	public void FixedLoop() {
-        if (BattleDialogue.S.dialogueFinished) {
+        //if (BattleDialogue.S.dialogueFinished) {
             switch (battleMode) {
 				case eBattleMode.actionButtons:
                     // Set Target Cursor Position: player action buttons (fight, defend, item, run, etc.)
@@ -232,32 +235,32 @@ public class Battle : MonoBehaviour {
 						" MP: " + Party.stats[1].MP + "/" + Party.stats[1].maxMP;
 					break;
 				case eBattleMode.canGoBackToFightButton:
-					// Set Target Cursor Position: Enemies or Party
-					BattleUI.S.TargetCursorPosition(UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject, 0);
+                    // Set Target Cursor Position: Enemies or Party
+                    BattleUI.S.TargetCursorPosition(UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject, 0);
 
-					// Activate Text
-					BattleDialogue.S.displayMessageTextTop.gameObject.transform.parent.gameObject.SetActive(true);
-					// Display Party or Enemies names
-					switch (UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject.name) {
-						case "Enemy1Button":
-							BattleDialogue.S.displayMessageTextTop.text = enemyStats[0].name;
-							break;
-						case "Enemy2Button":
-							BattleDialogue.S.displayMessageTextTop.text = enemyStats[1].name;
-							break;
-						case "Enemy3Button":
-							BattleDialogue.S.displayMessageTextTop.text = enemyStats[2].name;
-							break;
-						case "Player1Button":
-							BattleDialogue.S.displayMessageTextTop.text = Party.stats[0].name; 
-							break;
-						case "Player2Button":
-							BattleDialogue.S.displayMessageTextTop.text = Party.stats[1].name;
-							break;
-					}
-					break;
+                    // Activate Text
+                    BattleDialogue.S.displayMessageTextTop.gameObject.transform.parent.gameObject.SetActive(true);
+                    // Display Party or Enemies names
+                    switch (UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject.name) {
+                        case "Enemy1Button":
+                            BattleDialogue.S.displayMessageTextTop.text = enemyStats[0].name;
+                            break;
+                        case "Enemy2Button":
+                            BattleDialogue.S.displayMessageTextTop.text = enemyStats[1].name;
+                            break;
+                        case "Enemy3Button":
+                            BattleDialogue.S.displayMessageTextTop.text = enemyStats[2].name;
+                            break;
+                        case "Player1Button":
+                            BattleDialogue.S.displayMessageTextTop.text = Party.stats[0].name;
+                            break;
+                        case "Player2Button":
+                            BattleDialogue.S.displayMessageTextTop.text = Party.stats[1].name;
+                            break;
+                    }
+                    break;
 			}
-		}
+		//}
 
 		switch (battleMode) {
 			case eBattleMode.qte:
@@ -292,7 +295,6 @@ public class Battle : MonoBehaviour {
 		BattlePlayerActions.S.ButtonsDisableAll();
 		
 		// Reset Dialogue
-		BattleDialogue.S.dialogueSentences = null;
 		BattleDialogue.S.dialogueFinished = true;
 		BattleDialogue.S.dialogueNdx = 0;
 		BattleDialogue.S.message.Clear();
@@ -314,17 +316,13 @@ public class Battle : MonoBehaviour {
 
 		// Deactivate Cursors
 		BattleUI.S.turnCursor.SetActive(false);
-		BattleUI.S.targetCursor.SetActive(false);
+		Utilities.S.SetActiveList(BattleUI.S.targetCursors, false);
 
 		// Deactivate Player Shields
-		for (int i = 0; i < playerShields.Count; i++) {
-			playerShields[i].SetActive(false);
-		}
+		Utilities.S.SetActiveList(playerShields, false);
 
 		// Deactivate Enemy Shields
-		for (int i = 0; i < enemyShields.Count; i++) {
-			enemyShields[i].SetActive(false);
-		}
+		Utilities.S.SetActiveList(enemyShields, false);
 
 		// Reset Exp/Gold to add
 		expToAdd = 0;
@@ -351,7 +349,7 @@ public class Battle : MonoBehaviour {
 		if (turnNdx <= ((enemyAmount - 1) + (partyQty))) {
 			turnNdx += 1; } else { turnNdx = 0; }
 
-		BattleUI.S.targetCursor.SetActive(false);
+		Utilities.S.SetActiveList(BattleUI.S.targetCursors, false);
 
 		// Reset button to be selected (Fight Button)
 		previousSelectedGameObject = BattlePlayerActions.S.buttonsGO[0];

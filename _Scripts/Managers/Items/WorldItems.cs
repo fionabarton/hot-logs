@@ -16,7 +16,7 @@ public class WorldItems : MonoBehaviour {
 		S = this;
 	}
 
-	public void AddFunctionToButton(Action<int> functionToPass, string messageToDisplay) { 
+	public void AddFunctionToButton(Action<int> functionToPass, string messageToDisplay, Item item) { 
 		// Buttons Interactable
 		Utilities.S.ButtonsInteractable(PlayerButtons.S.buttonsCS, true);
 		Utilities.S.ButtonsInteractable(ItemScreen.S.itemButtons, false);
@@ -33,6 +33,30 @@ public class WorldItems : MonoBehaviour {
 		// Add Listeners
 		PlayerButtons.S.buttonsCS[0].onClick.AddListener(delegate { functionToPass(0); });
 		PlayerButtons.S.buttonsCS[1].onClick.AddListener(delegate { functionToPass(1); });
+
+		// If multiple targets
+		if (!item.multipleTargets) {
+			// Set animation to idle
+			PlayerButtons.S.SetSelectedAnim("Idle");
+
+			ItemScreen.S.itemScreenMode = eItemScreenMode.pickPartyMember;
+		} else {
+			// Set cursor positions
+			Utilities.S.PositionCursor(PlayerButtons.S.buttonsCS[0].gameObject, 0, 60, 3, 0);
+			Utilities.S.PositionCursor(PlayerButtons.S.buttonsCS[1].gameObject, 0, 60, 3, 1);
+
+			// Set animations to walk
+			PlayerButtons.S.anim[0].CrossFade("Walk", 0);
+			PlayerButtons.S.anim[1].CrossFade("Walk", 0);
+
+			// Set button colors
+			PlayerButtons.S.SetButtonsColor(PlayerButtons.S.buttonsCS, new Color32(253, 255, 116, 255));
+
+			// Activate cursors
+			Utilities.S.SetActiveList(ScreenCursor.S.cursorGO, true);
+
+			ItemScreen.S.itemScreenMode = eItemScreenMode.pickAllPartyMembers;
+		}
 	}
 
 	public void HPPotion(int ndx) {
@@ -56,6 +80,9 @@ public class WorldItems : MonoBehaviour {
 		} else {
 			// Display Text
 			PauseMessage.S.DisplayText(Party.stats[ndx].name + " already at full health...\n...no need to use this potion!");
+
+			// Set animation to idle
+			PlayerButtons.S.anim[ndx].CrossFade("Idle", 0);
 		}
 		ClickedButtonHelper();
 	}
@@ -81,7 +108,61 @@ public class WorldItems : MonoBehaviour {
 		} else {
 			// Display Text
 			PauseMessage.S.DisplayText(Party.stats[ndx].name + " already at full magic...\n...no need to use this potion!");
+
+			// Set animation to idle
+			PlayerButtons.S.anim[ndx].CrossFade("Idle", 0);
 		}
+		ClickedButtonHelper();
+	}
+
+	public void HealAllPotion(int unusedIntBecauseOfAddFunctionToButtonParameter = 0) {
+		int totalAmountToHeal = 0;
+
+		if (Party.stats[0].HP < Party.stats[0].maxHP ||
+			Party.stats[1].HP < Party.stats[1].maxHP) {
+			for (int i = 0; i < Party.stats.Count; i++) {
+				// Get amount and max amount to heal
+				int amountToHeal = UnityEngine.Random.Range(12, 20);
+				int maxAmountToHeal = Party.stats[i].maxHP - Party.stats[i].HP;
+				// Add Player's WIS to Heal Amount
+				amountToHeal += Party.stats[i].WIS;
+
+				// Add 12-20 HP to TARGET Player's HP
+				RPG.S.AddPlayerHP(i, amountToHeal);
+
+				// Cap amountToHeal to maxAmountToHeal
+				if (amountToHeal >= maxAmountToHeal) {
+					amountToHeal = maxAmountToHeal;
+				}
+
+				totalAmountToHeal += amountToHeal;
+			}
+
+			// Remove from Inventory
+			Inventory.S.RemoveItemFromInventory(ItemManager.S.items[22]);
+
+			// Display Text
+			PauseMessage.S.DisplayText("Used Heal All Potion!\nHealed ALL party members for an average of "
+				+ Utilities.S.CalculateAverage(totalAmountToHeal, Party.stats.Count) + " HP!");
+
+			// Set animations to success
+			PlayerButtons.S.anim[0].CrossFade("Success", 0);
+			PlayerButtons.S.anim[1].CrossFade("Success", 0);
+		} else {
+			// Display Text
+			PauseMessage.S.DisplayText("The party is already at full health...\n...no need to use this potion!");
+
+			// Set animations to idle
+			PlayerButtons.S.anim[0].CrossFade("Idle", 0);
+			PlayerButtons.S.anim[1].CrossFade("Idle", 0);
+		}
+
+		// Reset button colors
+		PlayerButtons.S.SetButtonsColor(PlayerButtons.S.buttonsCS, new Color32(255, 255, 255, 200));
+
+		// Deactivate screen cursors
+		Utilities.S.SetActiveList(ScreenCursor.S.cursorGO, false);
+
 		ClickedButtonHelper();
 	}
 
@@ -94,8 +175,8 @@ public class WorldItems : MonoBehaviour {
 		PlayerButtons.S.UpdateGUI();
 		PauseScreen.S.UpdateGUI();
 
-		// Deactivate Cursor
-		ScreenCursor.S.cursorGO.SetActive(false);
+		// Deactivate screen cursors
+		Utilities.S.SetActiveList(ScreenCursor.S.cursorGO, false);
 
 		ItemScreen.S.canUpdate = true;
 
@@ -107,7 +188,7 @@ public class WorldItems : MonoBehaviour {
 		Utilities.S.ButtonsInteractable(ItemScreen.S.itemButtons, false);
 		ItemScreen.S.itemScreenMode = eItemScreenMode.usedItem;
 		PauseMessage.S.DisplayText("This item is not usable... sorry!");
-		// Deactivate Cursor
-		ScreenCursor.S.cursorGO.SetActive(false);
+		// Deactivate screen cursors
+		Utilities.S.SetActiveList(ScreenCursor.S.cursorGO, false);
 	}
 }

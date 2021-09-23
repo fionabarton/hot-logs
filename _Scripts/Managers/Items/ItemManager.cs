@@ -112,6 +112,10 @@ public class ItemManager : MonoBehaviour {
         // Blah Other
         items[21] = new Item("Blah Other", eItemType.other, eItemStatEffect.AGI, 1, 5,
         "Stupid other." + "\n Value: 5 Gold", itemSprite[21], true);
+
+        // Health Potion
+        items[22] = new Item("Heal All Potion", eItemType.healing, eItemStatEffect.HP, 0, 20,
+        "Heals ALL party members for at least 12 HP!" + "\n Value: 20 Gold", itemSprite[22], false, true);
     }
 
     public Item GetItem(eItem itemNdx){
@@ -129,11 +133,12 @@ public class Item {
 	public string 			description;
 	public Sprite 			sprite;
     public bool             isEquipped;
+    public bool             multipleTargets;
 
     public Item(string itemName, 
                 eItemType itemType, eItemStatEffect itemStatEffect, 
-                int itemStatEffectValue, int itemValue, 
-				string itemDescription, Sprite itemSprite, bool itemIsEquipped = false) {
+                int itemStatEffectValue, int itemValue, string itemDescription, 
+                Sprite itemSprite, bool itemIsEquipped = false, bool itemMultipleTargets = false) {
 	    name = itemName;
 	    type = itemType;
 	    statEffect = itemStatEffect;
@@ -142,5 +147,6 @@ public class Item {
 	    description = itemDescription;
 	    sprite = itemSprite;
         isEquipped = itemIsEquipped;
-	}
+        multipleTargets = itemMultipleTargets;
+    }
 }

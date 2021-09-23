@@ -42,8 +42,8 @@ public class ItemScreen_PickItemMode : MonoBehaviour {
 			if (Inventory.S.GetItemList().Count == 0) {
 				PauseMessage.S.DisplayText("You have no items, fool!");
 
-				// Deactivate Cursor
-				ScreenCursor.S.cursorGO.SetActive(false);
+				// Deactivate screen cursors
+				Utilities.S.SetActiveList(ScreenCursor.S.cursorGO, false);
 			} else {
 				// If previousSelectedGameObject is enabled...
 				if (ItemScreen.S.previousSelectedGameObject.activeInHierarchy) {
@@ -55,7 +55,7 @@ public class ItemScreen_PickItemMode : MonoBehaviour {
 				}
 
 				// Activate Cursor
-				ScreenCursor.S.cursorGO.SetActive(true);
+				ScreenCursor.S.cursorGO[0].SetActive(true);
 			}
 
 			// Set Battle Turn Cursor sorting layer BELOW UI

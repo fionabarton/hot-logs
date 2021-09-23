@@ -20,7 +20,7 @@ public class SpellScreen_UsedSpell : MonoBehaviour {
 		if (PauseMessage.S.dialogueFinished) {
 			if (Input.GetButtonDown("SNES A Button")) {
 				// Set animation to idle
-				PlayerButtons.S.SetAnim("Idle");
+				PlayerButtons.S.SetSelectedAnim("Idle");
 
 				spellScreen.LoadSpells(spellScreen.playerNdx);
 			}

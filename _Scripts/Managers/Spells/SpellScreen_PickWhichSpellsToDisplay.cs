@@ -49,7 +49,7 @@ public class SpellScreen_PickWhichSpellsToDisplay : MonoBehaviour {
 				spellScreen.mode = eSpellScreenMode.pickWhichSpellsToDisplay;
 
 				// Activate Cursor
-				ScreenCursor.S.cursorGO.SetActive(true);
+				ScreenCursor.S.cursorGO[0].SetActive(true);
 			} else {
 				// Set Turn Cursor sorting layer BELOW UI
 				BattleUI.S.turnCursorSRend.sortingLayerName = "0";
@@ -74,7 +74,7 @@ public class SpellScreen_PickWhichSpellsToDisplay : MonoBehaviour {
 			}
 
 			// Set animation to walk
-			PlayerButtons.S.SetAnim("Walk");
+			PlayerButtons.S.SetSelectedAnim("Walk");
 
 			spellScreen.canUpdate = false;
 		}
