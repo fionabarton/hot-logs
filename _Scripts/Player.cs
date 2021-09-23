@@ -19,6 +19,7 @@ public class Player : MonoBehaviour {
 	public Rigidbody2D			rigid;
 	public SpriteRenderer		sRend;
 	public Animator				anim;
+	public BoxCollider2D		boxColl;
 
 	[Header ("Set Dynamically")]
 	// Singleton
@@ -63,7 +64,6 @@ public class Player : MonoBehaviour {
 	public bool					isOnEvenLevel = true;
 
 	void Awake () {
-		// Singleton
 		S = this;
 
 		// DontDestroyOnLoad
@@ -100,6 +100,11 @@ public class Player : MonoBehaviour {
 
 		// Enable SpriteRenderer
 		sRend.enabled = true;
+
+		// Disable then enable the player’s box collider to call OnCollisionEnter2D
+		// on an Enemy script if it has already collided with an enemy
+		boxColl.enabled = false;
+		boxColl.enabled = true;
 
 		CancelInvoke ("SpriteFlash");
 	}
