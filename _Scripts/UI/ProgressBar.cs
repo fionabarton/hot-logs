@@ -18,29 +18,26 @@ public class ProgressBar : MonoBehaviour {
 		sRend = GetComponent<SpriteRenderer>();
 	}
 
-	public void UpdateBar(float currentHP, float maxHP) {
-		// Scale
+	public void UpdateBar(float currentHP, float maxHP, bool colorChanges = true) {
+		// Set scale
 		Vector3 scale = currentBar.transform.localScale;
 		scale.x = Utilities.S.Map(0, maxHP, 0, progressBarMaxWidth, currentHP);
 		currentBar.transform.localScale = scale;
 
-		// Position
+		// Set position
 		Vector3 pos = currentBar.transform.localPosition;
 		pos.x = (scale.x / 2) - 0.5f;
 		currentBar.transform.localPosition = pos;
 
-		// Color
-		if(currentHP >= ((maxHP / 3) * 2))
-        {
-			sRend.color = Color.green;
-        }
-		else if (currentHP >= (maxHP / 3))
-        {
-			sRend.color = Color.yellow;
-		}
-        else
-        {
-			sRend.color = Color.red;
+        // Change color based off of current value
+        if (colorChanges) {
+			if (currentHP >= ((maxHP / 3) * 2)) {
+				sRend.color = Color.green;
+			} else if (currentHP >= (maxHP / 3)) {
+				sRend.color = Color.yellow;
+			} else {
+				sRend.color = Color.red;
+			}
 		}
 	}
 }
