@@ -58,7 +58,7 @@ public class BattleInitiative : MonoBehaviour {
 			ProgressBars.S.playerHealthBarsCS[0].UpdateBar(Party.stats[0].HP, Party.stats[0].maxHP);
 
 			// Update Magic Bars
-			ProgressBars.S.playerMagicBarsCS[0].UpdateBar(Party.stats[0].MP, Party.stats[0].maxMP);
+			ProgressBars.S.playerMagicBarsCS[0].UpdateBar(Party.stats[0].MP, Party.stats[0].maxMP, false);
 
 		} else if (_.partyQty >= 1) {
 			BattlePlayerActions.S.PlayerButtonAndStatsSetActive (0, true);
@@ -73,8 +73,8 @@ public class BattleInitiative : MonoBehaviour {
 			ProgressBars.S.playerHealthBarsCS[1].UpdateBar(Party.stats[1].HP, Party.stats[1].maxHP);
 
 			// Update Magic Bars
-			ProgressBars.S.playerMagicBarsCS[0].UpdateBar(Party.stats[0].MP, Party.stats[0].maxMP);
-			ProgressBars.S.playerMagicBarsCS[1].UpdateBar(Party.stats[1].MP, Party.stats[1].maxMP);
+			ProgressBars.S.playerMagicBarsCS[0].UpdateBar(Party.stats[0].MP, Party.stats[0].maxMP, false);
+			ProgressBars.S.playerMagicBarsCS[1].UpdateBar(Party.stats[1].MP, Party.stats[1].maxMP, false);
 		}
 
 		//////////////////////////////////////////// ENEMIES ////////////////////////////////////////////
