@@ -126,6 +126,9 @@ public class BattleSpells : MonoBehaviour {
 			// Display Floating Score
 			RPG.S.InstantiateFloatingScore(_.playerSprite[ndx], amountToHeal, Color.green);
 
+			// Set anim
+			_.playerAnimator[ndx].CrossFade("Win_Battle", 0);
+
 			_.NextTurn ();
 		} else {
 			// Display Text
@@ -364,6 +367,9 @@ public class BattleSpells : MonoBehaviour {
 
 					// Display Floating Score
 					RPG.S.InstantiateFloatingScore(_.playerSprite[i], amountToHeal, Color.green);
+
+					// Set anim
+					_.playerAnimator[i].CrossFade("Win_Battle", 0);
 				}
 			}
 
