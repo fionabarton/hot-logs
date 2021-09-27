@@ -90,7 +90,10 @@ public class BattleItems : MonoBehaviour {
             // Display Floating Score
             RPG.S.InstantiateFloatingScore(_.playerSprite[ndx], amountToHeal, Color.green);
 
-            _.NextTurn();
+			// Set anim
+			_.playerAnimator[ndx].CrossFade("Win_Battle", 0);
+
+			_.NextTurn();
         } else {
             BattleDialogue.S.DisplayText(Party.stats[ndx].name + " already at full health...\n...no need to use this potion!");
 
@@ -141,7 +144,10 @@ public class BattleItems : MonoBehaviour {
 			ObjectPool.S.PosAndEnableObj(poof, _.playerSprite[ndx]);
 
 			// Display Floating Score
-			RPG.S.InstantiateFloatingScore(_.playerSprite[ndx], amountToHeal, Color.green);
+			RPG.S.InstantiateFloatingScore(_.playerSprite[ndx], amountToHeal, new Color32(39, 201, 255, 255));
+
+			// Set anim
+			_.playerAnimator[ndx].CrossFade("Win_Battle", 0);
 
 			_.NextTurn ();
 		} else {
@@ -183,6 +189,9 @@ public class BattleItems : MonoBehaviour {
 
 					// Display Floating Score
 					RPG.S.InstantiateFloatingScore(_.playerSprite[i], amountToHeal, Color.green);
+
+					// Set anim
+					_.playerAnimator[i].CrossFade("Win_Battle", 0);
 				}
 			}
 
