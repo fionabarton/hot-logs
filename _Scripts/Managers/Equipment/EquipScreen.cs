@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System;
 
 public enum eEquipScreenMode { pickPartyMember, pickTypeToEquip, noInventory, pickItemToEquip, equippedItem };
 
@@ -54,22 +55,25 @@ public class EquipScreen : MonoBehaviour {
 	}
 
     void OnEnable () {
-		playerNdx = 0;
-		previousSelectedGameObject = null;
+		try {
+			playerNdx = 0;
+			previousSelectedGameObject = null;
 
-		EquipScreen_PickPartyMemberMode.S.SetUp(S);
+			EquipScreen_PickPartyMemberMode.S.SetUp(S);
 
-		// Add Loop() to Update Delgate
-		UpdateManager.updateDelegate += Loop;
+			// Add Loop() to Update Delgate
+			UpdateManager.updateDelegate += Loop;
 
-		PlayerButtons.S.buttonsCS[0].Select();
-		PlayerButtons.S.buttonsCS[0].OnSelect(null);
-		PlayerButtons.S.anim[0].CrossFade("Walk", 0);
+			PlayerButtons.S.buttonsCS[0].Select();
+			PlayerButtons.S.buttonsCS[0].OnSelect(null);
+			PlayerButtons.S.anim[0].CrossFade("Walk", 0);
+		}
+		catch (NullReferenceException) { }
 	}
 
 	public void Deactivate() {
 		// Activate Cursor
-		ScreenCursor.S.cursorGO.SetActive(true);
+		ScreenCursor.S.cursorGO[0].SetActive(true);
 
 		// Go back to Pause Screen
 		if (RPG.S.currentSceneName != "Battle") {
@@ -86,7 +90,12 @@ public class EquipScreen : MonoBehaviour {
 
 		// Deactivate PlayerButtons
 		PlayerButtons.S.gameObject.SetActive(false);
-		
+
+		// Deactivate inventory buttons
+		for(int i = 0; i < inventoryButtons.Count; i++) {
+			inventoryButtons[i].gameObject.SetActive(false);
+		}
+
 		// Remove Loop() from Update Delgate
 		UpdateManager.updateDelegate -= Loop;
 
@@ -133,7 +142,7 @@ public class EquipScreen : MonoBehaviour {
 				Utilities.S.SetSelectedGO(previousSelectedGameObject);
 
 				// Activate Cursor
-				ScreenCursor.S.cursorGO.SetActive(true);
+				ScreenCursor.S.cursorGO[0].SetActive(true);
 
 				// Reset inventoryButtons text color
 				Utilities.S.SetTextColor(inventoryButtons, new Color32(39, 201, 255, 255));
@@ -170,8 +179,8 @@ public class EquipScreen : MonoBehaviour {
 		// Buttons Interactable
 		Utilities.S.ButtonsInteractable(inventoryButtons, false);
 
-		// Deactivate Cursor
-		ScreenCursor.S.cursorGO.SetActive(false);
+		// Deactivate screen cursors
+		Utilities.S.SetActiveList(ScreenCursor.S.cursorGO, false);
 
 		// Add old item back to inventory
 		Inventory.S.AddItemToInventory(playerEquipment[playerNdx][(int)item.type]);
