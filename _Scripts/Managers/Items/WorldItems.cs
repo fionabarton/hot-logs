@@ -39,7 +39,7 @@ public class WorldItems : MonoBehaviour {
 			// Set animation to idle
 			PlayerButtons.S.SetSelectedAnim("Idle");
 
-			ItemScreen.S.itemScreenMode = eItemScreenMode.pickPartyMember;
+			ItemScreen.S.mode = eItemScreenMode.pickPartyMember;
 		} else {
 			// Set cursor positions
 			Utilities.S.PositionCursor(PlayerButtons.S.buttonsCS[0].gameObject, 0, 60, 3, 0);
@@ -55,7 +55,7 @@ public class WorldItems : MonoBehaviour {
 			// Activate cursors
 			Utilities.S.SetActiveList(ScreenCursor.S.cursorGO, true);
 
-			ItemScreen.S.itemScreenMode = eItemScreenMode.pickAllPartyMembers;
+			ItemScreen.S.mode = eItemScreenMode.pickAllPartyMembers;
 		}
 	}
 
@@ -166,6 +166,21 @@ public class WorldItems : MonoBehaviour {
 		ClickedButtonHelper();
 	}
 
+	public void WarpPotion() {
+		// Remove from Inventory
+		Inventory.S.RemoveItemFromInventory(ItemManager.S.items[23]);
+
+		ItemScreen.S.mode = eItemScreenMode.pickWhereToWarp;
+
+		// Set Selected GameObject
+		Utilities.S.SetSelectedGO(ItemScreen.S.itemButtons[0].gameObject);
+
+		// Use ItemScreen's buttons to select/display warp locations
+		WarpManager.S.DeactivateUnusedButtonSlots(ItemScreen.S.itemButtons);
+		WarpManager.S.AssignButtonEffect(ItemScreen.S.itemButtons);
+		WarpManager.S.AssignButtonNames(ItemScreen.S.itemButtonsText);
+	}
+
 	public void ClickedButtonHelper() {
 		// Buttons Interactable
 		Utilities.S.ButtonsInteractable(PlayerButtons.S.buttonsCS, false);
@@ -181,12 +196,12 @@ public class WorldItems : MonoBehaviour {
 		ItemScreen.S.canUpdate = true;
 
 		// Switch ScreenMode 
-		ItemScreen.S.itemScreenMode = eItemScreenMode.usedItem;
+		ItemScreen.S.mode = eItemScreenMode.usedItem;
 	}
 
 	public void CantUseItem() {
 		Utilities.S.ButtonsInteractable(ItemScreen.S.itemButtons, false);
-		ItemScreen.S.itemScreenMode = eItemScreenMode.usedItem;
+		ItemScreen.S.mode = eItemScreenMode.usedItem;
 		PauseMessage.S.DisplayText("This item is not usable... sorry!");
 		// Deactivate screen cursors
 		Utilities.S.SetActiveList(ScreenCursor.S.cursorGO, false);
