@@ -98,14 +98,19 @@ public class WorldSpells : MonoBehaviour {
 	/// Warp
 	//////////////////////////////////////////////////////////
 	public void WarpSpell() {
-		if (Party.stats[0].MP >= 3) {
-			// Warp to a random location...
-			// ...but this should open a list of destinations to choose from instead 
-			if (UnityEngine.Random.value > 0.5f) {
-				StartCoroutine(WarpManager.S.Warp(Vector3.zero, true, "Town_1"));
-			} else {
-				StartCoroutine(WarpManager.S.Warp(new Vector3(0, -1, 0), true, "Area_2"));
-			}
+		if (Party.stats[0].MP >= 1) {
+			// Subtract Spell cost from CASTING Player's MP 
+			RPG.S.SubtractPlayerMP(SpellScreen.S.playerNdx, 1);
+
+			SpellScreen.S.mode = eSpellScreenMode.pickWhereToWarp;
+
+			// Set Selected GameObject
+			Utilities.S.SetSelectedGO(SpellScreen.S.spellsButtons[0].gameObject);
+
+			// Use SpellScreen's buttons to select/display warp locations
+			WarpManager.S.DeactivateUnusedButtonSlots(SpellScreen.S.spellsButtons);
+			WarpManager.S.AssignButtonEffect(SpellScreen.S.spellsButtons);
+			WarpManager.S.AssignButtonNames(SpellScreen.S.spellsButtonNameTexts);
 		} else {
 			SpellManager.S.CantUseSpell("Not enough MP to cast this spell!");
 		}
