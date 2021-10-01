@@ -153,29 +153,31 @@ public class ItemScreen : MonoBehaviour {
 		}
 	}
 
-	public void ConsumeItem(Item tItem){
+	public void ConsumeItem(Item item){
 		// Check if the item is in inventory
-		if (Inventory.S.items.ContainsKey (tItem)) {
+		if (Inventory.S.items.ContainsKey (item)) {
 			canUpdate = true;
 
 			if (RPG.S.currentSceneName == "Battle") { // if Battle
-				if (tItem.name == "Health Potion") {
-					BattleItems.S.AddFunctionToButton(BattleItems.S.HPPotion, "Use potion on which party member?", tItem);
-				} else if (tItem.name == "Magic Potion") {
-					BattleItems.S.AddFunctionToButton(BattleItems.S.MPPotion, "Use potion on which party member?", tItem);
-				} else if (tItem.name == "Heal All Potion") {
-					BattleItems.S.AddFunctionToButton(BattleItems.S.HealAllPotion, "Use potion to heal all party members?", tItem);
+				if (item.name == "Health Potion") {
+					BattleItems.S.AddFunctionToButton(BattleItems.S.HPPotion, "Use potion on which party member?", item);
+				} else if (item.name == "Magic Potion") {
+					BattleItems.S.AddFunctionToButton(BattleItems.S.MPPotion, "Use potion on which party member?", item);
+				} else if (item.name == "Heal All Potion") {
+					BattleItems.S.AddFunctionToButton(BattleItems.S.HealAllPotion, "Use potion to heal all party members?", item);
+				} else if (item.name == "Revive Potion") {
+					BattleItems.S.AddFunctionToButton(BattleItems.S.RevivePotion, "Use potion to revive which party member?", item);
 				} else {
 					BattleItems.S.CantUseItem();
 				}
 			} else { // if Overworld
-				if (tItem.name == "Health Potion") {
-					WorldItems.S.AddFunctionToButton(WorldItems.S.HPPotion, "Heal which party member?", tItem);
-				} else if (tItem.name == "Magic Potion") {
-					WorldItems.S.AddFunctionToButton(WorldItems.S.MPPotion, "Use MP potion on which party member?", tItem);
-				} else if (tItem.name == "Heal All Potion") {
-					WorldItems.S.AddFunctionToButton(WorldItems.S.HealAllPotion, "Use potion to heal all party members?", tItem);
-				} else if (tItem.name == "Warp Potion") {
+				if (item.name == "Health Potion") {
+					WorldItems.S.AddFunctionToButton(WorldItems.S.HPPotion, "Heal which party member?", item);
+				} else if (item.name == "Magic Potion") {
+					WorldItems.S.AddFunctionToButton(WorldItems.S.MPPotion, "Use MP potion on which party member?", item);
+				} else if (item.name == "Heal All Potion") {
+					WorldItems.S.AddFunctionToButton(WorldItems.S.HealAllPotion, "Use potion to heal all party members?", item);
+				} else if (item.name == "Warp Potion") {
 					WorldItems.S.WarpPotion();
 				} else {
 					WorldItems.S.CantUseItem();
