@@ -105,11 +105,15 @@ public class SpellScreen : MonoBehaviour {
 		if (RPG.S.currentSceneName != "Battle") {
 			if (mode == eSpellScreenMode.pickWhichSpellsToDisplay) {
 				if (Input.GetButtonDown ("SNES B Button")) {
+					// Audio: Deny
+					AudioManager.S.PlaySFX(7);
 					Deactivate();
 				}
 			}
 		} else {
-			if (Input.GetButtonDown ("SNES B Button")) { 
+			if (Input.GetButtonDown ("SNES B Button")) {
+				// Audio: Deny
+				AudioManager.S.PlaySFX(7);
 				ScreenOffPlayerTurn ();
 			}
 		}
@@ -282,28 +286,30 @@ public class SpellScreen : MonoBehaviour {
 	}
 
 	// Inspired by ConsumeItem() in ItemScreen.cs
-	public void UseSpell(Spell tSpell) {
+	public void UseSpell(Spell spell) {
 		canUpdate = true;
 
 		if (RPG.S.currentSceneName == "Battle") { // if Battle
-			if (tSpell.name == "Heal") {
-				BattleSpells.S.AddFunctionToButton(BattleSpells.S.HealSelectedPartyMember, "Heal which party member?", tSpell);
-			} else if (tSpell.name == "Fireball") {
-				BattleSpells.S.AddFunctionToButton(BattleSpells.S.AttackSelectedEnemies, "Attack which enemy?", tSpell);
-			} else if (tSpell.name == "Fireblast") {
-				BattleSpells.S.AddFunctionToButton(BattleSpells.S.AttackAllEnemies, "Attack all enemies?", tSpell);
-			} else if (tSpell.name == "Heal All") {
-				BattleSpells.S.AddFunctionToButton(BattleSpells.S.HealAllPartyMembers, "Heal all party members?", tSpell);
+			if (spell.name == "Heal") {
+				BattleSpells.S.AddFunctionToButton(BattleSpells.S.HealSelectedPartyMember, "Heal which party member?", spell);
+			} else if (spell.name == "Fireball") {
+				BattleSpells.S.AddFunctionToButton(BattleSpells.S.AttackSelectedEnemies, "Attack which enemy?", spell);
+			} else if (spell.name == "Fireblast") {
+				BattleSpells.S.AddFunctionToButton(BattleSpells.S.AttackAllEnemies, "Attack all enemies?", spell);
+			} else if (spell.name == "Heal All") {
+				BattleSpells.S.AddFunctionToButton(BattleSpells.S.HealAllPartyMembers, "Heal all party members?", spell);
+			} else if (spell.name == "Revive") {
+				BattleSpells.S.AddFunctionToButton(BattleSpells.S.ReviveSelectedPartyMember, "Revive which party member?", spell);
 			} else {
 				SpellManager.S.CantUseSpell("Can't use this spell during battle!");
 			}
 		} else { // if Overworld
-			if (tSpell.name == "Heal") {
-				WorldSpells.S.AddFunctionToButton(WorldSpells.S.HealSelectedPartyMember, "Heal which party member?", tSpell);
-			} else if (tSpell.name == "Warp") {
+			if (spell.name == "Heal") {
+				WorldSpells.S.AddFunctionToButton(WorldSpells.S.HealSelectedPartyMember, "Heal which party member?", spell);
+			} else if (spell.name == "Warp") {
 				WorldSpells.S.WarpSpell();
-			} else if (tSpell.name == "Heal All") {
-				WorldSpells.S.AddFunctionToButton(WorldSpells.S.HealAllPartyMembers, "Heal all party members?", tSpell);
+			} else if (spell.name == "Heal All") {
+				WorldSpells.S.AddFunctionToButton(WorldSpells.S.HealAllPartyMembers, "Heal all party members?", spell);
 			} else {
 				SpellManager.S.CantUseSpell("You ain't battlin' no one, so ya can't use dis spell!");
 			}
