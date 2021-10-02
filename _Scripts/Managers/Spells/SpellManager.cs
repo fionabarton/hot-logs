@@ -39,6 +39,11 @@ public class SpellManager : MonoBehaviour {
 		spells[4] = new Spell("Heal All",
 			eSpellType.healing, eSpellStatEffect.HP, eSpellUseableMode.battle, 12, 20, 6,
 			"Heals ALL party members for at least 12 HP!" + "\n Cost: 6 MP", true);
+
+		// Revive
+		spells[5] = new Spell("Revive",
+			eSpellType.healing, eSpellStatEffect.HP, eSpellUseableMode.battle, 12, 20, 6,
+			"Revives a fallen party member and restores a small amount of their HP." + "\n Cost: 6 MP");
 	}
 
 	// Spell Utilities ////////////////////////////////////////////
@@ -63,6 +68,8 @@ public class SpellManager : MonoBehaviour {
 
 	public void CantUseSpell(string message) {
 		PauseMessage.S.DisplayText(message);
+
+		AudioManager.S.PlaySFX(7);
 
 		// if Battle
 		if (RPG.S.currentSceneName == "Battle") {
