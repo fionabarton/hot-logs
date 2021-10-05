@@ -15,15 +15,31 @@ public class Dig_Bury_Ground : ActivateOnButtonPress {
     public BoxCollider2D    boxColl;
 
     [Header("Set Dynamically")]
-    public bool             isBuried;
+    public bool             isDugUp;
 
-    void Start () {
-		SetSpritesAndCollider (!isBuried);
-	}
+    void Start() {
+        switch (groundType) {
+            case eGroundType.desert:
+                sRend.sprite = moundSprites[0];
+                break;
+            case eGroundType.dirt:
+                sRend.sprite = moundSprites[1];
+                break;
+            case eGroundType.grass:
+                sRend.sprite = moundSprites[2];
+                break;
+            case eGroundType.sand:
+                sRend.sprite = moundSprites[3];
+                break;
+            case eGroundType.snow:
+                sRend.sprite = moundSprites[4];
+                break;
+        }
+    }
 
     protected override void Action() {
         //Set Sprites and Collider
-        SetSpritesAndCollider(isBuried);
+        SetSpritesAndCollider(isDugUp);
     }
 
     public void SetSpritesAndCollider(bool tBool) {
@@ -32,40 +48,40 @@ public class Dig_Bury_Ground : ActivateOnButtonPress {
             DialogueManager.S.DisplayText("And now you've buried it...");
 
             switch (groundType) {
-			case eGroundType.desert:
-				sRend.sprite = moundSprites [0];
-				break;
+                case eGroundType.desert:
+                    sRend.sprite = moundSprites[0];
+                    break;
                 case eGroundType.dirt:
                     sRend.sprite = moundSprites[1];
-				break;
-			case eGroundType.grass:
-				sRend.sprite = moundSprites [2];
+                    break;
+                case eGroundType.grass:
+                    sRend.sprite = moundSprites[2];
                     break;
                 case eGroundType.sand:
                     sRend.sprite = moundSprites[3];
-				break;
-			case eGroundType.snow:
+                    break;
+                case eGroundType.snow:
                     sRend.sprite = moundSprites[4];
                     break;
             }
-		} else {
+        } else {
             DialogueManager.S.DisplayText("You have dug up the ground!");
 
             switch (groundType) {
                 case eGroundType.desert:
                     sRend.sprite = holeSprites[0];
-				break;
-			case eGroundType.dirt:
-				sRend.sprite = holeSprites [1];
-				break;
-			case eGroundType.grass:
-				sRend.sprite = holeSprites [2];
-				break; 
-			case eGroundType.sand:
-				sRend.sprite = holeSprites [3];
+                    break;
+                case eGroundType.dirt:
+                    sRend.sprite = holeSprites[1];
+                    break;
+                case eGroundType.grass:
+                    sRend.sprite = holeSprites[2];
+                    break;
+                case eGroundType.sand:
+                    sRend.sprite = holeSprites[3];
                     break;
                 case eGroundType.snow:
-				sRend.sprite = holeSprites [4];
+                    sRend.sprite = holeSprites[4];
                     break;
             }
         }
@@ -74,6 +90,6 @@ public class Dig_Bury_Ground : ActivateOnButtonPress {
         boxColl.enabled = !tBool;
 
         // Reset Bool
-        isBuried = !tBool;
+        isDugUp = !tBool;
 	}
 }
