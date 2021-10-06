@@ -23,7 +23,7 @@ public class BattleEnemyActions : MonoBehaviour {
 	// Attack ONE Party Member
 	public void Attack (){
 		// Run if Attack Damage = 0
-		BattleEnemyAI.S.CheckIfAttackIsUseless ();
+		BattleEnemyAI.S.CheckIfAttackIsUseless();
 
 		// Randomly select party member to attack
 		int playerToAttack = 0;
@@ -80,7 +80,7 @@ public class BattleEnemyActions : MonoBehaviour {
 
 		// Player Death or Next Turn
 		if (Party.stats[playerToAttack].HP < 1) {
-			BattleEnd.S.PlayerDeath (playerToAttack);
+			BattleEnd.S.PlayerDeath(playerToAttack);
 		} else {
 			// BLOCK!!!
 
@@ -95,8 +95,6 @@ public class BattleEnemyActions : MonoBehaviour {
 
 			// Set battleMode to QTE
 			_.battleMode = eBattleMode.qte;
-
-			//_.NextTurn ();
 		}	
 	}
 
@@ -109,18 +107,25 @@ public class BattleEnemyActions : MonoBehaviour {
 		_.enemyShields[_.EnemyNdx()].SetActive(true);
 
 		BattleDialogue.S.DisplayText (_.enemyStats [_.EnemyNdx()].name + " defends themself until their next turn!");
+
+		// Audio: Buff 2
+		AudioManager.S.PlaySFX(12);
+
 		_.NextTurn ();
 	}
 
 	// Index = 2
 	// Run
 	public void Run (){
-		BattleEnd.S.EnemyRun (_.EnemyNdx());
+		BattleEnd.S.EnemyRun(_.EnemyNdx());
 	}
 
 	// Index = 3
 	// Stunned
 	public void Stunned (){
+		// Audio: Deny
+		AudioManager.S.PlaySFX(7);
+
 		BattleDialogue.S.DisplayText (_.enemyStats [_.EnemyNdx()].name + " is stunned and doesn't move!\nWhat a rube!");
 		_.NextTurn ();
 	}
@@ -161,6 +166,9 @@ public class BattleEnemyActions : MonoBehaviour {
 				// Display Floating Score
 				RPG.S.InstantiateFloatingScore(_.enemySprite[_.EnemyNdx()].gameObject, amountToHeal, Color.green);
 
+				// Audio: Buff
+				AudioManager.S.PlaySFX(11);
+
 				_.NextTurn ();
 
 				// TBR
@@ -169,11 +177,19 @@ public class BattleEnemyActions : MonoBehaviour {
 			} else {
 				// Already at Full HP
 				BattleDialogue.S.DisplayText (_.enemyStats [_.EnemyNdx()].name + " thought about casting a Heal Spell...\n...But then remembered they're at full health...\n...and gave up!");
+
+				// Audio: Deny
+				AudioManager.S.PlaySFX(7);
+
 				_.NextTurn (); 
 			}
 		} else {
 			// Not enough MP
 			BattleDialogue.S.DisplayText (_.enemyStats [_.EnemyNdx()].name + " attempts to cast a Heal Spell...\n...But doesn't have enough MP to do so!");
+
+			// Audio: Deny
+			AudioManager.S.PlaySFX(7);
+
 			_.NextTurn (); 
 		}
 
@@ -201,6 +217,10 @@ public class BattleEnemyActions : MonoBehaviour {
 				} else {
 					BattleDialogue.S.DisplayText (_.enemyStats [_.EnemyNdx()].name + " cast Crap Blast, but the party deftly dodged out of the way!");
 				}
+
+				// Audio: Deny
+				AudioManager.S.PlaySFX(7);
+
 				_.NextTurn ();
 			} else {
 				// Shake Player Anim
@@ -255,21 +275,32 @@ public class BattleEnemyActions : MonoBehaviour {
 					// If Player HP < 0, DEAD!
 					if (Party.stats[i].HP < 1 && !_.playerDead[i]) {
 						qtyKilled += 1;
-						tDead [i] = true;
+						tDead[i] = true;
 					}
 				}
 
 				// If no one is killed...
 				if (qtyKilled <= 0) {
-					BattleDialogue.S.DisplayText ("Used Crap BLAST Spell!\nHit ENTIRE party for an average of " + Utilities.S.CalculateAverage (totalAttackDamage, (_.partyQty + 1)) + " HP!");
+					BattleDialogue.S.DisplayText ("Used Crap BLAST Spell!\nHit ENTIRE party for an average of " + Utilities.S.CalculateAverage (totalAttackDamage, (Party.S.partyNdx + 1)) + " HP!");
+
+					// Audio: Fireblast
+					AudioManager.S.PlaySFX(10);
+
 					_.NextTurn (); 
 				} else {
+					// Audio: Death
+					AudioManager.S.PlaySFX(5);
+
 					PlayersDeath (qtyKilled, totalAttackDamage, tDead [0], tDead [1]);
 				}
 			}
 		} else {
 			// Not enough MP
 			BattleDialogue.S.DisplayText (_.enemyStats [_.EnemyNdx()].name + " attempts to cast Crap BLAST...\n...But doesn't have enough MP to do so!");
+
+			// Audio: Deny
+			AudioManager.S.PlaySFX(7);
+
 			_.NextTurn (); 
 		}
 	}
@@ -278,21 +309,25 @@ public class BattleEnemyActions : MonoBehaviour {
 		_.partyQty -= qtyKilled;
 
 		switch (qtyKilled) {
-		case 1: BattleDialogue.S.DisplayText ("Used Crap BLAST Spell!\nHit ENTIRE party for an average of " + Utilities.S.CalculateAverage (totalAttackDamage, (_.partyQty + 2)) + " HP!" + "\nOne party member has been felled!"); break;
-		case 2: BattleDialogue.S.DisplayText ("Used Crap BLAST Spell!\nHit ENTIRE party for an average of " + Utilities.S.CalculateAverage (totalAttackDamage, (_.partyQty + 3)) + " HP!" + "\nTwo party members have been felled!"); break;
+		case 1: BattleDialogue.S.DisplayText ("Used Crap BLAST Spell!\nHit ENTIRE party for an average of " + Utilities.S.CalculateAverage (totalAttackDamage, (Party.S.partyNdx + 1)) + " HP!" + "\nOne party member has been felled!"); break;
+		case 2: BattleDialogue.S.DisplayText ("Used Crap BLAST Spell!\nHit ENTIRE party for an average of " + Utilities.S.CalculateAverage (totalAttackDamage, (Party.S.partyNdx + 1)) + " HP!" + "\nTwo party members have been felled!"); break;
 		}
 
 		if (player1) { PlayersDeathHelper(0, Party.stats[0].name); }
 		if (player2) { PlayersDeathHelper(1, Party.stats[1].name); }
 
 		// Add PartyDeath or NextTurn
-		if (_.partyQty < 0) { _.battleMode = eBattleMode.partyDeath;} else { _.NextTurn (); }
+		if (_.partyQty < 0) {
+			_.battleMode = eBattleMode.partyDeath;} 
+		else {
+			_.NextTurn (); 
+		}
 	}
 	public void PlayersDeathHelper(int playerNdx, string playerTurnOrder){
 		// Deactivate Player Shield
 		_.playerShields[playerNdx].SetActive(false);
 
-		_.playerDead [playerNdx] = true;
+		_.playerDead[playerNdx] = true;
 
 		// Animation: Player DEATH
 		_.playerAnimator[playerNdx].CrossFade("Death", 0);
@@ -304,7 +339,6 @@ public class BattleEnemyActions : MonoBehaviour {
 	// Index = 6
 	// Call For Backup
 	public void CallForBackup (){
-
 		if (_.enemyStats [0].isDead) {
 			CallForBackupHelper(0);
 		} else if (_.enemyStats [1].isDead) {
@@ -313,6 +347,9 @@ public class BattleEnemyActions : MonoBehaviour {
 			CallForBackupHelper(2);
 		} else {
 			BattleDialogue.S.DisplayText (_.enemyStats [_.EnemyNdx()].name + " called for backup...\n...but no one came!");
+
+			// Audio: Deny
+			AudioManager.S.PlaySFX(7);
 		}
 
 		_.NextTurn ();
@@ -347,6 +384,10 @@ public class BattleEnemyActions : MonoBehaviour {
 
 		// Add to EnemyAmount 
 		_.enemyAmount += 1;
+
+		// Audio: Run
+		AudioManager.S.PlaySFX(8);
+
 		// Display Text
 		BattleDialogue.S.DisplayText (_.enemyStats [_.EnemyNdx()].name + " called for backup...\n...and someone came!");
 	}
