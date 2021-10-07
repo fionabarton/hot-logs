@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System;
 
-public enum eItemScreenMode { pickItem, pickPartyMember, pickAllPartyMembers, usedItem }; 
+public enum eItemScreenMode { pickItem, pickPartyMember, pickAllPartyMembers, usedItem, pickWhereToWarp }; 
 
 public class ItemScreen : MonoBehaviour { 
 	[Header("Set in Inspector")]
@@ -20,7 +20,7 @@ public class ItemScreen : MonoBehaviour {
 	public static ItemScreen S { get { return _S; } set { _S = value; } }
 
 	// For Input & Display Message
-	public eItemScreenMode  itemScreenMode;
+	public eItemScreenMode  mode;
 
 	// Allows parts of Loop() to be called once rather than repeatedly every frame.
 	public bool 			canUpdate;
@@ -42,7 +42,7 @@ public class ItemScreen : MonoBehaviour {
 	}
 
 	public void Deactivate () {
-		// Deactivate Cursors if in Battle or Sell Mode
+		// Deactivate Cursors if in Battle Mode
 		if (!RPG.S.paused) {
 			Utilities.S.SetActiveList(ScreenCursor.S.cursorGO, false);
 		}
@@ -89,40 +89,52 @@ public class ItemScreen : MonoBehaviour {
 			}
 		}
 
-		switch (itemScreenMode) {
+		switch (mode) {
 			case eItemScreenMode.pickItem:
 				ItemScreen_PickItemMode.S.Loop(S);
-				break;
+			break;
 			case eItemScreenMode.pickPartyMember:
 				ItemScreen_PickPartyMemberMode.S.Loop(S);
-				break;
+			break;
 			case eItemScreenMode.pickAllPartyMembers:
-				if (PauseMessage.S.dialogueFinished) {
-					if (Input.GetButtonDown("SNES B Button")) {
-						// Set animations to idle
-						PlayerButtons.S.anim[0].CrossFade("Idle", 0);
-						PlayerButtons.S.anim[1].CrossFade("Idle", 0);
+				if (Input.GetButtonDown("SNES B Button")) {
+					GoBackToPickItemMode();
+				}
+			break;
+			case eItemScreenMode.pickWhereToWarp:
+				if (canUpdate) {
+					WarpManager.S.DisplayButtonDescriptions(itemButtons, -170);
+				}
 
-						// Reset button colors
-						PlayerButtons.S.SetButtonsColor(PlayerButtons.S.buttonsCS, new Color32(255, 255, 255, 200));
-
-						// Deactivate screen cursors
-						Utilities.S.SetActiveList(ScreenCursor.S.cursorGO, false);
-
-						// Go back to PickItem mode
-						ItemScreen_PickItemMode.S.Setup(S);
-					}
+				if (Input.GetButtonDown("SNES B Button")) {
+					GoBackToPickItemMode();
 				}
 				break;
 			case eItemScreenMode.usedItem:
 				ItemScreen_UsedItemMode.S.Loop(S);
-				break;
+			break;
 		}
 
 		// TEST: Sort Inventory
 		if (Input.GetKeyDown (KeyCode.X)) {
 			//_items = SortItems.S.SortByABC(_items);
 			Inventory.S.items = SortItems.S.SortByValue(Inventory.S.items);
+		}
+	}
+
+	void GoBackToPickItemMode() {
+		if (PauseMessage.S.dialogueFinished) {
+			// Set animations to idle
+			PlayerButtons.S.SetSelectedAnim("Idle");
+
+			// Reset button colors
+			PlayerButtons.S.SetButtonsColor(PlayerButtons.S.buttonsCS, new Color32(255, 255, 255, 200));
+
+			// Deactivate screen cursors
+			Utilities.S.SetActiveList(ScreenCursor.S.cursorGO, false);
+
+			// Go back to PickItem mode
+			ItemScreen_PickItemMode.S.Setup(S);
 		}
 	}
 
@@ -141,40 +153,35 @@ public class ItemScreen : MonoBehaviour {
 		}
 	}
 
-	public void ConsumeItem(Item tItem){
+	public void ConsumeItem(Item item){
 		// Check if the item is in inventory
-		if (Inventory.S.items.ContainsKey (tItem)) {
+		if (Inventory.S.items.ContainsKey (item)) {
 			canUpdate = true;
 
-			switch (tItem.name) {
-			case "Health Potion":
-				if (RPG.S.currentSceneName == "Battle") { // if Battle
-					BattleItems.S.AddFunctionToButton(BattleItems.S.HPPotion, "Use potion on which party member?", tItem);
-				} else { // if Overworld
-					WorldItems.S.AddFunctionToButton(WorldItems.S.HPPotion, "Heal which party member?", tItem);
-				}
-			break;
-			case "Magic Potion":
-				if (RPG.S.currentSceneName == "Battle") { // if Battle
-					BattleItems.S.AddFunctionToButton(BattleItems.S.MPPotion, "Use potion on which party member?", tItem);
-				} else { // if Overworld
-					WorldItems.S.AddFunctionToButton(WorldItems.S.MPPotion, "Use MP potion on which party member?", tItem);
-				}
-			break;
-			case "Heal All Potion":
-				if (RPG.S.currentSceneName == "Battle") { // if Battle
-					BattleItems.S.AddFunctionToButton(BattleItems.S.HealAllPotion, "Use potion to heal all party members?", tItem);
-				} else { // if Overworld
-					WorldItems.S.AddFunctionToButton(WorldItems.S.HealAllPotion, "Use potion to heal all party members?", tItem);
-					}
-			break;
-			default: // Items that can't be used...
-				if (RPG.S.currentSceneName == "Battle") { // if Battle
+			if (RPG.S.currentSceneName == "Battle") { // if Battle
+				if (item.name == "Health Potion") {
+					BattleItems.S.AddFunctionToButton(BattleItems.S.HPPotion, "Use potion on which party member?", item);
+				} else if (item.name == "Magic Potion") {
+					BattleItems.S.AddFunctionToButton(BattleItems.S.MPPotion, "Use potion on which party member?", item);
+				} else if (item.name == "Heal All Potion") {
+					BattleItems.S.AddFunctionToButton(BattleItems.S.HealAllPotion, "Use potion to heal all party members?", item);
+				} else if (item.name == "Revive Potion") {
+					BattleItems.S.AddFunctionToButton(BattleItems.S.RevivePotion, "Use potion to revive which party member?", item);
+				} else {
 					BattleItems.S.CantUseItem();
-				} else { // if Overworld
+				}
+			} else { // if Overworld
+				if (item.name == "Health Potion") {
+					WorldItems.S.AddFunctionToButton(WorldItems.S.HPPotion, "Heal which party member?", item);
+				} else if (item.name == "Magic Potion") {
+					WorldItems.S.AddFunctionToButton(WorldItems.S.MPPotion, "Use MP potion on which party member?", item);
+				} else if (item.name == "Heal All Potion") {
+					WorldItems.S.AddFunctionToButton(WorldItems.S.HealAllPotion, "Use potion to heal all party members?", item);
+				} else if (item.name == "Warp Potion") {
+					WorldItems.S.WarpPotion();
+				} else {
 					WorldItems.S.CantUseItem();
 				}
-			break;
 			}
 		}
 	}

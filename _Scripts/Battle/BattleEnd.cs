@@ -52,7 +52,7 @@ public class BattleEnd : MonoBehaviour {
 			_.turnNdx -= 1; // Lower Turn Index
 
 			BattleUI.S.turnCursor.SetActive(false); // Deactivate Turn Cursor
-			BattleUI.S.targetCursor.SetActive(false);
+			Utilities.S.SetActiveList(BattleUI.S.targetCursors, false);
 
 			// Randomly select DropItem
 			AddDroppedItems(ndx);
@@ -92,7 +92,7 @@ public class BattleEnd : MonoBehaviour {
 		_.enemyShields[ndx].SetActive(false);
 
 		BattleUI.S.turnCursor.SetActive(false); // Deactivate Turn Cursor
-		BattleUI.S.targetCursor.SetActive(false);
+		Utilities.S.SetActiveList(BattleUI.S.targetCursors, false);
 
 		BattleDialogue.S.DisplayText(_.enemyStats[ndx].name + " has been felled!");
 
@@ -175,7 +175,7 @@ public class BattleEnd : MonoBehaviour {
 	}
 	public void PartyDeath() {
 		BattleUI.S.turnCursor.SetActive(false);
-		BattleUI.S.targetCursor.SetActive(false);
+		Utilities.S.SetActiveList(BattleUI.S.targetCursors, false);
 
 		// You died, so the enemy is chasing after you!
 		EnemyManager.S.CacheEnemyMovement(eMovement.pursueRun);
@@ -292,7 +292,7 @@ public class BattleEnd : MonoBehaviour {
 		RPG.S.LoadLevel(RPG.S.previousSceneName);
 
 		// Make Player Invincible in Overworld
-		Player.S.StartInvincibility();
+		Player.S.invincibility.StartInvincibility();
 
 		// Allow Enemy to start battles w/ Player OnCollision
 		Player.S.isBattling = false;

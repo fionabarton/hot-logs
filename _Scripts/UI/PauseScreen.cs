@@ -57,8 +57,9 @@ public class PauseScreen : MonoBehaviour {
 			}
 
 			// Activate Cursor
-			ScreenCursor.S.cursorGO.SetActive (true);
-		}catch(NullReferenceException){}
+			ScreenCursor.S.cursorGO[0].SetActive(true);
+		}
+		catch(NullReferenceException){}
 
 		// Account for time that PauseScreen is not active
 		timeWhenEnabled = Time.time;
@@ -70,8 +71,8 @@ public class PauseScreen : MonoBehaviour {
 	}
 
 	void OnDisable () {
-		// Deactivate Cursor
-		ScreenCursor.S.cursorGO.SetActive(false);
+		// Deactivate screen cursors
+		Utilities.S.SetActiveList(ScreenCursor.S.cursorGO, false);
 
 		// Account for time that PauseScreen is not active
 		timeWhenDisabled = Time.time;
@@ -200,30 +201,20 @@ public class PauseScreen : MonoBehaviour {
 			// Steps Count
 			Player.S.stepsCount + "\n" +
 			// Gold
-			Party.S.Gold;
+			Party.S.gold;
 		}
 	}
 
-	// Display Player Stats (Level, HP, MP, EXP)
+	// Display Party Stats (Level, HP, MP, EXP)
 	public void UpdateGUI () {
-		if (Party.stats.Count > 0) {
-			// Player 1 ////////////////////////////////////
-			playerNameText[0].text = Party.stats[0].name;
+		for(int i = 0; i < Party.stats.Count; i++) {
+			playerNameText[i].text = Party.stats[i].name;
 
-			statsNumText[0].text = Party.stats[0].LVL + "\n" +
-				Party.stats[0].HP + "/" + Party.stats[0].maxHP + "\n" +
-				Party.stats[0].MP + "/" + Party.stats[0].maxMP + "\n" +
-				Party.stats[0].EXP;
-
-			// Player 2 ////////////////////////////////////
-			playerNameText[1].text = Party.stats[1].name;
-
-			if (Party.S.partyNdx >= 1) {
-				statsNumText[1].text = Party.stats[1].LVL + "\n" +
-					Party.stats[1].HP + "/" + Party.stats[1].maxHP + "\n" +
-					Party.stats[1].MP + "/" + Party.stats[1].maxMP + "\n" +
-					Party.stats[1].EXP;
-			}
+			statsNumText[i].text = Party.stats[i].LVL + "\n" +
+				Party.stats[i].HP + "/" + Party.stats[i].maxHP + "\n" +
+				Party.stats[i].MP + "/" + Party.stats[i].maxMP + "\n" +
+				Party.stats[i].EXP + "\n" +
+				Party.S.GetExpToNextLevel(i);
 		}
 	}
 }

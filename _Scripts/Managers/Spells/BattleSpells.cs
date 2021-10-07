@@ -22,7 +22,7 @@ public class BattleSpells : MonoBehaviour {
 		_ = Battle.S;
 	}
 
-    public void AddFunctionToButton(Action<int> functionToPass, string messageToDisplay, Spell spell) {
+    public void AddFunctionToButton(Action<int, Spell> functionToPass, string messageToDisplay, Spell spell) {
 		if (Party.stats[Battle.S.PlayerNdx()].MP >= spell.cost) {
 			if (spell.type == eSpellType.healing) {
 				BattlePlayerActions.S.ButtonsInteractable(false, false, false, false, false, false, false, false, true, true);
@@ -31,8 +31,8 @@ public class BattleSpells : MonoBehaviour {
 				Utilities.S.SetSelectedGO(BattlePlayerActions.S.playerButtonGO[_.PlayerNdx()].gameObject);
 
 				// Add Item Listeners to Player Buttons
-				BattlePlayerActions.S.playerButtonCS[0].onClick.AddListener(delegate { functionToPass(0); });
-				BattlePlayerActions.S.playerButtonCS[1].onClick.AddListener(delegate { functionToPass(1); });
+				BattlePlayerActions.S.playerButtonCS[0].onClick.AddListener(delegate { functionToPass(0, spell); });
+				BattlePlayerActions.S.playerButtonCS[1].onClick.AddListener(delegate { functionToPass(1, spell); });
 
 				// If multiple targets
 				if (spell.multipleTargets) {
@@ -45,9 +45,9 @@ public class BattleSpells : MonoBehaviour {
 				BattlePlayerActions.S.SetSelectedEnemyButton();
 
 				// Add Item Listeners to Enemy Buttons
-				BattlePlayerActions.S.enemyButtonCS[0].onClick.AddListener(delegate { functionToPass(0); });
-				BattlePlayerActions.S.enemyButtonCS[1].onClick.AddListener(delegate { functionToPass(1); });
-				BattlePlayerActions.S.enemyButtonCS[2].onClick.AddListener(delegate { functionToPass(2); });
+				BattlePlayerActions.S.enemyButtonCS[0].onClick.AddListener(delegate { functionToPass(0, spell); });
+				BattlePlayerActions.S.enemyButtonCS[1].onClick.AddListener(delegate { functionToPass(1, spell); });
+				BattlePlayerActions.S.enemyButtonCS[2].onClick.AddListener(delegate { functionToPass(2, spell); });
 
                 // If multiple targets
                 if (spell.multipleTargets) {
@@ -83,10 +83,13 @@ public class BattleSpells : MonoBehaviour {
 	//////////////////////////////////////////////////////////
 	/// Heal - Heal the selected party member 
 	//////////////////////////////////////////////////////////
-	public void HealSelectedPartyMember(int ndx){
+	public void HealSelectedPartyMember(int ndx, Spell spell) {
         if (_.playerDead[ndx]) {
 			// Display Text
 			BattleDialogue.S.DisplayText(Party.stats[ndx].name + " is dead...\n...and dead folk can't be healed, dummy!");
+			
+			// Audio: Deny
+			AudioManager.S.PlaySFX(7);
 
 			// Switch Mode
 			_.battleMode = eBattleMode.playerTurn;
@@ -98,10 +101,10 @@ public class BattleSpells : MonoBehaviour {
 
 		if (Party.stats[ndx].HP < Party.stats[ndx].maxHP) {
 			// Subtract Spell cost from Player's MP
-			RPG.S.SubtractPlayerMP (_.PlayerNdx(), 3);
+			RPG.S.SubtractPlayerMP(_.PlayerNdx(), spell.cost);
 			
 			// Get amount and max amount to heal
-			int amountToHeal = UnityEngine.Random.Range(30, 45);
+			int amountToHeal = UnityEngine.Random.Range(spell.statEffectMinValue, spell.statEffectMaxValue);
 			int maxAmountToHeal = Party.stats[ndx].maxHP - Party.stats[ndx].HP;
 			// Add Player's WIS to Heal Amount
 			amountToHeal += Party.stats[ndx].WIS;
@@ -111,12 +114,12 @@ public class BattleSpells : MonoBehaviour {
 
 			// Display Text
 			if (amountToHeal >= maxAmountToHeal) {
-				BattleDialogue.S.DisplayText("Used Heal Spell!\nHealed " + Party.stats[ndx].name + " back to Max HP!");
+				BattleDialogue.S.DisplayText("Used " + spell.name + " Spell!\nHealed " + Party.stats[ndx].name + " back to Max HP!");
 
 				// Prevents Floating Score being higher than the acutal amount healed
 				amountToHeal = maxAmountToHeal;
 			} else {
-				BattleDialogue.S.DisplayText("Used Heal Spell!\nHealed " + Party.stats[ndx].name + " for " + amountToHeal + " HP!");
+				BattleDialogue.S.DisplayText("Used " + spell.name + " Spell!\nHealed " + Party.stats[ndx].name + " for " + amountToHeal + " HP!");
 			}
 
 			// Get and position Poof game object
@@ -126,10 +129,19 @@ public class BattleSpells : MonoBehaviour {
 			// Display Floating Score
 			RPG.S.InstantiateFloatingScore(_.playerSprite[ndx], amountToHeal, Color.green);
 
+			// Set anim
+			_.playerAnimator[ndx].CrossFade("Win_Battle", 0);
+
+			// Audio: Confirm
+			AudioManager.S.PlaySFX(6);
+
 			_.NextTurn ();
 		} else {
 			// Display Text
 			BattleDialogue.S.DisplayText(Party.stats[ndx].name + " already at full health...\n...no need to cast this spell!");
+
+			// Audio: Deny
+			AudioManager.S.PlaySFX(7);
 
 			// Switch Mode
 			_.battleMode = eBattleMode.playerTurn;
@@ -140,9 +152,9 @@ public class BattleSpells : MonoBehaviour {
 	//////////////////////////////////////////////////////////
 	/// Fireball - Attack the selected enemy
 	////////////////////////////////////////////////////////// 
-	public void AttackSelectedEnemies(int ndx){
+	public void AttackSelectedEnemies(int ndx, Spell spell) {
 		// Subtract Spell cost from Player's MP
-		RPG.S.SubtractPlayerMP (_.PlayerNdx(), 2);
+		RPG.S.SubtractPlayerMP (_.PlayerNdx(), spell.cost);
 
 		// Miss/Dodge
 		// 5% chance to Miss/Dodge...
@@ -153,10 +165,11 @@ public class BattleSpells : MonoBehaviour {
 			} else {
 				BattleDialogue.S.DisplayText(Party.stats[_.PlayerNdx()].name + " cast the spell, but " + _.enemyStats[ndx].name + " deftly dodged out of the way!");
 			}
+
 			_.NextTurn ();
 		} else {
 			// Subtract 8-12 HP
-			_.attackDamage = UnityEngine.Random.Range (8, 12);
+			_.attackDamage = UnityEngine.Random.Range (spell.statEffectMinValue, spell.statEffectMaxValue);
 			// Add Player's WIS to Damage
 			_.attackDamage += Party.stats[_.PlayerNdx()].WIS;
 			_.attackDamage += Party.stats[_.PlayerNdx()].WIS;
@@ -188,7 +201,12 @@ public class BattleSpells : MonoBehaviour {
 				SpellScreen.S.ScreenOffEnemyDeath (ndx);
 			} else {
 				// Deactivate Spells Screen then Enemy Turn
-				BattleDialogue.S.DisplayText ("Used Fire Spell!\nHit " + _.enemyStats [ndx].name + " for " + _.attackDamage + " HP!");
+				BattleDialogue.S.DisplayText ("Used " + spell.name + " Spell!\nHit " + _.enemyStats [ndx].name + " for " + _.attackDamage + " HP!");
+
+				// Audio: Damage
+				int randomInt = UnityEngine.Random.Range(2, 4);
+				AudioManager.S.PlaySFX(randomInt);
+
 				_.NextTurn ();
 			}
 		}
@@ -198,9 +216,9 @@ public class BattleSpells : MonoBehaviour {
 	//////////////////////////////////////////////////////////
 	/// Fireblast
 	//////////////////////////////////////////////////////////
-	public void AttackAllEnemies (int unusedIntBecauseOfAddFunctionToButtonParameter = 0) {
+	public void AttackAllEnemies (int unusedIntBecauseOfAddFunctionToButtonParameter, Spell spell) {
 		// Subtract Spell cost from Player's MP
-		RPG.S.SubtractPlayerMP (_.PlayerNdx(), 3);
+		RPG.S.SubtractPlayerMP (_.PlayerNdx(), spell.cost);
 
 		// *** TBR: Reference the Defender (still living) with the highest WIS ***
 	
@@ -218,7 +236,7 @@ public class BattleSpells : MonoBehaviour {
 			List<int> deadEnemies = new List<int>();
 
 			// Subtract 12-20 HP
-			_.attackDamage = UnityEngine.Random.Range (12, 20);
+			_.attackDamage = UnityEngine.Random.Range (spell.statEffectMinValue, spell.statEffectMaxValue);
 			// Add Player's WIS to Damage
 			_.attackDamage += Party.stats[_.PlayerNdx()].WIS;
 
@@ -270,7 +288,12 @@ public class BattleSpells : MonoBehaviour {
 
 			// If no one is killed...
 			if (deadEnemies.Count <= 0) {
-				BattleDialogue.S.DisplayText ("Used Fire BLAST Spell!\nHit ALL Enemies for an average of " + Utilities.S.CalculateAverage(totalAttackDamage, _.enemyStats.Count) + " HP!");
+				BattleDialogue.S.DisplayText ("Used " + spell.name + " Spell!\nHit ALL Enemies for an average of " + Utilities.S.CalculateAverage(totalAttackDamage, _.enemyStats.Count) + " HP!");
+
+				// Audio: Damage
+				int randomInt = UnityEngine.Random.Range(2, 4);
+				AudioManager.S.PlaySFX(randomInt);
+
 				_.NextTurn (); 
 			} else {
 				EnemiesDeath(deadEnemies, totalAttackDamage);
@@ -332,18 +355,18 @@ public class BattleSpells : MonoBehaviour {
 	//////////////////////////////////////////////////////////
 	/// Heal All - Heal all party members 
 	//////////////////////////////////////////////////////////
-	public void HealAllPartyMembers(int unusedIntBecauseOfAddFunctionToButtonParameter = 0) {
+	public void HealAllPartyMembers(int unusedIntBecauseOfAddFunctionToButtonParameter, Spell spell) {
 		int totalAmountToHeal = 0;
 
 		if (Party.stats[0].HP < Party.stats[0].maxHP ||
 			Party.stats[1].HP < Party.stats[1].maxHP) {
 			// Subtract Spell cost from Player's MP
-			RPG.S.SubtractPlayerMP(_.PlayerNdx(), 6);
+			RPG.S.SubtractPlayerMP(_.PlayerNdx(), spell.cost);
 
 			for (int i = 0; i < _.playerDead.Count; i++) {
 				if (!_.playerDead[i]) {
 					// Get amount and max amount to heal
-					int amountToHeal = UnityEngine.Random.Range(12, 20);
+					int amountToHeal = UnityEngine.Random.Range(spell.statEffectMinValue, spell.statEffectMaxValue);
 					int maxAmountToHeal = Party.stats[i].maxHP - Party.stats[i].HP;
 					// Add Player's WIS to Heal Amount
 					amountToHeal += Party.stats[i].WIS;
@@ -364,12 +387,18 @@ public class BattleSpells : MonoBehaviour {
 
 					// Display Floating Score
 					RPG.S.InstantiateFloatingScore(_.playerSprite[i], amountToHeal, Color.green);
+
+					// Set anim
+					_.playerAnimator[i].CrossFade("Win_Battle", 0);
 				}
 			}
 
 			// Display Text
-			BattleDialogue.S.DisplayText("Used Heal All Spell!\nHealed ALL party members for an average of " 
+			BattleDialogue.S.DisplayText("Used " + spell.name + " Spell!\nHealed ALL party members for an average of " 
 				+ Utilities.S.CalculateAverage(totalAmountToHeal, _.playerDead.Count) + " HP!");
+
+			// Audio: Confirm
+			AudioManager.S.PlaySFX(6);
 
 			_.NextTurn();
 		} else {
@@ -378,6 +407,33 @@ public class BattleSpells : MonoBehaviour {
 
 			// Deactivate Cursors
 			Utilities.S.SetActiveList(BattleUI.S.targetCursors, false);
+
+			// Audio: Deny
+			AudioManager.S.PlaySFX(7);
+
+			// Switch Mode
+			_.battleMode = eBattleMode.playerTurn;
+		}
+		SpellHelper();
+	}
+
+	public void ReviveSelectedPartyMember(int ndx, Spell spell) {
+        if (_.playerDead[ndx]) {
+            _.playerDead[ndx] = false;
+
+            // Add to PartyQty 
+            _.partyQty += 1;
+
+            // Add Player to Turn Order
+            _.turnOrder.Add(Party.stats[ndx].name);
+
+			HealSelectedPartyMember(ndx, spell);
+        } else {
+			// Display Text
+			BattleDialogue.S.DisplayText(Party.stats[ndx].name + " ain't dead...\n...and dead folk don't need to be revived, dummy!");
+
+			// Audio: Deny
+			AudioManager.S.PlaySFX(7);
 
 			// Switch Mode
 			_.battleMode = eBattleMode.playerTurn;

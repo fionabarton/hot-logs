@@ -102,12 +102,15 @@ public class RPG : MonoBehaviour {
 		SceneManager.LoadScene (levelToLoad);
 		StartCoroutine ("LoadSettingsCo");
 	}
-	private IEnumerator LoadSettingsCo (){ // Calls LoadSettings() AFTER scene has changed
+	private IEnumerator LoadSettingsCo(){ // Calls LoadSettings() AFTER scene has changed
 		yield return new WaitForSeconds(0.05f);
 
 		// Current Scene
 		currentScene = SceneManager.GetActiveScene();
 		currentSceneName = currentScene.name;
+
+		// Record that the player has visited this location
+		WarpManager.S.HasVisited(currentSceneName);
 
 		// Camera
 		CamManager.S.camMode = eCamMode.followAll;
@@ -365,7 +368,7 @@ public class RPG : MonoBehaviour {
 		}
 
 		// Update Magic Bars
-		ProgressBars.S.playerMagicBarsCS[ndx].UpdateBar(Party.stats[ndx].MP, Party.stats[ndx].maxMP);
+		ProgressBars.S.playerMagicBarsCS[ndx].UpdateBar(Party.stats[ndx].MP, Party.stats[ndx].maxMP, false);
 	}
 
 	public void AddPlayerMP(int ndx, int amount) {

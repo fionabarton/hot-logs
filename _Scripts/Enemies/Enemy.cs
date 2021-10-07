@@ -24,34 +24,36 @@ public class Enemy : MonoBehaviour {
     // Start Battle
     void OnCollisionEnter2D(Collision2D coll){
 		if (coll.gameObject.CompareTag("Player")) {
-			// If this Enemy does not StartBattle() on collision
-			if (stats[0].questNdx == 0) {
-				if (!Player.S.invincible && !Player.S.isBattling) {
-					// Set Camera to Enemy gameObject
-					CamManager.S.ChangeTarget(gameObject, true);
+            if (!RPG.S.paused) {
+				// If this Enemy does not StartBattle() on collision
+				if (stats[0].questNdx == 0) {
+					if (!Player.S.invincibility.isInvincible && !Player.S.isBattling) {
+						// Set Camera to Enemy gameObject
+						CamManager.S.ChangeTarget(gameObject, true);
 
-					// Prevent collisions w/ multiple enemies
-					Player.S.isBattling = true;
+						// Prevent collisions w/ multiple enemies
+						Player.S.isBattling = true;
 
-					// Start Battle ( Assign Enemy Stats)
-					RPG.S.StartBattle(stats);
+						// Start Battle ( Assign Enemy Stats)
+						RPG.S.StartBattle(stats);
 
-					// Inform EnemyManager this Enemy has battled and is the current enemy
-					EnemyManager.S.enemiesBattled.Add(ndx);
-					EnemyManager.S.currentEnemyNdx = ndx;
-					// Store position of all enemies in currentScene
-					EnemyManager.S.PopulateEnemyPositionsList();
+						// Inform EnemyManager this Enemy has battled and is the current enemy
+						EnemyManager.S.enemiesBattled.Add(ndx);
+						EnemyManager.S.currentEnemyNdx = ndx;
+						// Store position of all enemies in currentScene
+						EnemyManager.S.PopulateEnemyPositionsList();
 
-					EnemyMovement enemyMove = GetComponent<EnemyMovement>();
-					if (enemyMove != null) {
-						// Freeze Enemy
-						enemyMove.canMove = false;
+						EnemyMovement enemyMove = GetComponent<EnemyMovement>();
+						if (enemyMove != null) {
+							// Freeze Enemy
+							enemyMove.canMove = false;
+						}
+
+						// Get and position Explosion game object
+						GameObject explosion = ObjectPool.S.GetPooledObject("Explosion");
+						explosion.SetActive(true);
+						Utilities.S.SetPosition(explosion, coll.contacts[0].point.x, coll.contacts[0].point.y);
 					}
-
-					// Get and position Explosion game object
-					GameObject explosion = ObjectPool.S.GetPooledObject("Explosion");
-					explosion.SetActive(true);
-					Utilities.S.SetPosition(explosion, coll.contacts[0].point.x, coll.contacts[0].point.y);
 				}
 			}
 		}

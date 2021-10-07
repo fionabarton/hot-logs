@@ -19,18 +19,25 @@ public class PauseMessage : MonoBehaviour {
 		S = this;
 	}
 
-	public void DisplayText(string text){
+	public void DisplayText(string text, bool upperLeftAlignment = false) {
 		gameObject.SetActive (true);
 
 		StopCoroutine ("DisplayTextCo");
-		StartCoroutine ("DisplayTextCo", text);
+		StartCoroutine(DisplayTextCo(text, upperLeftAlignment));
 	}
-	IEnumerator DisplayTextCo(string text){
+	IEnumerator DisplayTextCo(string text, bool upperLeftAlignment) {
 		// Deactivate Cursor
 		cursorGO.SetActive (false);
 
 		// Reset Text Strings
 		string dialogueSentences = null;
+
+		// Set Text Alignment
+		if (upperLeftAlignment) {
+			message.alignment = TextAnchor.UpperLeft;
+		} else {
+			message.alignment = TextAnchor.MiddleCenter;
+		}
 
 		dialogueFinished = false;
 
@@ -51,8 +58,16 @@ public class PauseMessage : MonoBehaviour {
 
 	// Set Text Instantly 
 	// - No delay/stagger between displaying each word)
-	public void SetText(string text){
+	public void SetText(string text, bool upperLeftAlignment = false) {
 		StopCoroutine ("DisplayTextCo");
+
+		// Set Text Alignment
+		if (upperLeftAlignment) {
+			message.alignment = TextAnchor.UpperLeft;
+		} else {
+			message.alignment = TextAnchor.MiddleCenter;
+		}
+
 		message.text = text;
 	}
 }

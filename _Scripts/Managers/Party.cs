@@ -8,9 +8,6 @@ using UnityEngine;
 /// Stores the party's stats
 /// </summary>
 public class Party : MonoBehaviour {
-	[Header("Set in Inspector")] 
-	public int						Gold;
-
 	[Header("Set Dynamically")]
 	// Singleton
 	private static Party			_S;
@@ -18,7 +15,11 @@ public class Party : MonoBehaviour {
 
 	public static List<PartyStats>	stats = new List<PartyStats>();  
 
+	// Amount of members in the party
 	public int 						partyNdx;
+
+	// Amount of gold
+	public int						gold;
 
 	void Awake() {
 		S = this;
@@ -28,22 +29,26 @@ public class Party : MonoBehaviour {
         // Player 1
         stats.Add(new PartyStats("Blob", 40, 40, 40, 6, 6, 6,
             2, 2, 2, 2, 1, 1, 1, 1,
-            0, 1, 0,
-            new List<Spell> { SpellManager.S.spells[0], SpellManager.S.spells[2], SpellManager.S.spells[1], SpellManager.S.spells[3] },
-            new List<bool>(new bool[30]), false)
+            0, 1, 6,
+            new List<Spell> { SpellManager.S.spells[0], SpellManager.S.spells[2], SpellManager.S.spells[1], SpellManager.S.spells[3], SpellManager.S.spells[4], SpellManager.S.spells[5] },
+            new List<bool>(new bool[30]),
+			new List<int> { 0, 0, 7, 23, 47, 110, 220, 450, 800, 1300, 2000 },
+			false)
         );
 
         // Player 2
         stats.Add(new PartyStats("Bill", 32, 32, 32, 15, 15, 15,
             1, 1, 1, 1, 2, 2, 2, 2,
-            0, 1, 2,
-            new List<Spell> { SpellManager.S.spells[1], SpellManager.S.spells[3], SpellManager.S.spells[0], SpellManager.S.spells[2] },
-            new List<bool>(new bool[30]), false)
+            0, 1, 6,
+            new List<Spell> { SpellManager.S.spells[4], SpellManager.S.spells[3], SpellManager.S.spells[0], SpellManager.S.spells[2], SpellManager.S.spells[1], SpellManager.S.spells[5] },
+            new List<bool>(new bool[30]), 
+			new List<int> { 0, 0, 9, 23, 55, 110, 250, 450, 850, 1300, 2100 },
+			false)
         );
-    }
+	}
 
-	// HP
-	public void SetNewHP(int playerNdx) {
+    // HP
+    public void SetNewHP(int playerNdx) {
 		if (playerNdx == 0) {
 			stats[playerNdx].HP = ((10) * (3 + stats[playerNdx].LVL)); // Blob: Lvl 1 = 40
 		} else {
@@ -100,7 +105,7 @@ public class Party : MonoBehaviour {
 	}
 
 	// SpellNdx (Mathf.Min used to prevent spellNdx from exceeding
-	// the amount of spells each member is capable of learning)
+	// the amount of spells each party member is capable of learning)
 	public void SetNewSpellNdx(int playerNdx) {
 		if (playerNdx == 0) {
 			stats[playerNdx].spellNdx = Mathf.Min((int)(0.5f * stats[playerNdx].LVL), stats[playerNdx].spells.Count); // Blob: Lvl 1 = 0
@@ -109,31 +114,21 @@ public class Party : MonoBehaviour {
 		}
 	}
 
-	public void CheckForLevelUp () {
-		if (stats[0].EXP > 2000 && !stats[0].hasReachedThisLevel[10]) { LevelUp (10, 0);
-		} else if (stats[0].EXP > 1300  && !stats[0].hasReachedThisLevel[9]) { LevelUp (9, 0);
-		} else if (stats[0].EXP > 800  && !stats[0].hasReachedThisLevel[8]) { LevelUp (8, 0);
-		} else if (stats[0].EXP > 450 && !stats[0].hasReachedThisLevel[7]) { LevelUp (7, 0);
-		} else if (stats[0].EXP > 220 && !stats[0].hasReachedThisLevel[6]) { LevelUp (6, 0);
-		} else if (stats[0].EXP > 110 && !stats[0].hasReachedThisLevel[5]) { LevelUp (5, 0);
-		} else if (stats[0].EXP > 47 && !stats[0].hasReachedThisLevel[4]) { LevelUp (4, 0);
-		} else if (stats[0].EXP > 23 && !stats[0].hasReachedThisLevel[3]) { LevelUp (3, 0);
-		} else if (stats[0].EXP > 7 && !stats[0].hasReachedThisLevel[2]) { LevelUp (2, 0);
-		}
-	
-		if (partyNdx >= 1) {
-			if (stats[1].EXP > 2100 && !stats[1].hasReachedThisLevel[10]) { LevelUp (10, 1);
-			} else if (stats[1].EXP > 1300  && !stats[1].hasReachedThisLevel[9]) { LevelUp (9, 1);
-			} else if (stats[1].EXP > 850  && !stats[1].hasReachedThisLevel[8]) { LevelUp (8, 1);
-			} else if (stats[1].EXP > 450 && !stats[1].hasReachedThisLevel[7]) { LevelUp (7, 1);
-			} else if (stats[1].EXP > 250 && !stats[1].hasReachedThisLevel[6]) { LevelUp (6, 1);
-			} else if (stats[1].EXP > 110 && !stats[1].hasReachedThisLevel[5]) { LevelUp (5, 1);
-			} else if (stats[1].EXP > 55 && !stats[1].hasReachedThisLevel[4]) { LevelUp (4, 1);
-			} else if (stats[1].EXP > 23 && !stats[1].hasReachedThisLevel[3]) { LevelUp (3, 1);
-			} else if (stats[1].EXP > 9 && !stats[1].hasReachedThisLevel[2]) { LevelUp (2, 1);
-			}
-		}
+	public int GetExpToNextLevel(int playerNdx) {
+		return stats[playerNdx].expToNextLevel[stats[playerNdx].LVL + 1] - stats[playerNdx].EXP;
 	}
+
+	public void CheckForLevelUp () {
+		// Loop through all party members
+        for (int i = 0; i < stats.Count; i++) {
+			// Loop through levels 10 through 2
+            for (int j = 10; j >= 2; j--) {
+                if (stats[i].EXP > stats[i].expToNextLevel[j] && !stats[i].hasReachedThisLevel[j]) {
+                    LevelUp(j, i);
+                }
+            }
+        }
+    }
 		
 	void LevelUp (int newLVL, int playerNdx) {
 		stats[playerNdx].hasLeveledUp = true;
@@ -186,11 +181,13 @@ public class PartyStats {
 	public int spellNdx;
 	public List<Spell> spells;
 	public List<bool> hasReachedThisLevel;
+	public List<int> expToNextLevel;
 	public bool hasLeveledUp;
 
 	public PartyStats(string name, int HP, int maxHP, int baseMaxHP, int MP, int maxMP, int baseMaxMP,
 		int STR, int baseSTR, int DEF, int baseDEF, int WIS, int baseWIS, int AGI, int baseAGI,
-		int EXP, int LVL, int spellNdx, List<Spell> spells, List<bool> hasReachedThisLevel, bool hasLeveledUp) {
+		int EXP, int LVL, int spellNdx, 
+		List<Spell> spells, List<bool> hasReachedThisLevel, List<int> expToNextLevel, bool hasLeveledUp) {
 		this.name = name;
 		this.HP = HP;
 		this.maxHP = maxHP;
@@ -213,5 +210,6 @@ public class PartyStats {
 		this.spellNdx = spellNdx;
 		this.spells = spells;
 		this.hasReachedThisLevel = hasReachedThisLevel;
+		this.expToNextLevel = expToNextLevel;
 	}
 }

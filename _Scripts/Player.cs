@@ -46,8 +46,9 @@ public class Player : MonoBehaviour {
 	public bool 				canMove = true;
 
 	// Invincible
-	public bool 				invincible; // enables StartBattle() in RPGEnemy.cs upon collision w/ Enemies
-	private float				flashRate = 0.25f;
+	//public bool 				invincible; // enables StartBattle() in RPGEnemy.cs upon collision w/ Enemies
+	//private float				flashRate = 0.25f;
+	//private float				flashTimer;
 
 	// Overworld Player Stats timer to appear on screen
 	public float 				playerUITimer;
@@ -62,6 +63,8 @@ public class Player : MonoBehaviour {
 
 	// What ground level the Player is on, used in SwapLayerTrigger.cs
 	public bool					isOnEvenLevel = true;
+
+	public Invincibility		invincibility;
 
 	void Awake () {
 		S = this;
@@ -79,38 +82,43 @@ public class Player : MonoBehaviour {
 		UpdateManager.fixedUpdateDelegate += FixedLoop;
 	}
 
-	public void StartInvincibility() {
-		invincible = true;
+    void Start() {
+		invincibility = GetComponent<Invincibility>();
+    }
 
-		flashRate = 0.25f;
-		SpriteFlash ();
+    //public void StartInvincibility() {
+    //	invincible = true;
 
-		Invoke ("EndInvincibility", 3f);
-	}
-	public void SpriteFlash() {
-		// Enable SpriteRenderers
-		sRend.enabled = !sRend.enabled;
+    //	flashRate = 0.25f;
 
-		flashRate -= 0.01f;
-		Invoke("SpriteFlash", flashRate);
-	}
+    //	flashTimer = Time.time + 3f;
 
-	public void EndInvincibility(){
-		invincible = false;
+    //	SpriteFlash();
+    //}
+    //public void SpriteFlash() {
+    //	// Enable SpriteRenderers
+    //	sRend.enabled = !sRend.enabled;
 
-		// Enable SpriteRenderer
-		sRend.enabled = true;
+    //	flashRate -= 0.01f;
+    //	Invoke("SpriteFlash", flashRate);
+    //}
 
-		// Disable then enable the player’s box collider to call OnCollisionEnter2D
-		// on an Enemy script if it has already collided with an enemy
-		boxColl.enabled = false;
-		boxColl.enabled = true;
+    //public void EndInvincibility(){
+    //	invincible = false;
 
-		CancelInvoke ("SpriteFlash");
-	}
+    //	// Enable SpriteRenderer
+    //	sRend.enabled = true;
 
-	#region Update Loop
-	public void Loop () {
+    //	// Disable then enable the player’s box collider to call OnCollisionEnter2D
+    //	// on an Enemy script if it has already collided with an enemy
+    //	boxColl.enabled = false;
+    //	boxColl.enabled = true;
+
+    //	CancelInvoke("SpriteFlash");
+    //}
+
+    #region Update Loop
+    public void Loop () {
 		if (!RPG.S.paused) {
 			if (canMove) {
 				// ************ INPUT ************ \\
@@ -346,6 +354,16 @@ public class Player : MonoBehaviour {
 
     #region Fixed Loop
     public void FixedLoop () {
+		//if (!RPG.S.paused) {
+		//	if (invincible) {
+		//		if (Time.time >= flashTimer) {
+		//			EndInvincibility();
+		//		} else {
+		//			//SpriteFlash();
+		//		}
+		//	}
+		//}
+
 		if (canMove) {
 			if (!RPG.S.paused) {
 				if (gameObject.activeInHierarchy) {
