@@ -7,11 +7,20 @@ using System.Linq;
 public class BattleInitiative : MonoBehaviour {
 	[Header("Set in Inspector")]
 	// Enemy GameObject Positions (varies depending on amount of enemies)
-	List<Vector3>            enemyPositions = new List<Vector3> { 
-		new Vector3(4.5f, 1.375f, 0),
-		new Vector3(6, -0.5f, 0),
-		new Vector3(7.5f, 0.5f, 0),
-		new Vector3(4.5f, 0.25f, 0)
+	//List<Vector3>            enemyPositions = new List<Vector3> { 
+	//	new Vector3(4.5f, 1.375f, 0),
+	//	new Vector3(6, -0.5f, 0),
+	//	new Vector3(7.5f, 0.5f, 0),
+	//	new Vector3(4.5f, 0.25f, 0)
+	//};
+
+	List<Vector3> enemyPositions = new List<Vector3> {
+		new Vector3(4.5f, 1.375f, 0f),
+		new Vector3(6f, -0.5f, 0f),
+		new Vector3(7.5f, 0.5f, 0f),
+		new Vector3(4.5f, 0.5f, 0f),
+		new Vector3(6f, 1.375f, 0f),
+		new Vector3(7.5f, -0.5f, 0f)
 	};
 
 	[Header ("Set Dynamically")]
@@ -98,7 +107,7 @@ public class BattleInitiative : MonoBehaviour {
 		}
 
         // Set Enemy Amount (for testing)
-        //_.enemyAmount = 3;
+        //_.enemyAmount = 2;
 
         // 1 Enemy
         if (_.enemyAmount >= 1) {
@@ -114,13 +123,15 @@ public class BattleInitiative : MonoBehaviour {
 
 			// Set Enemy Sprite Positions
 			_.enemyGameObjectHolders[0].transform.position = enemyPositions[3];
+			_.enemyGameObjectHolders[1].transform.position = enemyPositions[4];
+			_.enemyGameObjectHolders[2].transform.position = enemyPositions[5];
 
 			// HP
 			_.enemyStats[0].HP = _.enemyStats[0].maxHP;
 
 			// Gold/EXP payout
-			_.expToAdd += _.enemyStats [0].EXP;
-			_.goldToAdd += _.enemyStats [0].Gold;
+			_.expToAdd += _.enemyStats[0].EXP;
+			_.goldToAdd += _.enemyStats[0].Gold;
 
             // Reset EnemyDead bools:  For EnemyDeaths
             _.enemyStats[0].isDead = false;
@@ -144,13 +155,14 @@ public class BattleInitiative : MonoBehaviour {
 				// Set Enemy Sprite Positions
 				_.enemyGameObjectHolders[0].transform.position = enemyPositions[0];
 				_.enemyGameObjectHolders[1].transform.position = enemyPositions[1];
+				_.enemyGameObjectHolders[2].transform.position = enemyPositions[2];
 
 				// HP
 				_.enemyStats[1].HP = _.enemyStats[1].maxHP;
 
 				// Gold/EXP payout
-				_.expToAdd += _.enemyStats [1].EXP;
-				_.goldToAdd += _.enemyStats [1].Gold;
+				_.expToAdd += _.enemyStats[1].EXP;
+				_.goldToAdd += _.enemyStats[1].Gold;
 
 				// Reset EnemyDead bools:  For EnemyDeaths
 				_.enemyStats[1].isDead = false;
