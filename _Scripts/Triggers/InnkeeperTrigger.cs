@@ -24,18 +24,24 @@ public class InnkeeperTrigger : ActivateOnButtonPress {
 		Utilities.S.RemoveListeners(SubMenu.S.buttonCS);
 		SubMenu.S.buttonCS[0].onClick.AddListener(Yes);
         SubMenu.S.buttonCS[1].onClick.AddListener(No);
-        //SubMenu.S.subMenuButtonCS[2].onClick.AddListener(Option2);
-        //SubMenu.S.subMenuButtonCS[3].onClick.AddListener(Option3);
-    }
+		//SubMenu.S.subMenuButtonCS[2].onClick.AddListener(Option2);
+		//SubMenu.S.subMenuButtonCS[3].onClick.AddListener(Option3);
+
+		// Set button navigation
+		Utilities.S.SetButtonNavigation(SubMenu.S.buttonCS[0], SubMenu.S.buttonCS[1], SubMenu.S.buttonCS[1]);
+		Utilities.S.SetButtonNavigation(SubMenu.S.buttonCS[1], SubMenu.S.buttonCS[0], SubMenu.S.buttonCS[0]);
+	}
 
 	public void Yes() {
+		AudioManager.S.PlaySFX(6);
+
 		DialogueManager.S.ResetSubMenuSettings();
 
 		int price = 10;
 
-		if (Party.S.Gold >= price) {
+		if (Party.S.gold >= price) {
 			// Subtract item price from Player's Gold
-			Party.S.Gold -= price;
+			Party.S.gold -= price;
 
 			// Max HP/MP
 			Party.stats[0].HP = Party.stats[0].maxHP;
@@ -52,6 +58,8 @@ public class InnkeeperTrigger : ActivateOnButtonPress {
 	}
 
 	public void No() {
+		AudioManager.S.PlaySFX(7);
+
 		DialogueManager.S.ResetSubMenuSettings();
 		DialogueManager.S.DisplayText("That's cool. Later, bro.");
 	}

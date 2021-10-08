@@ -33,14 +33,24 @@ public class ArcadeTrigger : ActivateOnButtonPress {
 		SubMenu.S.buttonCS[1].onClick.AddListener(No);
 		//SubMenu.S.subMenuButtonCS[2].onClick.AddListener(No);
 		//SubMenu.S.subMenuButtonCS[3].onClick.AddListener(Option3);
+
+		// Set button navigation
+		Utilities.S.SetButtonNavigation(SubMenu.S.buttonCS[0], SubMenu.S.buttonCS[1], SubMenu.S.buttonCS[1]);
+		Utilities.S.SetButtonNavigation(SubMenu.S.buttonCS[1], SubMenu.S.buttonCS[0], SubMenu.S.buttonCS[0]);
 	}
 
 	void Play() {
+		// Audio: Buff 1
+		AudioManager.S.PlaySFX(11);
+
 		DialogueManager.S.ResetSubMenuSettings();
 		LoadGame();
 	}
 
 	void No() {
+		// Audio: Deny
+		AudioManager.S.PlaySFX(7);
+
 		DialogueManager.S.ResetSubMenuSettings();
 		DialogueManager.S.DisplayText("I ain't got time for no games! Ho yeah!");
 	}
@@ -54,12 +64,7 @@ public class ArcadeTrigger : ActivateOnButtonPress {
 			if (anim) {
                 anim.Play("TV_Static");
             }
-        } else {
-			// Play animation
-			//if (anim) {
-			//	anim.Play("Arcade_Static");
-			//}
-		}
+        } 
 
 		StartCoroutine("LoadVideoGame", 1);
 	}
