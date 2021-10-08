@@ -48,22 +48,36 @@ public class ShopkeeperTrigger : ActivateOnButtonPress {
         SubMenu.S.buttonCS[1].onClick.AddListener(Sell);
         SubMenu.S.buttonCS[2].onClick.AddListener(No);
         //SubMenu.S.subMenuButtonCS[3].onClick.AddListener(Option3);
+
+        // Set button navigation
+        Utilities.S.SetButtonNavigation(SubMenu.S.buttonCS[0], SubMenu.S.buttonCS[1], SubMenu.S.buttonCS[2]);
+        Utilities.S.SetButtonNavigation(SubMenu.S.buttonCS[1], SubMenu.S.buttonCS[2], SubMenu.S.buttonCS[0]);
+        Utilities.S.SetButtonNavigation(SubMenu.S.buttonCS[2], SubMenu.S.buttonCS[0], SubMenu.S.buttonCS[1]);
     }
 
 	void Buy() {
-		DialogueManager.S.ResetSubMenuSettings();
+        // Audio: Confirm
+        AudioManager.S.PlaySFX(6);
+
+        DialogueManager.S.ResetSubMenuSettings();
         DialogueManager.S.DisplayText("That so fab. What you wanna buy?");
         mode = eShopkeeperMode.buy;
     }
 
 	void Sell() {
-		DialogueManager.S.ResetSubMenuSettings();
+        // Audio: Confirm
+        AudioManager.S.PlaySFX(6);
+
+        DialogueManager.S.ResetSubMenuSettings();
         DialogueManager.S.DisplayText("How grand! What you wanna to sell?");
         mode = eShopkeeperMode.sell;
     }
 
 	void No() {
-		DialogueManager.S.ResetSubMenuSettings();
+        // Audio: Deny
+        AudioManager.S.PlaySFX(7);
+
+        DialogueManager.S.ResetSubMenuSettings();
 		DialogueManager.S.DisplayText("That coo. Come again, little stinker.");
 	}
 

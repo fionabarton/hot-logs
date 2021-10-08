@@ -28,6 +28,10 @@ public class PurchaseTrigger : ActivateOnButtonPress {
         Utilities.S.RemoveListeners(SubMenu.S.buttonCS);
         SubMenu.S.buttonCS[0].onClick.AddListener(Yes);
         SubMenu.S.buttonCS[1].onClick.AddListener(No);
+
+        // Set button navigation
+        Utilities.S.SetButtonNavigation(SubMenu.S.buttonCS[0], SubMenu.S.buttonCS[1], SubMenu.S.buttonCS[1]);
+        Utilities.S.SetButtonNavigation(SubMenu.S.buttonCS[1], SubMenu.S.buttonCS[0], SubMenu.S.buttonCS[0]);
     }
 
     void Yes() {
@@ -35,20 +39,29 @@ public class PurchaseTrigger : ActivateOnButtonPress {
 
         Item tItem = ItemManager.S.items[(int)item];
 
-        if (Party.S.Gold >= tItem.value) {
+        if (Party.S.gold >= tItem.value) {
             // Added to Player Inventory
             Inventory.S.AddItemToInventory(tItem);
 
             DialogueManager.S.DisplayText("Yahoo! Thank you for purchasing me!");
 
             // Subtract item price from Player's Gold
-            Party.S.Gold -= tItem.value;
+            Party.S.gold -= tItem.value;
+
+            // Audio: Buff 1
+            AudioManager.S.PlaySFX(11);
         } else {
             DialogueManager.S.DisplayText("You ain't got enough money, jerk!");
+
+            // Audio: Deny
+            AudioManager.S.PlaySFX(7);
         }
     }
 
     void No() {
+        // Audio: Deny
+        AudioManager.S.PlaySFX(7);
+
         DialogueManager.S.ResetSubMenuSettings();
         DialogueManager.S.DisplayText("That's cool. Later, bro.");
     }

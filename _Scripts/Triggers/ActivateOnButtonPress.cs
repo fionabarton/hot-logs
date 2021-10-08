@@ -59,6 +59,9 @@ public class ActivateOnButtonPress : MonoBehaviour {
             // Remove Update Delgate
             UpdateManager.updateDelegate -= Loop;
 
+            // Unsubscribe ResetTrigger() from the OnShopScreenDeactivated event
+            EventManager.OnShopScreenDeactivated -= ResetTrigger;
+
             // Prevents triggering multiple triggers
             Player.S.alreadyTriggered = false;
         }
