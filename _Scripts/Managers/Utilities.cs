@@ -106,7 +106,8 @@ public class Utilities : MonoBehaviour
 	}
 
 	// Set cursor position to currently selected button/gameObject
-	public void PositionCursor(GameObject selectedGO, int xAxisDistanceFromCenter, int yAxisDistanceFromCenter = 0, int directionToFace = 2) {
+	public void PositionCursor(GameObject selectedGO, 
+		int xAxisDistanceFromCenter, int yAxisDistanceFromCenter = 0, int directionToFace = 2, int cursorNdx = 0) {
 		// Get position
 		float tPosX = selectedGO.GetComponent<RectTransform>().anchoredPosition.x;
 		float tPosY = selectedGO.GetComponent<RectTransform>().anchoredPosition.y;
@@ -114,14 +115,14 @@ public class Utilities : MonoBehaviour
 		float tParentY = selectedGO.transform.parent.GetComponent<RectTransform>().anchoredPosition.y;
 
 		// Set position
-		ScreenCursor.S.rectTrans.anchoredPosition = new Vector2(
+		ScreenCursor.S.rectTrans[cursorNdx].anchoredPosition = new Vector2(
 			(tPosX + tParentX + xAxisDistanceFromCenter), 
 			(tPosY + tParentY + yAxisDistanceFromCenter)
 		);
 
 		// Set rotation
 		int angle = (directionToFace + 1) * 90;
-		ScreenCursor.S.cursorGO.transform.localEulerAngles = new Vector3(0, 0, angle);
+		ScreenCursor.S.cursorGO[cursorNdx].transform.localEulerAngles = new Vector3(0, 0, angle);
 	}
 
 	////////////////////////////////////////////////////////////////////////////////
@@ -149,4 +150,21 @@ public class Utilities : MonoBehaviour
 			objects[i].SetActive(isActive);
 		}
 	}
+
+	////////////////////////////////////////////////////////////////////////////////
+	// Explicitly set a button's navigation
+	public void SetButtonNavigation(Button button, Button buttonSelectOnDown, Button buttonSelectOnUp) {
+		// Get the Navigation data
+		Navigation navigation = button.navigation;
+
+		// Switch mode to Explicit to allow for custom assigned behavior
+		navigation.mode = Navigation.Mode.Explicit;
+
+        // Highlight these buttons if the down or up arrow keys are pressed
+        navigation.selectOnDown = buttonSelectOnDown;
+        navigation.selectOnUp = buttonSelectOnUp;
+
+		// Reassign the struct data to the button
+		button.navigation = navigation;
+    }
 }
