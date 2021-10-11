@@ -57,7 +57,7 @@ public class ShopkeeperTrigger : ActivateOnButtonPress {
 
 	void Buy() {
         // Audio: Confirm
-        AudioManager.S.PlaySFX(6);
+        AudioManager.S.PlaySFX(eSoundName.confirm);
 
         DialogueManager.S.ResetSubMenuSettings();
         DialogueManager.S.DisplayText("That so fab. What you wanna buy?");
@@ -66,7 +66,7 @@ public class ShopkeeperTrigger : ActivateOnButtonPress {
 
 	void Sell() {
         // Audio: Confirm
-        AudioManager.S.PlaySFX(6);
+        AudioManager.S.PlaySFX(eSoundName.confirm);
 
         DialogueManager.S.ResetSubMenuSettings();
         DialogueManager.S.DisplayText("How grand! What you wanna to sell?");
@@ -75,7 +75,7 @@ public class ShopkeeperTrigger : ActivateOnButtonPress {
 
 	void No() {
         // Audio: Deny
-        AudioManager.S.PlaySFX(7);
+        AudioManager.S.PlaySFX(eSoundName.deny);
 
         DialogueManager.S.ResetSubMenuSettings();
 		DialogueManager.S.DisplayText("That coo. Come again, little stinker.");

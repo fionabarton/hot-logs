@@ -8,7 +8,7 @@ public enum eBattleMode {
 actionButtons, playerTurn, canGoBackToFightButton, canGoBackToFightButtonMultipleTargets,
 qteInitialize, qte, itemOrSpellMenu, triedToRunFromBoss, 
 enemyTurn, enemyAction, 
-dropItem, addExpAndGold, partyDeath, levelUp, multiLvlUp, returnToWorld };
+dropItem, addExpAndGold, addExpAndGoldNoDrops, partyDeath, levelUp, multiLvlUp, returnToWorld };
 
 public class Battle : MonoBehaviour {
 	[Header("Set in Inspector")]
@@ -75,7 +75,13 @@ public class Battle : MonoBehaviour {
 
 	public float			chanceToRun = 0.5f;
 
+	// Allows parts of Loop() to be called once rather than repeatedly every frame.
+	public bool				canUpdate;
+
 	public GameObject		previousSelectedGameObject;
+
+	// Ensures audio is only played once when button is selected
+	public GameObject		previousSelectedForAudio;
 
 	void Awake() {
 		S = this;
@@ -95,9 +101,33 @@ public class Battle : MonoBehaviour {
 			// Dialogue Loop
 			BattleDialogue.S.Loop();
 
+			// Reset canUpdate
+			if (Input.GetAxisRaw("Horizontal") != 0f || Input.GetAxisRaw("Vertical") != 0f) {
+				canUpdate = true;
+			}
+
 			if (BattleDialogue.S.dialogueNdx <= 0) {
 				switch (battleMode) {
+					case eBattleMode.actionButtons:
+						//if (canUpdate) {
+						//	// Audio: Selection (when a new gameObject is selected)
+						//	Utilities.S.PlayButtonSelectedSFX(ref previousSelectedForAudio);
+
+						//	canUpdate = false;
+						//}
+						break;
 					case eBattleMode.canGoBackToFightButton:
+						if (Input.GetButtonDown("SNES B Button")) {
+							BattlePlayerActions.S.GoBackToFightButton();
+						}
+
+						//if (canUpdate) {
+						//	// Audio: Selection (when a new gameObject is selected)
+						//	Utilities.S.PlayButtonSelectedSFX(ref previousSelectedForAudio);
+
+						//	canUpdate = false;
+						//}
+						break;
 					case eBattleMode.canGoBackToFightButtonMultipleTargets:
 						if (Input.GetButtonDown("SNES B Button")) {
 							BattlePlayerActions.S.GoBackToFightButton();
@@ -128,6 +158,10 @@ public class Battle : MonoBehaviour {
 
 						if (Input.GetButtonDown("SNES B Button")) {
 							playerAnimator[animNdx].CrossFade("Idle", 0);
+
+							// Audio: Deny
+							AudioManager.S.PlaySFX(eSoundName.deny);
+
 							BattlePlayerActions.S.FightButton();
 						}
 
@@ -176,7 +210,12 @@ public class Battle : MonoBehaviour {
 						break;
 					case eBattleMode.addExpAndGold:
 						if (Input.GetButtonDown("SNES A Button")) {
-							BattleEnd.S.AddExpAndGold();
+							BattleEnd.S.AddExpAndGold(false);
+						}
+						break;
+					case eBattleMode.addExpAndGoldNoDrops:
+						if (Input.GetButtonDown("SNES A Button")) {
+							BattleEnd.S.AddExpAndGold(true);
 						}
 						break;
 					case eBattleMode.levelUp:
@@ -219,48 +258,60 @@ public class Battle : MonoBehaviour {
     }
 
 	public void FixedLoop() {
-        //if (BattleDialogue.S.dialogueFinished) {
-            switch (battleMode) {
-				case eBattleMode.actionButtons:
-                    // Set Target Cursor Position: player action buttons (fight, defend, item, run, etc.)
-					BattleUI.S.TargetCursorPosition(UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject, 0);
+        switch (battleMode) {
+			case eBattleMode.actionButtons:
+                // Set Target Cursor Position: player action buttons (fight, defend, item, run, etc.)
+				BattleUI.S.TargetCursorPosition(UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject, 0);
 
-					// Activate Text
-					BattleDialogue.S.displayMessageTextTop.gameObject.transform.parent.gameObject.SetActive(true);
-					// Display Player Stats
-					BattleDialogue.S.displayMessageTextTop.text =
-						Party.stats[0].name + " HP: " + Party.stats[0].HP + "/" + Party.stats[0].maxHP +
-						" MP: " + Party.stats[0].MP + "/" + Party.stats[0].maxMP + "\n" +
-						Party.stats[1].name + " HP: " + Party.stats[1].HP + "/" + Party.stats[1].maxHP +
-						" MP: " + Party.stats[1].MP + "/" + Party.stats[1].maxMP;
-					break;
-				case eBattleMode.canGoBackToFightButton:
-                    // Set Target Cursor Position: Enemies or Party
-                    BattleUI.S.TargetCursorPosition(UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject, 0);
+				// Activate Text
+				BattleDialogue.S.displayMessageTextTop.gameObject.transform.parent.gameObject.SetActive(true);
+				// Display Player Stats
+				BattleDialogue.S.displayMessageTextTop.text =
+					Party.stats[0].name + " HP: " + Party.stats[0].HP + "/" + Party.stats[0].maxHP +
+					" MP: " + Party.stats[0].MP + "/" + Party.stats[0].maxMP + "\n" +
+					Party.stats[1].name + " HP: " + Party.stats[1].HP + "/" + Party.stats[1].maxHP +
+					" MP: " + Party.stats[1].MP + "/" + Party.stats[1].maxMP;
 
-                    // Activate Text
-                    BattleDialogue.S.displayMessageTextTop.gameObject.transform.parent.gameObject.SetActive(true);
-                    // Display Party or Enemies names
-                    switch (UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject.name) {
-                        case "Enemy1Button":
-                            BattleDialogue.S.displayMessageTextTop.text = enemyStats[0].name;
-                            break;
-                        case "Enemy2Button":
-                            BattleDialogue.S.displayMessageTextTop.text = enemyStats[1].name;
-                            break;
-                        case "Enemy3Button":
-                            BattleDialogue.S.displayMessageTextTop.text = enemyStats[2].name;
-                            break;
-                        case "Player1Button":
-                            BattleDialogue.S.displayMessageTextTop.text = Party.stats[0].name;
-                            break;
-                        case "Player2Button":
-                            BattleDialogue.S.displayMessageTextTop.text = Party.stats[1].name;
-                            break;
-                    }
-                    break;
-			}
-		//}
+				if (canUpdate) {
+					// Audio: Selection (when a new gameObject is selected)
+					Utilities.S.PlayButtonSelectedSFX(ref previousSelectedForAudio);
+
+					canUpdate = false;
+				}
+				break;
+			case eBattleMode.canGoBackToFightButton:
+                // Set Target Cursor Position: Enemies or Party
+                BattleUI.S.TargetCursorPosition(UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject, 0);
+
+                // Activate Text
+                BattleDialogue.S.displayMessageTextTop.gameObject.transform.parent.gameObject.SetActive(true);
+                // Display Party or Enemies names
+                switch (UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject.name) {
+                    case "Enemy1Button":
+                        BattleDialogue.S.displayMessageTextTop.text = enemyStats[0].name;
+                        break;
+                    case "Enemy2Button":
+                        BattleDialogue.S.displayMessageTextTop.text = enemyStats[1].name;
+                        break;
+                    case "Enemy3Button":
+                        BattleDialogue.S.displayMessageTextTop.text = enemyStats[2].name;
+                        break;
+                    case "Player1Button":
+                        BattleDialogue.S.displayMessageTextTop.text = Party.stats[0].name;
+                        break;
+                    case "Player2Button":
+                        BattleDialogue.S.displayMessageTextTop.text = Party.stats[1].name;
+                        break;
+                }
+
+				if (canUpdate) {
+					// Audio: Selection (when a new gameObject is selected)
+					Utilities.S.PlayButtonSelectedSFX(ref previousSelectedForAudio);
+
+					canUpdate = false;
+				}
+				break;
+		}
 
 		switch (battleMode) {
 			case eBattleMode.qte:
@@ -372,13 +423,18 @@ public class Battle : MonoBehaviour {
 		if (turnNdx == turnOrder.IndexOf(enemyStats[0].name)) { return 0; } else if (turnNdx == turnOrder.IndexOf(enemyStats[1].name)) { return 1; } else { return 2; }
 	}
 
-	public void PlayerTurn() { // if (Input.GetButtonDown ("Submit"))
+	public void PlayerTurn(bool setPreviousSelected = true) { // if (Input.GetButtonDown ("Submit"))
 		BattleUI.S.DisplayTurnOrder();
 
 		BattlePlayerActions.S.ButtonsInitialInteractable();
 
 		// Set Selected Button 
 		Utilities.S.SetSelectedGO(previousSelectedGameObject);
+
+        // Set previously selected GameObject
+        if (setPreviousSelected) {
+			previousSelectedForAudio = previousSelectedGameObject;
+		}
 
 		// If Defended previous turn, remove from Defenders list
 		RemoveDefender(Party.stats[PlayerNdx()].name);

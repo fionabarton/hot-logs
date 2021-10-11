@@ -57,6 +57,9 @@ public class BattleEnd : MonoBehaviour {
 			// Randomly select DropItem
 			AddDroppedItems(ndx);
 
+			// Audio: Run
+			AudioManager.S.PlaySFX(eSoundName.run);
+
 			// Don't Deactivate Enemy in Overworld
 			if (_.enemyAmount <= 0) {
 				// The enemy ran away, so you're chasing after them!
@@ -75,6 +78,10 @@ public class BattleEnd : MonoBehaviour {
 			}
 		} else {
 			BattleDialogue.S.DisplayText(_.enemyStats[ndx].name + " attempts to run...\n...but the party has blocked the path!");
+
+			// Audio: Deny
+			AudioManager.S.PlaySFX(eSoundName.deny);
+
 			_.NextTurn();
 		}
 	}
@@ -83,7 +90,7 @@ public class BattleEnd : MonoBehaviour {
 		RemoveEnemy(ndx);
 
 		// Audio: Death
-		AudioManager.S.PlaySFX(5);
+		AudioManager.S.PlaySFX(eSoundName.death);
 
         // Animation: Enemy DEATH
         _.enemyAnimator[ndx].CrossFade("Death", 0);
@@ -101,7 +108,6 @@ public class BattleEnd : MonoBehaviour {
 
 		// Add Exp & Gold or Next Turn
 		if (_.enemyAmount <= 0) {
-
 			// Animation: Player WIN BATTLE
 			for (int i = 0; i < _.playerAnimator.Count; i++) {
 				if (!_.playerDead[i]) {
@@ -115,7 +121,7 @@ public class BattleEnd : MonoBehaviour {
 				_.battleMode = eBattleMode.dropItem;
 			} else {
                 // Switch Mode
-                _.battleMode = eBattleMode.addExpAndGold;
+                _.battleMode = eBattleMode.addExpAndGoldNoDrops;
 			}
 		} else { _.NextTurn(); }
 	}
@@ -130,6 +136,9 @@ public class BattleEnd : MonoBehaviour {
     }
 
 	public void DropItem() { // For DisplayText, if (partyQty >= 1) && if (!playerDead [0]), else if (!playerDead [1])
+		// Audio: Win
+		AudioManager.S.PlaySong(eSongName.win);
+
 		// 1 Item Dropped!
 		if (_.droppedItems.Count <= 1) {
 			BattleDialogue.S.DisplayText(_.enemyStats[0].name + " dropped a " + _.droppedItems[0].name + "!\n" + Party.stats[0].name + " adds it to the inventory!");
@@ -156,7 +165,7 @@ public class BattleEnd : MonoBehaviour {
 		_.partyQty -= 1;
 
 		// Audio: Death
-		AudioManager.S.PlaySFX(5);
+		AudioManager.S.PlaySFX(eSoundName.death);
 
 		// Animation: Player DEATH
 		_.playerAnimator[ndx].CrossFade("Death", 0);
@@ -181,12 +190,21 @@ public class BattleEnd : MonoBehaviour {
 		EnemyManager.S.CacheEnemyMovement(eMovement.pursueRun);
 
 		BattleDialogue.S.DisplayText("Failure is the party!\nY'all've been wiped out/felled!");
+
+		// Audio: Lose
+		AudioManager.S.PlaySong(eSongName.lose);
+
 		// Return to Overworld
 		ReturnToWorldDelay();
 	}
 
 	// Add Gold and EXP, Check for Level UP  
-	public void AddExpAndGold() {
+	public void AddExpAndGold(bool playSound) {
+        // Audio: Win
+        if (playSound) {
+			AudioManager.S.PlaySong(eSongName.win);
+		}
+
 		// Complete Quest
 		if (_.enemyStats[0].questNdx != 0) {
 			QuestManager.S.completed[_.enemyStats[0].questNdx] = true;

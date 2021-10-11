@@ -36,7 +36,8 @@ public class PauseScreen : MonoBehaviour {
 	// Allows parts of Loop() to be called once rather than repeatedly every frame.
 	public bool 		canUpdate;
 
-	GameObject			previousSelectedGameObject;
+	// Ensures audio is only played once when button is selected
+	public GameObject	previousSelectedGameObject;
 
 	void Awake() {
 		S = this;
@@ -95,6 +96,9 @@ public class PauseScreen : MonoBehaviour {
 
 						// Set selected button text color	
 						buttonGO[i].gameObject.GetComponentInChildren<Text>().color = new Color32(205, 208, 0, 255);
+
+						// Audio: Selection (when a new gameObject is selected)
+						Utilities.S.PlayButtonSelectedSFX(ref previousSelectedGameObject);
 					} else {
 						// Set selected button text color	
 						buttonGO[i].gameObject.GetComponentInChildren<Text>().color = new Color32(255, 255, 255, 255);
@@ -145,8 +149,12 @@ public class PauseScreen : MonoBehaviour {
 
 		// Buttons Interactable
 		Utilities.S.ButtonsInteractable(buttonCS, true);
+		
 		// Set Selected Gameobject (Pause Screen: Items Button)
 		Utilities.S.SetSelectedGO(buttonGO[0]);
+
+		// Initialize previously selected GameObject
+		previousSelectedGameObject = buttonGO[0];
 
 		// Freeze Player
 		RPG.S.paused = true;
@@ -155,10 +163,14 @@ public class PauseScreen : MonoBehaviour {
 		// Activate PauseMessage
 		PauseMessage.S.DisplayText("Welcome to the Pause Screen!");
 
+		// Audio: Confirm
+		AudioManager.S.PlaySFX(eSoundName.confirm);
+
 		// Update Delgate
 		UpdateManager.updateDelegate += Loop;
 	}
-	public void UnPause() {
+
+	public void UnPause(bool playSound = false) {
 		// Overworld Player Stats
 		Player.S.playerUITimer = Time.time + 1.5f;
 
@@ -175,6 +187,11 @@ public class PauseScreen : MonoBehaviour {
 				Utilities.S.SetSelectedGO(previousSelectedGameObject);
 			}
 			SubMenu.S.buttonCS[i].interactable = true;
+		}
+
+		if (playSound) {
+			// Audio: Deny
+			AudioManager.S.PlaySFX(eSoundName.deny);
 		}
 
 		// Update Delegate

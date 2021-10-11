@@ -52,6 +52,9 @@ public class AudioManager : MonoBehaviour {
 	}
 
 	public void PlaySong(eSongName songName) {
+		// Change index
+		currentSongNdx = (int)songName;
+
 		// Stop ALL BGM
 		for (int i = 0; i < bgmCS.Count; i++) {
 			bgmCS[i].Stop();

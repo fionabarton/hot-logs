@@ -21,7 +21,6 @@ public class ProgressBars : MonoBehaviour
     public static ProgressBars S { get { return _S; } set { _S = value; } }
 
     void Awake() {
-        // Singleton
         S = this;
     }
 }

@@ -41,7 +41,7 @@ public class ArcadeTrigger : ActivateOnButtonPress {
 
 	void Play() {
 		// Audio: Buff 1
-		AudioManager.S.PlaySFX(11);
+		AudioManager.S.PlaySFX(eSoundName.buff1);
 
 		DialogueManager.S.ResetSubMenuSettings();
 		LoadGame();
@@ -49,7 +49,7 @@ public class ArcadeTrigger : ActivateOnButtonPress {
 
 	void No() {
 		// Audio: Deny
-		AudioManager.S.PlaySFX(7);
+		AudioManager.S.PlaySFX(eSoundName.deny);
 
 		DialogueManager.S.ResetSubMenuSettings();
 		DialogueManager.S.DisplayText("I ain't got time for no games! Ho yeah!");

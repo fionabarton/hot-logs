@@ -118,7 +118,7 @@ public class ItemManager : MonoBehaviour {
         "Heals ALL party members for at least 12 HP!" + "\n Value: 20 Gold", itemSprite[22], false, true);
 
         // Warp Potion
-        items[23] = new Item("Warp Potion", eItemType.other, eItemStatEffect.nothing, 0, 0, 15,
+        items[23] = new Item("Warp Potion", eItemType.healing, eItemStatEffect.nothing, 0, 0, 15,
         "Warp to a previously visited land!" + "\n Value: 15 Gold", itemSprite[23]);
 
         // Revive Potion

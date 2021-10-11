@@ -30,7 +30,7 @@ public class ShopScreen_ItemPurchasedOrSoldMode : MonoBehaviour {
 		// Switch ScreenMode 
 		shopScreen.shopScreenMode = eShopScreenMode.itemPurchasedOrSold;
 
-		if (Party.S.Gold >= item.value) {
+		if (Party.S.gold >= item.value) {
 			// Added to Player Inventory
 			Inventory.S.AddItemToInventory(item);
 
@@ -38,20 +38,26 @@ public class ShopScreen_ItemPurchasedOrSoldMode : MonoBehaviour {
 			PauseMessage.S.DisplayText("Purchased!" + " For " + item.value + " gold!");
 
 			// Subtract item price from Player's Gold
-			Party.S.Gold -= item.value;
+			Party.S.gold -= item.value;
 
 			// Update Gold 
-			PlayerButtons.S.goldValue.text = Party.S.Gold.ToString();
+			PlayerButtons.S.goldValue.text = Party.S.gold.ToString();
+
+			// Audio: Buff 1
+			AudioManager.S.PlaySFX(eSoundName.buff1);
 		} else {
 			// Dialogue
 			PauseMessage.S.DisplayText("Not enough money!");
+
+			// Audio: Deny
+			AudioManager.S.PlaySFX(eSoundName.deny);
 		}
 
 		// Remove Listeners
 		Utilities.S.RemoveListeners(shopScreen.inventoryButtons);
 
-		// Deactivate Cursor
-		ScreenCursor.S.cursorGO.SetActive(false);
+		// Deactivate screen cursors
+		Utilities.S.SetActiveList(ScreenCursor.S.cursorGO, false);
 	}
 
 	public void SellItem(Item item, ShopScreen shopScreen) {
@@ -67,15 +73,18 @@ public class ShopScreen_ItemPurchasedOrSoldMode : MonoBehaviour {
 		PauseMessage.S.DisplayText("Sold!" + " For " + item.value + " gold!" + " Cha - CHING!");
 
 		// Subtract item price from Player's Gold
-		Party.S.Gold += item.value;
+		Party.S.gold += item.value;
 
 		// Update Gold 
-		PlayerButtons.S.goldValue.text = Party.S.Gold.ToString();
+		PlayerButtons.S.goldValue.text = Party.S.gold.ToString();
 
 		// Remove Listeners
 		Utilities.S.RemoveListeners(shopScreen.inventoryButtons);
 
-		// Deactivate Cursor
-		ScreenCursor.S.cursorGO.SetActive(false);
+		// Deactivate screen cursors
+		Utilities.S.SetActiveList(ScreenCursor.S.cursorGO, false);
+
+		// Audio: Buff 1
+		AudioManager.S.PlaySFX(eSoundName.buff1);
 	}
 }

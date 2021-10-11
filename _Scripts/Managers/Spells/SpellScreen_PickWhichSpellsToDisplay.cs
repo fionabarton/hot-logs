@@ -30,8 +30,8 @@ public class SpellScreen_PickWhichSpellsToDisplay : MonoBehaviour {
 				// Remove Listeners
 				Utilities.S.RemoveListeners(PlayerButtons.S.buttonsCS);
 				// Add Listeners
-				PlayerButtons.S.buttonsCS[0].onClick.AddListener(delegate { spellScreen.LoadSpells(0); });
-				PlayerButtons.S.buttonsCS[1].onClick.AddListener(delegate { spellScreen.LoadSpells(1); });
+				PlayerButtons.S.buttonsCS[0].onClick.AddListener(delegate { spellScreen.LoadSpells(0, true); });
+				PlayerButtons.S.buttonsCS[1].onClick.AddListener(delegate { spellScreen.LoadSpells(1, true); });
 
 				// Activate PlayerButtons
 				PlayerButtons.S.gameObject.SetActive(true);
@@ -62,14 +62,14 @@ public class SpellScreen_PickWhichSpellsToDisplay : MonoBehaviour {
 		if (spellScreen.canUpdate) {
 			// Display each Member's Spells
 			for (int i = 0; i < PlayerButtons.S.buttonsCS.Count; i++) {
-				if (UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject == PlayerButtons.S.buttonsCS[i].gameObject) {
-					spellScreen.DeactivateUnusedSpellsSlots(i);
-					spellScreen.DisplaySpellsDescriptions(i);
-					spellScreen.AssignSpellsNames(i);
-					Utilities.S.PositionCursor(PlayerButtons.S.buttonsCS[i].gameObject, 0, 60, 3);
+					if (UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject == PlayerButtons.S.buttonsCS[i].gameObject) {
+						spellScreen.DeactivateUnusedSpellsSlots(i);
+						spellScreen.DisplaySpellsDescriptions(i);
+						spellScreen.AssignSpellsNames(i);
+						Utilities.S.PositionCursor(PlayerButtons.S.buttonsCS[i].gameObject, 0, 60, 3);
 
-					// Cache Selected Gameobject 
-					spellScreen.previousSelectedPlayerGO = PlayerButtons.S.buttonsCS[i].gameObject;
+					// Audio: Selection (when a new gameObject is selected)
+					Utilities.S.PlayButtonSelectedSFX(ref spellScreen.previousSelectedPlayerGO);
 				}
 			}
 

@@ -33,12 +33,12 @@ public class EquipStatsEffect : MonoBehaviour {
 		item.isEquipped = true;
 
 		switch (item.statEffect) {
-			case eItemStatEffect.AGI: Party.stats[playerNdx].AGI += item.statEffectValue; break;
-			case eItemStatEffect.DEF: Party.stats[playerNdx].DEF += item.statEffectValue; break;
-			case eItemStatEffect.HP: Party.stats[playerNdx].HP += item.statEffectValue; break;
-			case eItemStatEffect.MP: Party.stats[playerNdx].MP += item.statEffectValue; break;
-			case eItemStatEffect.STR: Party.stats[playerNdx].STR += item.statEffectValue; break;
-			case eItemStatEffect.WIS: Party.stats[playerNdx].WIS += item.statEffectValue; break;
+			case eItemStatEffect.AGI: Party.stats[playerNdx].AGI += item.statEffectMaxValue; break;
+			case eItemStatEffect.DEF: Party.stats[playerNdx].DEF += item.statEffectMaxValue; break;
+			case eItemStatEffect.HP: Party.stats[playerNdx].HP += item.statEffectMaxValue; break;
+			case eItemStatEffect.MP: Party.stats[playerNdx].MP += item.statEffectMaxValue; break;
+			case eItemStatEffect.STR: Party.stats[playerNdx].STR += item.statEffectMaxValue; break;
+			case eItemStatEffect.WIS: Party.stats[playerNdx].WIS += item.statEffectMaxValue; break;
 		}
 	}
 
@@ -48,12 +48,12 @@ public class EquipStatsEffect : MonoBehaviour {
 
 		// Subtract Item Effect
 		switch (item.statEffect) {
-			case eItemStatEffect.AGI: Party.stats[playerNdx].AGI -= item.statEffectValue; break;
-			case eItemStatEffect.DEF: Party.stats[playerNdx].DEF -= item.statEffectValue; break;
-			case eItemStatEffect.HP: Party.stats[playerNdx].HP -= item.statEffectValue; break;
-			case eItemStatEffect.MP: Party.stats[playerNdx].MP -= item.statEffectValue; break;
-			case eItemStatEffect.STR: Party.stats[playerNdx].STR -= item.statEffectValue; break;
-			case eItemStatEffect.WIS: Party.stats[playerNdx].WIS -= item.statEffectValue; break;
+			case eItemStatEffect.AGI: Party.stats[playerNdx].AGI -= item.statEffectMaxValue; break;
+			case eItemStatEffect.DEF: Party.stats[playerNdx].DEF -= item.statEffectMaxValue; break;
+			case eItemStatEffect.HP: Party.stats[playerNdx].HP -= item.statEffectMaxValue; break;
+			case eItemStatEffect.MP: Party.stats[playerNdx].MP -= item.statEffectMaxValue; break;
+			case eItemStatEffect.STR: Party.stats[playerNdx].STR -= item.statEffectMaxValue; break;
+			case eItemStatEffect.WIS: Party.stats[playerNdx].WIS -= item.statEffectMaxValue; break;
 		}
 	}
 
@@ -69,18 +69,18 @@ public class EquipStatsEffect : MonoBehaviour {
 
 		// Subtract stats of currently equipped item 
 		switch (playerEquipment[playerNdx][(int)tItem.type].statEffect) {
-            case eItemStatEffect.STR: potential[0] -= playerEquipment[playerNdx][(int)tItem.type].statEffectValue; break;
-            case eItemStatEffect.DEF: potential[1] -= playerEquipment[playerNdx][(int)tItem.type].statEffectValue; break;
-            case eItemStatEffect.WIS: potential[2] -= playerEquipment[playerNdx][(int)tItem.type].statEffectValue; break;
-            case eItemStatEffect.AGI: potential[3] -= playerEquipment[playerNdx][(int)tItem.type].statEffectValue; break;
+            case eItemStatEffect.STR: potential[0] -= playerEquipment[playerNdx][(int)tItem.type].statEffectMaxValue; break;
+            case eItemStatEffect.DEF: potential[1] -= playerEquipment[playerNdx][(int)tItem.type].statEffectMaxValue; break;
+            case eItemStatEffect.WIS: potential[2] -= playerEquipment[playerNdx][(int)tItem.type].statEffectMaxValue; break;
+            case eItemStatEffect.AGI: potential[3] -= playerEquipment[playerNdx][(int)tItem.type].statEffectMaxValue; break;
         }
 
         // Add stats of item to be potentially equipped
         switch (tItem.statEffect) {
-			case eItemStatEffect.STR: potential[0] += tItem.statEffectValue; break;
-			case eItemStatEffect.DEF: potential[1] += tItem.statEffectValue; break;
-			case eItemStatEffect.WIS: potential[2] += tItem.statEffectValue; break;
-			case eItemStatEffect.AGI: potential[3] += tItem.statEffectValue; break;
+			case eItemStatEffect.STR: potential[0] += tItem.statEffectMaxValue; break;
+			case eItemStatEffect.DEF: potential[1] += tItem.statEffectMaxValue; break;
+			case eItemStatEffect.WIS: potential[2] += tItem.statEffectMaxValue; break;
+			case eItemStatEffect.AGI: potential[3] += tItem.statEffectMaxValue; break;
 		}
 
 		// Find difference between current & potential Stats

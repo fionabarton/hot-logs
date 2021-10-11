@@ -33,7 +33,7 @@ public class InnkeeperTrigger : ActivateOnButtonPress {
 	}
 
 	public void Yes() {
-		AudioManager.S.PlaySFX(6);
+		AudioManager.S.PlaySFX(eSoundName.confirm);
 
 		DialogueManager.S.ResetSubMenuSettings();
 
@@ -58,7 +58,7 @@ public class InnkeeperTrigger : ActivateOnButtonPress {
 	}
 
 	public void No() {
-		AudioManager.S.PlaySFX(7);
+		AudioManager.S.PlaySFX(eSoundName.deny);
 
 		DialogueManager.S.ResetSubMenuSettings();
 		DialogueManager.S.DisplayText("That's cool. Later, bro.");

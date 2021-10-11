@@ -7,7 +7,8 @@ public class SpriteSwapTrigger : MonoBehaviour {
 	public List<Sprite>		sprites = new List<Sprite>();
 
 	public bool				swapOnlyOnFirstCollision = true;
-	public int				soundNdx;
+
+	public eSoundName		soundName;
 
 	public SpriteRenderer	sRend;
 
@@ -16,7 +17,7 @@ public class SpriteSwapTrigger : MonoBehaviour {
 			if (coll.gameObject.CompareTag("Player")) {
 				sRend.sprite = sprites[0];
 
-				AudioManager.S.PlaySFX(soundNdx);
+				AudioManager.S.PlaySFX(soundName);
 
 				swapOnlyOnFirstCollision = false;
 			}

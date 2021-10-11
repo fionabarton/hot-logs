@@ -33,7 +33,13 @@ public class BattleItems : MonoBehaviour {
 		// Set a Player Button as Selected GameObject
 		Utilities.S.SetSelectedGO(BattlePlayerActions.S.playerButtonGO[_.PlayerNdx()].gameObject);
 
+		// Set previously selected GameObject
+		_.previousSelectedForAudio = BattlePlayerActions.S.playerButtonGO[_.PlayerNdx()].gameObject;
+
 		BattleDialogue.S.DisplayText (messageToDisplay);
+
+		// Audio: Confirm
+		AudioManager.S.PlaySFX(eSoundName.confirm);
 
 		// Add Item Listeners to Player Buttons
 		BattlePlayerActions.S.playerButtonCS[0].onClick.AddListener(delegate { functionToPass(0, item); });
@@ -54,7 +60,7 @@ public class BattleItems : MonoBehaviour {
             BattleDialogue.S.DisplayText(Party.stats[ndx].name + " is dead...\n...and dead folk can't be healed, dummy!");
 
 			// Audio: Deny
-			AudioManager.S.PlaySFX(7);
+			AudioManager.S.PlaySFX(eSoundName.deny);
 
 			// Switch Mode
 			_.battleMode = eBattleMode.playerTurn;
@@ -96,15 +102,15 @@ public class BattleItems : MonoBehaviour {
 			// Set anim
 			_.playerAnimator[ndx].CrossFade("Win_Battle", 0);
 
-			// Audio: Confirm
-			AudioManager.S.PlaySFX(6);
+			// Audio: Buff 1
+			AudioManager.S.PlaySFX(eSoundName.buff1);
 
 			_.NextTurn();
         } else {
             BattleDialogue.S.DisplayText(Party.stats[ndx].name + " already at full health...\n...no need to use this potion!");
 
 			// Audio: Deny
-			AudioManager.S.PlaySFX(7);
+			AudioManager.S.PlaySFX(eSoundName.deny);
 
 			// Switch Mode
 			_.battleMode = eBattleMode.playerTurn;
@@ -118,7 +124,7 @@ public class BattleItems : MonoBehaviour {
 			BattleDialogue.S.DisplayText(Party.stats[ndx].name + " is dead...\n...and dead folk can't be healed, dummy!");
 			
 			// Audio: Deny
-			AudioManager.S.PlaySFX(7);
+			AudioManager.S.PlaySFX(eSoundName.deny);
 
 			// Switch Mode
 			_.battleMode = eBattleMode.playerTurn;
@@ -161,15 +167,15 @@ public class BattleItems : MonoBehaviour {
 			// Set anim
 			_.playerAnimator[ndx].CrossFade("Win_Battle", 0);
 
-			// Audio: Confirm
-			AudioManager.S.PlaySFX(6);
+			// Audio: Buff 1
+			AudioManager.S.PlaySFX(eSoundName.buff1);
 
 			_.NextTurn ();
 		} else {
 			BattleDialogue.S.DisplayText(Party.stats[ndx].name + " already at full magic...\n...no need to use this potion!");
 
 			// Audio: Deny
-			AudioManager.S.PlaySFX(7);
+			AudioManager.S.PlaySFX(eSoundName.deny);
 
 			// Switch Mode
 			_.battleMode = eBattleMode.playerTurn;
@@ -220,8 +226,8 @@ public class BattleItems : MonoBehaviour {
 			BattleDialogue.S.DisplayText("Used " + item.name + "!\nHealed ALL party members for an average of "
 				+ Utilities.S.CalculateAverage(totalAmountToHeal, _.playerDead.Count) + " HP!");
 
-			// Audio: Confirm
-			AudioManager.S.PlaySFX(6);
+			// Audio: Buff 1
+			AudioManager.S.PlaySFX(eSoundName.buff1);
 
 			_.NextTurn();
 		} else {
@@ -232,7 +238,7 @@ public class BattleItems : MonoBehaviour {
 			Utilities.S.SetActiveList(BattleUI.S.targetCursors, false);
 
 			// Audio: Deny
-			AudioManager.S.PlaySFX(7);
+			AudioManager.S.PlaySFX(eSoundName.deny);
 
 			// Switch Mode
 			_.battleMode = eBattleMode.playerTurn;
@@ -256,7 +262,7 @@ public class BattleItems : MonoBehaviour {
 			BattleDialogue.S.DisplayText(Party.stats[ndx].name + " ain't dead...\n...and dead folk don't need to be revived, dummy!");
 
 			// Audio: Deny
-			AudioManager.S.PlaySFX(7);
+			AudioManager.S.PlaySFX(eSoundName.deny);
 
 			// Switch Mode
 			_.battleMode = eBattleMode.playerTurn;
@@ -281,7 +287,7 @@ public class BattleItems : MonoBehaviour {
 		BattleDialogue.S.DisplayText("This item ain't usable in battle... sorry!");
 
 		// Audio: Deny
-		AudioManager.S.PlaySFX(7);
+		AudioManager.S.PlaySFX(eSoundName.deny);
 
 		// Switch Mode
 		_.battleMode = eBattleMode.playerTurn;

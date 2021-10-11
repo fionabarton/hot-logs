@@ -45,8 +45,8 @@ public class ShopScreen : MonoBehaviour {
 	}
 
 	public void Deactivate() {
-		// Deactivate Cursor
-		ScreenCursor.S.cursorGO.SetActive (false);
+		// Deactivate screen cursors
+		Utilities.S.SetActiveList(ScreenCursor.S.cursorGO, false);
 
 		// Unpause
 		RPG.S.paused = false;
@@ -76,6 +76,8 @@ public class ShopScreen : MonoBehaviour {
 
 		// Deactivate ShopScreen
 		if(Input.GetButtonDown ("SNES B Button")) {
+			// Audio: Deny
+			AudioManager.S.PlaySFX(eSoundName.deny);
 			Deactivate();
 		}
 

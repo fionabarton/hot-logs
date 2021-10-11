@@ -199,6 +199,11 @@ public class BattleQTE : MonoBehaviour {
 						// Increase bar while held down
 						if (Input.GetButtonDown("SNES A Button")) {
 							val += (playerForce * Time.fixedDeltaTime);
+
+							// Audio:
+							float tVal2 = val * 0.01f;
+							AudioManager.S.sfxCS[0].pitch = tVal2;
+							AudioManager.S.PlaySFX(eSoundName.dialogue);
 						}
 						break;
 					case 1: /////////// HOLD ///////////	
@@ -250,6 +255,11 @@ public class BattleQTE : MonoBehaviour {
 						// Update health bar UI
 						healthBar.UpdateBar(val, max);
 
+						//// Audio:
+						//float tVal2 = val * 0.01f;
+						//AudioManager.S.sfxCS[0].pitch = tVal2;
+						//AudioManager.S.PlaySFX(0);
+
 						// Decrease bar
 						val -= (downwardForce * Time.fixedDeltaTime);
 
@@ -263,6 +273,11 @@ public class BattleQTE : MonoBehaviour {
 					case 1: /////////// HOLD ///////////	
 						// Update health bar UI
 						healthBar.UpdateBar(val, max);
+
+						// Audio:
+						float tVal = val * 0.01f;
+						AudioManager.S.sfxCS[0].pitch = tVal;
+						AudioManager.S.PlaySFX(eSoundName.dialogue);
 
 						if (buttonDown) {
 							if (val <= max + 1) {
@@ -296,6 +311,11 @@ public class BattleQTE : MonoBehaviour {
 
 						// Update health bar UI
 						healthBar.UpdateBar(val, max);
+
+						// Audio:
+						float tVal1 = val * 0.01f;
+						AudioManager.S.sfxCS[0].pitch = tVal1;
+						AudioManager.S.PlaySFX(eSoundName.dialogue);
 
 						// Reached limit, so change direction
 						if (val >= max) {
@@ -348,6 +368,9 @@ public class BattleQTE : MonoBehaviour {
 
 	// End QTE: Result of the user's QTE performance
 	public void Result(bool goodOrBad) {
+		// Audio: Reset pitch
+		AudioManager.S.sfxCS[0].pitch = 1;
+
 		// Deactivate progress bar
 		healthBar.gameObject.transform.parent.gameObject.SetActive(false);
 
@@ -409,6 +432,9 @@ public class BattleQTE : MonoBehaviour {
 
 					// Display Floating Score
 					RPG.S.InstantiateFloatingScore(_.playerSprite[blockerNdx], amountToHeal, Color.green);
+
+					// Audio: Confirm
+					AudioManager.S.PlaySFX(eSoundName.confirm);
 					break;
 			}
         } else {
@@ -494,6 +520,9 @@ public class BattleQTE : MonoBehaviour {
 						Result(false);
 					} else {
 						BattleDialogue.S.displayMessageTextTop.text = "<color=#00FF00>" + ConvertDirections(goalString[0]) + "</color>" + ConvertDirections(goalString[1]);
+
+						// Audio: Confirm
+						AudioManager.S.PlaySFX(eSoundName.confirm);
 					}
 					break;
 				case 3:
@@ -503,6 +532,9 @@ public class BattleQTE : MonoBehaviour {
 								Result(false);
 							} else {
 								BattleDialogue.S.displayMessageTextTop.text = "<color=#00FF00>" + ConvertDirections(goalString[0]) + "</color>" + ConvertDirections(goalString[1]) + ConvertDirections(goalString[2]);
+
+								// Audio: Confirm
+								AudioManager.S.PlaySFX(eSoundName.confirm);
 							}
 							break;
 						case 2:
@@ -510,6 +542,9 @@ public class BattleQTE : MonoBehaviour {
 								Result(false);
 							} else {
 								BattleDialogue.S.displayMessageTextTop.text = "<color=#00FF00>" + ConvertDirections(goalString[0]) + ConvertDirections(goalString[1]) + "</color>" + ConvertDirections(goalString[2]);
+
+								// Audio: Confirm
+								AudioManager.S.PlaySFX(eSoundName.confirm);
 							}
 							break;
 					}

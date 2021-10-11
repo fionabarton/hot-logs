@@ -24,11 +24,17 @@ public class BattleSpells : MonoBehaviour {
 
     public void AddFunctionToButton(Action<int, Spell> functionToPass, string messageToDisplay, Spell spell) {
 		if (Party.stats[Battle.S.PlayerNdx()].MP >= spell.cost) {
+			// Audio: Confirm
+			AudioManager.S.PlaySFX(eSoundName.confirm);
+
 			if (spell.type == eSpellType.healing) {
 				BattlePlayerActions.S.ButtonsInteractable(false, false, false, false, false, false, false, false, true, true);
 
 				// Set a Player Button as Selected GameObject
 				Utilities.S.SetSelectedGO(BattlePlayerActions.S.playerButtonGO[_.PlayerNdx()].gameObject);
+
+				// Set previously selected GameObject
+				_.previousSelectedForAudio = BattlePlayerActions.S.playerButtonGO[_.PlayerNdx()].gameObject;
 
 				// Add Item Listeners to Player Buttons
 				BattlePlayerActions.S.playerButtonCS[0].onClick.AddListener(delegate { functionToPass(0, spell); });
@@ -89,7 +95,7 @@ public class BattleSpells : MonoBehaviour {
 			BattleDialogue.S.DisplayText(Party.stats[ndx].name + " is dead...\n...and dead folk can't be healed, dummy!");
 			
 			// Audio: Deny
-			AudioManager.S.PlaySFX(7);
+			AudioManager.S.PlaySFX(eSoundName.deny);
 
 			// Switch Mode
 			_.battleMode = eBattleMode.playerTurn;
@@ -132,8 +138,8 @@ public class BattleSpells : MonoBehaviour {
 			// Set anim
 			_.playerAnimator[ndx].CrossFade("Win_Battle", 0);
 
-			// Audio: Confirm
-			AudioManager.S.PlaySFX(6);
+			// Audio: Buff 1
+			AudioManager.S.PlaySFX(eSoundName.buff1);
 
 			_.NextTurn ();
 		} else {
@@ -141,7 +147,7 @@ public class BattleSpells : MonoBehaviour {
 			BattleDialogue.S.DisplayText(Party.stats[ndx].name + " already at full health...\n...no need to cast this spell!");
 
 			// Audio: Deny
-			AudioManager.S.PlaySFX(7);
+			AudioManager.S.PlaySFX(eSoundName.deny);
 
 			// Switch Mode
 			_.battleMode = eBattleMode.playerTurn;
@@ -165,6 +171,9 @@ public class BattleSpells : MonoBehaviour {
 			} else {
 				BattleDialogue.S.DisplayText(Party.stats[_.PlayerNdx()].name + " cast the spell, but " + _.enemyStats[ndx].name + " deftly dodged out of the way!");
 			}
+
+			// Audio: Deny
+			AudioManager.S.PlaySFX(eSoundName.deny);
 
 			_.NextTurn ();
 		} else {
@@ -198,14 +207,13 @@ public class BattleSpells : MonoBehaviour {
 
 			if (_.enemyStats[ndx].HP < 1) {
 				// Deactivate Spells Screen then Enemy Death
-				SpellScreen.S.ScreenOffEnemyDeath (ndx);
+				SpellScreen.S.ScreenOffEnemyDeath(ndx);
 			} else {
 				// Deactivate Spells Screen then Enemy Turn
 				BattleDialogue.S.DisplayText ("Used " + spell.name + " Spell!\nHit " + _.enemyStats [ndx].name + " for " + _.attackDamage + " HP!");
 
-				// Audio: Damage
-				int randomInt = UnityEngine.Random.Range(2, 4);
-				AudioManager.S.PlaySFX(randomInt);
+				// Audio: Fireball
+				AudioManager.S.PlaySFX(eSoundName.fireball);
 
 				_.NextTurn ();
 			}
@@ -231,6 +239,10 @@ public class BattleSpells : MonoBehaviour {
 			} else {
 				BattleDialogue.S.DisplayText(Party.stats[_.PlayerNdx()].name + " cast the spell, but these dummies you're fighting deftly dodged out of the way!");
 			}
+
+			// Audio: Deny
+			AudioManager.S.PlaySFX(eSoundName.deny);
+
 			_.NextTurn ();
 		} else {
 			List<int> deadEnemies = new List<int>();
@@ -290,12 +302,14 @@ public class BattleSpells : MonoBehaviour {
 			if (deadEnemies.Count <= 0) {
 				BattleDialogue.S.DisplayText ("Used " + spell.name + " Spell!\nHit ALL Enemies for an average of " + Utilities.S.CalculateAverage(totalAttackDamage, _.enemyStats.Count) + " HP!");
 
-				// Audio: Damage
-				int randomInt = UnityEngine.Random.Range(2, 4);
-				AudioManager.S.PlaySFX(randomInt);
+				// Audio: Fireblast
+				AudioManager.S.PlaySFX(eSoundName.fireblast);
 
 				_.NextTurn (); 
 			} else {
+				// Audio: Death
+				AudioManager.S.PlaySFX(eSoundName.death);
+
 				EnemiesDeath(deadEnemies, totalAttackDamage);
 			}
 		}
@@ -319,6 +333,13 @@ public class BattleSpells : MonoBehaviour {
 
 		// Add Exp & Gold or Next Turn
 		if (_.enemyAmount <= 0) {
+			// Animation: Player WIN BATTLE
+			for (int i = 0; i < _.playerAnimator.Count; i++) {
+				if (!_.playerDead[i]) {
+					_.playerAnimator[i].CrossFade("Win_Battle", 0);
+				}
+			}
+
 			// DropItem or AddExpAndGold
 			if (_.droppedItems.Count >= 1) {
 				// Switch Mode
@@ -327,7 +348,9 @@ public class BattleSpells : MonoBehaviour {
 				// Switch Mode
 				_.battleMode = eBattleMode.addExpAndGold;
 			}
-		} else { _.NextTurn(); }
+		} else {
+			_.NextTurn(); 
+		}
 	}
 
 	public void EnemiesDeathHelper(int enemyNdx, string enemyTurnOrder){
@@ -397,8 +420,8 @@ public class BattleSpells : MonoBehaviour {
 			BattleDialogue.S.DisplayText("Used " + spell.name + " Spell!\nHealed ALL party members for an average of " 
 				+ Utilities.S.CalculateAverage(totalAmountToHeal, _.playerDead.Count) + " HP!");
 
-			// Audio: Confirm
-			AudioManager.S.PlaySFX(6);
+			// Audio: Buff 1
+			AudioManager.S.PlaySFX(eSoundName.buff1);
 
 			_.NextTurn();
 		} else {
@@ -409,7 +432,7 @@ public class BattleSpells : MonoBehaviour {
 			Utilities.S.SetActiveList(BattleUI.S.targetCursors, false);
 
 			// Audio: Deny
-			AudioManager.S.PlaySFX(7);
+			AudioManager.S.PlaySFX(eSoundName.deny);
 
 			// Switch Mode
 			_.battleMode = eBattleMode.playerTurn;
@@ -433,7 +456,7 @@ public class BattleSpells : MonoBehaviour {
 			BattleDialogue.S.DisplayText(Party.stats[ndx].name + " ain't dead...\n...and dead folk don't need to be revived, dummy!");
 
 			// Audio: Deny
-			AudioManager.S.PlaySFX(7);
+			AudioManager.S.PlaySFX(eSoundName.deny);
 
 			// Switch Mode
 			_.battleMode = eBattleMode.playerTurn;

@@ -26,6 +26,9 @@ public class SpellScreen_PickSpell : MonoBehaviour {
 			if (Input.GetButtonDown("SNES B Button")) {
 				// Go Back
 				SpellScreen_PickWhichSpellsToDisplay.S.Setup(spellScreen);
+
+				// Audio: Deny
+				AudioManager.S.PlaySFX(eSoundName.deny);
 			}
 		}
 	}

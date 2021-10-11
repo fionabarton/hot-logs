@@ -38,7 +38,7 @@ public class DialogueManager : MonoBehaviour {
 		dialogueTextCS = GetComponentInChildren<Text> ();
 		dialogueTextGO = dialogueTextCS.gameObject;
 
-		DeactivateTextBox ();
+		DeactivateTextBox();
 	}
 
 	public void ThisLoop() {
@@ -53,6 +53,9 @@ public class DialogueManager : MonoBehaviour {
 	}
 
 	void EndDialogue() {
+		// Audio: High Beep 2
+		AudioManager.S.PlaySFX(eSoundName.highBeep2);
+
 		// Deactivate text box
 		DeactivateTextBox();
 		
@@ -69,7 +72,7 @@ public class DialogueManager : MonoBehaviour {
 
 	// Display a LIST of strings
 	public void DisplayText(List<string> text, bool moveDown = false) {
-		StartCoroutine (DisplayTextCo (text, moveDown));
+		StartCoroutine(DisplayTextCo(text, moveDown));
 
 		// Deactivate Overworld Player Stats
 		PlayerButtons.S.gameObject.SetActive(false);
@@ -118,7 +121,7 @@ public class DialogueManager : MonoBehaviour {
         // Display text one word at a time
         for (int i = 0; i < dialogueWords.Length; i++) {
 			// Audio: Dialogue
-			AudioManager.S.sfxCS[0].Play();
+			AudioManager.S.PlaySFX(eSoundName.dialogue);
 
 			dialogueSentences += dialogueWords[i] + " ";
 			dialogueTextCS.text = dialogueSentences;

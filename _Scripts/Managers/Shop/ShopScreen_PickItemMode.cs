@@ -19,25 +19,25 @@ public class ShopScreen_PickItemMode : MonoBehaviour {
 	}
 
 	public void Setup(ShopScreen shopScreen) {
-		// Set ScreenMode
-		shopScreen.shopScreenMode = eShopScreenMode.pickItem;
-
-		// Reimport inventory if an item was sold
-		if (!shopScreen.buyOrSellMode) {
-			shopScreen.ImportInventory(Inventory.S.GetItemList());
-		}
-
-		DeactivateUnusedItemSlots(shopScreen);
-		AssignItemNames(shopScreen);
-		AssignItemEffect(shopScreen);
-
-		shopScreen.canUpdate = true;
-
-		// Freeze Player
-		RPG.S.paused = true;
-		Player.S.mode = eRPGMode.idle;
-
 		try {
+			// Set ScreenMode
+			shopScreen.shopScreenMode = eShopScreenMode.pickItem;
+
+			// Reimport inventory if an item was sold
+			if (!shopScreen.buyOrSellMode) {
+				shopScreen.ImportInventory(Inventory.S.GetItemList());
+			}
+
+			DeactivateUnusedItemSlots(shopScreen);
+			AssignItemNames(shopScreen);
+			AssignItemEffect(shopScreen);
+
+			shopScreen.canUpdate = true;
+
+			// Freeze Player
+			RPG.S.paused = true;
+			Player.S.mode = eRPGMode.idle;
+
 			// Activate PlayerButtons
 			PlayerButtons.S.gameObject.SetActive(true);
 			Utilities.S.ButtonsInteractable(PlayerButtons.S.buttonsCS, false);
@@ -46,8 +46,11 @@ public class ShopScreen_PickItemMode : MonoBehaviour {
 			if (Inventory.S.GetItemList().Count == 0 && !shopScreen.buyOrSellMode) {
 				PauseMessage.S.DisplayText("You have nothing to sell, fool!");
 
-				// Deactivate Cursor
-				ScreenCursor.S.cursorGO.SetActive(false);
+				// Deactivate screen cursors
+				Utilities.S.SetActiveList(ScreenCursor.S.cursorGO, false);
+
+				// Audio: Deny
+				AudioManager.S.PlaySFX(eSoundName.deny);
 			} else {
 				// If previousSelectedGameObject is enabled...
 				if (shopScreen.previousSelectedGameObject.activeInHierarchy) {
@@ -59,7 +62,7 @@ public class ShopScreen_PickItemMode : MonoBehaviour {
 				}
 
 				// Activate Cursor
-				ScreenCursor.S.cursorGO.SetActive(true);
+				ScreenCursor.S.cursorGO[0].SetActive(true);
 			}
 
 			// Activate PauseMessage
@@ -115,8 +118,8 @@ public class ShopScreen_PickItemMode : MonoBehaviour {
 				// Set selected button text color	
 				shopScreen.inventoryButtons[i].gameObject.GetComponentInChildren<Text>().color = new Color32(205, 208, 0, 255);
 
-				// Cache Selected Gameobject 
-				shopScreen.previousSelectedGameObject = shopScreen.inventoryButtons[i].gameObject;
+				// Audio: Selection (when a new gameObject is selected)
+				Utilities.S.PlayButtonSelectedSFX(ref shopScreen.previousSelectedGameObject);
 				// Cache Selected Gameobject's index 
 				shopScreen.previousSelectedNdx = i;
 			} else {

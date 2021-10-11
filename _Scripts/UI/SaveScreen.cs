@@ -26,11 +26,21 @@ public class SaveScreen : MonoBehaviour {
 	// For Input & Display Message
 	public eSaveScreenMode		saveScreenMode;
 
+	// Allows parts of Loop() to be called once rather than repeatedly every frame.
+	public bool					canUpdate;
+
+	// Ensures audio is only played once when button is selected
+	GameObject					previousSelectedActionButton;
+	GameObject					previousSelectedSlotButton;
+	
 	void Awake() {
 		S = this;
 	}
 
 	void OnEnable() {
+		// Ensures first slot is selected when screen enabled
+		previousSelectedActionButton = actionButtons[0].gameObject;
+
 		SetUp();
 
 		// Add Loop() to Update Delgate
@@ -38,14 +48,14 @@ public class SaveScreen : MonoBehaviour {
 	}
 
 	void SetUp() {
-		// Freeze Player
-		RPG.S.paused = true;
-		Player.S.mode = eRPGMode.idle;
-
-		// Switch ScreenMode 
-		saveScreenMode = eSaveScreenMode.pickAction;
-
 		try{
+			// Freeze Player
+			RPG.S.paused = true;
+			Player.S.mode = eRPGMode.idle;
+
+			// Switch ScreenMode 
+			saveScreenMode = eSaveScreenMode.pickAction;
+
 			// Remove Listeners and Update GUI 
 			Utilities.S.RemoveListeners(actionButtons);
 			Utilities.S.RemoveListeners(slotButtons);
@@ -55,32 +65,48 @@ public class SaveScreen : MonoBehaviour {
 
 			// Buttons Interactable
 			Utilities.S.ButtonsInteractable(PauseScreen.S.buttonCS, false);
+
+			//Buttons Interactable
+			Utilities.S.ButtonsInteractable(slotButtons, false);
+			Utilities.S.ButtonsInteractable(actionButtons, true);
+
+			// Set Selected GameObject
+			Utilities.S.SetSelectedGO(previousSelectedActionButton);
+
+			// Add Listeners
+			actionButtons[0].onClick.AddListener(delegate { ClickedLoadSaveOrDelete(0); });
+			actionButtons[1].onClick.AddListener(delegate { ClickedLoadSaveOrDelete(1); });
+			actionButtons[2].onClick.AddListener(delegate { ClickedLoadSaveOrDelete(2); });
 		}
-		catch(NullReferenceException){}
-
-		//Buttons Interactable
-		Utilities.S.ButtonsInteractable(slotButtons, false);
-		Utilities.S.ButtonsInteractable(actionButtons, true);
-
-		// Set Selected GameObject (Save Screen: Save Slot 1)
-		Utilities.S.SetSelectedGO(actionButtons[0].gameObject);
-
-		// Add Listeners
-		actionButtons[0].onClick.AddListener (delegate{ClickedLoadSaveOrDelete (0);});
-		actionButtons[1].onClick.AddListener (delegate{ClickedLoadSaveOrDelete (1);});
-		actionButtons[2].onClick.AddListener (delegate{ClickedLoadSaveOrDelete (2);});
+		catch(NullReferenceException){}	
 	}
 
-	public void Deactivate() {
+	public void Activate() {
+		gameObject.SetActive(true);
+
+		// Audio: Confirm
+		AudioManager.S.PlaySFX(eSoundName.confirm);
+	}
+
+	public void Deactivate(bool playSound = false) {
 		if (RPG.S.currentSceneName != "Battle") {
 			// Buttons Interactable
 			Utilities.S.ButtonsInteractable(PauseScreen.S.buttonCS, true);
+
+			// Set previously selected GameObject
+			PauseScreen.S.previousSelectedGameObject = PauseScreen.S.buttonGO[3];
+
 			// Set Selected Gameobject (Pause Screen: Save Button)
 			Utilities.S.SetSelectedGO(PauseScreen.S.buttonGO[3]);
 
 			PauseMessage.S.DisplayText ("Welcome to the Pause Screen!");
 
 			PauseScreen.S.canUpdate = true;
+		}
+
+		if (playSound) {
+			// Audio: Deny
+			AudioManager.S.PlaySFX(eSoundName.deny);
 		}
 
 		// Update Delegate
@@ -91,28 +117,45 @@ public class SaveScreen : MonoBehaviour {
 	}
 
     public void Loop(){
-		if(UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject != null) {
+		// Reset canUpdate
+		if (Input.GetAxisRaw("Horizontal") != 0f || Input.GetAxisRaw("Vertical") != 0f) {
+			canUpdate = true;
+		}
+
+		if (UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject != null) {
 			Utilities.S.PositionCursor(UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject, 100);
 		}
 
 		switch (saveScreenMode) {
-		case eSaveScreenMode.pickAction:
-			if (Input.GetButtonDown ("SNES B Button")) {
-				Deactivate();
-			}
-			break;
-		case eSaveScreenMode.pickFile:
-			if (Input.GetButtonDown ("SNES B Button")) {
-				SetUp();
-			}
-			break;
-		case eSaveScreenMode.pickedFile:
-			if(PauseMessage.S.dialogueFinished){
-				if (Input.GetButtonDown ("SNES A Button")) {
+			case eSaveScreenMode.pickAction:
+				// Audio: Selection (when a new gameObject is selected)
+				if (canUpdate) {
+					Utilities.S.PlayButtonSelectedSFX(ref previousSelectedActionButton);
+				}
+
+				if (Input.GetButtonDown("SNES B Button")) {
+					Deactivate(true);
+				}
+				break;
+			case eSaveScreenMode.pickFile:
+				// Audio: Selection (when a new gameObject is selected)
+				if (canUpdate) {
+					Utilities.S.PlayButtonSelectedSFX(ref previousSelectedSlotButton);
+				}
+
+				if (Input.GetButtonDown("SNES B Button")) {
+					// Audio: Deny
+					AudioManager.S.PlaySFX(eSoundName.deny);
 					SetUp();
 				}
-			}
-			break;
+				break;
+			case eSaveScreenMode.pickedFile:
+				if (PauseMessage.S.dialogueFinished) {
+					if (Input.GetButtonDown("SNES A Button")) {
+						SetUp();
+					}
+				}
+				break;
 		}
 	}
 
@@ -128,6 +171,9 @@ public class SaveScreen : MonoBehaviour {
 		// Set Selected GameObject
 		Utilities.S.SetSelectedGO(slotButtons[0].gameObject);
 
+		// Set previously selected GameObject
+		previousSelectedSlotButton = slotButtons[0].gameObject;
+
 		switch (loadSaveOrDelete) {
 		case 0:
 			slotButtons[0].onClick.AddListener (delegate{LoadFile (0);});
@@ -142,7 +188,10 @@ public class SaveScreen : MonoBehaviour {
 			PauseMessage.S.DisplayText ("Delete which file?");
 			break;
 		}
-					
+
+		// Audio: Confirm
+		AudioManager.S.PlaySFX(eSoundName.confirm);
+
 		saveScreenMode = eSaveScreenMode.pickFile;
 	}
 
@@ -170,7 +219,7 @@ public class SaveScreen : MonoBehaviour {
 		PlayerPrefs.SetInt("Player1Level", Party.stats[1].LVL);
 		PlayerPrefs.SetInt("Player1Exp", Party.stats[0].EXP);
 		PlayerPrefs.SetInt("Player2Exp", Party.stats[1].EXP);
-		PlayerPrefs.SetInt("Gold", Party.S.Gold);
+		PlayerPrefs.SetInt("Gold", Party.S.gold);
 		PlayerPrefs.SetString("Time", PauseScreen.S.GetTime()); // Stores Time in 0:00 format
 		PlayerPrefs.SetInt("Seconds", PauseScreen.S.seconds);
 		PlayerPrefs.SetInt("Minutes", PauseScreen.S.minutes);
@@ -201,6 +250,9 @@ public class SaveScreen : MonoBehaviour {
 		//Buttons Interactable
 		Utilities.S.ButtonsInteractable(slotButtons, false);
 		Utilities.S.ButtonsInteractable(actionButtons, false);
+
+		// Audio: Buff 1
+		AudioManager.S.PlaySFX(eSoundName.buff1);
 
 		saveScreenMode = eSaveScreenMode.pickedFile;
 

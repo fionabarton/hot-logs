@@ -81,7 +81,7 @@ public class BattleDialogue : MonoBehaviour{
 			// Display text one word at a time
 			for (int i = 0; i < dialogueWords.Length; i++) {
 				// Audio: Dialogue
-				AudioManager.S.sfxCS[0].Play();
+				AudioManager.S.PlaySFX(eSoundName.dialogue);
 
 				dialogueSentences += dialogueWords[i] + " ";
 				displayMessageTextBottom.text = dialogueSentences;
