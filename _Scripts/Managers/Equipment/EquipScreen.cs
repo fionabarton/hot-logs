@@ -57,13 +57,19 @@ public class EquipScreen : MonoBehaviour {
     void OnEnable () {
 		try {
 			playerNdx = 0;
-			previousSelectedGameObject = null;
+
+			// Ensures first slots are selected when screen enabled
+			previousSelectedGameObject = PlayerButtons.S.buttonsCS[playerNdx].gameObject;
+			EquipScreen_PickTypeToEquipMode.S.previousSelectedGameObject = equippedButtons[0].gameObject;
+			EquipScreen_PickItemToEquipMode.S.previousSelectedGameObject = inventoryButtons[0].gameObject;
+
+			DisplayCurrentEquipmentNames(playerNdx);
 
 			EquipScreen_PickPartyMemberMode.S.SetUp(S);
 
 			// Add Loop() to Update Delgate
 			UpdateManager.updateDelegate += Loop;
-
+			
 			PlayerButtons.S.buttonsCS[0].Select();
 			PlayerButtons.S.buttonsCS[0].OnSelect(null);
 			PlayerButtons.S.anim[0].CrossFade("Walk", 0);
@@ -71,7 +77,14 @@ public class EquipScreen : MonoBehaviour {
 		catch (NullReferenceException) { }
 	}
 
-	public void Deactivate() {
+	public void Activate() {
+		gameObject.SetActive(true);
+
+		// Audio: Confirm
+		AudioManager.S.PlaySFX(eSoundName.confirm);
+	}
+
+	public void Deactivate(bool playSound = false) {
 		// Activate Cursor
 		ScreenCursor.S.cursorGO[0].SetActive(true);
 
@@ -86,6 +99,11 @@ public class EquipScreen : MonoBehaviour {
 			PauseMessage.S.DisplayText("Welcome to the Pause Screen!");
 
 			PauseScreen.S.canUpdate = true;
+		}
+
+		if (playSound) {
+			// Audio: Deny
+			AudioManager.S.PlaySFX(eSoundName.deny);
 		}
 
 		// Deactivate PlayerButtons
@@ -122,12 +140,13 @@ public class EquipScreen : MonoBehaviour {
 		case eEquipScreenMode.noInventory:
 		case eEquipScreenMode.equippedItem:
 			// Go back to pickTypeToEquip mode 
-			GoBackToPickTypeToEquipMode("SNES A Button");
+			GoBackToPickTypeToEquipMode("SNES A Button", 99);
+			GoBackToPickTypeToEquipMode("SNES B Button", 99);
 			break;
 		}
 	}
 
-	public void GoBackToPickTypeToEquipMode(string inputName) {
+	public void GoBackToPickTypeToEquipMode(string inputName, int soundNdx) {
 		if (PauseMessage.S.dialogueFinished) {
 			if (Input.GetButtonDown(inputName)) {
 				// Deactivate Buttons
@@ -136,10 +155,10 @@ public class EquipScreen : MonoBehaviour {
 				}
 
 				// Set Up pickTypeToEquip mode
-				EquipScreen_PickTypeToEquipMode.S.SetUp(playerNdx, S);
+				EquipScreen_PickTypeToEquipMode.S.SetUp(playerNdx, S, soundNdx);
 
 				// Set Selected Gameobject 
-				Utilities.S.SetSelectedGO(previousSelectedGameObject);
+				Utilities.S.SetSelectedGO(EquipScreen_PickTypeToEquipMode.S.previousSelectedGameObject);
 
 				// Activate Cursor
 				ScreenCursor.S.cursorGO[0].SetActive(true);
@@ -202,6 +221,9 @@ public class EquipScreen : MonoBehaviour {
 		// Update GUI
 		DisplayCurrentStats(playerNdx);
 		DisplayCurrentEquipmentNames(playerNdx);
+
+		// Audio: Buff 1
+		AudioManager.S.PlaySFX(eSoundName.buff1);
 
 		playerAnim.CrossFade("Success", 0);
 	}

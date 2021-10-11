@@ -41,7 +41,14 @@ public class ItemScreen : MonoBehaviour {
 		UpdateManager.updateDelegate += Loop;
 	}
 
-	public void Deactivate () {
+	public void Activate() {
+		gameObject.SetActive(true);
+
+		// Audio: Confirm
+		AudioManager.S.PlaySFX(eSoundName.confirm);
+	}
+
+	public void Deactivate(bool playSound = false) {
 		// Deactivate Cursors if in Battle Mode
 		if (!RPG.S.paused) {
 			Utilities.S.SetActiveList(ScreenCursor.S.cursorGO, false);
@@ -56,13 +63,19 @@ public class ItemScreen : MonoBehaviour {
 		if (RPG.S.currentSceneName != "Battle") {
 			// Buttons Interactable
 			Utilities.S.ButtonsInteractable(PauseScreen.S.buttonCS, true);
+
 			// Set Selected Gameobject (Pause Screen: Items Button)
 			Utilities.S.SetSelectedGO(PauseScreen.S.buttonGO[0]);
 
 			PauseMessage.S.DisplayText("Welcome to the Pause Screen!");
 
 			PauseScreen.S.canUpdate = true;
-		} 
+		}
+
+		if (playSound) {
+			// Audio: Deny
+			AudioManager.S.PlaySFX(eSoundName.deny);
+		}
 
 		// Deactivate PlayerButtons
 		PlayerButtons.S.gameObject.SetActive(false);
@@ -84,7 +97,7 @@ public class ItemScreen : MonoBehaviour {
 		if (RPG.S.currentSceneName == "Battle") {
 			if (Input.GetButtonDown ("SNES B Button")) {
 				PauseMessage.S.gameObject.SetActive(false);
-				Deactivate();
+				Deactivate(true);
 				Battle.S.PlayerTurn();
 			}
 		}
@@ -132,6 +145,9 @@ public class ItemScreen : MonoBehaviour {
 
 			// Deactivate screen cursors
 			Utilities.S.SetActiveList(ScreenCursor.S.cursorGO, false);
+
+			// Audio: Deny
+			AudioManager.S.PlaySFX(eSoundName.deny);
 
 			// Go back to PickItem mode
 			ItemScreen_PickItemMode.S.Setup(S);

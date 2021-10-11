@@ -49,18 +49,18 @@ public class PurchaseTrigger : ActivateOnButtonPress {
             Party.S.gold -= tItem.value;
 
             // Audio: Buff 1
-            AudioManager.S.PlaySFX(11);
+            AudioManager.S.PlaySFX(eSoundName.buff1);
         } else {
             DialogueManager.S.DisplayText("You ain't got enough money, jerk!");
 
             // Audio: Deny
-            AudioManager.S.PlaySFX(7);
+            AudioManager.S.PlaySFX(eSoundName.deny);
         }
     }
 
     void No() {
         // Audio: Deny
-        AudioManager.S.PlaySFX(7);
+        AudioManager.S.PlaySFX(eSoundName.deny);
 
         DialogueManager.S.ResetSubMenuSettings();
         DialogueManager.S.DisplayText("That's cool. Later, bro.");

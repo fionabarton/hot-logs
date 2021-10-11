@@ -30,6 +30,9 @@ public class ItemTrigger : ActivateOnButtonPress {
 		// Display Dialogue 
 		DialogueManager.S.DisplayText("Neat, a " + ItemManager.S.items[(int)item].name + "! The party adds it to their inventory!");
 
+		// Audio: Buff 1
+		AudioManager.S.PlaySFX(eSoundName.buff1);
+
 		// Deactivate gameObject
 		gameObject.SetActive(false);
 

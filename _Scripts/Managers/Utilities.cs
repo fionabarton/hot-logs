@@ -167,4 +167,15 @@ public class Utilities : MonoBehaviour
 		// Reassign the struct data to the button
 		button.navigation = navigation;
     }
+
+	// Play "Selection" SFX when a new gameObject is selected
+	public void PlayButtonSelectedSFX(ref GameObject previousSelectedGameObject) {
+		if (UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject != previousSelectedGameObject) {
+			// Cache Selected Gameobject 
+			previousSelectedGameObject = UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject;
+
+			// Audio: Selection
+			AudioManager.S.PlaySFX(eSoundName.selection);
+		}
+	}
 }

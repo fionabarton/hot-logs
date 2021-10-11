@@ -14,11 +14,17 @@ public class EquipScreen_PickItemToEquipMode : MonoBehaviour {
 	private static EquipScreen_PickItemToEquipMode _S;
 	public static EquipScreen_PickItemToEquipMode S { get { return _S; } set { _S = value; } }
 
+	// Ensures audio is only played once when button is selected
+	public GameObject previousSelectedGameObject;
+
 	void Awake() {
 		S = this;
 	}
 
 	public void SetUp(eItemType itemType, EquipScreen equipScreen) {
+		// Audio: Confirm
+		AudioManager.S.PlaySFX(eSoundName.confirm);
+
 		// Buttons Interactable
 		Utilities.S.ButtonsInteractable(equipScreen.inventoryButtons, true);
 		Utilities.S.ButtonsInteractable(equipScreen.equippedButtons, false);
@@ -28,7 +34,8 @@ public class EquipScreen_PickItemToEquipMode : MonoBehaviour {
 			// Switch Mode 
 			equipScreen.equipScreenMode = eEquipScreenMode.noInventory;
 
-			ScreenCursor.S.cursorGO.SetActive(false);
+			// Deactivate screen cursors
+			Utilities.S.SetActiveList(ScreenCursor.S.cursorGO, false);
 
 			PauseMessage.S.DisplayText("You don't have any items of this type to equip!");
 		}
@@ -38,6 +45,9 @@ public class EquipScreen_PickItemToEquipMode : MonoBehaviour {
 
 		// Switch mode
 		equipScreen.SwitchMode(eEquipScreenMode.pickItemToEquip, equipScreen.inventoryButtons[0].gameObject, false);
+
+		// Initialize previously selected GameObject
+		previousSelectedGameObject = equipScreen.inventoryButtons[0].gameObject;
 	}
 
 	public void Loop(EquipScreen equipScreen) {
@@ -47,7 +57,8 @@ public class EquipScreen_PickItemToEquipMode : MonoBehaviour {
 		}
 
 		// Go back to pickTypeToEquip
-		equipScreen.GoBackToPickTypeToEquipMode("SNES B Button");
+		equipScreen.GoBackToPickTypeToEquipMode("SNES B Button", 7);
+
 	}
 
 	// Add listeners to inventory buttons
@@ -76,7 +87,10 @@ public class EquipScreen_PickItemToEquipMode : MonoBehaviour {
 
 					// Calculate and display potential stats
 					EquipStatsEffect.S.DisplayPotentialStats(playerNdx, SortItems.S.tItems[i], equipScreen.playerEquipment);
-                } else {
+
+					// Audio: Selection (when a new gameObject is selected)
+					Utilities.S.PlayButtonSelectedSFX(ref previousSelectedGameObject);
+				} else {
 					// Set non-selected button text color
 					equipScreen.inventoryButtons[i].gameObject.GetComponentInChildren<Text>().color = new Color32(39, 201, 255, 255);
 				}

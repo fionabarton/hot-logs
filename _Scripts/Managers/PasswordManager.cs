@@ -235,7 +235,7 @@ public class PasswordManager : MonoBehaviour {
 
 				// Gold
 				int tInt3 = System.Convert.ToInt32 (gold);
-				Party.S.Gold = tInt3 * 100;
+				Party.S.gold = tInt3 * 100;
 
 			} else {
 				passwordText.text = "Password: INVALID!";

@@ -75,13 +75,16 @@ public class RPG : MonoBehaviour {
 			!EquipScreen.S.gameObject.activeInHierarchy &&
 			!ShopScreen.S.gameObject.activeInHierarchy &&
 			!SaveScreen.S.gameObject.activeInHierarchy) {
-			if (!paused && currentSceneName != "Battle") {
-				if (Input.GetButtonDown("Pause")) {
-					PauseScreen.S.Pause();
-				}
-			} else {
-				if (Input.GetButtonDown("Pause") || Input.GetButtonDown("SNES B Button")) {
-					PauseScreen.S.UnPause();
+
+			if (currentSceneName != "Battle") {
+				if (!PauseScreen.S.gameObject.activeInHierarchy) {
+					if (Input.GetButtonDown("Pause")) {
+						PauseScreen.S.Pause();
+					}
+				} else {
+					if (Input.GetButtonDown("Pause") || Input.GetButtonDown("SNES B Button")) {
+						PauseScreen.S.UnPause(true);
+					}
 				}
 			}
 		}
@@ -189,22 +192,25 @@ public class RPG : MonoBehaviour {
 		////////////// Music //////////////
 		switch (currentSceneName){
 			case "Town_1":
+			case "Area_1":
 				if (!RainSpawner.S.isRaining){
-					AudioManager.S.PlaySong(true, 0);
+					AudioManager.S.PlaySong(eSongName.nineteenForty);
 				}else{
-					AudioManager.S.PlaySong(true, 1);
+					AudioManager.S.PlaySong(eSongName.never);
 				}
 				break;
 			case "Overworld_1":
 			case "Cave_1":
-				AudioManager.S.PlaySong(true, 4);
+			case "Area_2":
+				AudioManager.S.PlaySong(eSongName.things);
 				break;
 			case "Battle":
-				AudioManager.S.PlaySong(true, 2);
+				AudioManager.S.PlaySong(eSongName.ninja);
 				break;
 			case "Shop_1":
 			case "Motel_1":
-				AudioManager.S.PlaySong(true, 3);
+			case "Area_3":
+				AudioManager.S.PlaySong(eSongName.soap);
 				break;
 			default:
 				break;
@@ -317,7 +323,7 @@ public class RPG : MonoBehaviour {
 		paused = true;
 
 		// Audio: Start Battle
-		AudioManager.S.PlaySong(true, 5);
+		AudioManager.S.PlaySong(eSongName.startBattle);
 
 		// Close Curtains
 		BattleCurtain.S.Close();

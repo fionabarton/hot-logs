@@ -7,8 +7,7 @@ using UnityEngine.UI;
 /// During battle handles what happens when buttons are pressed
 /// (Fight, Spell, Item, Run, Party Members, & Enemies)
 /// </summary>
-public class BattlePlayerActions : MonoBehaviour
-{
+public class BattlePlayerActions : MonoBehaviour {
 	[Header("Set in Inspector")]
 	// Action Buttons
 	public GameObject		spellGO; 
@@ -44,7 +43,7 @@ public class BattlePlayerActions : MonoBehaviour
 	}
 
 	// choose an enemy to attack
-	public void FightButton() {
+	public void FightButton(bool playSound = false) {
 		// Cache Selected Gameobject (Fight Button) 
 		Battle.S.previousSelectedGameObject = buttonsGO[0];
 
@@ -61,8 +60,10 @@ public class BattlePlayerActions : MonoBehaviour
 		// Switch Mode
 		_.battleMode = eBattleMode.canGoBackToFightButton;
 
-		// Audio: Confirm
-		AudioManager.S.sfxCS[6].Play();
+        // Audio: Confirm
+        if (playSound) {
+			AudioManager.S.PlaySFX(eSoundName.confirm);
+		}
 	}
 
 	public void ClickedAttackEnemy(int ndx) {
@@ -71,6 +72,9 @@ public class BattlePlayerActions : MonoBehaviour
 
 		// Initialize QTE
 		if (_.qteEnabled) {
+			// Audio: Confirm
+			AudioManager.S.PlaySFX(eSoundName.confirm);
+
 			// Animation: Player run FIGHT in center
 			_.playerAnimator[_.animNdx].CrossFade("RunToCenter", 0);
 			BattleUI.S.turnCursor.SetActive(false);
@@ -136,7 +140,7 @@ public class BattlePlayerActions : MonoBehaviour
 		_.PlayerTurn();
 
 		// Audio: Deny
-		AudioManager.S.PlaySFX(7);
+		AudioManager.S.PlaySFX(eSoundName.deny);
 	}
 
 	// Run Button
@@ -174,22 +178,28 @@ public class BattlePlayerActions : MonoBehaviour
 
 				// Return to Overworld
 				BattleEnd.S.ReturnToWorldDelay();
+
+				// Audio: Run
+				AudioManager.S.PlaySFX(eSoundName.run);
 			} else {
 				BattleDialogue.S.DisplayText(_.enemyStats[0].name + " has blocked the path!");
 				_.NextTurn();
 
 				// Increase chance to run
 				_.chanceToRun += 0.125f;
+
+				// Audio: Deny
+				AudioManager.S.PlaySFX(eSoundName.deny);
 			}
 		} else { // It's a "boss battle", so the party cannot run
 			_.battleMode = eBattleMode.triedToRunFromBoss;
 
 			Utilities.S.SetActiveList(BattleUI.S.targetCursors, false);
 			BattleDialogue.S.DisplayText(_.enemyStats[0].name + " is deadly serious...\n...there is ZERO chance of running away!");
+
+			// Audio: Deny
+			AudioManager.S.PlaySFX(eSoundName.deny);
 		}
-		
-		// Audio: Confirm
-		AudioManager.S.PlaySFX(6);
 	}
 	public void DefendButton() {
 		ButtonsDisableAll();
@@ -205,8 +215,8 @@ public class BattlePlayerActions : MonoBehaviour
 
 		_.NextTurn();
 
-		// Audio: Confirm
-		AudioManager.S.PlaySFX(6);
+		// Audio: Buff 2
+		AudioManager.S.PlaySFX(eSoundName.buff2);
 	}
 	// Spell Button
 	public void SpellButton() {
@@ -228,16 +238,17 @@ public class BattlePlayerActions : MonoBehaviour
 
 			// Update Delgate
 			UpdateManager.updateDelegate += SpellScreen.S.Loop;
+
 		} else {
 			// Knows no Spells, go back to Player Turn
 			BattleDialogue.S.DisplayText(Party.stats[_.PlayerNdx()].name + " doesn't know any spells!");
 
 			// Switch Mode
 			_.battleMode = eBattleMode.playerTurn;
-		}
 
-		// Audio: Confirm
-		AudioManager.S.PlaySFX(6);
+			// Audio: Deny
+			AudioManager.S.PlaySFX(eSoundName.deny);
+		}
 	}
 	// Item Button
 	public void ItemButton() {
@@ -256,17 +267,17 @@ public class BattlePlayerActions : MonoBehaviour
 			PauseMessage.S.gameObject.SetActive(true);
 
 			// Open Item Screen
-			ItemScreen.S.gameObject.SetActive(true);
+			ItemScreen.S.Activate();
 		} else {
 			// Has no Items, go back to Player Turn 
 			BattleDialogue.S.DisplayText(Party.stats[_.PlayerNdx()].name + " has no items!");
 
 			// Switch Mode
 			_.battleMode = eBattleMode.playerTurn;
-		}
 
-		// Audio: Confirm
-		AudioManager.S.PlaySFX(6);
+			// Audio: Deny
+			AudioManager.S.PlaySFX(eSoundName.deny);
+		}
 	}
 
 	public void ButtonsInteractable(bool fight, bool spell, bool defend, bool run, bool item, bool eButton1, bool eButton2, bool eButton3, bool pButton1, bool pButton2) {
@@ -291,6 +302,9 @@ public class BattlePlayerActions : MonoBehaviour
 		for(int i = _.enemyStats.Count - 1; i >= 0; i--) {
 			if (!_.enemyStats[i].isDead) {
 				Utilities.S.SetSelectedGO(enemyButtonGO[i]);
+
+				// Set previously selected GameObject
+				_.previousSelectedForAudio = enemyButtonGO[i];
 			}
 		}
 	}

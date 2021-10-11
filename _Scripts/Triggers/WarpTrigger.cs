@@ -22,7 +22,7 @@ public class WarpTrigger : MonoBehaviour {
 	void OnTriggerEnter2D(Collider2D coll){
 		if (warpOnContact) {
 			if (coll.gameObject.CompareTag("Player")) {
-				StartCoroutine (WarpManager.S.Warp (playerWarpPos, warpToNewScene, sceneName, camFollows, camWarpPos));
+				StartCoroutine (WarpManager.S.Warp (playerWarpPos, warpToNewScene, sceneName, 99, camFollows, camWarpPos));
 			}
 		}
 	}
@@ -33,7 +33,7 @@ public class WarpTrigger : MonoBehaviour {
 			Player.S.rigid.sleepMode = RigidbodySleepMode2D.NeverSleep;
 
 			if (Input.GetButtonDown ("SNES A Button")) {
-				StartCoroutine (WarpManager.S.Warp (playerWarpPos, warpToNewScene, sceneName, camFollows, camWarpPos));
+				StartCoroutine (WarpManager.S.Warp (playerWarpPos, warpToNewScene, sceneName, 99, camFollows, camWarpPos));
 			}
 		}
 	}

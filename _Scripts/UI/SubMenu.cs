@@ -24,8 +24,12 @@ public class SubMenu : MonoBehaviour {
 	// Singleton
 	private static SubMenu	_S;
 	public static SubMenu	S { get { return _S; } set { _S = value; } }
-
+	
+	// Allows parts of Loop() to be called once rather than repeatedly every frame.
 	private bool			canUpdate;
+
+	// Ensures audio is only played once when button is selected
+	GameObject				previousSelectedGameObject;
 
 	void Awake() {
 		S = this;
@@ -60,6 +64,9 @@ public class SubMenu : MonoBehaviour {
 			}
 			cursorRT.anchoredPosition = new Vector2((selectedButtonPos.x + 150), (selectedButtonPos.y));
 
+			// Audio: Selection (when a new gameObject is selected)
+			Utilities.S.PlayButtonSelectedSFX(ref previousSelectedGameObject);
+
 			// Prevent contents of this if statement from being called until next user directional input
 			canUpdate = false;
 		}
@@ -69,8 +76,12 @@ public class SubMenu : MonoBehaviour {
 		// Set Selected GameObject
 		if (option1 == "Yes") {
 			Utilities.S.SetSelectedGO(buttonGO[1]);
+
+			previousSelectedGameObject = buttonGO[1];
 		} else {
 			Utilities.S.SetSelectedGO(buttonGO[0]);
+
+			previousSelectedGameObject = buttonGO[0];
 		}
 
 		// Get Frame Sprite Position

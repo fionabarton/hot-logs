@@ -29,15 +29,15 @@ public class PlayerButtons : MonoBehaviour {
     void OnEnable() {
         try {
             UpdateGUI();
-        }
-        catch (NullReferenceException) { }
 
-        // Set position 
-        if (RPG.S.paused) {
-            rectTrans.anchoredPosition = new Vector2(0, 0);
-        } else {
-            rectTrans.anchoredPosition = new Vector2(0, 650);
-        }
+			// Set position 
+			if (RPG.S.paused) {
+				rectTrans.anchoredPosition = new Vector2(0, 0);
+			} else {
+				rectTrans.anchoredPosition = new Vector2(0, 650);
+			}
+		}
+        catch (NullReferenceException) { }
     }
 
     // Display the party's current HP, MP, and Gold
@@ -52,13 +52,13 @@ public class PlayerButtons : MonoBehaviour {
 					Party.stats[0].HP + "/" +
 					Party.stats[0].maxHP + "\n" +
 					Party.stats[0].MP + "/" +
-					Party.stats[0].maxMP + "\n";
+					Party.stats[0].maxMP;
 
 				statValue[1].text =
 					Party.stats[1].HP + "/" +
 					Party.stats[1].maxHP + "\n" +
 					Party.stats[1].MP + "/" +
-					Party.stats[1].maxMP + "\n";
+					Party.stats[1].maxMP;
 			}
 
 			goldValue.text = "" + Party.S.gold; 

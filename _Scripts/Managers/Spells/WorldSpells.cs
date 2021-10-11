@@ -18,12 +18,18 @@ public class WorldSpells : MonoBehaviour {
 
     public void AddFunctionToButton(Action<int> functionToPass, string messageToDisplay, Spell spell) {
 		if (Party.stats[SpellScreen.S.playerNdx].MP >= spell.cost) {
+			// Audio: Confirm
+			AudioManager.S.PlaySFX(eSoundName.confirm);
+
 			// Buttons Interactable
 			Utilities.S.ButtonsInteractable(PlayerButtons.S.buttonsCS, true);
 			Utilities.S.ButtonsInteractable(SpellScreen.S.spellsButtons, false);
 
 			// Set Selected GameObject
 			Utilities.S.SetSelectedGO(SpellScreen.S.previousSelectedPlayerGO);
+
+			// Set previously selected GameObject
+			SpellScreen_PickWhichMemberToHeal.S.previousSelectedPlayerGO = SpellScreen.S.previousSelectedPlayerGO;
 
 			// Display Text
 			PauseMessage.S.DisplayText(messageToDisplay);
@@ -84,12 +90,18 @@ public class WorldSpells : MonoBehaviour {
 			} else {
 				PauseMessage.S.DisplayText("Used Heal Spell!\nHealed " + Party.stats[ndx].name + " for " + randomValue + " HP!");
 			}
+
+			// Audio: Buff 1
+			AudioManager.S.PlaySFX(eSoundName.buff1);
 		} else {
 			// Display Text
 			PauseMessage.S.DisplayText(Party.stats[ndx].name + " already at full health...\n...no need to cast this spell!");
 
 			// Set animation to idle
 			PlayerButtons.S.anim[ndx].CrossFade("Idle", 0);
+
+			// Audio: Deny
+			AudioManager.S.PlaySFX(eSoundName.deny);
 		}
 		SpellManager.S.SpellHelper();
 	}
@@ -107,10 +119,16 @@ public class WorldSpells : MonoBehaviour {
 			// Set Selected GameObject
 			Utilities.S.SetSelectedGO(SpellScreen.S.spellsButtons[0].gameObject);
 
+			// Set previously selected GameObject
+			WarpManager.S.previousSelectedLocationGO = SpellScreen.S.spellsButtons[0].gameObject;
+
 			// Use SpellScreen's buttons to select/display warp locations
 			WarpManager.S.DeactivateUnusedButtonSlots(SpellScreen.S.spellsButtons);
 			WarpManager.S.AssignButtonEffect(SpellScreen.S.spellsButtons);
 			WarpManager.S.AssignButtonNames(SpellScreen.S.spellsButtonNameTexts);
+
+			// Audio: Confirm
+			AudioManager.S.PlaySFX(eSoundName.confirm);
 		} else {
 			SpellManager.S.CantUseSpell("Not enough MP to cast this spell!");
 		}
@@ -152,6 +170,9 @@ public class WorldSpells : MonoBehaviour {
 			// Set animations to success
 			PlayerButtons.S.anim[0].CrossFade("Success", 0);
 			PlayerButtons.S.anim[1].CrossFade("Success", 0);
+
+			// Audio: Buff 1
+			AudioManager.S.PlaySFX(eSoundName.buff1);
 		} else {
 			// Display Text
 			PauseMessage.S.DisplayText("The party is already at full health...\n...no need to cast this spell!");
@@ -159,6 +180,9 @@ public class WorldSpells : MonoBehaviour {
 			// Set animations to idle
 			PlayerButtons.S.anim[0].CrossFade("Idle", 0);
 			PlayerButtons.S.anim[1].CrossFade("Idle", 0);
+
+			// Audio: Deny
+			AudioManager.S.PlaySFX(eSoundName.deny);
 		}
 
 		// Reset button colors

@@ -21,18 +21,18 @@ public class ItemScreen_PickItemMode : MonoBehaviour {
 	}
 
 	public void Setup(ItemScreen itemScreen) {
-		itemScreen.itemScreenMode = eItemScreenMode.pickItem;
-
-		DeactivateUnusedItemSlots(itemScreen);
-		itemScreen.AssignItemNames();
-		itemScreen.AssignItemEffect();
-
-		// Buttons Interactable
-		Utilities.S.ButtonsInteractable(itemScreen.itemButtons, true);
-
-		itemScreen.canUpdate = true;
-
 		try {
+			itemScreen.mode = eItemScreenMode.pickItem;
+
+			DeactivateUnusedItemSlots(itemScreen);
+			itemScreen.AssignItemNames();
+			itemScreen.AssignItemEffect();
+
+			// Buttons Interactable
+			Utilities.S.ButtonsInteractable(itemScreen.itemButtons, true);
+
+			itemScreen.canUpdate = true;
+
 			// Activate PlayerButtons
 			PlayerButtons.S.gameObject.SetActive(true);
 			Utilities.S.ButtonsInteractable(PlayerButtons.S.buttonsCS, false);
@@ -49,6 +49,9 @@ public class ItemScreen_PickItemMode : MonoBehaviour {
 				if (ItemScreen.S.previousSelectedGameObject.activeInHierarchy) {
 					// Select previousSelectedGameObject
 					Utilities.S.SetSelectedGO(ItemScreen.S.previousSelectedGameObject);
+
+					// Set previously selected GameObject
+					Battle.S.previousSelectedForAudio = ItemScreen.S.previousSelectedGameObject;
 				} else {
 					// Select previous itemButton in the list
 					Utilities.S.SetSelectedGO(itemScreen.itemButtons[previousSelectedNdx - 1].gameObject);
@@ -79,7 +82,7 @@ public class ItemScreen_PickItemMode : MonoBehaviour {
 
 		if (RPG.S.currentSceneName != "Battle") {
 			if (Input.GetButtonDown("SNES B Button")) {
-				itemScreen.Deactivate();
+				itemScreen.Deactivate(true);
 			}
 		}
 	}
@@ -95,8 +98,8 @@ public class ItemScreen_PickItemMode : MonoBehaviour {
 				// Set selected button text color	
 				itemScreen.itemButtons[i].gameObject.GetComponentInChildren<Text>().color = new Color32(205, 208, 0, 255);
 
-				// Cache Selected Gameobject 
-				ItemScreen.S.previousSelectedGameObject = itemScreen.itemButtons[i].gameObject;
+				// Audio: Selection (when a new gameObject is selected)
+				Utilities.S.PlayButtonSelectedSFX(ref ItemScreen.S.previousSelectedGameObject);
 				// Cache Selected Gameobject's index 
 				previousSelectedNdx = i;
 			} else {
@@ -107,7 +110,7 @@ public class ItemScreen_PickItemMode : MonoBehaviour {
 	}
 
 	void DeactivateUnusedItemSlots(ItemScreen itemScreen) {
-		for (int i = 0; i <= itemScreen.itemButtons.Count - 1; i++) {
+		for (int i = 0; i < itemScreen.itemButtons.Count; i++) {
 			if (i < Inventory.S.GetItemList().Count) {
 				itemScreen.itemButtons[i].gameObject.SetActive(true);
 			} else {

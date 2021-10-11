@@ -69,7 +69,8 @@ public class SpellManager : MonoBehaviour {
 	public void CantUseSpell(string message) {
 		PauseMessage.S.DisplayText(message);
 
-		AudioManager.S.PlaySFX(7);
+		// Audio: Deny
+		AudioManager.S.PlaySFX(eSoundName.deny);
 
 		// if Battle
 		if (RPG.S.currentSceneName == "Battle") {

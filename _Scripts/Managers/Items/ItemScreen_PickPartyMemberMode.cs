@@ -12,6 +12,9 @@ public class ItemScreen_PickPartyMemberMode : MonoBehaviour {
 	private static ItemScreen_PickPartyMemberMode _S;
 	public static ItemScreen_PickPartyMemberMode S { get { return _S; } set { _S = value; } }
 
+	// Ensures audio is only played once when button is selected
+	public GameObject previousSelectedPlayerGO;
+
 	void Awake() {
 		S = this;
 	}
@@ -23,6 +26,9 @@ public class ItemScreen_PickPartyMemberMode : MonoBehaviour {
 			// Set animation to walk
 			PlayerButtons.S.SetSelectedAnim("Walk");
 
+			// Audio: Selection (when a new gameObject is selected)
+			Utilities.S.PlayButtonSelectedSFX(ref previousSelectedPlayerGO);
+
 			itemScreen.canUpdate = false;
 		}
 
@@ -30,6 +36,9 @@ public class ItemScreen_PickPartyMemberMode : MonoBehaviour {
 			if (Input.GetButtonDown("SNES B Button")) {
 				// Set animation to idle
 				PlayerButtons.S.SetSelectedAnim("Idle");
+
+				// Audio: Deny
+				AudioManager.S.PlaySFX(eSoundName.deny);
 
 				// Go back to PickItem mode
 				ItemScreen_PickItemMode.S.Setup(ItemScreen.S); 

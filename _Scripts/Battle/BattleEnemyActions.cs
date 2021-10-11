@@ -109,7 +109,7 @@ public class BattleEnemyActions : MonoBehaviour {
 		BattleDialogue.S.DisplayText (_.enemyStats [_.EnemyNdx()].name + " defends themself until their next turn!");
 
 		// Audio: Buff 2
-		AudioManager.S.PlaySFX(12);
+		AudioManager.S.PlaySFX(eSoundName.buff2);
 
 		_.NextTurn ();
 	}
@@ -124,7 +124,7 @@ public class BattleEnemyActions : MonoBehaviour {
 	// Stunned
 	public void Stunned (){
 		// Audio: Deny
-		AudioManager.S.PlaySFX(7);
+		AudioManager.S.PlaySFX(eSoundName.deny);
 
 		BattleDialogue.S.DisplayText (_.enemyStats [_.EnemyNdx()].name + " is stunned and doesn't move!\nWhat a rube!");
 		_.NextTurn ();
@@ -167,7 +167,7 @@ public class BattleEnemyActions : MonoBehaviour {
 				RPG.S.InstantiateFloatingScore(_.enemySprite[_.EnemyNdx()].gameObject, amountToHeal, Color.green);
 
 				// Audio: Buff
-				AudioManager.S.PlaySFX(11);
+				AudioManager.S.PlaySFX(eSoundName.buff1);
 
 				_.NextTurn ();
 
@@ -179,7 +179,7 @@ public class BattleEnemyActions : MonoBehaviour {
 				BattleDialogue.S.DisplayText (_.enemyStats [_.EnemyNdx()].name + " thought about casting a Heal Spell...\n...But then remembered they're at full health...\n...and gave up!");
 
 				// Audio: Deny
-				AudioManager.S.PlaySFX(7);
+				AudioManager.S.PlaySFX(eSoundName.deny);
 
 				_.NextTurn (); 
 			}
@@ -188,7 +188,7 @@ public class BattleEnemyActions : MonoBehaviour {
 			BattleDialogue.S.DisplayText (_.enemyStats [_.EnemyNdx()].name + " attempts to cast a Heal Spell...\n...But doesn't have enough MP to do so!");
 
 			// Audio: Deny
-			AudioManager.S.PlaySFX(7);
+			AudioManager.S.PlaySFX(eSoundName.deny);
 
 			_.NextTurn (); 
 		}
@@ -219,7 +219,7 @@ public class BattleEnemyActions : MonoBehaviour {
 				}
 
 				// Audio: Deny
-				AudioManager.S.PlaySFX(7);
+				AudioManager.S.PlaySFX(eSoundName.deny);
 
 				_.NextTurn ();
 			} else {
@@ -284,12 +284,12 @@ public class BattleEnemyActions : MonoBehaviour {
 					BattleDialogue.S.DisplayText ("Used Crap BLAST Spell!\nHit ENTIRE party for an average of " + Utilities.S.CalculateAverage (totalAttackDamage, (Party.S.partyNdx + 1)) + " HP!");
 
 					// Audio: Fireblast
-					AudioManager.S.PlaySFX(10);
+					AudioManager.S.PlaySFX(eSoundName.fireblast);
 
 					_.NextTurn (); 
 				} else {
 					// Audio: Death
-					AudioManager.S.PlaySFX(5);
+					AudioManager.S.PlaySFX(eSoundName.death);
 
 					PlayersDeath (qtyKilled, totalAttackDamage, tDead [0], tDead [1]);
 				}
@@ -299,7 +299,7 @@ public class BattleEnemyActions : MonoBehaviour {
 			BattleDialogue.S.DisplayText (_.enemyStats [_.EnemyNdx()].name + " attempts to cast Crap BLAST...\n...But doesn't have enough MP to do so!");
 
 			// Audio: Deny
-			AudioManager.S.PlaySFX(7);
+			AudioManager.S.PlaySFX(eSoundName.deny);
 
 			_.NextTurn (); 
 		}
@@ -349,7 +349,7 @@ public class BattleEnemyActions : MonoBehaviour {
 			BattleDialogue.S.DisplayText (_.enemyStats [_.EnemyNdx()].name + " called for backup...\n...but no one came!");
 
 			// Audio: Deny
-			AudioManager.S.PlaySFX(7);
+			AudioManager.S.PlaySFX(eSoundName.deny);
 		}
 
 		_.NextTurn ();
@@ -386,7 +386,7 @@ public class BattleEnemyActions : MonoBehaviour {
 		_.enemyAmount += 1;
 
 		// Audio: Run
-		AudioManager.S.PlaySFX(8);
+		AudioManager.S.PlaySFX(eSoundName.run);
 
 		// Display Text
 		BattleDialogue.S.DisplayText (_.enemyStats [_.EnemyNdx()].name + " called for backup...\n...and someone came!");

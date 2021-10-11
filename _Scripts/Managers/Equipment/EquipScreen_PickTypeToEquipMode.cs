@@ -13,11 +13,19 @@ public class EquipScreen_PickTypeToEquipMode : MonoBehaviour {
 	private static EquipScreen_PickTypeToEquipMode _S;
 	public static EquipScreen_PickTypeToEquipMode S { get { return _S; } set { _S = value; } }
 
+	// Ensures audio is only played once when button is selected
+	public GameObject previousSelectedGameObject;
+
 	void Awake() {
 		S = this;
 	}
 
-	public void SetUp(int ndx, EquipScreen equipScreen) {
+	public void SetUp(int ndx, EquipScreen equipScreen, int soundNdx = 99) {
+		// Audio
+		if (soundNdx != 99) {
+			AudioManager.S.PlaySFX(soundNdx);
+		}
+
 		// Set anims
 		equipScreen.playerAnim.CrossFade("Walk", 0);
 		PlayerButtons.S.anim[ndx].CrossFade("Idle", 0);
@@ -41,10 +49,7 @@ public class EquipScreen_PickTypeToEquipMode : MonoBehaviour {
 	public void Loop(EquipScreen equipScreen) {
 		if (equipScreen.canUpdate) {
 			DisplayCurrentEquipmentDescriptions(equipScreen.playerNdx, equipScreen);
-			// Cache Selected Gameobject 
-			EquipScreen.S.previousSelectedGameObject = UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject;
-			equipScreen.canUpdate = false;
-
+			
 			// Display items in the inventory of the currently selected equipment type
 			for (int i = 0; i < equipScreen.equippedButtons.Count; i++) {
 				if (UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject == equipScreen.equippedButtons[i].gameObject) {
@@ -67,11 +72,16 @@ public class EquipScreen_PickTypeToEquipMode : MonoBehaviour {
 					for (int j = 0; j < SortItems.S.tItems.Count; j++) {
 						equipScreen.inventoryButtonsTxt[j].text = SortItems.S.tItems[j].name;
 					}
+
+					// Audio: Selection (when a new gameObject is selected)
+					Utilities.S.PlayButtonSelectedSFX(ref previousSelectedGameObject);
 				} else {
 					// Set non-selected button text color
 					equipScreen.equippedButtons[i].gameObject.GetComponentInChildren<Text>().color = new Color32(39, 201, 255, 255);
 				}
 			}
+
+			equipScreen.canUpdate = false;
 		}
 
 		// Go back to pickPartyMember mode
@@ -81,6 +91,9 @@ public class EquipScreen_PickTypeToEquipMode : MonoBehaviour {
 
 				// Reset equippedButtons text color
 				Utilities.S.SetTextColor(equipScreen.equippedButtons, new Color32(39, 201, 255, 255));
+
+				// Audio: Deny
+				AudioManager.S.PlaySFX(eSoundName.deny);
 			}
 		}
 	}

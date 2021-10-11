@@ -15,6 +15,9 @@ public class WarpManager : MonoBehaviour {
 	// Locations the party has already visited and can warp to
 	public List<WarpLocation>	visitedLocations = new List<WarpLocation>();
 
+	// Ensures audio is only played once when button is selected
+	public GameObject			previousSelectedLocationGO;
+
 	void Awake() {
         S = this;
     }
@@ -46,15 +49,18 @@ public class WarpManager : MonoBehaviour {
 	public void DisplayButtonDescriptions(List<Button> buttons, int cursorDistanceFromCenter) {
 		for (int i = 0; i < visitedLocations.Count; i++) {
             if (UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject == buttons[i].gameObject) {
-                PauseMessage.S.SetText("<color=#FFFFFF>Warp to:</color> " + 
-					visitedLocations[i].name + "?\n" + "<color=#FFFFFF>Description:</color> " + visitedLocations[i].description, true);
+				PauseMessage.S.SetText("<color=#FFFFFF>Warp to:</color> " + 
+				visitedLocations[i].name + "?\n" + "<color=#FFFFFF>Description:</color> " + visitedLocations[i].description, true);
 
 				// Cursor Position set to Selected Button
 				Utilities.S.PositionCursor(buttons[i].gameObject, cursorDistanceFromCenter, 0, 0);
 
-                // Set selected button text color	
-                buttons[i].gameObject.GetComponentInChildren<Text>().color = new Color32(205, 208, 0, 255);
-            } else {
+				// Set selected button text color	
+				buttons[i].gameObject.GetComponentInChildren<Text>().color = new Color32(205, 208, 0, 255);
+
+				// Audio: Selection (when a new gameObject is selected)
+				Utilities.S.PlayButtonSelectedSFX(ref previousSelectedLocationGO);		
+			} else {
                 // Set non-selected button text color
                 buttons[i].gameObject.GetComponentInChildren<Text>().color = new Color32(255, 255, 255, 255);
             }
@@ -117,7 +123,10 @@ public class WarpManager : MonoBehaviour {
 		// Set Player facing direction
 		if(facingDirection != 99) {
 			Player.S.lastDirection = facingDirection;
-        }
+
+			// Audio: Buff 2
+			AudioManager.S.PlaySFX(eSoundName.buff2);
+		}
 
 		// Camera Settings
 		if (camFollows) {
