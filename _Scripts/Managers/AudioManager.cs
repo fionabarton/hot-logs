@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum eBGM { nineteenForty, never, ninja, soap, things, startBattle, win, lose };
+public enum eSongName { nineteenForty, never, ninja, soap, things, startBattle, win, lose };
 public enum eSoundName { dialogue, selection, damage1, damage2, damage3, death, confirm, deny, 
 	run, fireball, fireblast, buff1, buff2, highBeep1, highBeep2};
 
@@ -37,7 +37,7 @@ public class AudioManager : MonoBehaviour {
 		}
 	}
 
-	public void PlaySong(bool playOrStop = true, int ndx = 0){
+	public void PlaySong(int ndx = 0){
 		// Change index
 		currentSongNdx = ndx;
 
@@ -47,17 +47,45 @@ public class AudioManager : MonoBehaviour {
 		}
 
 		if (!AudioListener.pause) {
-			if (playOrStop) {
-				bgmCS[ndx].Play();
-            } else {
-				for (int i = 0; i < bgmCS.Count; i++) {
-					bgmCS[i].Stop();
-				}
-			}
+			bgmCS[ndx].Play();
 		}
 	}
 
-	public void PauseMuteSong(int songNdx = 0){
+	public void PlaySong(eSongName songName) {
+		// Stop ALL BGM
+		for (int i = 0; i < bgmCS.Count; i++) {
+			bgmCS[i].Stop();
+		}
+
+		switch (songName) {
+			case eSongName.nineteenForty:
+				bgmCS[0].Play();
+				break;
+			case eSongName.never:
+				bgmCS[1].Play();
+				break;
+			case eSongName.ninja:
+				bgmCS[2].Play();
+				break;
+			case eSongName.soap:
+				bgmCS[3].Play();
+				break;
+			case eSongName.things:
+				bgmCS[4].Play();
+				break;
+			case eSongName.startBattle:
+				bgmCS[5].Play();
+				break;
+			case eSongName.win:
+				bgmCS[6].Play();
+				break;
+			case eSongName.lose:
+				bgmCS[7].Play();
+				break;
+		}
+	}
+
+	public void PauseMuteSong(){
 		if (!AudioListener.pause) {
 			AudioListener.volume = 0;
 			AudioListener.pause = true;
