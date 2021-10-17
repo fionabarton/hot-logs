@@ -8,7 +8,9 @@ using UnityEngine;
 /// </summary>
 public class EnemyMovement : MonoBehaviour {
 	[Header("Set in Inspector")]
-	public eMovement	mode = eMovement.random;
+	public eMovement	currentMode = eMovement.random;
+	public eMovement	onForgetPlayerMode = eMovement.random;
+	public eMovement	onDetectPlayerMode;
 
 	public float		speed = 2;
 
@@ -17,8 +19,10 @@ public class EnemyMovement : MonoBehaviour {
 	public Vector2		waitDuration = new Vector2(0.75f, 1.25f);
 
     [Header("Set Dynamically")]
+	// Components
     private Rigidbody2D rigid;
 	public Animator		anim;
+	private Enemy		enemy;
 
 	// Walk Zone
 	Vector2				minWalkPoint;
@@ -31,22 +35,28 @@ public class EnemyMovement : MonoBehaviour {
 	private int			nextWalkDirection = 999;
 	// 0 = right, 1 = up, 2 = left, 3 = down, 4 = Down Right, 5 = Up Right, 6 = Up Left, 7 = Down Left
 
-	private float		walkCounter = 0;
-	private float		waitCounter = 0;
+	private float		timer = 0;
+	//private float		waitCounter = 0;
 
 	// Flip
 	private bool		facingRight;
 
-	public eMovement	defaultMovementMode;
+	public eMovement	cachedMode;
 
 	void Start() {
 		rigid = GetComponent<Rigidbody2D>();
 		anim = GetComponent<Animator>();
+		enemy = GetComponent<Enemy>();
 
 		minWalkPoint = new Vector2(transform.position.x - walkZone.x,
 								   transform.position.y - walkZone.y);
 		maxWalkPoint = new Vector2(transform.position.x + walkZone.x,
 								   transform.position.y + walkZone.y);
+
+		// Flee if the Player's level is double the Enemy's
+		if (Utilities.S.GetPercentage(enemy.stats[0].LVL, Party.stats[0].LVL) <= 0.5f) {
+			onDetectPlayerMode = eMovement.flee;
+		}
 
 		StartCoroutine("FixedUpdateCoroutine");
 	}
@@ -62,7 +72,7 @@ public class EnemyMovement : MonoBehaviour {
 					Utilities.S.Flip(gameObject, ref facingRight);
 				}
 
-				switch (mode) {
+				switch (currentMode) {
 					case eMovement.random:
 						// Move GameObject
 						if (isWalking) {
@@ -126,17 +136,17 @@ public class EnemyMovement : MonoBehaviour {
 							}
 
 							// Count down Walk Counter
-							walkCounter -= Time.deltaTime;
+							timer -= Time.deltaTime;
 
-							if (walkCounter < 0) {
+							if (timer < 0) {
 								WaitSettings();
 							}
 						} else {
 							// Count down Wait Counter
-							waitCounter -= Time.deltaTime;
+							timer -= Time.deltaTime;
 							rigid.velocity = Vector2.zero;
 
-							if (waitCounter < 0) {
+							if (timer < 0) {
 								WalkSettings();
 							}
 						}
@@ -180,9 +190,11 @@ public class EnemyMovement : MonoBehaviour {
 						break;
 					case eMovement.reverse:
 						// Count Down back to defaultMovementMode
-						waitCounter -= Time.deltaTime;
-						if (waitCounter < 0) {
-							mode = defaultMovementMode;
+						timer -= Time.deltaTime;
+						if (timer < 0) {
+							currentMode = cachedMode;
+							isWalking = true;
+							timer = Random.Range(waitDuration.x, waitDuration.y);
 						}
 						break;
 				}
@@ -201,7 +213,7 @@ public class EnemyMovement : MonoBehaviour {
 	public void WalkSettings() {
 		anim.speed = 1;
 		isWalking = true;
-		walkCounter = Random.Range(waitDuration.x, waitDuration.y);
+		timer = Random.Range(waitDuration.x, waitDuration.y);
 
 		// Set walkDirection
 		if (nextWalkDirection == 999) {
@@ -219,33 +231,41 @@ public class EnemyMovement : MonoBehaviour {
 		anim.speed = 0;
 
 		isWalking = false;
-		waitCounter = Random.Range(waitDuration.x, waitDuration.y);
+		timer = Random.Range(waitDuration.x, waitDuration.y);
 	}
 
 	// Bounce back in opposite direction (ex. collisions w/ walls, etc.)
 	void OnCollisionEnter2D(Collision2D coll) {
-		if (mode == eMovement.pursueWalk || mode == eMovement.pursueRun || mode == eMovement.flee) {
-			// if not Paused, no Dialogue Text Box
-			if (!RPG.S.paused && !DialogueManager.S.TextBoxSpriteGO.activeInHierarchy) {
-				// Set Counter back to defaultMovementMode
-				waitCounter = 0.25f;
-				// Set mode to Reverse
-				mode = eMovement.reverse;
-				// Reverse Velocity
-				int randomNdx = Random.Range(0, 4);
-				switch (randomNdx) {
-					case 0:
-						rigid.velocity = new Vector2(-speed, -speed);
-						break;
-					case 1:
-						rigid.velocity = new Vector2(-speed, speed);
-						break;
-					case 2:
-						rigid.velocity = new Vector2(speed, -speed);
-						break;
-					case 3:
-						rigid.velocity = new Vector2(speed, speed);
-						break;
+		if (currentMode == eMovement.random || currentMode == eMovement.pursueWalk || currentMode == eMovement.pursueRun || currentMode == eMovement.flee) {
+			// If enemy is colliding with ONLY_PLAYER_ENEMY layer
+			if (coll.gameObject.layer == 28) {
+				// If not Paused, no Dialogue Text Box
+				if (!RPG.S.paused && !DialogueManager.S.TextBoxSpriteGO.activeInHierarchy) {
+					// Set timer duration
+					timer = 0.25f;
+
+					// Cache current mode
+					cachedMode = currentMode;
+
+					// Set mode to Reverse
+					currentMode = eMovement.reverse;
+
+					// Reverse Velocity
+					int randomNdx = Random.Range(0, 4);
+					switch (randomNdx) {
+						case 0:
+							rigid.velocity = new Vector2(-speed, -speed);
+							break;
+						case 1:
+							rigid.velocity = new Vector2(-speed, speed);
+							break;
+						case 2:
+							rigid.velocity = new Vector2(speed, -speed);
+							break;
+						case 3:
+							rigid.velocity = new Vector2(speed, speed);
+							break;
+					}
 				}
 			}
 		}
