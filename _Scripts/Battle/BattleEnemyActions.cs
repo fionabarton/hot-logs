@@ -21,9 +21,19 @@ public class BattleEnemyActions : MonoBehaviour {
 
 	// Index = 0
 	// Attack ONE Party Member
-	public void Attack (){
-		// Run if Attack Damage = 0
-		BattleEnemyAI.S.CheckIfAttackIsUseless();
+	public void Attack() {
+		// Attempt to run if the enemy's attack won't do any damage to the player
+		if (Random.value < _.enemyStats[_.EnemyNdx()].chanceToCallMove) {
+			// Calculate Max Damage ((Lvl * 4) + Str - Def)
+			int maxAttackerDamage = (_.enemyStats[_.EnemyNdx()].LVL * 4) + _.enemyStats[_.EnemyNdx()].STR - Party.stats[0].DEF;
+
+			// If attack doesn't do any damage...
+			if (maxAttackerDamage <= 0) {
+				// ...RUN!
+				_.enemyStats[_.EnemyNdx()].AI = eEnemyAI.RunAway;
+				return;
+			}
+		}
 
 		// Randomly select party member to attack
 		int playerToAttack = 0;
@@ -337,13 +347,13 @@ public class BattleEnemyActions : MonoBehaviour {
 	}
 
 	// Index = 6
-	// Call For Backup
-	public void CallForBackup (){
-		if (_.enemyStats [0].isDead) {
+	// Call For Backup 
+	public void CallForBackup(){
+		if (_.enemyStats[0].isDead) {
 			CallForBackupHelper(0);
-		} else if (_.enemyStats [1].isDead) {
+		} else if (_.enemyStats[1].isDead) {
 			CallForBackupHelper(1);
-		} else if (_.enemyStats [2].isDead) {
+		} else if (_.enemyStats[2].isDead) {
 			CallForBackupHelper(2);
 		} else {
 			BattleDialogue.S.DisplayText (_.enemyStats [_.EnemyNdx()].name + " called for backup...\n...but no one came!");
@@ -355,8 +365,7 @@ public class BattleEnemyActions : MonoBehaviour {
 		_.NextTurn ();
 	}
 
-	public void CallForBackupHelper(int enemyNdx)
-	{
+	public void CallForBackupHelper(int enemyNdx){
 		// Set Selected GameObject (Fight Button)
 		_.enemyStats[enemyNdx].isDead = false;
 
