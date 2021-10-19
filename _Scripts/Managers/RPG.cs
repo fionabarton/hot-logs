@@ -74,6 +74,7 @@ public class RPG : MonoBehaviour {
 			!SpellScreen.S.gameObject.activeInHierarchy &&
 			!EquipScreen.S.gameObject.activeInHierarchy &&
 			!ShopScreen.S.gameObject.activeInHierarchy &&
+			!OptionsScreen.S.gameObject.activeInHierarchy &&
 			!SaveScreen.S.gameObject.activeInHierarchy) {
 
 			if (currentSceneName != "Battle") {
@@ -135,6 +136,8 @@ public class RPG : MonoBehaviour {
 		SpellScreen.S.Deactivate();
 		// Deactivate Equip Screen
 		EquipScreen.S.Deactivate();
+		// Deactivate Options Screen
+		OptionsScreen.S.Deactivate();
 		// Deactivate Save Screen
 		SaveScreen.S.Deactivate();
 		// Deactivate Shop Screen
