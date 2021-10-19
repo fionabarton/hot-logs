@@ -14,8 +14,6 @@ public class AudioManager : MonoBehaviour {
 	[Header("Set Dynamically")]
 	public int 					currentSongNdx;
 
-	public AudioListener		audioListenerCS;
-
 	// Singleton
 	private static AudioManager _S;
 	public static AudioManager S { get { return _S; } set { _S = value; } }
@@ -25,8 +23,6 @@ public class AudioManager : MonoBehaviour {
 	}
 
 	void Start() {
-		audioListenerCS = GetComponent<AudioListener>();
-
 		// Add Loop() to UpdateManager
 		UpdateManager.updateDelegate += Loop;
 	}
@@ -153,6 +149,22 @@ public class AudioManager : MonoBehaviour {
 			case eSoundName.highBeep2:
 				sfxCS[14].Play();
 				break;
+		}
+	}
+
+	public void SetMasterVolume(float volume) {
+		AudioListener.volume = volume;
+	}
+
+	public void SetBGMVolume(float volume) {
+		for(int i = 0; i < bgmCS.Count; i++) {
+			bgmCS[i].volume = volume;
+        }
+	}
+
+	public void SetSFXVolume(float volume) {
+		for (int i = 0; i < sfxCS.Count; i++) {
+			sfxCS[i].volume = volume;
 		}
 	}
 }
