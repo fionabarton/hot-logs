@@ -31,10 +31,9 @@ public class RPG : MonoBehaviour {
 	public bool					paused;
 
 	// Respawn Level
-	private Scene 				currentScene;
-	public string				currentSceneName;
-	public string 				previousSceneName;
-	private string				previousPreviousSceneName;
+	public string				currentScene;
+	public string 				previousScene;
+	private string				previousPreviousScene;
 
 	void Awake() {
 		S = this;
@@ -77,7 +76,7 @@ public class RPG : MonoBehaviour {
 			!OptionsScreen.S.gameObject.activeInHierarchy &&
 			!SaveScreen.S.gameObject.activeInHierarchy) {
 
-			if (currentSceneName != "Battle") {
+			if (currentScene != "Battle") {
 				if (!PauseScreen.S.gameObject.activeInHierarchy) {
 					if (Input.GetButtonDown("Pause")) {
 						PauseScreen.S.Pause();
@@ -93,10 +92,8 @@ public class RPG : MonoBehaviour {
 
     // Load Level
     public void LoadLevel (string levelToLoad){
-		previousPreviousSceneName = previousSceneName;
-
-		currentScene = SceneManager.GetActiveScene();
-		previousSceneName = currentScene.name;
+		previousPreviousScene = previousScene;
+		previousScene = SceneManager.GetActiveScene().name;
 
 		// Ensures InteractableCursor is child object of camera, otherwise it can be destroyed on scene change
 		InteractableCursor.S.Deactivate();
@@ -110,37 +107,30 @@ public class RPG : MonoBehaviour {
 		yield return new WaitForSeconds(0.05f);
 
 		// Current Scene
-		currentScene = SceneManager.GetActiveScene();
-		currentSceneName = currentScene.name;
+		currentScene = SceneManager.GetActiveScene().name;
 
 		// Record that the player has visited this location
-		WarpManager.S.HasVisited(currentSceneName);
+		WarpManager.S.HasVisited(currentScene);
 
 		// Camera
 		CamManager.S.camMode = eCamMode.followAll;
 		CamManager.S.ChangeTarget(Player.S.gameObject, false);
 		Camera.main.orthographicSize = 5;
 
-		// DISable BATTLE UI & GameObjects
+		// Disable BATTLE UI & GameObjects
 		battleUIGO.SetActive(false);
 		battleGameObjects.SetActive(false);
 
 		// Deactivate Dialogue Text Box
 		DialogueManager.S.DeactivateTextBox();
 
-		// Deactivate Pause Screen
+		// Deactivate screens
 		PauseScreen.S.UnPause();
-		// Deactivate Item Screen
 		ItemScreen.S.Deactivate();
-		// Deactivate Spells Screen
 		SpellScreen.S.Deactivate();
-		// Deactivate Equip Screen
 		EquipScreen.S.Deactivate();
-		// Deactivate Options Screen
 		OptionsScreen.S.Deactivate();
-		// Deactivate Save Screen
 		SaveScreen.S.Deactivate();
-		// Deactivate Shop Screen
 		ShopScreen.S.Deactivate();
 
 		// Deactivate PlayerButtons
@@ -150,7 +140,7 @@ public class RPG : MonoBehaviour {
 		SubMenu.S.gameObject.SetActive(false);
 
 		// Randomly Spawn Objects
-		ObjectPool.S.SpawnObjects(currentSceneName);
+		ObjectPool.S.SpawnObjects(currentScene);
 		// Open/Close Chests
 		ChestManager.S.SetObjects();
 		// Unlock/Lock Doors
@@ -159,23 +149,23 @@ public class RPG : MonoBehaviour {
 		KeyItemManager.S.SetObjects();
 
 		// EnemyManager: populate and clear lists of enemies in currentScene
-		if (currentSceneName != "Battle") {
+		if (currentScene != "Battle") {
 			EnemyManager.S.PopulateEnemyGOList();
 		} 
-		if (currentSceneName != "Battle" && previousSceneName != "Battle") {
+		if (currentScene != "Battle" && previousScene != "Battle") {
 			EnemyManager.S.PopulateEnemyDeadList();
 			EnemyManager.S.enemyPositions.Clear();
 		}
 
 		////////////// Rain //////////////
 		RainSpawner.S.StopCoroutine("FixedUpdateCoroutine");
-		switch (currentSceneName){
+		switch (currentScene){
 			case "Overworld_1":
 			case "Town_1":
 			case "Area_1":
 			case "Area_2":
 				if (Random.value > 0.5f){
-					switch (previousSceneName){
+					switch (previousScene){
 						case "Cave_1":
 							RainSpawner.S.StopRaining();
 							break;
@@ -193,7 +183,7 @@ public class RPG : MonoBehaviour {
 		}
 
 		////////////// Music //////////////
-		switch (currentSceneName){
+		switch (currentScene){
 			case "Town_1":
 			case "Area_1":
 				if (!RainSpawner.S.isRaining){
@@ -220,7 +210,7 @@ public class RPG : MonoBehaviour {
 		}
 
 		// Set up Player, Camera, etc. for Scene 
-		switch (currentSceneName){
+		switch (currentScene){
 			// Menus
 			case "Title_Screen":
 			// Battle
@@ -248,7 +238,7 @@ public class RPG : MonoBehaviour {
 				CamManager.S.transform.position = tPos;
 
 				// Handle more specific settings
-				switch (currentSceneName){
+				switch (currentScene){
 					case "Battle":
 						// Enable BATTLE UI & GameObjects
 						battleUIGO.SetActive(true);
@@ -275,19 +265,19 @@ public class RPG : MonoBehaviour {
 				Player.S.canMove = true;
 
 				// Reset EnemyManager if New Scene
-				if (currentSceneName != previousPreviousSceneName) {
+				if (currentScene != previousPreviousScene) {
 					EnemyManager.S.enemiesBattled.Clear();
 				}
 				EnemyManager.S.DetermineWhichEnemiesAreDead();
 				EnemyManager.S.DeactivateDeadEnemies();
 				EnemyManager.S.SetEnemyPositions();
 
-				if(previousSceneName == "Battle") {
+				if(previousScene == "Battle") {
 					EnemyManager.S.SetEnemyMovement();
 				}
 				
 				// Freeze Camera
-				if (currentSceneName == "Motel_1" || currentSceneName == "Shop_1"){
+				if (currentScene == "Motel_1" || currentScene == "Shop_1"){
 					// Freeze Camera
 					CamManager.S.camMode = eCamMode.freezeCam;
 
@@ -307,7 +297,7 @@ public class RPG : MonoBehaviour {
 		blackScreen.enabled = false;
 
 		// Open Curtains 
-		if(currentSceneName == "Battle") {
+		if(currentScene == "Battle") {
 			BattleCurtain.S.Open();
 		}
 	}
