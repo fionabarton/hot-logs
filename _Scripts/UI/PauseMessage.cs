@@ -22,6 +22,8 @@ public class PauseMessage : MonoBehaviour {
 	public void DisplayText(string text, bool upperLeftAlignment = false) {
 		gameObject.SetActive (true);
 
+		StopAllCoroutines();
+
 		StopCoroutine ("DisplayTextCo");
 		StartCoroutine(DisplayTextCo(text, upperLeftAlignment));
 	}

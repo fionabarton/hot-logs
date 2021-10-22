@@ -72,6 +72,7 @@ public class DialogueManager : MonoBehaviour {
 
 	// Display a LIST of strings
 	public void DisplayText(List<string> text, bool moveDown = false) {
+		StopAllCoroutines();
 		StartCoroutine(DisplayTextCo(text, moveDown));
 
 		// Deactivate Overworld Player Stats
