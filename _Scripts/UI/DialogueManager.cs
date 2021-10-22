@@ -125,17 +125,17 @@ public class DialogueManager : MonoBehaviour {
 
 			dialogueSentences += dialogueWords[i] + " ";
 			dialogueTextCS.text = dialogueSentences;
-			yield return new WaitForSeconds (0.1f);
+			yield return new WaitForSeconds(OptionsScreen.S.textSpeed);
 		}
 
 		// Optionally Activate cursor
 		if (!dontActivateCursor) {
-			cursorGO.SetActive (true);
+			cursorGO.SetActive(true);
 		} 
 
 		// Optionally Activate Sub Menu
 		if (activateSubMenu) {
-			SubMenu.S.gameObject.SetActive (true);
+			SubMenu.S.gameObject.SetActive(true);
 
 			// Update Delgate
 			UpdateManager.fixedUpdateDelegate += SubMenu.S.Loop;

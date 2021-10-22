@@ -47,10 +47,10 @@ public class PauseMessage : MonoBehaviour {
 		for (int i = 0; i < dialogueWords.Length; i++) {
 			dialogueSentences += dialogueWords [i] + " ";
 			message.text = dialogueSentences;
-			yield return new WaitForSeconds (0.1f);
+			yield return new WaitForSeconds(OptionsScreen.S.textSpeed);
 		}
 		// Activate cursor
-		cursorGO.SetActive (true);
+		cursorGO.SetActive(true);
 
 		// Dialogue Finished
 		dialogueFinished = true;
@@ -59,7 +59,7 @@ public class PauseMessage : MonoBehaviour {
 	// Set Text Instantly 
 	// - No delay/stagger between displaying each word)
 	public void SetText(string text, bool upperLeftAlignment = false) {
-		StopCoroutine ("DisplayTextCo");
+		StopCoroutine("DisplayTextCo");
 
 		// Set Text Alignment
 		if (upperLeftAlignment) {

@@ -2,21 +2,23 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum eSongName { nineteenForty, never, ninja, soap, things, startBattle, win, lose };
+public enum eSongName { nineteenForty, never, ninja, soap, things, startBattle, win, lose, selection };
 public enum eSoundName { dialogue, selection, damage1, damage2, damage3, death, confirm, deny, 
 	run, fireball, fireblast, buff1, buff2, highBeep1, highBeep2};
 
 public class AudioManager : MonoBehaviour {
 	[Header ("Set in Inspector")]
+	public AudioSource			masterVolSelection;
 	public List <AudioSource>	bgmCS = new List<AudioSource>();
 	public List <AudioSource>	sfxCS = new List<AudioSource>();
+	public AudioSource			textSpeedSelection;
 
 	[Header("Set Dynamically")]
 	public int					previousSongNdx;
 	public int 					currentSongNdx;
 
 	public float				previousVolumeLvl;
-  
+
 	// Singleton
 	private static AudioManager _S;
 	public static AudioManager S { get { return _S; } set { _S = value; } }
@@ -57,6 +59,7 @@ public class AudioManager : MonoBehaviour {
 			case eSongName.startBattle: bgmCS[5].Play(); break;
 			case eSongName.win: bgmCS[6].Play(); break;
 			case eSongName.lose: bgmCS[7].Play(); break;
+			case eSongName.selection: bgmCS[8].Play(); break;
 		}
 	}
 
@@ -99,6 +102,7 @@ public class AudioManager : MonoBehaviour {
 
 	public void SetMasterVolume(float volume) {
 		AudioListener.volume = volume;
+		masterVolSelection.volume = volume;
 	}
 
 	public void SetBGMVolume(float volume) {

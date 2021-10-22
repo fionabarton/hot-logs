@@ -5,13 +5,13 @@ using UnityEngine.UI;
 
 public class OptionsScreen : MonoBehaviour {
 	[Header("Set in Inspector")]
-	public Slider			masterVolSlider;
-	public Slider			bgmVolSlider;
-	public Slider			sfxVolSlider;
-
-	public List<Slider>		volumeSliders;
-
-	public List<GameObject> volumeTextGOs;
+	public List<Slider>		sliders;
+	public List<GameObject> sliderTextGO;
+	public List<string>		sliderDescriptions = new List<string> { 
+		"Set the master volume!", 
+		"Set the background music volume!", 
+		"Set the sound effects volume!", 
+		"Set the rate at which text is displayed!" };
 
 	[Header("Set Dynamically")]
 	// Singleton
@@ -20,6 +20,8 @@ public class OptionsScreen : MonoBehaviour {
 
 	// Allows parts of Loop() to be called once rather than repeatedly every frame.
 	public bool				canUpdate;
+
+	public float			textSpeed = 0.1f;
 
 	void Awake() {
 		S = this;
@@ -32,9 +34,28 @@ public class OptionsScreen : MonoBehaviour {
 
     public void Start() {
 		// Load settings
-		if (PlayerPrefs.HasKey("Master Volume")) { masterVolSlider.value = PlayerPrefs.GetFloat("Master Volume"); }
-		if (PlayerPrefs.HasKey("BGM Volume")) { bgmVolSlider.value = PlayerPrefs.GetFloat("BGM Volume"); }
-		if (PlayerPrefs.HasKey("SFX Volume")) { sfxVolSlider.value = PlayerPrefs.GetFloat("SFX Volume"); }
+		if (PlayerPrefs.HasKey("Master Volume")) {
+			sliders[0].value = PlayerPrefs.GetFloat("Master Volume");
+			AudioManager.S.SetMasterVolume(sliders[0].value);
+		}
+		if (PlayerPrefs.HasKey("BGM Volume")) {
+			sliders[1].value = PlayerPrefs.GetFloat("BGM Volume");
+			AudioManager.S.SetBGMVolume(sliders[1].value);
+		}
+		if (PlayerPrefs.HasKey("SFX Volume")) {
+			sliders[2].value = PlayerPrefs.GetFloat("SFX Volume");
+			AudioManager.S.SetSFXVolume(sliders[2].value);
+		}
+		if (PlayerPrefs.HasKey("Text Speed")) {
+			sliders[3].value = PlayerPrefs.GetFloat("Text Speed");
+			textSpeed = sliders[3].value;
+		}
+
+		// Adds a listener to each slider and invokes a method when the value changes
+		sliders[0].onValueChanged.AddListener(delegate { SetMasterVolume(); });
+		sliders[1].onValueChanged.AddListener(delegate { SetBGMVolume(); });
+		sliders[2].onValueChanged.AddListener(delegate { SetSFXVolume(); });
+		sliders[3].onValueChanged.AddListener(delegate { SetTextSpeed(); });
 	}
 
     // Set in Inspector on OptionsScreen
@@ -45,20 +66,15 @@ public class OptionsScreen : MonoBehaviour {
 		gameObject.SetActive(true);
 
 		// Set Selected Gameobject 
-		Utilities.S.SetSelectedGO(masterVolSlider.gameObject);
+		Utilities.S.SetSelectedGO(sliders[0].gameObject);
 
 		// Set Cursor Position set to Selected Button
-		//SetCursorPosition();
-		// Set Cursor Position set to Selected Button
-		Utilities.S.PositionCursor(volumeTextGOs[0], -125, 0, 0);
+		Utilities.S.PositionCursor(sliderTextGO[0], -125, 0, 0);
+
+		PauseMessage.S.DisplayText("Set the master volume!");
 
 		// Audio: Confirm
 		AudioManager.S.PlaySFX(eSoundName.confirm);
-
-		// Load settings
-		if (PlayerPrefs.HasKey("Master Volume")) { masterVolSlider.value = PlayerPrefs.GetFloat("Master Volume"); }
-		if (PlayerPrefs.HasKey("BGM Volume")) { bgmVolSlider.value = PlayerPrefs.GetFloat("BGM Volume"); }
-		if (PlayerPrefs.HasKey("SFX Volume")) { sfxVolSlider.value = PlayerPrefs.GetFloat("SFX Volume"); }
 	}
 
 	public void Deactivate(bool playSound = false) {
@@ -91,7 +107,7 @@ public class OptionsScreen : MonoBehaviour {
 
 	public void Loop() {
 		// Reset canUpdate
-		if (Input.GetAxisRaw("Horizontal") != 0f || Input.GetAxisRaw("Vertical") != 0f) {
+		if (Input.GetAxisRaw("Vertical") != 0f) {
 			canUpdate = true;
 		}
 
@@ -107,58 +123,68 @@ public class OptionsScreen : MonoBehaviour {
 		}
 	}
 
-	// Set in Inspector on BGMSlider
-	public void SetBGMVolume() {
-		// Set the volume of all BGMs to the value of its slider
-		AudioManager.S.SetBGMVolume(bgmVolSlider.value);
-
-		// Save settings
-		PlayerPrefs.SetFloat("BGM Volume", bgmVolSlider.value);
-
-		// Audio: Confirm
-		//AudioManager.S.PlaySFX(eSoundName.confirm);
-	}
-
-	// Set in Inspector on MasterVolumeSlider
 	public void SetMasterVolume() {
 		// Set the volume of the AudioListener to the value of its slider
-		AudioManager.S.SetMasterVolume(masterVolSlider.value);
+		AudioManager.S.SetMasterVolume(sliders[0].value);
 
 		// Save settings
-		PlayerPrefs.SetFloat("Master Volume", masterVolSlider.value);
+		PlayerPrefs.SetFloat("Master Volume", sliders[0].value);
 
-		// Audio: Confirm
-		//AudioManager.S.PlaySFX(eSoundName.confirm);
+		// Audio: Selection
+		AudioManager.S.masterVolSelection.Play();
 	}
 
-	// Set in Inspector on SFXVolumeSlider
-	public void SetSFXVolume() {
-		// Set the volume of all SFXs to the value of its slider
-		AudioManager.S.SetSFXVolume(sfxVolSlider.value);
+	public void SetBGMVolume() {
+		// Set the volume of all BGMs to the value of its slider
+		AudioManager.S.SetBGMVolume(sliders[1].value);
 
 		// Save settings
-		PlayerPrefs.SetFloat("SFX Volume", sfxVolSlider.value);
+		PlayerPrefs.SetFloat("BGM Volume", sliders[1].value);
+
+		// Audio: Selection
+		AudioManager.S.bgmCS[8].Play();
+	}
+
+	public void SetSFXVolume() {
+		// Set the volume of all SFXs to the value of its slider
+		AudioManager.S.SetSFXVolume(sliders[2].value);
+
+		// Save settings
+		PlayerPrefs.SetFloat("SFX Volume", sliders[2].value);
 
 		// Audio: Selection
 		AudioManager.S.PlaySFX(eSoundName.selection);
 	}
 
+	public void SetTextSpeed() {
+		// Set the text speed to the value of its slider
+		textSpeed = sliders[3].value;
+
+		// Save settings
+		PlayerPrefs.SetFloat("Text Speed", sliders[3].value);
+
+		PauseMessage.S.StopAllCoroutines();
+
+		// Display text
+		PauseMessage.S.DisplayText("With the 'Text Speed' set at this value, text will be displayed on screen this quickly!");
+	}
+
 	public void SetCursorPosition() {
-		for (int i = 0; i < volumeTextGOs.Count; i++) {
-			if (UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject == volumeSliders[i].gameObject) {
-				//PauseMessage.S.SetText(Inventory.S.GetItemList()[i].description);
+		for (int i = 0; i < sliderTextGO.Count; i++) {
+			if (UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject == sliders[i].gameObject) {
+				PauseMessage.S.SetText(sliderDescriptions[i]);
 
 				// Set Cursor Position set to Selected Button
-				Utilities.S.PositionCursor(volumeTextGOs[i], -125, 0, 0);
+				Utilities.S.PositionCursor(sliderTextGO[i], -125, 0, 0);
 
 				// Set selected button text color	
-				volumeTextGOs[i].GetComponent<Text>().color = new Color32(205, 208, 0, 255);
+				sliderTextGO[i].GetComponent<Text>().color = new Color32(205, 208, 0, 255);
 
 				// Audio: Selection (when a new gameObject is selected)
 				Utilities.S.PlayButtonSelectedSFX(ref ItemScreen.S.previousSelectedGameObject);
 			} else {
 				// Set non-selected button text color
-				volumeTextGOs[i].GetComponent<Text>().color = new Color32(255, 255, 255, 255);
+				sliderTextGO[i].GetComponent<Text>().color = new Color32(255, 255, 255, 255);
 			}
 		}
 	}
