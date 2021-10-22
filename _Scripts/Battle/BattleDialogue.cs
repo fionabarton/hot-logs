@@ -85,7 +85,7 @@ public class BattleDialogue : MonoBehaviour{
 
 				dialogueSentences += dialogueWords[i] + " ";
 				displayMessageTextBottom.text = dialogueSentences;
-				yield return new WaitForSeconds(0.1f);
+				yield return new WaitForSeconds(OptionsScreen.S.textSpeed);
 			}
 
 			// Activate cursor
