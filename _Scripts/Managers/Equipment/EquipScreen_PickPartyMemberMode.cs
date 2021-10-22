@@ -40,6 +40,8 @@ public class EquipScreen_PickPartyMemberMode : MonoBehaviour {
 
 			// Activate PlayerButtons
 			PlayerButtons.S.gameObject.SetActive(true);
+			// Set anim
+			PlayerButtons.S.anim[equipScreen.playerNdx].CrossFade("Walk", 0);
 
 			// Display Text
 			PauseMessage.S.DisplayText("Assign whose equipment?!");

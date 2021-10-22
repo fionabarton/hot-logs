@@ -72,7 +72,6 @@ public class EquipScreen : MonoBehaviour {
 			
 			PlayerButtons.S.buttonsCS[0].Select();
 			PlayerButtons.S.buttonsCS[0].OnSelect(null);
-			PlayerButtons.S.anim[0].CrossFade("Walk", 0);
 		}
 		catch (NullReferenceException) { }
 	}
@@ -89,7 +88,7 @@ public class EquipScreen : MonoBehaviour {
 		ScreenCursor.S.cursorGO[0].SetActive(true);
 
 		// Go back to Pause Screen
-		if (RPG.S.currentSceneName != "Battle") {
+		if (RPG.S.currentScene != "Battle") {
 			// Pause Buttons Interactable
 			Utilities.S.ButtonsInteractable(PauseScreen.S.buttonCS, true);
 
