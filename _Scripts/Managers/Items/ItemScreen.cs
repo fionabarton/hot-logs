@@ -27,6 +27,13 @@ public class ItemScreen : MonoBehaviour {
 
 	public GameObject		previousSelectedGameObject;
 
+	// Caches what index of the inventory is currently stored in the first item slot
+	public int				firstSlotNdx;
+
+	// Prevents instantly registering input when the first or last slot is selected
+	private bool			verticalAxisIsInUse;
+	private bool			firstOrLastSlotSelected;
+
 	void Awake() {
 		S = this;
 	}
@@ -34,6 +41,8 @@ public class ItemScreen : MonoBehaviour {
 	public void OnEnable () {
 		// Ensures first slot is selected when screen enabled
 		previousSelectedGameObject = itemButtons[0].gameObject;
+
+		firstSlotNdx = 0;
 
 		ItemScreen_PickItemMode.S.Setup(S);
 
@@ -60,7 +69,7 @@ public class ItemScreen : MonoBehaviour {
 		// Remove Listeners
 		Utilities.S.RemoveListeners(itemButtons);
 
-		if (RPG.S.currentSceneName != "Battle") {
+		if (RPG.S.currentScene != "Battle") {
 			// Buttons Interactable
 			Utilities.S.ButtonsInteractable(PauseScreen.S.buttonCS, true);
 
@@ -86,7 +95,7 @@ public class ItemScreen : MonoBehaviour {
 		// Deactivate this gameObject
 		gameObject.SetActive(false);
 	}
-
+	
 	public void Loop () {
 		// Reset canUpdate
 		if (Input.GetAxisRaw ("Horizontal") != 0f || Input.GetAxisRaw ("Vertical") != 0f) { 
@@ -94,7 +103,7 @@ public class ItemScreen : MonoBehaviour {
 		}
 		
 		// Deactivate ItemScreen during Battle
-		if (RPG.S.currentSceneName == "Battle") {
+		if (RPG.S.currentScene == "Battle") {
 			if (Input.GetButtonDown ("SNES B Button")) {
 				PauseMessage.S.gameObject.SetActive(false);
 				Deactivate(true);
@@ -104,8 +113,11 @@ public class ItemScreen : MonoBehaviour {
 
 		switch (mode) {
 			case eItemScreenMode.pickItem:
+				// On vertical input, scroll the item list when the first or last slot is selected
+				ScrollItemList();
+
 				ItemScreen_PickItemMode.S.Loop(S);
-			break;
+				break;
 			case eItemScreenMode.pickPartyMember:
 				ItemScreen_PickPartyMemberMode.S.Loop(S);
 			break;
@@ -135,6 +147,58 @@ public class ItemScreen : MonoBehaviour {
 		}
 	}
 
+	// On vertical input, scroll the item list when the first or last slot is selected
+	void ScrollItemList() {
+		// If first or last slot selected...
+		if (firstOrLastSlotSelected) {
+			if (Input.GetAxisRaw("Vertical") == 0) {
+				verticalAxisIsInUse = false;
+			} else {
+				if (!verticalAxisIsInUse) {
+					if (UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject == itemButtons[0].gameObject) {
+						if (Input.GetAxisRaw("Vertical") > 0) {
+							if (firstSlotNdx == 0) {
+								firstSlotNdx = Inventory.S.GetItemList().Count - itemButtons.Count;
+
+								// Set  selected GameObject
+								Utilities.S.SetSelectedGO(itemButtons[9].gameObject);
+							} else {
+								firstSlotNdx -= 1;
+							}
+						}
+					} else if (UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject == itemButtons[9].gameObject) {
+						if (Input.GetAxisRaw("Vertical") < 0) {
+							if (firstSlotNdx + itemButtons.Count == Inventory.S.GetItemList().Count) {
+								firstSlotNdx = 0;
+
+								// Set  selected GameObject
+								Utilities.S.SetSelectedGO(itemButtons[0].gameObject);
+							} else {
+								firstSlotNdx += 1;
+							}
+						}
+					}
+
+					AssignItemEffect();
+					AssignItemNames();
+
+					// Audio: Selection
+					AudioManager.S.PlaySFX(eSoundName.selection);
+
+					verticalAxisIsInUse = true;
+				}
+			}
+		}
+
+		// Check if first or last slot is selected
+		if (UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject == itemButtons[0].gameObject
+		 || UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject == itemButtons[9].gameObject) {
+			firstOrLastSlotSelected = true;
+		} else {
+			firstOrLastSlotSelected = false;
+		}
+	}
+
 	void GoBackToPickItemMode() {
 		if (PauseMessage.S.dialogueFinished) {
 			// Set animations to idle
@@ -157,15 +221,20 @@ public class ItemScreen : MonoBehaviour {
 	public void AssignItemEffect() { 
 		Utilities.S.RemoveListeners(itemButtons);
 
-		for (int i = 0; i < 30; i++) {
+		for (int i = 0; i < itemButtons.Count; i++) {
 			int copy = i;
-			itemButtons[copy].onClick.AddListener(delegate { ConsumeItem(Inventory.S.GetItemList()[copy]); });
+			itemButtons[copy].onClick.AddListener(delegate { ConsumeItem(Inventory.S.GetItemList()[firstSlotNdx + copy]); });
 		}
 	}
 
 	public void AssignItemNames () {
-		for (int i = 0; i < Inventory.S.GetItemList().Count; i++) {
-			itemButtonsText[i].text = Inventory.S.GetItemList()[i].name + "(" + Inventory.S.GetItemCount (Inventory.S.GetItemList()[i]) + ")";
+		for (int i = 0; i < itemButtons.Count; i++) {
+			if(firstSlotNdx + i < Inventory.S.GetItemList().Count) {
+				string inventoryNdx = (firstSlotNdx + i + 1).ToString();
+
+				itemButtonsText[i].text = inventoryNdx + ") " + Inventory.S.GetItemList()[firstSlotNdx + i].name +
+				"(" + Inventory.S.GetItemCount(Inventory.S.GetItemList()[firstSlotNdx + i]) + ")";
+			}	
 		}
 	}
 
@@ -174,7 +243,7 @@ public class ItemScreen : MonoBehaviour {
 		if (Inventory.S.items.ContainsKey (item)) {
 			canUpdate = true;
 
-			if (RPG.S.currentSceneName == "Battle") { // if Battle
+			if (RPG.S.currentScene == "Battle") { // if Battle
 				if (item.name == "Health Potion") {
 					BattleItems.S.AddFunctionToButton(BattleItems.S.HPPotion, "Use potion on which party member?", item);
 				} else if (item.name == "Magic Potion") {
