@@ -70,7 +70,8 @@ public class EquipScreen_PickTypeToEquipMode : MonoBehaviour {
 
 					// Assign item names to buttons
 					for (int j = 0; j < SortItems.S.tItems.Count; j++) {
-						equipScreen.inventoryButtonsTxt[j].text = SortItems.S.tItems[j].name;
+						string ndx = (j + 1).ToString();
+						equipScreen.inventoryButtonsTxt[j].text = ndx + ") " + SortItems.S.tItems[j].name;
 					}
 
 					// Audio: Selection (when a new gameObject is selected)
