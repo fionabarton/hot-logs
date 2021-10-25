@@ -40,7 +40,7 @@ public class SpellScreen : MonoBehaviour {
 
 	void OnEnable () {
 		try {
-			if (RPG.S.currentSceneName != "Battle") {
+			if (RPG.S.currentScene != "Battle") {
 				// Ensures first slots are selected when screen enabled
 				previousSelectedPlayerGO = PlayerButtons.S.buttonsCS[0].gameObject;
 				previousSelectedSpellGO = spellsButtons[0].gameObject;
@@ -68,7 +68,7 @@ public class SpellScreen : MonoBehaviour {
 		// Remove Listeners
 		Utilities.S.RemoveListeners(spellsButtons);
 
-		if (RPG.S.currentSceneName != "Battle") {
+		if (RPG.S.currentScene != "Battle") {
 			// Buttons Interactable
 			Utilities.S.ButtonsInteractable(PauseScreen.S.buttonCS, true);
 			// Set Selected Gameobject (Pause Screen: Spells Button)
@@ -114,7 +114,7 @@ public class SpellScreen : MonoBehaviour {
 		}
 
 		// Deactivate SpellScreen
-		if (RPG.S.currentSceneName != "Battle") {
+		if (RPG.S.currentScene != "Battle") {
 			if (mode == eSpellScreenMode.pickWhichSpellsToDisplay) {
 				if (Input.GetButtonDown ("SNES B Button")) {
 					Deactivate(true);
@@ -192,7 +192,7 @@ public class SpellScreen : MonoBehaviour {
 
 		this.playerNdx = playerNdx; // Now used to DisplaySpellsDescriptions
 
-		if (RPG.S.currentSceneName == "Battle") {
+		if (RPG.S.currentScene == "Battle") {
 			// Activate Spell Screen
 			Activate();
 		}
@@ -217,7 +217,7 @@ public class SpellScreen : MonoBehaviour {
 
 			// Set Selected GameObject 
 			// If previousSelectedGameObject is enabled...
-			if (previousSelectedSpellGO.activeInHierarchy && RPG.S.currentSceneName != "Battle") {
+			if (previousSelectedSpellGO.activeInHierarchy && RPG.S.currentScene != "Battle") {
 				// Select previousSelectedGameObject
 				Utilities.S.SetSelectedGO(previousSelectedSpellGO);
 			} else {
@@ -227,6 +227,8 @@ public class SpellScreen : MonoBehaviour {
 				// Select first spell in the list
 				Utilities.S.SetSelectedGO(spellsButtons[0].gameObject);
 			}
+
+
 
 			// Activate Cursor
 			ScreenCursor.S.cursorGO[0].SetActive(true);
@@ -240,6 +242,9 @@ public class SpellScreen : MonoBehaviour {
 		DeactivateUnusedSpellsSlots(playerNdx);
 		AssignSpellsEffect(playerNdx);
 		DisplaySpellsDescriptions(playerNdx);
+
+		// Set the first and last button’s navigation 
+		SetButtonNavigation();
 	}
 
 	public void DisplaySpellsDescriptions (int playerNdx) {
@@ -289,7 +294,40 @@ public class SpellScreen : MonoBehaviour {
 	public void AssignSpellsNames(int playerNdx) {
 		for (int i = 0; i < Party.stats[playerNdx].spellNdx; i++) {
 			// Assign Button Name Text
-			spellsButtonNameTexts[i].text = Party.stats[playerNdx].spells[i].name;
+			string ndx = (i + 1).ToString();
+			spellsButtonNameTexts[i].text = ndx + ") " + Party.stats[playerNdx].spells[i].name;
+		}
+	}
+
+	// Set the first and last button’s navigation 
+	public void SetButtonNavigation() {
+		// Reset all button's navigation to automatic
+		for (int i = 0; i < Party.stats[playerNdx].spellNdx; i++) {
+			// Get the Navigation data
+			Navigation navigation = spellsButtons[i].navigation;
+
+			// Switch mode to Automatic
+			navigation.mode = Navigation.Mode.Automatic;
+
+			// Reassign the struct data to the button
+			spellsButtons[i].navigation = navigation;
+		}
+
+		// Set button navigation if inventory is less than 10
+		//if (Party.stats[playerNdx].spellNdx < spellsButtons.Count) {
+		if (Party.stats[playerNdx].spellNdx > 1) {
+			// Set first button navigation
+			Utilities.S.SetButtonNavigation(
+				spellsButtons[0],
+				spellsButtons[1],
+				spellsButtons[Party.stats[playerNdx].spellNdx - 1]);
+
+			// Set last button navigation
+			Utilities.S.SetButtonNavigation(
+				spellsButtons[Party.stats[playerNdx].spellNdx - 1],
+				spellsButtons[0],
+				spellsButtons[Party.stats[playerNdx].spellNdx - 2]);
+			//}
 		}
 	}
 
@@ -313,7 +351,7 @@ public class SpellScreen : MonoBehaviour {
 	public void UseSpell(Spell spell) {
 		canUpdate = true;
 
-		if (RPG.S.currentSceneName == "Battle") { // if Battle
+		if (RPG.S.currentScene == "Battle") { // if Battle
 			if (spell.name == "Heal") {
 				BattleSpells.S.AddFunctionToButton(BattleSpells.S.HealSelectedPartyMember, "Heal which party member?", spell);
 			} else if (spell.name == "Fireball") {
