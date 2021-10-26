@@ -30,6 +30,13 @@ public class ShopScreen : MonoBehaviour {
 	public GameObject		previousSelectedGameObject;
 	public int				previousSelectedNdx;
 
+	// Caches what index of the inventory is currently stored in the first item slot
+	public int				firstSlotNdx;
+
+	// Prevents instantly registering input when the first or last slot is selected
+	private bool			verticalAxisIsInUse;
+	private bool			firstOrLastSlotSelected;
+
 	void Awake() {
 		S = this;
 	}
@@ -37,6 +44,8 @@ public class ShopScreen : MonoBehaviour {
 	void OnEnable () {
 		// Ensures first slot is selected when screen enabled
 		previousSelectedGameObject = inventoryButtons[0].gameObject;
+
+		firstSlotNdx = 0;
 
 		ShopScreen_PickItemMode.S.Setup(S);
 
@@ -83,11 +92,68 @@ public class ShopScreen : MonoBehaviour {
 
 		switch (shopScreenMode) {
 		case eShopScreenMode.pickItem:
+			// On vertical input, scroll the item list when the first or last slot is selected
+			ScrollItemList();
+
 			ShopScreen_PickItemMode.S.Loop(S);
 			break;
 		case eShopScreenMode.itemPurchasedOrSold:
 			ShopScreen_ItemPurchasedOrSoldMode.S.Loop(S);
 			break;
+		}
+	}
+
+	// On vertical input, scroll the item list when the first or last slot is selected
+	void ScrollItemList() {
+		if (inventory.Count > 1) {
+			// If first or last slot selected...
+			if (firstOrLastSlotSelected) {
+				if (Input.GetAxisRaw("Vertical") == 0) {
+					verticalAxisIsInUse = false;
+				} else {
+					if (!verticalAxisIsInUse) {
+						if (UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject == inventoryButtons[0].gameObject) {
+							if (Input.GetAxisRaw("Vertical") > 0) {
+								if (firstSlotNdx == 0) {
+									firstSlotNdx = inventory.Count - inventoryButtons.Count;
+
+									// Set  selected GameObject
+									Utilities.S.SetSelectedGO(inventoryButtons[9].gameObject);
+								} else {
+									firstSlotNdx -= 1;
+								}
+							}
+						} else if (UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject == inventoryButtons[9].gameObject) {
+							if (Input.GetAxisRaw("Vertical") < 0) {
+								if (firstSlotNdx + inventoryButtons.Count == inventory.Count) {
+									firstSlotNdx = 0;
+
+									// Set  selected GameObject
+									Utilities.S.SetSelectedGO(inventoryButtons[0].gameObject);
+								} else {
+									firstSlotNdx += 1;
+								}
+							}
+						}
+
+						ShopScreen_PickItemMode.S.AssignItemEffect(this);
+						ShopScreen_PickItemMode.S.AssignItemNames(this);
+
+						// Audio: Selection
+						AudioManager.S.PlaySFX(eSoundName.selection);
+
+						verticalAxisIsInUse = true;
+					}
+				}
+			}
+
+			// Check if first or last slot is selected
+			if (UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject == inventoryButtons[0].gameObject
+			 || UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject == inventoryButtons[9].gameObject) {
+				firstOrLastSlotSelected = true;
+			} else {
+				firstOrLastSlotSelected = false;
+			}
 		}
 	}
 
