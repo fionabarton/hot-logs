@@ -28,6 +28,9 @@ public class BattleEnd : MonoBehaviour {
 		// Set Selected GameObject (Fight Button)
 		_.enemyStats[ndx].isDead = true;
 
+		// Reset this enemy's nextTurnMoveNdx
+		_.nextTurnMoveNdx[ndx] = 999;
+
 		// Remove Enemy 1, 2, or 3 from Turn Order
 		if (ndx == 0) { _.turnOrder.Remove(_.enemyStats[0].name); } else if (ndx == 1) { _.turnOrder.Remove(_.enemyStats[1].name); } else if (ndx == 2) { _.turnOrder.Remove(_.enemyStats[2].name); }
 	}
@@ -307,7 +310,7 @@ public class BattleEnd : MonoBehaviour {
 		_.turnNdx = 0;
 
 		// Load Previous Scene
-		RPG.S.LoadLevel(RPG.S.previousSceneName);
+		RPG.S.LoadLevel(RPG.S.previousScene);
 
 		// Make Player Invincible in Overworld
 		Player.S.invincibility.StartInvincibility();
