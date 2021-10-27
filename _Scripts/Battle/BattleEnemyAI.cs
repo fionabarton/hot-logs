@@ -75,8 +75,8 @@ public class BattleEnemyAI : MonoBehaviour {
 				ChanceToCallMove(2, 1);
 				break;
 			case eEnemyAI.CallForBackup:
-				// Call for Backup
-				ChanceToCallMove(6);
+				// Call for backup next turn
+				ChanceToCallMove(7);
 				break;
 			case eEnemyAI.DontUseMP:
 			default:
@@ -150,7 +150,7 @@ public class BattleEnemyAI : MonoBehaviour {
 		CallEnemyMove(randomNdx);
 	}
 
-	void CallEnemyMove(int moveNdx) {
+	public void CallEnemyMove(int moveNdx) {
 		switch (moveNdx) {
 			case 0: BattleEnemyActions.S.Attack(); break;
 			case 1: BattleEnemyActions.S.Defend(); break;
@@ -159,6 +159,7 @@ public class BattleEnemyAI : MonoBehaviour {
 			case 4: BattleEnemyActions.S.HealSpell(); break;
 			case 5: BattleEnemyActions.S.AttackAll(); break;
 			case 6: BattleEnemyActions.S.CallForBackup(); break;
+			case 7: BattleEnemyActions.S.CallForBackupNextTurn(); break;
 			default:BattleEnemyActions.S.Attack(); break;
 		}
 	}
