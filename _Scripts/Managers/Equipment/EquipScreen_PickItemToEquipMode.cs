@@ -46,9 +46,44 @@ public class EquipScreen_PickItemToEquipMode : MonoBehaviour {
 		// Switch mode
 		equipScreen.SwitchMode(eEquipScreenMode.pickItemToEquip, equipScreen.inventoryButtons[0].gameObject, false);
 
+		// Set the first and last button’s navigation
+		SetButtonNavigation(equipScreen);
+
 		// Initialize previously selected GameObject
 		previousSelectedGameObject = equipScreen.inventoryButtons[0].gameObject;
 	}
+
+	// Set the first and last button’s navigation 
+	public void SetButtonNavigation(EquipScreen equipScreen) {
+		// Reset all button's navigation to automatic
+		for (int i = 0; i < equipScreen.inventoryButtons.Count; i++) {
+			// Get the Navigation data
+			Navigation navigation = equipScreen.inventoryButtons[i].navigation;
+
+			// Switch mode to Automatic
+			navigation.mode = Navigation.Mode.Automatic;
+
+			// Reassign the struct data to the button
+			equipScreen.inventoryButtons[i].navigation = navigation;
+		}
+
+		// Set button navigation if inventory is less than 10
+		//if (SortItems.S.tItems.Count < equipScreen.inventoryButtons.Count) {
+		if (SortItems.S.tItems.Count > 1) {
+			// Set first button navigation
+			Utilities.S.SetButtonNavigation(
+				equipScreen.inventoryButtons[0],
+				equipScreen.inventoryButtons[1],
+				equipScreen.inventoryButtons[SortItems.S.tItems.Count - 1]);
+
+			// Set last button navigation
+			Utilities.S.SetButtonNavigation(
+				equipScreen.inventoryButtons[SortItems.S.tItems.Count - 1],
+				equipScreen.inventoryButtons[0],
+				equipScreen.inventoryButtons[SortItems.S.tItems.Count - 2]);
+			//}
+		}
+    }
 
 	public void Loop(EquipScreen equipScreen) {
 		if (equipScreen.canUpdate) {

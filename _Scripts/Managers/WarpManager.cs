@@ -96,9 +96,42 @@ public class WarpManager : MonoBehaviour {
     public void AssignButtonNames(List<Text> buttonsText) {
 		for (int i = 0; i < visitedLocations.Count; i++) {
 			// Assign Button Name Text
-			buttonsText[i].text = visitedLocations[i].name;
+			string ndx = (i + 1).ToString();
+			buttonsText[i].text = ndx + ") " + visitedLocations[i].name;
 		}
     }
+
+	// Set the first and last button’s navigation 
+	public void SetButtonNavigation(List<Button> buttons) {
+		// Reset all button's navigation to automatic
+		for (int i = 0; i < buttons.Count; i++) {
+			// Get the Navigation data
+			Navigation navigation = buttons[i].navigation;
+
+			// Switch mode to Automatic
+			navigation.mode = Navigation.Mode.Automatic;
+
+			// Reassign the struct data to the button
+			buttons[i].navigation = navigation;
+		}
+
+		// Set button navigation if inventory is less than 10
+		//if (visitedLocations.Count < buttons.Count) {
+		if (visitedLocations.Count > 1) {
+			// Set first button navigation
+			Utilities.S.SetButtonNavigation(
+				buttons[0],
+				buttons[1],
+				buttons[visitedLocations.Count - 1]);
+
+			// Set last button navigation
+			Utilities.S.SetButtonNavigation(
+				buttons[visitedLocations.Count - 1],
+				buttons[0],
+				buttons[visitedLocations.Count - 2]);
+			//}
+		}
+	}
 
 	// "Warps" the player to a new scene and/or position
 	public IEnumerator Warp(Vector3 destinationPos,

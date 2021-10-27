@@ -30,13 +30,13 @@ public class ItemScreen_PickItemMode : MonoBehaviour {
 
 			// Buttons Interactable
 			Utilities.S.ButtonsInteractable(itemScreen.itemButtons, true);
+			Utilities.S.ButtonsInteractable(PlayerButtons.S.buttonsCS, false);
+			Utilities.S.ButtonsInteractable(PauseScreen.S.buttonCS, false);
 
 			itemScreen.canUpdate = true;
 
 			// Activate PlayerButtons
 			PlayerButtons.S.gameObject.SetActive(true);
-			Utilities.S.ButtonsInteractable(PlayerButtons.S.buttonsCS, false);
-			Utilities.S.ButtonsInteractable(PauseScreen.S.buttonCS, false);
 
 			// If Inventory Empty 
 			if (Inventory.S.GetItemList().Count == 0) {
@@ -57,6 +57,9 @@ public class ItemScreen_PickItemMode : MonoBehaviour {
 					Utilities.S.SetSelectedGO(itemScreen.itemButtons[previousSelectedNdx - 1].gameObject);
 				}
 
+				// Set button navigation if inventory is less than 10
+				SetButtonNavigation(itemScreen);
+
 				// Activate Cursor
 				ScreenCursor.S.cursorGO[0].SetActive(true);
 			}
@@ -72,6 +75,43 @@ public class ItemScreen_PickItemMode : MonoBehaviour {
 		itemScreen.sortButton.onClick.AddListener(delegate { Inventory.S.items = SortItems.S.SortByABC(Inventory.S.items); });
 	}
 
+	// Set the first and last button’s navigation if the player’s inventory is less than 10
+	public void SetButtonNavigation(ItemScreen itemScreen) {
+		// Reset all button's navigation to automatic
+		for (int i = 0; i < itemScreen.itemButtons.Count; i++) {
+			// Get the Navigation data
+			Navigation navigation = itemScreen.itemButtons[i].navigation;
+
+			// Switch mode to Automatic
+			navigation.mode = Navigation.Mode.Automatic;
+
+			// Reassign the struct data to the button
+			itemScreen.itemButtons[i].navigation = navigation;
+		}
+
+		// Set button navigation if inventory is less than 10
+		if (Inventory.S.GetItemList().Count < itemScreen.itemButtons.Count) {
+			// Set first button navigation
+			if (itemScreen.itemButtons.Count == 2) {
+				Utilities.S.SetButtonNavigation(
+				itemScreen.itemButtons[0],
+				itemScreen.itemButtons[Inventory.S.GetItemList().Count - 1],
+				itemScreen.itemButtons[Inventory.S.GetItemList().Count - 1]);
+			} else {
+				Utilities.S.SetButtonNavigation(
+				itemScreen.itemButtons[0],
+				itemScreen.itemButtons[1],
+				itemScreen.itemButtons[Inventory.S.GetItemList().Count - 1]);
+			}
+
+			// Set last button navigation
+			Utilities.S.SetButtonNavigation(
+				itemScreen.itemButtons[Inventory.S.GetItemList().Count - 1],
+				itemScreen.itemButtons[0],
+				itemScreen.itemButtons[Inventory.S.GetItemList().Count - 2]);
+		}
+	}
+
 	public void Loop(ItemScreen itemScreen) {
 		if (Inventory.S.GetItemList().Count > 0) {
 			if (itemScreen.canUpdate) {
@@ -80,7 +120,7 @@ public class ItemScreen_PickItemMode : MonoBehaviour {
 			}
 		}
 
-		if (RPG.S.currentSceneName != "Battle") {
+		if (RPG.S.currentScene != "Battle") {
 			if (Input.GetButtonDown("SNES B Button")) {
 				itemScreen.Deactivate(true);
 			}
@@ -88,9 +128,9 @@ public class ItemScreen_PickItemMode : MonoBehaviour {
 	}
 
 	public void DisplayItemDescriptions(ItemScreen itemScreen) {
-		for (int i = 0; i < Inventory.S.GetItemList().Count; i++) {
+		for (int i = 0; i < itemScreen.itemButtons.Count; i++) {
 			if (UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject == itemScreen.itemButtons[i].gameObject) {
-				PauseMessage.S.SetText(Inventory.S.GetItemList()[i].description);
+				PauseMessage.S.SetText(Inventory.S.GetItemList()[i + itemScreen.firstSlotNdx].description);
 
 				// Set Cursor Position set to Selected Button
 				Utilities.S.PositionCursor(itemScreen.itemButtons[i].gameObject, -170, 0, 0);

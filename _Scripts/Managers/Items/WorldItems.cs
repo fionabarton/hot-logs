@@ -206,6 +206,7 @@ public class WorldItems : MonoBehaviour {
 		WarpManager.S.DeactivateUnusedButtonSlots(ItemScreen.S.itemButtons);
 		WarpManager.S.AssignButtonEffect(ItemScreen.S.itemButtons);
 		WarpManager.S.AssignButtonNames(ItemScreen.S.itemButtonsText);
+		WarpManager.S.SetButtonNavigation(ItemScreen.S.itemButtons);
 
 		// Audio: Confirm
 		AudioManager.S.PlaySFX(eSoundName.confirm);

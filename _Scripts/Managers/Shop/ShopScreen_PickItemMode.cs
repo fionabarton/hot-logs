@@ -61,6 +61,9 @@ public class ShopScreen_PickItemMode : MonoBehaviour {
 					Utilities.S.SetSelectedGO(shopScreen.inventoryButtons[shopScreen.previousSelectedNdx - 1].gameObject);
 				}
 
+				// Set the first and last button’s navigation 
+				SetButtonNavigation(shopScreen);
+
 				// Activate Cursor
 				ScreenCursor.S.cursorGO[0].SetActive(true);
 			}
@@ -73,7 +76,9 @@ public class ShopScreen_PickItemMode : MonoBehaviour {
 
 	public void Loop(ShopScreen shopScreen) {
 		if (shopScreen.canUpdate) {
-			DisplayItemDescriptions(shopScreen);
+			if(shopScreen.inventory.Count > 0) {
+				DisplayItemDescriptions(shopScreen);
+			}
 			shopScreen.canUpdate = false;
 		}
 	}
@@ -94,23 +99,39 @@ public class ShopScreen_PickItemMode : MonoBehaviour {
 			shopScreen.inventoryButtons[i].onClick.RemoveAllListeners();
 
 			if (shopScreen.buyOrSellMode) {
-				shopScreen.inventoryButtons[copy].onClick.AddListener(delegate { ShopScreen_ItemPurchasedOrSoldMode.S.PurchaseItem(shopScreen.inventory[copy], shopScreen); });
+				shopScreen.inventoryButtons[copy].onClick.AddListener(delegate { ShopScreen_ItemPurchasedOrSoldMode.S.PurchaseItem(shopScreen.inventory[shopScreen.firstSlotNdx + copy], shopScreen); });
 			} else {
-				shopScreen.inventoryButtons[copy].onClick.AddListener(delegate { ShopScreen_ItemPurchasedOrSoldMode.S.SellItem(shopScreen.inventory[copy], shopScreen); });
+				shopScreen.inventoryButtons[copy].onClick.AddListener(delegate { ShopScreen_ItemPurchasedOrSoldMode.S.SellItem(shopScreen.inventory[shopScreen.firstSlotNdx + copy], shopScreen); });
 			}
 		}
 	}
 
 	public void AssignItemNames(ShopScreen shopScreen) {
-		for (int i = 0; i <= shopScreen.inventory.Count - 1; i++) {
-			shopScreen.inventoryButtonsText[i].text = shopScreen.inventory[i].name;
+		for (int i = 0; i < shopScreen.inventoryButtonsText.Count; i++) {
+			//if(shopScreen.inventory.Count <= i) {
+			//	return;
+			//         }
+
+			//// Assign Button Name Text
+			//string ndx = (i + 1).ToString();
+			//shopScreen.inventoryButtonsText[i].text = ndx + ") " + shopScreen.inventory[i].name;
+
+			if (shopScreen.firstSlotNdx + i < shopScreen.inventory.Count) {
+				string inventoryNdx = (shopScreen.firstSlotNdx + i + 1).ToString();
+
+				shopScreen.inventoryButtonsText[i].text = inventoryNdx + ") " + shopScreen.inventory[shopScreen.firstSlotNdx + i].name;
+			}
 		}
 	}
 
 	public void DisplayItemDescriptions(ShopScreen shopScreen) {
-		for (int i = 0; i < shopScreen.inventory.Count; i++) {
+		for (int i = 0; i < shopScreen.inventoryButtonsText.Count; i++) {
+			//if (shopScreen.inventory.Count <= i) {
+			//	return;
+			//}
+
 			if (UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject == shopScreen.inventoryButtons[i].gameObject) {
-				PauseMessage.S.SetText(shopScreen.inventory[i].description);
+				PauseMessage.S.SetText(shopScreen.inventory[shopScreen.firstSlotNdx + i].description);
 
 				// Cursor Position set to Selected Button
 				Utilities.S.PositionCursor(shopScreen.inventoryButtons[i].gameObject, -160, 0, 0);
@@ -125,6 +146,38 @@ public class ShopScreen_PickItemMode : MonoBehaviour {
 			} else {
 				// Set non-selected button text color
 				shopScreen.inventoryButtons[i].gameObject.GetComponentInChildren<Text>().color = new Color32(255, 255, 255, 255);
+			}
+		}
+	}
+
+	// Set the first and last button’s navigation 
+	public void SetButtonNavigation(ShopScreen shopScreen) {
+		// Reset all button's navigation to automatic
+		for (int i = 0; i < shopScreen.inventoryButtons.Count; i++) {
+			// Get the Navigation data
+			Navigation navigation = shopScreen.inventoryButtons[i].navigation;
+
+			// Switch mode to Automatic
+			navigation.mode = Navigation.Mode.Automatic;
+
+			// Reassign the struct data to the button
+			shopScreen.inventoryButtons[i].navigation = navigation;
+		}
+
+		// Set button navigation if inventory is less than 10
+		if (shopScreen.inventory.Count < shopScreen.inventoryButtons.Count) {
+			if (shopScreen.inventory.Count > 1) {
+				// Set first button navigation
+				Utilities.S.SetButtonNavigation(
+					shopScreen.inventoryButtons[0],
+					shopScreen.inventoryButtons[1],
+					shopScreen.inventoryButtons[shopScreen.inventory.Count - 1]);
+
+				// Set last button navigation
+				Utilities.S.SetButtonNavigation(
+					shopScreen.inventoryButtons[shopScreen.inventory.Count - 1],
+					shopScreen.inventoryButtons[0],
+					shopScreen.inventoryButtons[shopScreen.inventory.Count - 2]);
 			}
 		}
 	}

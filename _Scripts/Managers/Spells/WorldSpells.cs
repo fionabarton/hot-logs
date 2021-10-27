@@ -126,6 +126,7 @@ public class WorldSpells : MonoBehaviour {
 			WarpManager.S.DeactivateUnusedButtonSlots(SpellScreen.S.spellsButtons);
 			WarpManager.S.AssignButtonEffect(SpellScreen.S.spellsButtons);
 			WarpManager.S.AssignButtonNames(SpellScreen.S.spellsButtonNameTexts);
+			WarpManager.S.SetButtonNavigation(SpellScreen.S.spellsButtons);
 
 			// Audio: Confirm
 			AudioManager.S.PlaySFX(eSoundName.confirm);
