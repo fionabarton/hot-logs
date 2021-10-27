@@ -314,6 +314,71 @@ public class BattleEnemyActions : MonoBehaviour {
 			_.NextTurn (); 
 		}
 	}
+
+	// Index = 7
+	// Call for backup next turn
+	public void CallForBackupNextTurn() {
+		_.nextTurnMoveNdx[_.EnemyNdx()] = 6;
+
+		BattleDialogue.S.DisplayText(_.enemyStats[_.EnemyNdx()].name + " is getting ready to call for help!");
+		_.NextTurn();
+	}
+
+	// Index = 6
+	// Call for backup 
+	public void CallForBackup() {
+		if (_.enemyStats[0].isDead) {
+			CallForBackupHelper(0);
+		} else if (_.enemyStats[1].isDead) {
+			CallForBackupHelper(1);
+		} else if (_.enemyStats[2].isDead) {
+			CallForBackupHelper(2);
+		} else {
+			BattleDialogue.S.DisplayText(_.enemyStats[_.EnemyNdx()].name + " called for backup...\n...but no one came!");
+
+			// Audio: Deny
+			AudioManager.S.PlaySFX(eSoundName.deny);
+		}
+
+		_.NextTurn();
+	}
+
+	public void CallForBackupHelper(int enemyNdx) {
+		// Set Selected GameObject (Fight Button)
+		_.enemyStats[enemyNdx].isDead = false;
+
+		// Add to Turn Order
+		_.turnOrder.Add(_.enemyStats[enemyNdx].name);
+
+		// Reset HP/MP
+		_.enemyStats[enemyNdx].HP = _.enemyStats[enemyNdx].maxHP;
+		_.enemyStats[enemyNdx].MP = _.enemyStats[enemyNdx].maxMP;
+
+		// Gold/EXP payout
+		_.expToAdd += _.enemyStats[enemyNdx].EXP;
+		_.goldToAdd += _.enemyStats[enemyNdx].Gold;
+
+		// Activate/Deactivate Enemy Buttons, Stats, Sprites
+		BattlePlayerActions.S.EnemyButtonSetActive(enemyNdx, true);
+		_.enemySprite[enemyNdx].enabled = true;
+
+		// Enable/Update Health Bars
+		ProgressBars.S.enemyHealthBarsCS[enemyNdx].transform.parent.gameObject.SetActive(true);
+		ProgressBars.S.enemyHealthBarsCS[enemyNdx].UpdateBar(_.enemyStats[enemyNdx].HP, _.enemyStats[enemyNdx].maxHP);
+
+		// Animation: Enemy ARRIVAL 
+		_.enemyAnimator[enemyNdx].CrossFade("Arrival", 0);
+
+		// Add to EnemyAmount 
+		_.enemyAmount += 1;
+
+		// Audio: Run
+		AudioManager.S.PlaySFX(eSoundName.run);
+
+		// Display Text
+		BattleDialogue.S.DisplayText(_.enemyStats[_.EnemyNdx()].name + " called for backup...\n...and someone came!");
+	}
+
 	public void PlayersDeath (int qtyKilled, int totalAttackDamage, bool player1 = false, bool player2 = false) {
 		// Subtract from PartyQty 
 		_.partyQty -= qtyKilled;
@@ -344,60 +409,5 @@ public class BattleEnemyActions : MonoBehaviour {
 
 		// Remove Player from Turn Order
 		_.turnOrder.Remove (playerTurnOrder); 
-	}
-
-	// Index = 6
-	// Call For Backup 
-	public void CallForBackup(){
-		if (_.enemyStats[0].isDead) {
-			CallForBackupHelper(0);
-		} else if (_.enemyStats[1].isDead) {
-			CallForBackupHelper(1);
-		} else if (_.enemyStats[2].isDead) {
-			CallForBackupHelper(2);
-		} else {
-			BattleDialogue.S.DisplayText (_.enemyStats [_.EnemyNdx()].name + " called for backup...\n...but no one came!");
-
-			// Audio: Deny
-			AudioManager.S.PlaySFX(eSoundName.deny);
-		}
-
-		_.NextTurn ();
-	}
-
-	public void CallForBackupHelper(int enemyNdx){
-		// Set Selected GameObject (Fight Button)
-		_.enemyStats[enemyNdx].isDead = false;
-
-		// Add to Turn Order
-		_.turnOrder.Add(_.enemyStats[enemyNdx].name);
-
-		// Reset HP/MP
-		_.enemyStats [enemyNdx].HP = _.enemyStats [enemyNdx].maxHP;
-		_.enemyStats [enemyNdx].MP = _.enemyStats [enemyNdx].maxMP;
-
-		// Gold/EXP payout
-		_.expToAdd += _.enemyStats [enemyNdx].EXP;
-		_.goldToAdd += _.enemyStats [enemyNdx].Gold;
-
-		// Activate/Deactivate Enemy Buttons, Stats, Sprites
-		BattlePlayerActions.S.EnemyButtonSetActive(enemyNdx, true);
-		_.enemySprite [enemyNdx].enabled = true;
-
-		// Enable/Update Health Bars
-		ProgressBars.S.enemyHealthBarsCS[enemyNdx].transform.parent.gameObject.SetActive(true);
-		ProgressBars.S.enemyHealthBarsCS[enemyNdx].UpdateBar(_.enemyStats[enemyNdx].HP, _.enemyStats[enemyNdx].maxHP);
-
-		// Animation: Enemy ARRIVAL 
-		_.enemyAnimator[enemyNdx].CrossFade("Arrival", 0);
-
-		// Add to EnemyAmount 
-		_.enemyAmount += 1;
-
-		// Audio: Run
-		AudioManager.S.PlaySFX(eSoundName.run);
-
-		// Display Text
-		BattleDialogue.S.DisplayText (_.enemyStats [_.EnemyNdx()].name + " called for backup...\n...and someone came!");
 	}
 }
