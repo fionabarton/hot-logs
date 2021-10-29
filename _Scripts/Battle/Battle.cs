@@ -83,6 +83,10 @@ public class Battle : MonoBehaviour {
 	// Ensures audio is only played once when button is selected
 	public GameObject		previousSelectedForAudio;
 
+	// If an enemy announces its intent to perform a certain move during its next turn,
+	// store the move's index
+	public List<int>		nextTurnMoveNdx = new List<int>();
+
 	void Awake() {
 		S = this;
 
@@ -109,24 +113,11 @@ public class Battle : MonoBehaviour {
 			if (BattleDialogue.S.dialogueNdx <= 0) {
 				switch (battleMode) {
 					case eBattleMode.actionButtons:
-						//if (canUpdate) {
-						//	// Audio: Selection (when a new gameObject is selected)
-						//	Utilities.S.PlayButtonSelectedSFX(ref previousSelectedForAudio);
-
-						//	canUpdate = false;
-						//}
 						break;
 					case eBattleMode.canGoBackToFightButton:
 						if (Input.GetButtonDown("SNES B Button")) {
 							BattlePlayerActions.S.GoBackToFightButton();
 						}
-
-						//if (canUpdate) {
-						//	// Audio: Selection (when a new gameObject is selected)
-						//	Utilities.S.PlayButtonSelectedSFX(ref previousSelectedForAudio);
-
-						//	canUpdate = false;
-						//}
 						break;
 					case eBattleMode.canGoBackToFightButtonMultipleTargets:
 						if (Input.GetButtonDown("SNES B Button")) {
@@ -195,7 +186,21 @@ public class Battle : MonoBehaviour {
 						break;
 					case eBattleMode.enemyAction:
 						if (Input.GetButtonDown("SNES A Button")) {
-							BattleEnemyAI.S.EnemyAI(enemyStats[EnemyNdx()].AI);
+							// If the enemy announced what move it would perform during its previous turn...
+							if (nextTurnMoveNdx[EnemyNdx()] != 999) {
+								// Cache move index
+								int moveNdx = nextTurnMoveNdx[EnemyNdx()];
+
+								// Reset this enemy's nextTurnMoveNdx
+								nextTurnMoveNdx[EnemyNdx()] = 999;
+
+								// ...call previously announced move this turn
+								BattleEnemyAI.S.CallEnemyMove(moveNdx);
+							// If the enemy didn't announce what move it would perform during its previous turn...
+							} else {
+								// ...let its AI dictate what move to perform
+								BattleEnemyAI.S.EnemyAI(enemyStats[EnemyNdx()].AI);
+							}
 						}
 						break;
 					case eBattleMode.partyDeath:
