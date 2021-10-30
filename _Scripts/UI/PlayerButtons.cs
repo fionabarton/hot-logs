@@ -36,6 +36,16 @@ public class PlayerButtons : MonoBehaviour {
 			} else {
 				rectTrans.anchoredPosition = new Vector2(0, 650);
 			}
+
+			// Deactivate all player buttons 
+			for (int i = 0; i < buttonsGO.Count; i++) {
+				buttonsGO[i].SetActive(false);
+			}
+
+			// Activate player buttons depending on party amount
+			for (int i = 0; i <= Party.S.partyNdx; i++) {
+				buttonsGO[i].SetActive(true);
+			}
 		}
         catch (NullReferenceException) { }
     }
@@ -44,21 +54,18 @@ public class PlayerButtons : MonoBehaviour {
     public void UpdateGUI(){
 		statName[0].text = "HP\nMP";
 		statName[1].text = "HP\nMP";
+		statName[2].text = "HP\nMP";
 		// Weapon: STR, Armor: DEF
 
-		try{
-			if(Party.stats.Count > 0) {
-				statValue[0].text =
-					Party.stats[0].HP + "/" +
-					Party.stats[0].maxHP + "\n" +
-					Party.stats[0].MP + "/" +
-					Party.stats[0].maxMP;
-
-				statValue[1].text =
-					Party.stats[1].HP + "/" +
-					Party.stats[1].maxHP + "\n" +
-					Party.stats[1].MP + "/" +
-					Party.stats[1].maxMP;
+		try {
+            if (Party.stats.Count > 0) {
+				for (int i = 0; i <= Party.S.partyNdx; i++) {
+					statValue[i].text =
+						Party.stats[i].HP + "/" +
+						Party.stats[i].maxHP + "\n" +
+						Party.stats[i].MP + "/" +
+						Party.stats[i].maxMP;
+				}
 			}
 
 			goldValue.text = "" + Party.S.gold; 

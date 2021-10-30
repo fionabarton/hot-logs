@@ -10,14 +10,13 @@ public class PauseScreen : MonoBehaviour {
 	public List<Text> 	playerNameText;
 	public List<Text> 	statsNumText;
 	public Text 		fileStatsNumText;
-
-	public GameObject	player2PauseGO;// deactivates if Party has one member
+	public List<GameObject> playerGO;
 
 	// Items, Equip, Spells, Save Buttons
-	public List<GameObject>	buttonGO; // 0: Items, 1: Equip, 2: Spells, 3: Save
-	public List<Button>		buttonCS; // 0: Items, 1: Equip, 2: Spells, 3: Save
+	public List<GameObject>	buttonGO; // 0: Items, 1: Equip, 2: Spells, 3: Options, 4: Save
+	public List<Button>		buttonCS; // 0: Items, 1: Equip, 2: Spells, 3: Options, 4: Save
 
-    [Header ("Set Dynamically")]
+	[Header ("Set Dynamically")]
 	// Singleton
 	private static PauseScreen _S;
 	public static PauseScreen S { get { return _S; } set { _S = value; } }
@@ -50,11 +49,14 @@ public class PauseScreen : MonoBehaviour {
 			// Display Player Stats (Level, HP, MP, EXP)
 			UpdateGUI ();
 
-			// (De)Activate Player2 Button
-			if (Party.S.partyNdx >= 1) {
-				player2PauseGO.SetActive (true);
-			} else {
-				player2PauseGO.SetActive (false);
+			// Deactivate all player buttons 
+			for (int i = 0; i < playerGO.Count; i++) {
+				playerGO[i].SetActive(false);
+			}
+
+			// Activate player buttons depending on party amount
+			for (int i = 0; i <= Party.S.partyNdx; i++) {
+				playerGO[i].SetActive(true);
 			}
 
 			// Activate Cursor
