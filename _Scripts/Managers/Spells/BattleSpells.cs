@@ -367,10 +367,16 @@ public class BattleSpells : MonoBehaviour {
 
 		// Deactivate Enemy Button, Stats
 		BattlePlayerActions.S.EnemyButtonSetActive(enemyNdx, false);
+		
 		// Set Selected GameObject (Fight Button)
 		_.enemyStats[enemyNdx].isDead = true;
+
+		// Reset this enemy's nextTurnMoveNdx
+		_.nextTurnMoveNdx[enemyNdx] = 999;
+
 		// Remove Enemy from Turn Order
 		_.turnOrder.Remove (enemyTurnOrder);
+		
 		// Randomly select DropItem
 		BattleEnd.S.AddDroppedItems(enemyNdx);
 	}
