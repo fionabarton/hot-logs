@@ -52,6 +52,9 @@ public class BattleUI : MonoBehaviour {
 		} else if (_.turnNdx == _.turnOrder.IndexOf(Party.stats[1].name)) { // Player 2
 			Vector2 t = new Vector2(-6, 0.75f);
 			turnCursor.transform.localPosition = t;
+		} else if (_.turnNdx == _.turnOrder.IndexOf(Party.stats[2].name)) { // Player 3
+			Vector2 t = new Vector2(-7.5f, 1.875f);
+			turnCursor.transform.localPosition = t;
 		} else { // Enemies
 			float tPosX = go.transform.localPosition.x;
 			float tPosY = go.transform.localPosition.y;
@@ -76,6 +79,9 @@ public class BattleUI : MonoBehaviour {
 				targetCursorAnims[0].CrossFade("Target_Cursor_Flash_Left", 0);
 			} else if (go == BattlePlayerActions.S.playerButtonGO[1]) {
 				targetCursors[0].transform.localPosition = new Vector2((_.playerSprite[1].transform.position.x + 1), (_.playerSprite[1].transform.position.y + y));
+				targetCursorAnims[0].CrossFade("Target_Cursor_Flash_Left", 0);
+			} else if (go == BattlePlayerActions.S.playerButtonGO[2]) {
+				targetCursors[0].transform.localPosition = new Vector2((_.playerSprite[2].transform.position.x + 1), (_.playerSprite[2].transform.position.y + y));
 				targetCursorAnims[0].CrossFade("Target_Cursor_Flash_Left", 0);
 			} else if (go == BattlePlayerActions.S.enemyButtonGO[0]) {
 				targetCursors[0].transform.localPosition = new Vector2((_.enemySprite[0].transform.position.x + -1), (_.enemySprite[0].transform.position.y + y));

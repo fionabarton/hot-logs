@@ -7,13 +7,6 @@ using System.Linq;
 public class BattleInitiative : MonoBehaviour {
 	[Header("Set in Inspector")]
 	// Enemy GameObject Positions (varies depending on amount of enemies)
-	//List<Vector3>            enemyPositions = new List<Vector3> { 
-	//	new Vector3(4.5f, 1.375f, 0),
-	//	new Vector3(6, -0.5f, 0),
-	//	new Vector3(7.5f, 0.5f, 0),
-	//	new Vector3(4.5f, 0.25f, 0)
-	//};
-
 	List<Vector3> enemyPositions = new List<Vector3> {
 		new Vector3(4.5f, 1.375f, 0f),
 		new Vector3(6f, -0.5f, 0f),
@@ -54,37 +47,30 @@ public class BattleInitiative : MonoBehaviour {
 		_.partyQty = Party.S.partyNdx;
 
 		//////////////////////////////////////////// PARTY MEMBERS ////////////////////////////////////////////
-		// De/Activate Party Member Stats/Sprite
-		if (_.partyQty < 1) {
-			BattlePlayerActions.S.PlayerButtonAndStatsSetActive (0, true);
-			BattlePlayerActions.S.PlayerButtonAndStatsSetActive (1, false);
+		
+		// Deactivate Party Member Stats/Sprite
+		for(int i = 0; i < _.playerDead.Count; i++) {
+			BattlePlayerActions.S.PlayerButtonAndStatsSetActive(i, false);
 
 			// Reset PlayerDead bools
-			_.playerDead[0] = false;
-			_.playerDead[1] = true;
-
-			// Update Health Bars
-			ProgressBars.S.playerHealthBarsCS[0].UpdateBar(Party.stats[0].HP, Party.stats[0].maxHP);
-
-			// Update Magic Bars
-			ProgressBars.S.playerMagicBarsCS[0].UpdateBar(Party.stats[0].MP, Party.stats[0].maxMP, false);
-
-		} else if (_.partyQty >= 1) {
-			BattlePlayerActions.S.PlayerButtonAndStatsSetActive (0, true);
-			BattlePlayerActions.S.PlayerButtonAndStatsSetActive (1, true);
-
-			// Reset PlayerDead bools
-			_.playerDead[0] = false;
-			_.playerDead[1] = false;
-
-			// Update Health Bars
-			ProgressBars.S.playerHealthBarsCS[0].UpdateBar(Party.stats[0].HP, Party.stats[0].maxHP);
-			ProgressBars.S.playerHealthBarsCS[1].UpdateBar(Party.stats[1].HP, Party.stats[1].maxHP);
-
-			// Update Magic Bars
-			ProgressBars.S.playerMagicBarsCS[0].UpdateBar(Party.stats[0].MP, Party.stats[0].maxMP, false);
-			ProgressBars.S.playerMagicBarsCS[1].UpdateBar(Party.stats[1].MP, Party.stats[1].maxMP, false);
+			_.playerDead[i] = true;
 		}
+
+		// Activate Party Member Stats/Sprite
+		for (int i = 0; i <= _.partyQty; i++) {
+			BattlePlayerActions.S.PlayerButtonAndStatsSetActive(i, true);
+
+			// Reset PlayerDead bools
+			_.playerDead[i] = false;
+		}
+
+		// Update progress bars
+		ProgressBars.S.playerHealthBarsCS[0].UpdateBar(Party.stats[0].HP, Party.stats[0].maxHP);
+		ProgressBars.S.playerHealthBarsCS[1].UpdateBar(Party.stats[1].HP, Party.stats[1].maxHP);
+		ProgressBars.S.playerHealthBarsCS[2].UpdateBar(Party.stats[2].HP, Party.stats[2].maxHP);
+		ProgressBars.S.playerMagicBarsCS[0].UpdateBar(Party.stats[0].MP, Party.stats[0].maxMP, false);
+		ProgressBars.S.playerMagicBarsCS[1].UpdateBar(Party.stats[1].MP, Party.stats[1].maxMP, false);
+		ProgressBars.S.playerMagicBarsCS[2].UpdateBar(Party.stats[2].MP, Party.stats[2].maxMP, false);
 
 		//////////////////////////////////////////// ENEMIES ////////////////////////////////////////////
 
@@ -106,125 +92,79 @@ public class BattleInitiative : MonoBehaviour {
             _.enemyAmount = _.enemyStats[0].partyAmount;
 		}
 
-        // Set Enemy Amount (for testing)
-        //_.enemyAmount = 2;
+		// Set Enemy Amount (for testing)
+		//_.enemyAmount = 1;
 
-        // 1 Enemy
-        if (_.enemyAmount >= 1) {
-			// Activate/Deactivate Enemy Buttons, Stats, Sprites
-			BattlePlayerActions.S.EnemyButtonSetActive(0, true);
-			_.enemySprite[0].enabled = true;
-			BattlePlayerActions.S.EnemyButtonSetActive(1, false);
-			_.enemySprite[1].enabled = false;
-			BattlePlayerActions.S.EnemyButtonSetActive(2, false);
-			_.enemySprite[2].enabled = false;
+		// Deactivate all enemies
+		for (int i = 0; i < _.enemySprite.Count; i++) {
+			// Deactivate Enemy Buttons, Stats, Sprites
+			BattlePlayerActions.S.EnemyButtonSetActive(i, false);
+			_.enemySprite[i].enabled = false;
 
-			Battle.S.enemyAnimator[0].CrossFade("Arrival", 0);
+			// Reset EnemyDead bools:  For EnemyDeaths
+			_.enemyStats[i].isDead = true;
 
-			// Set Enemy Sprite Positions
+			ProgressBars.S.enemyHealthBarsCS[i].transform.parent.gameObject.SetActive(false);
+		}
+
+		// Activate enemies
+		for (int i = 0; i < _.enemyAmount; i++) {
+			// Deactivate Enemy Buttons, Stats, Sprites
+			BattlePlayerActions.S.EnemyButtonSetActive(i, true);
+			_.enemySprite[i].enabled = true;
+
+			Battle.S.enemyAnimator[i].CrossFade("Arrival", 0);
+
+			// HP
+			_.enemyStats[i].HP = _.enemyStats[i].maxHP;
+
+			// Gold/EXP payout
+			_.expToAdd += _.enemyStats[i].EXP;
+			_.goldToAdd += _.enemyStats[i].Gold;
+
+			// Reset EnemyDead bools:  For EnemyDeaths
+			_.enemyStats[i].isDead = false;
+
+			// Update Health Bars
+			ProgressBars.S.enemyHealthBarsCS[i].transform.parent.gameObject.SetActive(true);
+			ProgressBars.S.enemyHealthBarsCS[i].UpdateBar(_.enemyStats[i].HP, _.enemyStats[i].maxHP);
+		}
+
+		// Set Enemy Sprite Positions
+		if (_.enemyAmount >= 2) {
+			_.enemyGameObjectHolders[0].transform.position = enemyPositions[0];
+			_.enemyGameObjectHolders[1].transform.position = enemyPositions[1];
+			_.enemyGameObjectHolders[2].transform.position = enemyPositions[2];
+		} else {
 			_.enemyGameObjectHolders[0].transform.position = enemyPositions[3];
 			_.enemyGameObjectHolders[1].transform.position = enemyPositions[4];
 			_.enemyGameObjectHolders[2].transform.position = enemyPositions[5];
+		}
 
-			// HP
-			_.enemyStats[0].HP = _.enemyStats[0].maxHP;
+		// Set Turn Order
+		_.randomFactor = Random.Range (0, 100);
+		// No Surprise  
+		if (_.randomFactor >= 50) {
+			BattleDialogue.S.DisplayText ("Beware! A " + _.enemyStats[0].name + " has appeared!");
 
-			// Gold/EXP payout
-			_.expToAdd += _.enemyStats[0].EXP;
-			_.goldToAdd += _.enemyStats[0].Gold;
+			// Calculate Initiative
+			CalculateInitiative ();
 
-            // Reset EnemyDead bools:  For EnemyDeaths
-            _.enemyStats[0].isDead = false;
-            _.enemyStats[1].isDead = true;
-            _.enemyStats[2].isDead = true;
-
-            // Enable/Update Health Bars
-            ProgressBars.S.enemyHealthBarsCS[0].transform.parent.gameObject.SetActive(true);
-			ProgressBars.S.enemyHealthBarsCS[1].transform.parent.gameObject.SetActive(false);
-			ProgressBars.S.enemyHealthBarsCS[2].transform.parent.gameObject.SetActive(false);
-			ProgressBars.S.enemyHealthBarsCS[0].UpdateBar(_.enemyStats[0].HP, _.enemyStats[0].maxHP);
-
-			// 2 enemies
-			if (_.enemyAmount >= 2) {
-				// Activate Enemy Buttons, Stats, Sprites
-				BattlePlayerActions.S.EnemyButtonSetActive(1, true);
-				_.enemySprite[1].enabled = true;
-
-				Battle.S.enemyAnimator[1].CrossFade("Arrival", 0);
-
-				// Set Enemy Sprite Positions
-				_.enemyGameObjectHolders[0].transform.position = enemyPositions[0];
-				_.enemyGameObjectHolders[1].transform.position = enemyPositions[1];
-				_.enemyGameObjectHolders[2].transform.position = enemyPositions[2];
-
-				// HP
-				_.enemyStats[1].HP = _.enemyStats[1].maxHP;
-
-				// Gold/EXP payout
-				_.expToAdd += _.enemyStats[1].EXP;
-				_.goldToAdd += _.enemyStats[1].Gold;
-
-				// Reset EnemyDead bools:  For EnemyDeaths
-				_.enemyStats[1].isDead = false;
-
-				// Update Health Bars
-				ProgressBars.S.enemyHealthBarsCS[1].transform.parent.gameObject.SetActive(true);
-				ProgressBars.S.enemyHealthBarsCS[1].UpdateBar(_.enemyStats[1].HP, _.enemyStats[1].maxHP);
-
-				// 3 Enemies
-				if (_.enemyAmount >= 3) {
-					// Activate Enemy Buttons, Stats, Sprites
-					BattlePlayerActions.S.EnemyButtonSetActive(2, true);
-					_.enemySprite[2].enabled = true;
-
-					Battle.S.enemyAnimator[2].CrossFade("Arrival", 0);
-
-					// Set Enemy Sprite Positions
-					_.enemyGameObjectHolders[0].transform.position = enemyPositions[0];
-					_.enemyGameObjectHolders[1].transform.position = enemyPositions[1];
-					_.enemyGameObjectHolders[2].transform.position = enemyPositions[2];
-
-					// HP
-					_.enemyStats[2].HP = _.enemyStats[2].maxHP;
-
-					// Gold/EXP payout
-					_.expToAdd += _.enemyStats [2].EXP;
-					_.goldToAdd += _.enemyStats [2].Gold;
-
-					// Reset EnemyDead bools: For EnemyDeaths
-					_.enemyStats[2].isDead = false;
-
-					// Update Health Bars
-					ProgressBars.S.enemyHealthBarsCS[2].transform.parent.gameObject.SetActive(true);
-					ProgressBars.S.enemyHealthBarsCS[2].UpdateBar(_.enemyStats[2].HP, _.enemyStats[2].maxHP);
-				}
-			} 
-
-			// Set Turn Order
-			_.randomFactor = Random.Range (0, 100);
-			// No Surprise  
-			if (_.randomFactor >= 50) {
-				BattleDialogue.S.DisplayText ("Beware! A " + _.enemyStats[0].name + " has appeared!");
+		// Surprise! Initiative Randomized!
+		} else if (_.randomFactor < 50) {
+			// Party goes first!
+			if (_.randomFactor < 25) {
+				BattleDialogue.S.DisplayText(Party.stats[0].name + " surprises the Enemy!");
 
 				// Calculate Initiative
-				CalculateInitiative ();
+				CalculateInitiative ("party");
 
-			// Surprise! Initiative Randomized!
-			} else if (_.randomFactor < 50) {
-				// Party goes first!
-				if (_.randomFactor < 25) {
-					BattleDialogue.S.DisplayText(Party.stats[0].name + " surprises the Enemy!");
+			// Enemies go first!
+			} else {
+				BattleDialogue.S.DisplayText(_.enemyStats[0].name + " surprises the Player!");
 
-					// Calculate Initiative
-					CalculateInitiative ("party");
-
-				// Enemies go first!
-				} else {
-					BattleDialogue.S.DisplayText(_.enemyStats[0].name + " surprises the Player!");
-
-                    // Calculate Initiative
-                    CalculateInitiative ("enemies");
-				}
+                // Calculate Initiative
+                CalculateInitiative ("enemies");
 			}
 		}
 	}
@@ -239,9 +179,13 @@ public class BattleInitiative : MonoBehaviour {
 		RollInitiative(Party.stats[0].name, Party.stats[0].AGI, Party.stats[0].LVL, true, whoGoesFirst);
 		// Player 2
 		if (_.partyQty >= 1) {
-			RollInitiative(Party.stats[1].name, Party.stats[0].AGI, Party.stats[0].LVL, true, whoGoesFirst);
+			RollInitiative(Party.stats[1].name, Party.stats[1].AGI, Party.stats[1].LVL, true, whoGoesFirst);
+		// Player 3
+			if (_.partyQty >= 2) {
+				RollInitiative(Party.stats[2].name, Party.stats[2].AGI, Party.stats[2].LVL, true, whoGoesFirst);
+			}
 		}
-			
+
 		// Enemy 1
 		RollInitiative (_.enemyStats[0].name, _.enemyStats[0].AGI, _.enemyStats[0].LVL, false, whoGoesFirst);
 		// Enemy 2

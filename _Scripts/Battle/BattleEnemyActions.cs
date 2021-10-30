@@ -237,7 +237,7 @@ public class BattleEnemyActions : MonoBehaviour {
 				Battle.S.battleUIAnim.CrossFade ("BattleUI_Shake", 0); 
 
 				int qtyKilled = 0;
-				bool[] tDead = new bool[2];
+				bool[] tDead = new bool[3];
 
 				// Subtract 12-20 HP
 				_.attackDamage = Random.Range (10, 15);
@@ -301,7 +301,7 @@ public class BattleEnemyActions : MonoBehaviour {
 					// Audio: Death
 					AudioManager.S.PlaySFX(eSoundName.death);
 
-					PlayersDeath (qtyKilled, totalAttackDamage, tDead [0], tDead [1]);
+					PlayersDeath(qtyKilled, totalAttackDamage, tDead[0], tDead[1], tDead[2]);
 				}
 			}
 		} else {
@@ -379,17 +379,19 @@ public class BattleEnemyActions : MonoBehaviour {
 		BattleDialogue.S.DisplayText(_.enemyStats[_.EnemyNdx()].name + " called for backup...\n...and someone came!");
 	}
 
-	public void PlayersDeath (int qtyKilled, int totalAttackDamage, bool player1 = false, bool player2 = false) {
+	public void PlayersDeath (int qtyKilled, int totalAttackDamage, bool player1 = false, bool player2 = false, bool player3 = false) {
 		// Subtract from PartyQty 
 		_.partyQty -= qtyKilled;
 
 		switch (qtyKilled) {
 		case 1: BattleDialogue.S.DisplayText ("Used Crap BLAST Spell!\nHit ENTIRE party for an average of " + Utilities.S.CalculateAverage (totalAttackDamage, (Party.S.partyNdx + 1)) + " HP!" + "\nOne party member has been felled!"); break;
 		case 2: BattleDialogue.S.DisplayText ("Used Crap BLAST Spell!\nHit ENTIRE party for an average of " + Utilities.S.CalculateAverage (totalAttackDamage, (Party.S.partyNdx + 1)) + " HP!" + "\nTwo party members have been felled!"); break;
+		case 3: BattleDialogue.S.DisplayText("Used Crap BLAST Spell!\nHit ENTIRE party for an average of " + Utilities.S.CalculateAverage(totalAttackDamage, (Party.S.partyNdx + 1)) + " HP!" + "\nThree party members have been felled!"); break;
 		}
 
 		if (player1) { PlayersDeathHelper(0, Party.stats[0].name); }
 		if (player2) { PlayersDeathHelper(1, Party.stats[1].name); }
+		if (player3) { PlayersDeathHelper(2, Party.stats[2].name); }
 
 		// Add PartyDeath or NextTurn
 		if (_.partyQty < 0) {

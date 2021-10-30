@@ -127,7 +127,7 @@ public class Battle : MonoBehaviour {
 					case eBattleMode.playerTurn:
 						if (Input.GetButtonDown("SNES A Button")) {
 							// Reset Animation: Player Idle
-							for (int i = 0; i < playerAnimator.Count; i++) {
+							for (int i = 0; i <= Party.S.partyNdx; i++) {
 								if (!playerDead[i]) {
 									playerAnimator[i].CrossFade("Idle", 0);
 								} else {
@@ -168,7 +168,7 @@ public class Battle : MonoBehaviour {
 					case eBattleMode.enemyTurn:
 						if (Input.GetButtonDown("SNES A Button")) {
 							// Reset Animation: Player Idle
-							for (int i = 0; i < playerAnimator.Count; i++) {
+							for (int i = 0; i <= Party.S.partyNdx; i++) {
 								if (!playerDead[i]) {
 									playerAnimator[i].CrossFade("Idle", 0);
 								} else {
@@ -230,7 +230,7 @@ public class Battle : MonoBehaviour {
 						break;
 					case eBattleMode.multiLvlUp:
 						if (Input.GetButtonDown("SNES A Button")) {
-							BattleEnd.S.MultiLvlUp();
+							BattleEnd.S.MultiLvlUp(BattleEnd.S.membersToLevelUp[0]);
 						}
 						break;
 					case eBattleMode.returnToWorld:
@@ -390,7 +390,7 @@ public class Battle : MonoBehaviour {
 		BattleInitiative.S.Initiative();
 
 		// Switch mode (playerTurn or enemyTurn) based off of turnNdx
-		if (turnNdx == turnOrder.IndexOf(Party.stats[0].name) || turnNdx == turnOrder.IndexOf(Party.stats[1].name)) {
+		if (turnNdx == turnOrder.IndexOf(Party.stats[0].name) || turnNdx == turnOrder.IndexOf(Party.stats[1].name) || turnNdx == turnOrder.IndexOf(Party.stats[2].name)) {
 			battleMode = eBattleMode.playerTurn;
 		} else if (turnNdx == turnOrder.IndexOf(enemyStats[0].name) || turnNdx == turnOrder.IndexOf(enemyStats[1].name) || turnNdx == turnOrder.IndexOf(enemyStats[2].name)) {
 			battleMode = eBattleMode.enemyTurn;
@@ -411,7 +411,7 @@ public class Battle : MonoBehaviour {
 		previousSelectedGameObject = BattlePlayerActions.S.buttonsGO[0];
 
 		// Switch mode (playerTurn or enemyTurn) based off of turnNdx
-		if (turnNdx == turnOrder.IndexOf(Party.stats[0].name) || turnNdx == turnOrder.IndexOf(Party.stats[1].name)) {
+		if (turnNdx == turnOrder.IndexOf(Party.stats[0].name) || turnNdx == turnOrder.IndexOf(Party.stats[1].name) || turnNdx == turnOrder.IndexOf(Party.stats[2].name)) {
 			battleMode = eBattleMode.playerTurn;
 		} else if (turnNdx == turnOrder.IndexOf(enemyStats[0].name) || turnNdx == turnOrder.IndexOf(enemyStats[1].name) || turnNdx == turnOrder.IndexOf(enemyStats[2].name)) {
 			battleMode = eBattleMode.enemyTurn;
@@ -420,7 +420,7 @@ public class Battle : MonoBehaviour {
 
 	// return current player turn index
 	public int PlayerNdx() {
-		if (turnNdx == turnOrder.IndexOf(Party.stats[0].name)) { return 0; } else if (turnNdx == turnOrder.IndexOf(Party.stats[1].name)) { return 1; } else { return 0; }
+		if (turnNdx == turnOrder.IndexOf(Party.stats[0].name)) { return 0; } else if (turnNdx == turnOrder.IndexOf(Party.stats[1].name)) { return 1; } else { return 2; } 
 	}
 
 	// return current enemy turn index																																						
