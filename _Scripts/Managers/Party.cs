@@ -45,6 +45,16 @@ public class Party : MonoBehaviour {
 			new List<int> { 0, 0, 9, 23, 55, 110, 250, 450, 850, 1300, 2100 },
 			false)
         );
+
+		// Player 3
+		stats.Add(new PartyStats("Fake Bill", 25, 25, 25, 10, 10, 10,
+			1, 1, 1, 1, 2, 2, 2, 2,
+			0, 1, 6,
+			new List<Spell> { SpellManager.S.spells[4], SpellManager.S.spells[3], SpellManager.S.spells[0], SpellManager.S.spells[2], SpellManager.S.spells[1], SpellManager.S.spells[5] },
+			new List<bool>(new bool[30]),
+			new List<int> { 0, 0, 9, 23, 55, 110, 250, 450, 850, 1300, 2100 },
+			false)
+		);
 	}
 
     // HP
@@ -123,7 +133,7 @@ public class Party : MonoBehaviour {
         for (int i = 0; i < stats.Count; i++) {
 			// Loop through levels 10 through 2
             for (int j = 10; j >= 2; j--) {
-                if (stats[i].EXP > stats[i].expToNextLevel[j] && !stats[i].hasReachedThisLevel[j]) {
+                if (stats[i].EXP >= stats[i].expToNextLevel[j] && !stats[i].hasReachedThisLevel[j]) {
                     LevelUp(j, i);
                 }
             }
