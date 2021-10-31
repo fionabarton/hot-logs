@@ -39,6 +39,13 @@ public class AudioManager : MonoBehaviour {
 	}
 
 	public void PlaySong(eSongName songName) {
+		// Return if this song is already playing
+		if(previousSongNdx != 999) { // Allows bgmCS[0] to play if it's the first song when the game starts
+			if (currentSongNdx == (int)songName) {
+				return;
+			}
+		}
+		
 		// Set previous song index
 		previousSongNdx = currentSongNdx;
 
