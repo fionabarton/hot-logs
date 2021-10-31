@@ -52,6 +52,10 @@ public class EquipScreen : MonoBehaviour {
         playerEquipment.Add(new List<Item> { 
 			ItemManager.S.items[18], ItemManager.S.items[19], ItemManager.S.items[20], ItemManager.S.items[21] 
 		});
+
+		playerEquipment.Add(new List<Item> {
+			ItemManager.S.items[18], ItemManager.S.items[19], ItemManager.S.items[20], ItemManager.S.items[21]
+		});
 	}
 
     void OnEnable () {
