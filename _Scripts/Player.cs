@@ -45,11 +45,6 @@ public class Player : MonoBehaviour {
 
 	public bool 				canMove = true;
 
-	// Invincible
-	//public bool 				invincible; // enables StartBattle() in RPGEnemy.cs upon collision w/ Enemies
-	//private float				flashRate = 0.25f;
-	//private float				flashTimer;
-
 	// Overworld Player Stats timer to appear on screen
 	public float 				playerUITimer;
 
@@ -61,8 +56,8 @@ public class Player : MonoBehaviour {
 	public bool					alreadyTriggered; // Prevents triggering multiple triggers
 	public bool					isBattling;
 
-	// What ground level the Player is on, used in SwapLayerTrigger.cs
-	public bool					isOnEvenLevel = true;
+	// The ground level that the player is on
+	public int					level = 1;
 
 	public Invincibility		invincibility;
 
@@ -85,37 +80,6 @@ public class Player : MonoBehaviour {
     void Start() {
 		invincibility = GetComponent<Invincibility>();
     }
-
-    //public void StartInvincibility() {
-    //	invincible = true;
-
-    //	flashRate = 0.25f;
-
-    //	flashTimer = Time.time + 3f;
-
-    //	SpriteFlash();
-    //}
-    //public void SpriteFlash() {
-    //	// Enable SpriteRenderers
-    //	sRend.enabled = !sRend.enabled;
-
-    //	flashRate -= 0.01f;
-    //	Invoke("SpriteFlash", flashRate);
-    //}
-
-    //public void EndInvincibility(){
-    //	invincible = false;
-
-    //	// Enable SpriteRenderer
-    //	sRend.enabled = true;
-
-    //	// Disable then enable the player’s box collider to call OnCollisionEnter2D
-    //	// on an Enemy script if it has already collided with an enemy
-    //	boxColl.enabled = false;
-    //	boxColl.enabled = true;
-
-    //	CancelInvoke("SpriteFlash");
-    //}
 
     #region Update Loop
     public void Loop () {
@@ -315,7 +279,7 @@ public class Player : MonoBehaviour {
 
 		// Overworld Player Stats UI
 		if (!RPG.S.paused && !DialogueManager.S.TextBoxSpriteGO.activeInHierarchy) {
-			if (RPG.S.currentSceneName != "Battle"){
+			if (RPG.S.currentScene != "Battle"){
 				if (mode == eRPGMode.idle) {
 					// Set amount of time for Player Stats to stay onscreen
 					playerUITimer = Time.time + 1.5f;
@@ -377,7 +341,7 @@ public class Player : MonoBehaviour {
 					switch (mode) {
 						case eRPGMode.idle:
 							if (!RPG.S.paused && !DialogueManager.S.TextBoxSpriteGO.activeInHierarchy) {
-								if (RPG.S.currentSceneName != "Battle") {
+								if (RPG.S.currentScene != "Battle") {
 									if (!PlayerButtons.S.gameObject.activeInHierarchy) {
 										if (Time.time >= playerUITimer) {
 											PlayerButtons.S.gameObject.SetActive(true);
