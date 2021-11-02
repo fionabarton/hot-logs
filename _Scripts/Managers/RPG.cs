@@ -148,13 +148,17 @@ public class RPG : MonoBehaviour {
 		// Deactivate Key Items (Keys, etc.)
 		KeyItemManager.S.SetObjects();
 
-		// EnemyManager: populate and clear lists of enemies in currentScene
+		// Get all enemy gameObjects and swap layer sprite renderers
 		if (currentScene != "Battle") {
-			EnemyManager.S.PopulateEnemyGOList();
+			EnemyManager.S.GetEnemyGameObjects();
+			SwapLayerManager.S.GetSpriteRenderers();
 		} 
+
+		// Get all enemy gameobjects' death status, and clear lists in EnemyManager.cs
 		if (currentScene != "Battle" && previousScene != "Battle") {
-			EnemyManager.S.PopulateEnemyDeadList();
+			EnemyManager.S.GetEnemyDeathStatus();
 			EnemyManager.S.enemyPositions.Clear();
+			EnemyManager.S.enemyLevels.Clear();
 		}
 
 		////////////// Rain //////////////
@@ -193,7 +197,7 @@ public class RPG : MonoBehaviour {
 				}
 				break;
 			case "Overworld_1":
-			case "Cave_1":
+			case "Area_5":
 			case "Area_2":
 				AudioManager.S.PlaySong(eSongName.things);
 				break;
@@ -264,16 +268,19 @@ public class RPG : MonoBehaviour {
 				Player.S.gameObject.SetActive(true);
 				Player.S.canMove = true;
 
-				// Reset EnemyManager if New Scene
+				// Reset EnemyManager list
 				if (currentScene != previousPreviousScene) {
 					EnemyManager.S.enemiesBattled.Clear();
 				}
-				EnemyManager.S.DetermineWhichEnemiesAreDead();
+
+				// Set previously cached enemy and swap layer settings
+				EnemyManager.S.SetEnemyDeathStatus();
 				EnemyManager.S.DeactivateDeadEnemies();
 				EnemyManager.S.SetEnemyPositions();
-
-				if(previousScene == "Battle") {
+				EnemyManager.S.SetEnemyLevels();
+				if (previousScene == "Battle") {
 					EnemyManager.S.SetEnemyMovement();
+					SwapLayerManager.S.SetLayerNames();
 				}
 				
 				// Freeze Camera
