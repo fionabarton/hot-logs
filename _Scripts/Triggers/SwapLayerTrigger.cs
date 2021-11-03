@@ -1,46 +1,58 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class SwapLayerTrigger : MonoBehaviour{
     [Header("Set in Inspector")]
 	// Colliders that enable/disable when Player exits trigger
-	public List<GameObject> enableColliders = new List<GameObject>();
-	public List<GameObject> disableColliders = new List<GameObject>();
+	public List<GameObject>		enableColliders = new List<GameObject>();
+	public List<GameObject>		disableColliders = new List<GameObject>();
 
 	public List<SpriteRenderer> sRends = new List<SpriteRenderer>();
 
 	// Variables that are set when Player exits trigger
-	public bool		levelIsEven;
-	public string	exitLayerName; // Player or Foreground
-	public string	enterLayerName; // Player or Foreground
+	public string				exitLayerName; // Player or Foreground
 
-	void OnEnable() {
-        if (Player.S.isOnEvenLevel == levelIsEven) {
-            if (levelIsEven) {
-				DoIt(true, exitLayerName);
-			} else {
-				DoIt(false, enterLayerName);
-			}
-		} else {
-			if (levelIsEven) {
-				DoIt(false, enterLayerName);
-			} else {
-				DoIt(true, exitLayerName);
+	public int					level;
+
+    void OnEnable() {
+        if (Player.S.level == level) {
+            DoIt(true, exitLayerName);
+        }
+    }
+
+	void OnTriggerEnter2D(Collider2D coll) {
+		// Set player's level
+		if (coll.gameObject.tag == "PlayerTrigger") {
+			Player.S.level = level;
+		}
+
+		// Set enemy's level
+		if (coll.gameObject.tag == "Enemy") {
+			Enemy enemy = coll.gameObject.GetComponent<Enemy>();
+			if (enemy != null) {
+				enemy.level = level;
 			}
 		}
 	}
 
 	void OnTriggerExit2D(Collider2D coll) {
+        // Set player's level
 		if (coll.gameObject.tag == "PlayerTrigger") {
-			// Indicate Player whether is on even or level
-			Player.S.isOnEvenLevel = levelIsEven;
+			Player.S.level = level;
 
 			DoIt(true, exitLayerName);
 		}
+
+        // Set enemy's level
+        if (coll.gameObject.tag == "Enemy") {
+			Enemy enemy = coll.gameObject.GetComponent<Enemy>();
+			if(enemy != null) {
+				enemy.level = level;
+			}
+		}
 	}
 
-	void DoIt(bool activateColliders, string layerName) {	
+	void DoIt(bool activateColliders, string layerName) {
 		if (enableColliders != null) {
 			for (int i = 0; i < enableColliders.Count; i++) {
 				enableColliders[i].SetActive(activateColliders);
@@ -54,8 +66,10 @@ public class SwapLayerTrigger : MonoBehaviour{
 		}
 
 		// Set Sorting Layer 
-		for (int i = 0; i < sRends.Count; i++) {
-			sRends[i].sortingLayerName = layerName;
+		if (sRends != null) {
+			for (int i = 0; i < sRends.Count; i++) {
+				sRends[i].sortingLayerName = layerName;
+			}
 		}
-	}
+    }
 }
