@@ -17,8 +17,6 @@ public class AudioManager : MonoBehaviour {
 	public int					previousSongNdx;
 	public int 					currentSongNdx;
 
-	public float				previousVolumeLvl;
-
 	// Singleton
 	private static AudioManager _S;
 	public static AudioManager S { get { return _S; } set { _S = value; } }
@@ -34,11 +32,32 @@ public class AudioManager : MonoBehaviour {
 
     public void Loop(){
 		if (Input.GetKeyDown (KeyCode.M)) {
-			PauseMuteSong();
+			PauseAndMuteAudio();
 		}
 	}
 
-	public void PlaySong(eSongName songName) {
+	// Play a song that doesn't loop, then when it's over, resume playback of the song that was playing previously
+    public IEnumerator PlaySongThenResumePreviousSong(int ndx) {
+        // Get current song's playback time, then stop its playback
+        float time = bgmCS[currentSongNdx].time;
+		bgmCS[currentSongNdx].Stop();
+
+		// Play new song
+        bgmCS[ndx].Play();
+
+        // Get new song length
+        AudioClip a = bgmCS[ndx].clip;
+        float songLength = a.length + 1;
+
+        // Wait until new song is done playing
+        yield return new WaitForSeconds(songLength);
+
+        // Resume playback of the song that was playing previously
+        bgmCS[currentSongNdx].time = time;
+        bgmCS[currentSongNdx].Play();
+    }
+
+    public void PlaySong(eSongName songName) {
 		// Return if this song is already playing
 		if(previousSongNdx != 999) { // Allows bgmCS[0] to play if it's the first song when the game starts
 			if (currentSongNdx == (int)songName) {
@@ -52,11 +71,15 @@ public class AudioManager : MonoBehaviour {
 		// Set current song index
 		currentSongNdx = (int)songName;
 
+		// Reset current song time
+		bgmCS[currentSongNdx].time = 0;
+
 		// Stop ALL BGM
 		for (int i = 0; i < bgmCS.Count; i++) {
 			bgmCS[i].Stop();
 		}
 
+		// Play song
 		switch (songName) {
 			case eSongName.nineteenForty: bgmCS[0].Play(); break;
 			case eSongName.never: bgmCS[1].Play(); break;
@@ -70,16 +93,12 @@ public class AudioManager : MonoBehaviour {
 		}
 	}
 
-	public void PauseMuteSong(){
+	public void PauseAndMuteAudio(){
 		if (!AudioListener.pause) {
-			previousVolumeLvl = AudioListener.volume;
 			AudioListener.pause = true;
-
 			bgmCS[currentSongNdx].Pause();
 		} else {
-			AudioListener.volume = previousVolumeLvl;
 			AudioListener.pause = false;
-
 			bgmCS[currentSongNdx].Play();
 		}
 	}
