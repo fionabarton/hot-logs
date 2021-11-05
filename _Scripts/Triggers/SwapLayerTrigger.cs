@@ -16,14 +16,17 @@ public class SwapLayerTrigger : MonoBehaviour{
 
     void OnEnable() {
         if (Player.S.level == level) {
-            DoIt(true, exitLayerName);
+            ActivateColliders();
         }
     }
 
+	// Set player/enemy ground level
 	void OnTriggerEnter2D(Collider2D coll) {
 		// Set player's level
 		if (coll.gameObject.tag == "PlayerTrigger") {
 			Player.S.level = level;
+
+			ActivateColliders();
 		}
 
 		// Set enemy's level
@@ -35,41 +38,53 @@ public class SwapLayerTrigger : MonoBehaviour{
 		}
 	}
 
-	void OnTriggerExit2D(Collider2D coll) {
-        // Set player's level
-		if (coll.gameObject.tag == "PlayerTrigger") {
-			Player.S.level = level;
+	// Set player/enemy isOnSwapLayerTrigger to true
+	void OnTriggerStay2D(Collider2D coll) {
+		SetIsOnSwapLayerTrigger(coll, true);
+	}
 
-			DoIt(true, exitLayerName);
+	// Set player/enemy isOnSwapLayerTrigger to false
+	void OnTriggerExit2D(Collider2D coll) {
+		SetIsOnSwapLayerTrigger(coll, false);
+	}
+
+	void SetIsOnSwapLayerTrigger(Collider2D coll, bool trueOrFalse) {
+		// Set player's isOnSwapLayerTrigger
+		if (coll.gameObject.tag == "PlayerTrigger") {
+			Player.S.isOnSwapLayerTrigger = trueOrFalse;
 		}
 
-        // Set enemy's level
-        if (coll.gameObject.tag == "Enemy") {
+		// Set enemy's isOnSwapLayerTrigger
+		if (coll.gameObject.tag == "Enemy") {
 			Enemy enemy = coll.gameObject.GetComponent<Enemy>();
-			if(enemy != null) {
-				enemy.level = level;
+			if (enemy != null) {
+				enemy.isOnSwapLayerTrigger = trueOrFalse;
 			}
 		}
 	}
 
-	void DoIt(bool activateColliders, string layerName) {
+	void ActivateColliders() {
 		if (enableColliders != null) {
 			for (int i = 0; i < enableColliders.Count; i++) {
-				enableColliders[i].SetActive(activateColliders);
+				enableColliders[i].SetActive(true);
 			}
 		}
 
 		if (disableColliders != null) {
 			for (int i = 0; i < disableColliders.Count; i++) {
-				disableColliders[i].SetActive(!activateColliders);
+				disableColliders[i].SetActive(false);
 			}
 		}
 
-		// Set Sorting Layer 
+		// Set sorting layer name for each sprite renderer
+		SetSortingLayerName();
+	}
+
+	void SetSortingLayerName() {
 		if (sRends != null) {
 			for (int i = 0; i < sRends.Count; i++) {
-				sRends[i].sortingLayerName = layerName;
+				sRends[i].sortingLayerName = exitLayerName;
 			}
 		}
-    }
+	}
 }
