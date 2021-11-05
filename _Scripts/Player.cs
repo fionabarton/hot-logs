@@ -59,6 +59,10 @@ public class Player : MonoBehaviour {
 	// The ground level that the player is on
 	public int					level = 1;
 
+	// If player/enemy are both on a swap layer trigger,
+	// Call StartBattle() OnCollision even if they're not on the same ground level
+	public bool					isOnSwapLayerTrigger;
+
 	public Invincibility		invincibility;
 
 	void Awake () {
@@ -318,16 +322,6 @@ public class Player : MonoBehaviour {
 
     #region Fixed Loop
     public void FixedLoop () {
-		//if (!RPG.S.paused) {
-		//	if (invincible) {
-		//		if (Time.time >= flashTimer) {
-		//			EndInvincibility();
-		//		} else {
-		//			//SpriteFlash();
-		//		}
-		//	}
-		//}
-
 		if (canMove) {
 			if (!RPG.S.paused) {
 				if (gameObject.activeInHierarchy) {
