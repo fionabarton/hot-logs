@@ -21,6 +21,9 @@ public class Battle : MonoBehaviour {
 	public List<GameObject>	playerShields;
 	public List<GameObject>	enemyShields;
 
+	// Enemy "Help!" Word Bubbles
+	public List<GameObject> enemyHelpBubbles;
+
 	public List<Animator>	playerAnimator;
 	public List<Animator>	enemyAnimator;
 
@@ -327,7 +330,10 @@ public class Battle : MonoBehaviour {
 	#endregion
 
 	///////////////////////////////// IMPORT STATS /////////////////////////////////
-	public void ImportEnemyStats(List<EnemyStats> eStats) {
+	public void ImportEnemyStats(List<EnemyStats> eStats, int enemyAmount) {
+		// Set enemy amount
+		this.enemyAmount = enemyAmount;
+		
 		// Clear/Reset Enemy Stats
 		enemyStats.Clear();
 
@@ -364,6 +370,11 @@ public class Battle : MonoBehaviour {
 		// Clear Dropped Items
 		droppedItems.Clear();
 
+		// Reset next turn move indexes
+		for(int i = 0; i < nextTurnMoveNdx.Count; i++) {
+			nextTurnMoveNdx[i] = 999;
+		}
+
 		// Reset BattlePlayerActions.S.buttonsCS text color
 		Utilities.S.SetTextColor(BattlePlayerActions.S.buttonsCS, new Color32(39, 201, 255, 255));
 
@@ -379,6 +390,9 @@ public class Battle : MonoBehaviour {
 
 		// Deactivate Enemy Shields
 		Utilities.S.SetActiveList(enemyShields, false);
+
+		// Deactivate Enemy "Help" Word Bubbles
+		Utilities.S.SetActiveList(enemyHelpBubbles, false);
 
 		// Reset Exp/Gold to add
 		expToAdd = 0;

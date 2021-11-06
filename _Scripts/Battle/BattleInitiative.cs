@@ -75,7 +75,7 @@ public class BattleInitiative : MonoBehaviour {
 		//////////////////////////////////////////// ENEMIES ////////////////////////////////////////////
 
 		// Randomly Set Enemy Amount
-		if (_.enemyStats[0].partyAmount == 0) {
+		if (_.enemyAmount == 999) {
 			_.randomFactor = Random.Range(0, 100);
 			if (_.randomFactor < 33){
 				_.enemyAmount = 1;
@@ -86,10 +86,8 @@ public class BattleInitiative : MonoBehaviour {
 			else if (_.randomFactor > 66){
 				_.enemyAmount = 3;
 			}
-		}
-        // Set Enemy Amount to a fixed number
-        else{
-            _.enemyAmount = _.enemyStats[0].partyAmount;
+		}else if(_.enemyAmount == 0) {
+			_.enemyAmount = 1;
 		}
 
 		// Set Enemy Amount (for testing)
