@@ -48,9 +48,6 @@ public class EnemyStats : ScriptableObject
 	// QuestNdx (If == 0, doesn't progress story) && doesn't StartBattle OnCollision
 	public int			questNdx;
 
-	// Party Amount (If == 0, randomly assign party amount)
-	public int			partyAmount;
-
 	// Default Move
 	public float		chanceToCallMove;
 	public int			defaultMove;
