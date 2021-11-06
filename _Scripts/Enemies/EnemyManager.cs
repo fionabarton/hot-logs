@@ -9,6 +9,7 @@ public class EnemyManager : MonoBehaviour
     public List<GameObject> enemyGO;
     public List<Vector3>    enemyPositions;
     public List<int>        enemyLevels;
+    public List<int>        enemyAmounts;
 
     public List<int>        enemiesBattled; // Added onto when Enemy collides with Player
     public int              currentEnemyNdx; // Enemy currently engaged in battle 
@@ -34,7 +35,7 @@ public class EnemyManager : MonoBehaviour
             }
         }
     }
-
+    /////////////////////////////////////////////////////////////////////////////////////////
     // Get list of the positions of all enemies in current scene
     public void GetEnemyPositions() {
         // Clear/reset list
@@ -48,7 +49,7 @@ public class EnemyManager : MonoBehaviour
         } 
     }
 
-    // After battle, set enemy positions back to where they were right before the battle started
+    // After battle, set enemy positions back to where they were before the battle started
     public void SetEnemyPositions() {
         for (int i = 0; i < enemyGO.Count; i++) {
             if (i < enemyPositions.Count) {
@@ -56,7 +57,7 @@ public class EnemyManager : MonoBehaviour
             }
         }
     }
-
+    /////////////////////////////////////////////////////////////////////////////////////////
     // Get list of the levels of all enemies in current scene
     public void GetEnemyLevels() {
         // Clear/reset list
@@ -72,8 +73,8 @@ public class EnemyManager : MonoBehaviour
             }
         }
     }
-
-    // After battle, set enemy levels back to where they were right before the battle started
+    
+    // After battle, set enemy levels back to what they were before the battle started
     public void SetEnemyLevels() {
         for (int i = 0; i < enemyGO.Count; i++) {
             if (i < enemyLevels.Count) {
@@ -84,7 +85,41 @@ public class EnemyManager : MonoBehaviour
             }
         }
     }
+    /////////////////////////////////////////////////////////////////////////////////////////
+    // Get list of the enemy amounts for each enemy in current scene
+    public void GetEnemyAmounts() {
+        // Clear/reset list
+        enemyAmounts.Clear();
 
+        GameObject enemiesGO = GameObject.Find("Enemies");
+        if (enemiesGO != null) {
+            foreach (Transform child in enemiesGO.transform) {
+                Enemy enemy = child.GetComponent<Enemy>();
+                if (enemy != null) {
+                    enemyAmounts.Add(enemy.enemyAmount);
+                }
+            }
+        }
+    }
+
+    // After battle, set enemy amounts back to what they were before the battle started
+    public void SetEnemyAmounts() {
+        for (int i = 0; i < enemyAmounts.Count; i++) {
+            if (i < enemyAmounts.Count) {
+                Enemy enemy = enemyGO[i].GetComponent<Enemy>();
+                if (enemy != null) {
+                    if(i != currentEnemyNdx) {
+
+                        enemy.enemyAmount = enemyAmounts[i];
+                    } else {
+                        // Set current enemy amount
+                        enemy.enemyAmount = Battle.S.enemyAmount;
+                    }
+                }
+            }
+        }
+    }
+    /////////////////////////////////////////////////////////////////////////////////////////
     // Get list of all enemies and whether or not they're dead
     public void GetEnemyDeathStatus() {
         // Clear/reset list
@@ -118,7 +153,7 @@ public class EnemyManager : MonoBehaviour
             }
         }
     }
-
+    /////////////////////////////////////////////////////////////////////////////////////////
     // Caches what the enemy's movement will be set to in overworld if the party has died,
     // or the party or enemies have run
     public void GetEnemyMovement(eMovement movement) {
