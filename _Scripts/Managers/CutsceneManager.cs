@@ -78,9 +78,11 @@ public class CutsceneManager : MonoBehaviour
                             break;
                         case 1: // Display Dialogue 
                             message.Clear();
-                            message.Add("<color=yellow><Mac></color> Whoa.");
-                            message.Add("Is this working?");
-                            message.Add("Well, IT BUTTER BE!!!");
+                            message.Add("<color=yellow><Mac></color> Hey.");
+                            message.Add("Let's see if the following sequence of events are executed as expected:");
+                            message.Add("1) The camera focuses on you, followed by you saying some useless drivel.");
+                            message.Add("2) Then, the camera focuses on me while I run around like a fool.");
+                            message.Add("3) Finally, upon my return to the position I had originally started at, I shall say, \"some useless drivel\".");
                             DialogueManager.S.DisplayText(message);
                             break;
                         case 2: // Display Dialogue 
@@ -95,12 +97,12 @@ public class CutsceneManager : MonoBehaviour
                             FreezePlayer();
 
                             List<int> directions = new List<int>() {0,1,2,3};
-                            List<int> distances = new List<int>() {2,2,2,2};
+                            List<float> distances = new List<float>() {2,2,2,2};
                             MoveCharacter(actors[0], directions, distances, 5);
                             break;
                         case 5: // Display Dialogue 
                             message.Clear();
-                            message.Add("<color=yellow><Mac></color> I knew it was working!");
+                            message.Add("<color=yellow><Mac></color> Some useless drivel.");
                             DialogueManager.S.DisplayText(message);
                             break;
                         case 6: // Enable DialogueTrigger & reset CutsceneManager
@@ -121,11 +123,11 @@ public class CutsceneManager : MonoBehaviour
                             FreezePlayer();
 
                             List<int> directions1 = new List<int>() { 2, 1 };
-                            List<int> distances1 = new List<int>() { 2, 2 };
+                            List<float> distances1 = new List<float>() { 1.5f, 2 };
                             MoveCharacter(actors[0], directions1, distances1);
 
                             List<int> directions2 = new List<int>() { 0, 1 };
-                            List<int> distances2 = new List<int>() { 2, 2 };
+                            List<float> distances2 = new List<float>() { 1.5f, 2 };
                             MoveCharacter(actors[1], directions2, distances2);
 
                             List<int> directions3 = new List<int>() { 1 };
@@ -138,7 +140,8 @@ public class CutsceneManager : MonoBehaviour
                             break;
                         case 2: // Display Dialogue  
                             message.Clear();
-                            message.Add("<color=yellow><Bim></color> Here, have a magic potion!");
+                            message.Add("<color=yellow><Bim></color> Hey, thanks for watching us slowly reposition ourselves.");
+                            message.Add("Have a magic potion on us!");
                             DialogueManager.S.DisplayText(message);
                             break;
                         case 3: // Change Cam Target
@@ -208,7 +211,7 @@ public class CutsceneManager : MonoBehaviour
                             break;
                         case 4: // Reset CutsceneManager & Start Battle
                             Enemy enemy = actors[0].GetComponent<Enemy>();
-                            StartBattle(enemy.stats);
+                            StartBattle(enemy.stats, 1);
 
                             EndScene();
                             return;
@@ -256,7 +259,7 @@ public class CutsceneManager : MonoBehaviour
     }
 
     // Move Character
-    void MoveCharacter(GameObject actor, List<int> walkDirections, List<int> distances, int speed = 2) {
+    void MoveCharacter(GameObject actor, List<int> walkDirections, List<float> distances, int speed = 2) {
         MoveCharacter m = actor.GetComponent<MoveCharacter>();
 
         m.speed = speed;
@@ -290,9 +293,9 @@ public class CutsceneManager : MonoBehaviour
     }
 
     // Start Battle 
-    public void StartBattle(List<EnemyStats> enemyStats) {
+    public void StartBattle(List<EnemyStats> enemyStats, int enemyAmount) {
         if (enemyStats != null) {
-            RPG.S.StartBattle(enemyStats);
+            RPG.S.StartBattle(enemyStats, enemyAmount);
         } else {
             Debug.LogWarning("EnemyStats not assigned in Inspector!");
         }
@@ -318,10 +321,9 @@ public class CutsceneManager : MonoBehaviour
                 dt.enabled = true;
                 break;
             case 1: // Spike Mini Bosses
-                Utilities.S.SetPosition(actors[0], 3.5f, 8);
+                Utilities.S.SetPosition(actors[0], 11.5f, 44.75f);
+                Utilities.S.SetPosition(actors[1], 15.5f, 44.75f);
                 Utilities.S.SetScale(actors[0], -1, 1);
-
-                Utilities.S.SetPosition(actors[1], 8.5f, 8);
 
                 dt = actors[0].GetComponent<DialogueTrigger>();
                 dt.enabled = true;

@@ -159,6 +159,7 @@ public class RPG : MonoBehaviour {
 			EnemyManager.S.GetEnemyDeathStatus();
 			EnemyManager.S.enemyPositions.Clear();
 			EnemyManager.S.enemyLevels.Clear();
+			EnemyManager.S.enemyAmounts.Clear();
 		}
 
 		////////////// Rain //////////////
@@ -278,6 +279,7 @@ public class RPG : MonoBehaviour {
 				EnemyManager.S.DeactivateDeadEnemies();
 				EnemyManager.S.SetEnemyPositions();
 				EnemyManager.S.SetEnemyLevels();
+				EnemyManager.S.SetEnemyAmounts();
 				if (previousScene == "Battle") {
 					EnemyManager.S.SetEnemyMovement();
 					SwapLayerManager.S.SetLayerNames();
@@ -309,8 +311,8 @@ public class RPG : MonoBehaviour {
 		}
 	}
 
-	public void StartBattle(List<EnemyStats> eStats) {
-		Battle.S.ImportEnemyStats(eStats);
+	public void StartBattle(List<EnemyStats> eStats, int enemyAmount) {
+		Battle.S.ImportEnemyStats(eStats, enemyAmount);
 
 		// Set Respawn Position
 		Player.S.respawnPos = Player.S.gameObject.transform.position;
