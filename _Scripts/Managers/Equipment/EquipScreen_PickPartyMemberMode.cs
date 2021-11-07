@@ -28,6 +28,8 @@ public class EquipScreen_PickPartyMemberMode : MonoBehaviour {
 			// Position Cursor
 			Utilities.S.PositionCursor(PlayerButtons.S.buttonsCS[equipScreen.playerNdx].gameObject, 0, 60, 3);
 
+			equipScreen.DisplayCurrentStats(equipScreen.playerNdx);
+
 			// Buttons Interactable
 			Utilities.S.ButtonsInteractable(equipScreen.equippedButtons, false);
 			Utilities.S.ButtonsInteractable(PlayerButtons.S.buttonsCS, true);
@@ -37,6 +39,7 @@ public class EquipScreen_PickPartyMemberMode : MonoBehaviour {
 			Utilities.S.RemoveListeners(PlayerButtons.S.buttonsCS);
 			PlayerButtons.S.buttonsCS[0].onClick.AddListener(delegate { EquipScreen_PickTypeToEquipMode.S.SetUp(0, equipScreen, 6); });
 			PlayerButtons.S.buttonsCS[1].onClick.AddListener(delegate { EquipScreen_PickTypeToEquipMode.S.SetUp(1, equipScreen, 6); });
+			PlayerButtons.S.buttonsCS[2].onClick.AddListener(delegate { EquipScreen_PickTypeToEquipMode.S.SetUp(2, equipScreen, 6); });
 
 			// Activate PlayerButtons
 			PlayerButtons.S.gameObject.SetActive(true);
