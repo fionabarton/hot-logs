@@ -46,6 +46,19 @@ public class PlayerButtons : MonoBehaviour {
 			for (int i = 0; i <= Party.S.partyNdx; i++) {
 				buttonsGO[i].SetActive(true);
 			}
+
+            // Set button navigation
+            switch (Party.S.partyNdx) {
+				case 1:
+					Utilities.S.SetHorizontalButtonNavigation(buttonsCS[0], buttonsCS[1], buttonsCS[1]);
+					Utilities.S.SetHorizontalButtonNavigation(buttonsCS[1], buttonsCS[0], buttonsCS[0]);
+					break;
+				case 2:
+					Utilities.S.SetHorizontalButtonNavigation(buttonsCS[0], buttonsCS[2], buttonsCS[1]);
+					Utilities.S.SetHorizontalButtonNavigation(buttonsCS[1], buttonsCS[0], buttonsCS[2]);
+					Utilities.S.SetHorizontalButtonNavigation(buttonsCS[2], buttonsCS[1], buttonsCS[0]);
+					break;
+            }
 		}
         catch (NullReferenceException) { }
     }
