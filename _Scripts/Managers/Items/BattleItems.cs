@@ -44,6 +44,7 @@ public class BattleItems : MonoBehaviour {
 		// Add Item Listeners to Player Buttons
 		BattlePlayerActions.S.playerButtonCS[0].onClick.AddListener(delegate { functionToPass(0, item); });
 		BattlePlayerActions.S.playerButtonCS[1].onClick.AddListener(delegate { functionToPass(1, item); });
+		BattlePlayerActions.S.playerButtonCS[2].onClick.AddListener(delegate { functionToPass(2, item); });
 
 		// If multiple targets
 		if (!item.multipleTargets) {
@@ -187,7 +188,8 @@ public class BattleItems : MonoBehaviour {
 		int totalAmountToHeal = 0;
 
 		if (Party.stats[0].HP < Party.stats[0].maxHP ||
-			Party.stats[1].HP < Party.stats[1].maxHP) {
+			Party.stats[1].HP < Party.stats[1].maxHP ||
+			Party.stats[2].HP < Party.stats[2].maxHP) {
 			for (int i = 0; i < _.playerDead.Count; i++) {
 				if (!_.playerDead[i]) {
 
