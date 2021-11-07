@@ -89,15 +89,15 @@ public class SaveScreen : MonoBehaviour {
 	}
 
 	public void Deactivate(bool playSound = false) {
-		if (RPG.S.currentSceneName != "Battle") {
+		if (RPG.S.currentScene != "Battle") {
 			// Buttons Interactable
 			Utilities.S.ButtonsInteractable(PauseScreen.S.buttonCS, true);
 
 			// Set previously selected GameObject
-			PauseScreen.S.previousSelectedGameObject = PauseScreen.S.buttonGO[3];
+			PauseScreen.S.previousSelectedGameObject = PauseScreen.S.buttonGO[4];
 
 			// Set Selected Gameobject (Pause Screen: Save Button)
-			Utilities.S.SetSelectedGO(PauseScreen.S.buttonGO[3]);
+			Utilities.S.SetSelectedGO(PauseScreen.S.buttonGO[4]);
 
 			PauseMessage.S.DisplayText ("Welcome to the Pause Screen!");
 
@@ -199,8 +199,10 @@ public class SaveScreen : MonoBehaviour {
 		// Slot 1
 		if (PlayerPrefs.HasKey("Player1Level")) { Party.stats[0].LVL = PlayerPrefs.GetInt("Player1Level"); }
 		if (PlayerPrefs.HasKey("Player2Level")) { Party.stats[1].LVL = PlayerPrefs.GetInt("Player2Level"); }
-		if (PlayerPrefs.HasKey("Player1Exp")){ Party.stats[0].EXP = PlayerPrefs.GetInt ("Player1Exp"); }
-		if (PlayerPrefs.HasKey("Player2Exp")){ Party.stats[1].EXP = PlayerPrefs.GetInt ("Player2Exp"); }
+		if (PlayerPrefs.HasKey("Player3Level")) { Party.stats[2].LVL = PlayerPrefs.GetInt("Player3Level"); }
+		if (PlayerPrefs.HasKey("Player1Exp")){ Party.stats[0].EXP = PlayerPrefs.GetInt("Player1Exp"); }
+		if (PlayerPrefs.HasKey("Player2Exp")){ Party.stats[1].EXP = PlayerPrefs.GetInt("Player2Exp"); }
+		if (PlayerPrefs.HasKey("Player3Exp")){ Party.stats[2].EXP = PlayerPrefs.GetInt("Player3Exp"); }
 		if (PlayerPrefs.HasKey("Time")){ PauseScreen.S.fileStatsNumText.text = PlayerPrefs.GetString ("Time"); } // Stores Time in 0:00 format
 		if (PlayerPrefs.HasKey("Seconds")) { PauseScreen.S.seconds = PlayerPrefs.GetInt("Seconds"); }
 		if (PlayerPrefs.HasKey("Minutes")) { PauseScreen.S.minutes = PlayerPrefs.GetInt("Minutes"); }
@@ -210,15 +212,18 @@ public class SaveScreen : MonoBehaviour {
 		Party.S.CheckForLevelUp ();
 		Party.stats[0].hasLeveledUp = false;
 		Party.stats[1].hasLeveledUp = false;
+		Party.stats[2].hasLeveledUp = false;
 
 		FileHelper("Loaded game!");
 	}
 	void SaveFile(int ndx){
 		// Slot 1
 		PlayerPrefs.SetInt("Player1Level", Party.stats[0].LVL);
-		PlayerPrefs.SetInt("Player1Level", Party.stats[1].LVL);
+		PlayerPrefs.SetInt("Player2Level", Party.stats[1].LVL);
+		PlayerPrefs.SetInt("Player3Level", Party.stats[2].LVL);
 		PlayerPrefs.SetInt("Player1Exp", Party.stats[0].EXP);
 		PlayerPrefs.SetInt("Player2Exp", Party.stats[1].EXP);
+		PlayerPrefs.SetInt("Player3Exp", Party.stats[2].EXP);
 		PlayerPrefs.SetInt("Gold", Party.S.gold);
 		PlayerPrefs.SetString("Time", PauseScreen.S.GetTime()); // Stores Time in 0:00 format
 		PlayerPrefs.SetInt("Seconds", PauseScreen.S.seconds);
@@ -230,9 +235,11 @@ public class SaveScreen : MonoBehaviour {
 	void DeleteFile(int ndx){
 		// Slot 1		
 		PlayerPrefs.SetInt("Player1Level", 0);
-		PlayerPrefs.SetInt("Player1Level", 0);
+		PlayerPrefs.SetInt("Player2Level", 0);
+		PlayerPrefs.SetInt("Player3Level", 0);
 		PlayerPrefs.SetInt("Player1Exp", 0);
 		PlayerPrefs.SetInt("Player2Exp", 0);
+		PlayerPrefs.SetInt("Player3Exp", 0);
 		PlayerPrefs.SetInt("Gold", 0);
 		PlayerPrefs.SetString("Time", "0:00"); // Stores Time in 0:00 format
 		PlayerPrefs.SetInt("Seconds", 0);
