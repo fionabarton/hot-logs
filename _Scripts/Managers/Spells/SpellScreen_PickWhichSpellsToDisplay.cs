@@ -19,7 +19,7 @@ public class SpellScreen_PickWhichSpellsToDisplay : MonoBehaviour {
 
 	public void Setup(SpellScreen spellScreen) {
 		try {
-			if (RPG.S.currentSceneName != "Battle") {
+			if (RPG.S.currentScene != "Battle") {
 				// Buttons Interactable
 				Utilities.S.ButtonsInteractable(PlayerButtons.S.buttonsCS, true);
 				Utilities.S.ButtonsInteractable(spellScreen.spellsButtons, false);
@@ -32,6 +32,7 @@ public class SpellScreen_PickWhichSpellsToDisplay : MonoBehaviour {
 				// Add Listeners
 				PlayerButtons.S.buttonsCS[0].onClick.AddListener(delegate { spellScreen.LoadSpells(0, true); });
 				PlayerButtons.S.buttonsCS[1].onClick.AddListener(delegate { spellScreen.LoadSpells(1, true); });
+				PlayerButtons.S.buttonsCS[2].onClick.AddListener(delegate { spellScreen.LoadSpells(2, true); });
 
 				// Activate PlayerButtons
 				PlayerButtons.S.gameObject.SetActive(true);
