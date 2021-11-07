@@ -37,17 +37,37 @@ public class BattleEnemyActions : MonoBehaviour {
 
 		// Randomly select party member to attack
 		int playerToAttack = 0;
-		if (_.partyQty >= 1) {
-			if (Random.value > 0.5f) {
-				playerToAttack = 0;
-			} else {
-				playerToAttack = 1;
+		float randomValue = Random.value;
+		if (_.partyQty == 0) {
+			for (int i = 0; i < _.playerDead.Count; i++) {
+				if (!_.playerDead[i]) {
+					playerToAttack = i;
+					break;
+				}
 			}
-		} else {
-			if (_.playerDead [0]) {
-				playerToAttack = 1;
-			} else if (_.playerDead [1]) {
+		} else if (_.partyQty == 1) {
+			if (randomValue > 0.5f) {
+				for (int i = 0; i < _.playerDead.Count; i++) {
+					if (!_.playerDead[i]) {
+						playerToAttack = i;
+						break;
+					}
+				}
+			} else {
+				for (int i = _.playerDead.Count - 1; i >= 0; i--) {
+					if (!_.playerDead[i]) {
+						playerToAttack = i;
+						break;
+					}
+				}
+			}
+		} else if (_.partyQty == 2) {
+			if (randomValue >= 0 && randomValue <= 0.33f) {
 				playerToAttack = 0;
+			} else if (randomValue > 0.33f && randomValue <= 0.66f) {
+				playerToAttack = 1;
+			} else if (randomValue > 0.66f && randomValue <= 1.0f) {
+				playerToAttack = 2;
 			}
 		}
 
@@ -78,10 +98,13 @@ public class BattleEnemyActions : MonoBehaviour {
 		GameObject explosion = ObjectPool.S.GetPooledObject("Explosion");
 		switch (playerToAttack) {
 		case 0:
-			ObjectPool.S.PosAndEnableObj (explosion, _.playerSprite[0]);
+			ObjectPool.S.PosAndEnableObj(explosion, _.playerSprite[0]);
 			break;
 		case 1:
-			ObjectPool.S.PosAndEnableObj (explosion, _.playerSprite[1]);
+			ObjectPool.S.PosAndEnableObj(explosion, _.playerSprite[1]);
+			break;
+		case 2:
+			ObjectPool.S.PosAndEnableObj(explosion, _.playerSprite[2]);
 			break;
 		}
 
@@ -223,9 +246,9 @@ public class BattleEnemyActions : MonoBehaviour {
 			// ...but 25% chance if Defender WIS is more than Attacker's 
 			if (Random.value <= 0.05f || (_.enemyStats[_.EnemyNdx()].WIS > Party.stats[0].WIS && Random.value < 0.25f)) {
 				if (Random.value <= 0.5f) {
-					BattleDialogue.S.DisplayText (_.enemyStats [_.EnemyNdx()].name + " attempted to cast Crap Blast... but missed the party completely!");
+					BattleDialogue.S.DisplayText (_.enemyStats [_.EnemyNdx()].name + " attempted to cast Fireblast... but missed the party completely!");
 				} else {
-					BattleDialogue.S.DisplayText (_.enemyStats [_.EnemyNdx()].name + " cast Crap Blast, but the party deftly dodged out of the way!");
+					BattleDialogue.S.DisplayText (_.enemyStats [_.EnemyNdx()].name + " cast Fireblast, but the party deftly dodged out of the way!");
 				}
 
 				// Audio: Deny
@@ -270,7 +293,7 @@ public class BattleEnemyActions : MonoBehaviour {
 					totalAttackDamage += _.attackDamage;
 
 					// Shake Enemy 1, 2, & 3's Anim
-					if (!_.playerDead [i]) {
+					if (!_.playerDead[i]) {
 						// Get and position Explosion game object
 						GameObject explosion = ObjectPool.S.GetPooledObject("Explosion");
 						ObjectPool.S.PosAndEnableObj (explosion, _.playerSprite[i]);
@@ -291,7 +314,7 @@ public class BattleEnemyActions : MonoBehaviour {
 
 				// If no one is killed...
 				if (qtyKilled <= 0) {
-					BattleDialogue.S.DisplayText ("Used Crap BLAST Spell!\nHit ENTIRE party for an average of " + Utilities.S.CalculateAverage (totalAttackDamage, (Party.S.partyNdx + 1)) + " HP!");
+					BattleDialogue.S.DisplayText ("Used Fireblast Spell!\nHit ENTIRE party for an average of " + Utilities.S.CalculateAverage (totalAttackDamage, (Party.S.partyNdx + 1)) + " HP!");
 
 					// Audio: Fireblast
 					AudioManager.S.PlaySFX(eSoundName.fireblast);
@@ -306,7 +329,7 @@ public class BattleEnemyActions : MonoBehaviour {
 			}
 		} else {
 			// Not enough MP
-			BattleDialogue.S.DisplayText (_.enemyStats [_.EnemyNdx()].name + " attempts to cast Crap BLAST...\n...But doesn't have enough MP to do so!");
+			BattleDialogue.S.DisplayText (_.enemyStats [_.EnemyNdx()].name + " attempts to cast Fireblast...\n...But doesn't have enough MP to do so!");
 
 			// Audio: Deny
 			AudioManager.S.PlaySFX(eSoundName.deny);
@@ -320,6 +343,9 @@ public class BattleEnemyActions : MonoBehaviour {
 	public void CallForBackupNextTurn() {
 		_.nextTurnMoveNdx[_.EnemyNdx()] = 6;
 
+		// Activate Enemy "Help" Word Bubble
+		_.enemyHelpBubbles[_.EnemyNdx()].SetActive(true);
+
 		BattleDialogue.S.DisplayText(_.enemyStats[_.EnemyNdx()].name + " is getting ready to call for help!");
 		_.NextTurn();
 	}
@@ -327,6 +353,9 @@ public class BattleEnemyActions : MonoBehaviour {
 	// Index = 6
 	// Call for backup 
 	public void CallForBackup() {
+		// Deactivate Enemy "Help" Word Bubble
+		_.enemyHelpBubbles[_.EnemyNdx()].SetActive(false);
+
 		if (_.enemyStats[0].isDead) {
 			CallForBackupHelper(0);
 		} else if (_.enemyStats[1].isDead) {
@@ -384,9 +413,9 @@ public class BattleEnemyActions : MonoBehaviour {
 		_.partyQty -= qtyKilled;
 
 		switch (qtyKilled) {
-		case 1: BattleDialogue.S.DisplayText ("Used Crap BLAST Spell!\nHit ENTIRE party for an average of " + Utilities.S.CalculateAverage (totalAttackDamage, (Party.S.partyNdx + 1)) + " HP!" + "\nOne party member has been felled!"); break;
-		case 2: BattleDialogue.S.DisplayText ("Used Crap BLAST Spell!\nHit ENTIRE party for an average of " + Utilities.S.CalculateAverage (totalAttackDamage, (Party.S.partyNdx + 1)) + " HP!" + "\nTwo party members have been felled!"); break;
-		case 3: BattleDialogue.S.DisplayText("Used Crap BLAST Spell!\nHit ENTIRE party for an average of " + Utilities.S.CalculateAverage(totalAttackDamage, (Party.S.partyNdx + 1)) + " HP!" + "\nThree party members have been felled!"); break;
+		case 1: BattleDialogue.S.DisplayText("Used Fireblast Spell!\nHit ENTIRE party for an average of " + Utilities.S.CalculateAverage (totalAttackDamage, (Party.S.partyNdx + 1)) + " HP!" + "\nOne party member has been felled!"); break;
+		case 2: BattleDialogue.S.DisplayText("Used Fireblast Spell!\nHit ENTIRE party for an average of " + Utilities.S.CalculateAverage (totalAttackDamage, (Party.S.partyNdx + 1)) + " HP!" + "\nTwo party members have been felled!"); break;
+		case 3: BattleDialogue.S.DisplayText("Used Fireblast Spell!\nHit ENTIRE party for an average of " + Utilities.S.CalculateAverage(totalAttackDamage, (Party.S.partyNdx + 1)) + " HP!" + "\nThree party members have been felled!"); break;
 		}
 
 		if (player1) { PlayersDeathHelper(0, Party.stats[0].name); }

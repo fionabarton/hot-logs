@@ -46,6 +46,9 @@ public class BattleEnd : MonoBehaviour {
 			// Deactivate Enemy Shield
 			_.enemyShields[ndx].SetActive(false);
 
+			// Deactivate Enemy "Help" Word Bubble
+			_.enemyHelpBubbles[ndx].SetActive(false);
+
 			BattleDialogue.S.DisplayText(_.enemyStats[ndx].name + " ran away!\nCOWARD! HO HO HO!");
 
 			// Subtract EXP/Gold
@@ -66,7 +69,7 @@ public class BattleEnd : MonoBehaviour {
 			// Don't Deactivate Enemy in Overworld
 			if (_.enemyAmount <= 0) {
 				// The enemy ran away, so you're chasing after them!
-				EnemyManager.S.CacheEnemyMovement(eMovement.flee);
+				EnemyManager.S.GetEnemyMovement(eMovement.flee);
 
 				// DropItem or AddExpAndGold
 				if (_.droppedItems.Count >= 1) {
@@ -101,6 +104,9 @@ public class BattleEnd : MonoBehaviour {
 
 		// Deactivate Enemy Shield
 		_.enemyShields[ndx].SetActive(false);
+
+		// Deactivate Enemy "Help" Word Bubble
+		_.enemyHelpBubbles[ndx].SetActive(false);
 
 		BattleUI.S.turnCursor.SetActive(false); // Deactivate Turn Cursor
 		Utilities.S.SetActiveList(BattleUI.S.targetCursors, false);
@@ -192,7 +198,7 @@ public class BattleEnd : MonoBehaviour {
 		Utilities.S.SetActiveList(BattleUI.S.targetCursors, false);
 
 		// You died, so the enemy is chasing after you!
-		EnemyManager.S.CacheEnemyMovement(eMovement.pursueRun);
+		EnemyManager.S.GetEnemyMovement(eMovement.pursueRun);
 
 		BattleDialogue.S.DisplayText("Failure is the party!\nY'all've been wiped out/felled!");
 
@@ -272,7 +278,7 @@ public class BattleEnd : MonoBehaviour {
 			Party.stats[ndx].hasLeveledUp = false;
 
 			// Remove member index from list
-			membersToLevelUp.RemoveAt(ndx);
+			membersToLevelUp.RemoveAt(0);
 
 			// If there are any more members that have levelled up...
 			if (membersToLevelUp.Count > 0) {
