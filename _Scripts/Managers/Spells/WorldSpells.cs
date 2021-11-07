@@ -37,6 +37,7 @@ public class WorldSpells : MonoBehaviour {
 			// Add Listeners
 			PlayerButtons.S.buttonsCS[0].onClick.AddListener(delegate { functionToPass(0); });
 			PlayerButtons.S.buttonsCS[1].onClick.AddListener(delegate { functionToPass(1); });
+			PlayerButtons.S.buttonsCS[2].onClick.AddListener(delegate { functionToPass(2); });
 
 			SpellScreen.S.canUpdate = true;
 		} else {
@@ -51,19 +52,32 @@ public class WorldSpells : MonoBehaviour {
 
 			SpellScreen.S.mode = eSpellScreenMode.pickWhichMemberToHeal;
 		} else {
-			// Set cursor positions
-			Utilities.S.PositionCursor(PlayerButtons.S.buttonsCS[0].gameObject, 0, 60, 3, 0);
-			Utilities.S.PositionCursor(PlayerButtons.S.buttonsCS[1].gameObject, 0, 60, 3, 1);
-			
-			// Set animations to walk
-			PlayerButtons.S.anim[0].CrossFade("Walk", 0);
-			PlayerButtons.S.anim[1].CrossFade("Walk", 0);
+			//// Set cursor positions
+			//Utilities.S.PositionCursor(PlayerButtons.S.buttonsCS[0].gameObject, 0, 60, 3, 0);
+			//Utilities.S.PositionCursor(PlayerButtons.S.buttonsCS[1].gameObject, 0, 60, 3, 1);
+			//Utilities.S.PositionCursor(PlayerButtons.S.buttonsCS[2].gameObject, 0, 60, 3, 2);
+
+			//// Set animations to walk
+			//PlayerButtons.S.anim[0].CrossFade("Walk", 0);
+			//PlayerButtons.S.anim[1].CrossFade("Walk", 0);
+			//PlayerButtons.S.anim[2].CrossFade("Walk", 0);
+
+			for (int i = 0; i <= Party.S.partyNdx; i++) {
+				// Set cursor positions
+				Utilities.S.PositionCursor(PlayerButtons.S.buttonsCS[i].gameObject, 0, 60, 3, i);
+
+				// Set animations to walk
+				PlayerButtons.S.anim[i].CrossFade("Walk", 0);
+
+				// Activate cursors
+				ScreenCursor.S.cursorGO[i].SetActive(true);
+			}
 
 			// Set button colors
 			PlayerButtons.S.SetButtonsColor(PlayerButtons.S.buttonsCS, new Color32(253, 255, 116, 255));
 
 			// Activate cursors
-			Utilities.S.SetActiveList(ScreenCursor.S.cursorGO, true);
+			//Utilities.S.SetActiveList(ScreenCursor.S.cursorGO, true);
 
 			SpellScreen.S.mode = eSpellScreenMode.pickAllMembersToHeal;
 		}
@@ -142,7 +156,8 @@ public class WorldSpells : MonoBehaviour {
 		int totalAmountToHeal = 0;
 
 		if (Party.stats[0].HP < Party.stats[0].maxHP ||
-			Party.stats[1].HP < Party.stats[1].maxHP) {
+			Party.stats[1].HP < Party.stats[1].maxHP ||
+			Party.stats[2].HP < Party.stats[2].maxHP) {
 			// Subtract Spell cost from Player's MP
 			RPG.S.SubtractPlayerMP(SpellScreen.S.playerNdx, 6);
 
@@ -169,8 +184,14 @@ public class WorldSpells : MonoBehaviour {
 				+ Utilities.S.CalculateAverage(totalAmountToHeal, Party.stats.Count) + " HP!");
 
 			// Set animations to success
-			PlayerButtons.S.anim[0].CrossFade("Success", 0);
-			PlayerButtons.S.anim[1].CrossFade("Success", 0);
+			//PlayerButtons.S.anim[0].CrossFade("Success", 0);
+			//PlayerButtons.S.anim[1].CrossFade("Success", 0);
+			//PlayerButtons.S.anim[2].CrossFade("Success", 0);
+
+			// Set animations to success
+			for (int i = 0; i <= Party.S.partyNdx; i++) {
+				PlayerButtons.S.anim[i].CrossFade("Success", 0);
+			}
 
 			// Audio: Buff 1
 			AudioManager.S.PlaySFX(eSoundName.buff1);
@@ -179,8 +200,14 @@ public class WorldSpells : MonoBehaviour {
 			PauseMessage.S.DisplayText("The party is already at full health...\n...no need to cast this spell!");
 
 			// Set animations to idle
-			PlayerButtons.S.anim[0].CrossFade("Idle", 0);
-			PlayerButtons.S.anim[1].CrossFade("Idle", 0);
+			//PlayerButtons.S.anim[0].CrossFade("Idle", 0);
+			//PlayerButtons.S.anim[1].CrossFade("Idle", 0);
+			//PlayerButtons.S.anim[2].CrossFade("Idle", 0);
+
+			// Set animations to idle
+			for (int i = 0; i <= Party.S.partyNdx; i++) {
+				PlayerButtons.S.anim[i].CrossFade("Idle", 0);
+			}
 
 			// Audio: Deny
 			AudioManager.S.PlaySFX(eSoundName.deny);
