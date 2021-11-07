@@ -39,6 +39,7 @@ public class BattleSpells : MonoBehaviour {
 				// Add Item Listeners to Player Buttons
 				BattlePlayerActions.S.playerButtonCS[0].onClick.AddListener(delegate { functionToPass(0, spell); });
 				BattlePlayerActions.S.playerButtonCS[1].onClick.AddListener(delegate { functionToPass(1, spell); });
+				BattlePlayerActions.S.playerButtonCS[2].onClick.AddListener(delegate { functionToPass(2, spell); });
 
 				// If multiple targets
 				if (spell.multipleTargets) {
@@ -360,6 +361,9 @@ public class BattleSpells : MonoBehaviour {
 		// Deactivate Enemy Shield
 		_.enemyShields[enemyNdx].SetActive(false);
 
+		// Deactivate Enemy "Help" Word Bubble
+		_.enemyHelpBubbles[enemyNdx].SetActive(false);
+
 		// Deactivate Cursors
 		BattleUI.S.turnCursor.SetActive(false);
 		//BattleUI.S.targetCursor.SetActive(false);
@@ -388,7 +392,8 @@ public class BattleSpells : MonoBehaviour {
 		int totalAmountToHeal = 0;
 
 		if (Party.stats[0].HP < Party.stats[0].maxHP ||
-			Party.stats[1].HP < Party.stats[1].maxHP) {
+			Party.stats[1].HP < Party.stats[1].maxHP ||
+			Party.stats[2].HP < Party.stats[2].maxHP) {
 			// Subtract Spell cost from Player's MP
 			RPG.S.SubtractPlayerMP(_.PlayerNdx(), spell.cost);
 
