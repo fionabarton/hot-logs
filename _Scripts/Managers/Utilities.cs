@@ -66,7 +66,7 @@ public class Utilities : MonoBehaviour
 		tGO.transform.position = tPos;
 	}
 	////////////////////////////////////////////////////////////////////////////////
-	// Get Percentage. Returns a float from 0.00...1 to 1.0
+	// Get Percentage. Returns a float from 0.0 to 1.0
 	public float GetPercentage(float value, float maxValue) {
 		return value / maxValue;
 	}
@@ -153,7 +153,7 @@ public class Utilities : MonoBehaviour
 
 	////////////////////////////////////////////////////////////////////////////////
 	// Explicitly set a button's navigation
-	public void SetButtonNavigation(Button button, Button buttonSelectOnDown, Button buttonSelectOnUp) {
+	public void SetVerticalButtonNavigation(Button button, Button buttonSelectOnDown, Button buttonSelectOnUp) {
 		// Get the Navigation data
 		Navigation navigation = button.navigation;
 
@@ -167,6 +167,20 @@ public class Utilities : MonoBehaviour
 		// Reassign the struct data to the button
 		button.navigation = navigation;
     }
+	public void SetHorizontalButtonNavigation(Button button, Button buttonSelectOnLeft, Button buttonSelectOnRight) {
+		// Get the Navigation data
+		Navigation navigation = button.navigation;
+
+		// Switch mode to Explicit to allow for custom assigned behavior
+		navigation.mode = Navigation.Mode.Explicit;
+
+		// Highlight these buttons if the down or up arrow keys are pressed
+		navigation.selectOnLeft = buttonSelectOnLeft;
+		navigation.selectOnRight = buttonSelectOnRight;
+
+		// Reassign the struct data to the button
+		button.navigation = navigation;
+	}
 
 	// Play "Selection" SFX when a new gameObject is selected
 	public void PlayButtonSelectedSFX(ref GameObject previousSelectedGameObject) {
