@@ -47,6 +47,9 @@ public class Dig_Bury_Ground : ActivateOnButtonPress {
         if (tBool) {
             DialogueManager.S.DisplayText("And now you've buried it...");
 
+            // Audio: Deny
+            AudioManager.S.PlaySFX(eSoundName.deny);
+
             switch (groundType) {
                 case eGroundType.desert:
                     sRend.sprite = moundSprites[0];
@@ -66,6 +69,9 @@ public class Dig_Bury_Ground : ActivateOnButtonPress {
             }
         } else {
             DialogueManager.S.DisplayText("You have dug up the ground!");
+
+            // Audio: Confirm
+            AudioManager.S.PlaySFX(eSoundName.confirm);
 
             switch (groundType) {
                 case eGroundType.desert:
