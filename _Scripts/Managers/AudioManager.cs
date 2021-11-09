@@ -17,6 +17,8 @@ public class AudioManager : MonoBehaviour {
 	public int					previousSongNdx;
 	public int 					currentSongNdx;
 
+	public float				previousVolumeLvl;
+
 	// Singleton
 	private static AudioManager _S;
 	public static AudioManager S { get { return _S; } set { _S = value; } }
@@ -28,6 +30,9 @@ public class AudioManager : MonoBehaviour {
 	void Start() {
 		// Add Loop() to UpdateManager
 		UpdateManager.updateDelegate += Loop;
+
+		// Set previous volume level
+		previousVolumeLvl = AudioListener.volume;
 	}
 
     public void Loop(){
@@ -52,12 +57,32 @@ public class AudioManager : MonoBehaviour {
         // Wait until new song is done playing
         yield return new WaitForSeconds(songLength);
 
-        // Resume playback of the song that was playing previously
-        bgmCS[currentSongNdx].time = time;
+		// Resume playback of the song that was playing previously
+		bgmCS[currentSongNdx].time = time;
         bgmCS[currentSongNdx].Play();
-    }
 
-    public void PlaySong(eSongName songName) {
+		// Set volume to 0, then gradually raise to previousVolumeLvl
+		AudioListener.volume = 0;
+		StartCoroutine("VolumeSwell");
+	}
+
+	// Gradually raise volume to previousVolumeLvl
+	public IEnumerator VolumeSwell() {
+		// Wait 0.005 seconds
+        yield return new WaitForSeconds(0.005f);
+
+		if (AudioListener.volume >= previousVolumeLvl) {
+			// Set volume and stop calling this coroutine
+			AudioListener.volume = previousVolumeLvl;
+			StopCoroutine("VolumeSwell");
+		} else {
+			// Raise volume and make a recursive call to this coroutine
+			AudioListener.volume += 0.001f;
+			StartCoroutine("VolumeSwell");
+		}
+	}
+
+	public void PlaySong(eSongName songName) {
 		// Return if this song is already playing
 		if(previousSongNdx != 999) { // Allows bgmCS[0] to play if it's the first song when the game starts
 			if (currentSongNdx == (int)songName) {
@@ -94,11 +119,15 @@ public class AudioManager : MonoBehaviour {
 	}
 
 	public void PauseAndMuteAudio(){
-		if (!AudioListener.pause) {
+		if (!AudioListener.pause){
+			previousVolumeLvl = AudioListener.volume;
 			AudioListener.pause = true;
+
 			bgmCS[currentSongNdx].Pause();
 		} else {
+			AudioListener.volume = previousVolumeLvl;
 			AudioListener.pause = false;
+
 			bgmCS[currentSongNdx].Play();
 		}
 	}
@@ -129,6 +158,9 @@ public class AudioManager : MonoBehaviour {
 	public void SetMasterVolume(float volume) {
 		AudioListener.volume = volume;
 		masterVolSelection.volume = volume;
+
+		// Set previous volume level
+		previousVolumeLvl = volume;
 	}
 
 	public void SetBGMVolume(float volume) {
