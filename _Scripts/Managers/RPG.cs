@@ -20,6 +20,9 @@ public class RPG : MonoBehaviour {
 	// Black Screen
 	public SpriteRenderer		blackScreen;
 
+	public SubMenu				gameSubMenu;
+	public SubMenu				pauseSubMenu;
+
 	[Header("Set Dynamically")]
 	// Singleton
 	private static RPG _S;
@@ -136,8 +139,9 @@ public class RPG : MonoBehaviour {
 		// Deactivate PlayerButtons
 		PlayerButtons.S.gameObject.SetActive(false);
 
-		// Deactivate Sub Menu 
-		SubMenu.S.gameObject.SetActive(false);
+		// Deactivate Sub Menus
+		gameSubMenu.gameObject.SetActive(false);
+		pauseSubMenu.gameObject.SetActive(false);
 
 		// Randomly Spawn Objects
 		ObjectPool.S.SpawnObjects(currentScene);
