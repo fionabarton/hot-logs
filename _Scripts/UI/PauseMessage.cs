@@ -19,15 +19,15 @@ public class PauseMessage : MonoBehaviour {
 		S = this;
 	}
 
-	public void DisplayText(string text, bool upperLeftAlignment = false) {
+	public void DisplayText(string text, bool upperLeftAlignment = false, bool activateSubMenu = false) {
 		gameObject.SetActive (true);
 
 		StopAllCoroutines();
 
 		StopCoroutine ("DisplayTextCo");
-		StartCoroutine(DisplayTextCo(text, upperLeftAlignment));
+		StartCoroutine(DisplayTextCo(text, upperLeftAlignment, activateSubMenu));
 	}
-	IEnumerator DisplayTextCo(string text, bool upperLeftAlignment) {
+	IEnumerator DisplayTextCo(string text, bool upperLeftAlignment, bool activateSubMenu = false) {
 		// Deactivate Cursor
 		cursorGO.SetActive (false);
 
@@ -54,13 +54,21 @@ public class PauseMessage : MonoBehaviour {
 		// Activate cursor
 		cursorGO.SetActive(true);
 
+		// Optionally Activate Sub Menu
+		if (activateSubMenu) {
+			RPG.S.pauseSubMenu.gameObject.SetActive(true);
+
+			// Update Delgate
+			UpdateManager.fixedUpdateDelegate += RPG.S.pauseSubMenu.Loop;
+		}
+
 		// Dialogue Finished
 		dialogueFinished = true;
 	}
 
 	// Set Text Instantly 
 	// - No delay/stagger between displaying each word)
-	public void SetText(string text, bool upperLeftAlignment = false) {
+	public void SetText(string text, bool upperLeftAlignment = false, bool activateSubMenu = false) {
 		StopCoroutine("DisplayTextCo");
 
 		// Set Text Alignment
@@ -71,5 +79,13 @@ public class PauseMessage : MonoBehaviour {
 		}
 
 		message.text = text;
+
+		// Optionally Activate Sub Menu
+		if (activateSubMenu) {
+			RPG.S.pauseSubMenu.gameObject.SetActive(true);
+
+			// Update Delgate
+			UpdateManager.fixedUpdateDelegate += RPG.S.pauseSubMenu.Loop;
+		}
 	}
 }
