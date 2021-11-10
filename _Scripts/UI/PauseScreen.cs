@@ -38,6 +38,8 @@ public class PauseScreen : MonoBehaviour {
 	// Ensures audio is only played once when button is selected
 	public GameObject	previousSelectedGameObject;
 
+	public GameObject	previousSelectedSubMenuGameObject;
+
 	void Awake() {
 		S = this;
 	}
@@ -136,12 +138,12 @@ public class PauseScreen : MonoBehaviour {
 	// ************ PAUSE ************ \\
 	public void Pause() {
 		// If SubMenu enabled when Paused, re-select this GO when Unpaused
-		// TBR: Account for SubMenu having 2 to 4 options
-		for (int i = 0; i < SubMenu.S.buttonGO.Count; i++) {
-			if (UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject == SubMenu.S.buttonGO[i]) {
-				previousSelectedGameObject = UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject;
+		previousSelectedSubMenuGameObject = null;
+		for (int i = 0; i < RPG.S.gameSubMenu.buttonGO.Count; i++) {
+			if (UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject == RPG.S.gameSubMenu.buttonGO[i]) {
+				previousSelectedSubMenuGameObject = UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject;
 			}
-			SubMenu.S.buttonCS[i].interactable = false;
+			RPG.S.gameSubMenu.buttonCS[i].interactable = false;
 		}
 
 		// Overworld Player Stats
@@ -184,11 +186,11 @@ public class PauseScreen : MonoBehaviour {
 
 		// If SubMenu enabled when Paused, re-select this GO when Unpaused
 		// TBR: Account for SubMenu having 2 to 4 options
-		for (int i = 0; i < SubMenu.S.buttonGO.Count; i++) {
-			if (previousSelectedGameObject == SubMenu.S.buttonGO[i]) {
-				Utilities.S.SetSelectedGO(previousSelectedGameObject);
+		for (int i = 0; i < RPG.S.gameSubMenu.buttonGO.Count; i++) {
+			if (previousSelectedSubMenuGameObject == RPG.S.gameSubMenu.buttonGO[i]) {
+				Utilities.S.SetSelectedGO(previousSelectedSubMenuGameObject);
 			}
-			SubMenu.S.buttonCS[i].interactable = true;
+			RPG.S.gameSubMenu.buttonCS[i].interactable = true;
 		}
 
 		if (playSound) {
