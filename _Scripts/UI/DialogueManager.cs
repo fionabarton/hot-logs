@@ -136,16 +136,16 @@ public class DialogueManager : MonoBehaviour {
 
 		// Optionally Activate Sub Menu
 		if (activateSubMenu) {
-			SubMenu.S.gameObject.SetActive(true);
+			RPG.S.gameSubMenu.gameObject.SetActive(true);
 
 			// Update Delgate
-			UpdateManager.fixedUpdateDelegate += SubMenu.S.Loop;
+			UpdateManager.fixedUpdateDelegate += RPG.S.gameSubMenu.Loop;
 		}
 
 		// Gray Out Text Box
-		if (grayOutTextBox) {
-			GrayOutTextBox(true);
-		}
+		//if (grayOutTextBox) {
+		//	GrayOutTextBox(true);
+		//}
 
 		ndx -= 1;
 
@@ -177,7 +177,7 @@ public class DialogueManager : MonoBehaviour {
 		GrayOutTextBox(false);
 
 		// Reset sub menu
-		ResetSubMenuSettings();
+		ResetSettings();
 
 		// Unfreeze Player
 		Player.S.canMove = canMove; 
@@ -201,7 +201,7 @@ public class DialogueManager : MonoBehaviour {
 		dialogueTextCS.color = c;
 	}
 
-	public void ResetSubMenuSettings () {
+	public void ResetSettings() {
 		// Gray Out Text Box after Dialogue 
 		grayOutTextBox = false;
 
@@ -209,10 +209,8 @@ public class DialogueManager : MonoBehaviour {
 		dontActivateCursor = false;
 		// Don't activate Sub Menu after Dialogue 
 		activateSubMenu = false;
-		// Deactivate Sub Menu
-		SubMenu.S.gameObject.SetActive (false);
 
-		// Update Delgate
-		UpdateManager.fixedUpdateDelegate -= SubMenu.S.Loop;
+		// Reset sub menu
+		RPG.S.gameSubMenu.ResetSettings();
 	}
 }
