@@ -32,6 +32,14 @@ public class Utilities : MonoBehaviour
 		tPos.y = y;
 		tGO.transform.localPosition = tPos;
 	}
+
+	public void SetRectPosition(GameObject tGO, float x, float y) {
+		RectTransform rect = tGO.GetComponent<RectTransform>();
+
+		if(rect != null) {
+			rect.anchoredPosition = new Vector2(x, y);
+		}
+	}
 	////////////////////////////////////////////////////////////////////////////////
 	// Set GameObject Scale
 	public void SetScale(GameObject tGO, float x, float y) {
