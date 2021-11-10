@@ -20,55 +20,53 @@ public class SubMenu : MonoBehaviour {
 	// Cursor Position
 	public RectTransform	cursorRT;
 
+	public bool				isPauseSubMenu;
+
 	[Header("Set Dynamically")]
-	// Singleton
-	private static SubMenu	_S;
-	public static SubMenu	S { get { return _S; } set { _S = value; } }
-	
 	// Allows parts of Loop() to be called once rather than repeatedly every frame.
 	private bool			canUpdate;
 
 	// Ensures audio is only played once when button is selected
 	GameObject				previousSelectedGameObject;
 
-	void Awake() {
-		S = this;
-	}
-
 	void OnEnable() {
 		canUpdate = true;
 	}
 
 	public void Loop() {
-		// Reset canUpdate
-		if (Input.GetAxisRaw("Horizontal") != 0f || Input.GetAxisRaw("Vertical") != 0f) {
-			canUpdate = true;
-		}
-
-		// Set Cursor Position to Selected Button
-		if (canUpdate) {
-			Vector2 selectedButtonPos = Vector2.zero;
-
-			if (UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject == buttonGO[0]) {
-				selectedButtonPos.x = buttonGO[0].GetComponent<RectTransform>().anchoredPosition.x;
-				selectedButtonPos.y = buttonGO[0].GetComponent<RectTransform>().anchoredPosition.y;
-			} else if (UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject == buttonGO[1]) {
-				selectedButtonPos.x = buttonGO[1].GetComponent<RectTransform>().anchoredPosition.x;
-				selectedButtonPos.y = buttonGO[1].GetComponent<RectTransform>().anchoredPosition.y;
-			} else if (UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject == buttonGO[2]) {
-				selectedButtonPos.x = buttonGO[2].GetComponent<RectTransform>().anchoredPosition.x;
-				selectedButtonPos.y = buttonGO[2].GetComponent<RectTransform>().anchoredPosition.y;
-			} else if (UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject == buttonGO[3]) {
-				selectedButtonPos.x = buttonGO[3].GetComponent<RectTransform>().anchoredPosition.x;
-				selectedButtonPos.y = buttonGO[3].GetComponent<RectTransform>().anchoredPosition.y;
+		if ((!RPG.S.paused && !isPauseSubMenu) || (RPG.S.paused && isPauseSubMenu)) {
+			// Reset canUpdate
+			if (Input.GetAxisRaw("Horizontal") != 0f || Input.GetAxisRaw("Vertical") != 0f) {
+				canUpdate = true;
 			}
-			cursorRT.anchoredPosition = new Vector2((selectedButtonPos.x + 150), (selectedButtonPos.y));
 
-			// Audio: Selection (when a new gameObject is selected)
-			Utilities.S.PlayButtonSelectedSFX(ref previousSelectedGameObject);
+			// Set Cursor Position to Selected Button
+			if (canUpdate) {
+				Vector2 selectedButtonPos = Vector2.zero;
 
-			// Prevent contents of this if statement from being called until next user directional input
-			canUpdate = false;
+				for (int i = 0; i < buttonGO.Count; i++) {
+					if (UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject == buttonGO[i]) {
+						selectedButtonPos.x = buttonGO[i].GetComponent<RectTransform>().anchoredPosition.x;
+						selectedButtonPos.y = buttonGO[i].GetComponent<RectTransform>().anchoredPosition.y;
+
+						// Set selected button text color	
+						buttonGO[i].GetComponentInChildren<Text>().color = new Color32(205, 208, 0, 255);
+					} else {
+						// Set non-selected button text color
+						if (buttonGO[i].transform.GetChild(0).gameObject.activeInHierarchy) {
+							buttonGO[i].GetComponentInChildren<Text>().color = new Color32(255, 255, 255, 255);
+						}
+					}
+				}
+
+				cursorRT.anchoredPosition = new Vector2((selectedButtonPos.x + 150), (selectedButtonPos.y));
+
+				// Audio: Selection (when a new gameObject is selected)
+				Utilities.S.PlayButtonSelectedSFX(ref previousSelectedGameObject);
+
+				// Prevent contents of this if statement from being called until next user directional input
+				canUpdate = false;
+			}
 		}
 	}
 
@@ -76,11 +74,9 @@ public class SubMenu : MonoBehaviour {
 		// Set Selected GameObject
 		if (option1 == "Yes") {
 			Utilities.S.SetSelectedGO(buttonGO[1]);
-
 			previousSelectedGameObject = buttonGO[1];
 		} else {
 			Utilities.S.SetSelectedGO(buttonGO[0]);
-
 			previousSelectedGameObject = buttonGO[0];
 		}
 
@@ -123,5 +119,19 @@ public class SubMenu : MonoBehaviour {
 
 		// Set Frame Height
 		frameRT.sizeDelta = new Vector2(400, frameSizeY);
+	}
+
+	public void ResetSettings() {
+		// Set order in hierarchy
+		gameObject.transform.SetAsFirstSibling();
+
+		// Set position
+		Utilities.S.SetRectPosition(gameObject, -415, 80);
+
+		// Deactivate Sub Menu
+		gameObject.SetActive(false);
+
+		// Update Delgate
+		UpdateManager.fixedUpdateDelegate -= Loop;
 	}
 }
