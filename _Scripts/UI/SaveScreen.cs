@@ -7,7 +7,7 @@ using System;
 TO BE IMPLEMENTED:
 Current HP/MP, Steps, Party Members, Inventory, Equipment, Doors/Chests/KeyItems, Quests Completed/Activated
  */
-public enum eSaveScreenMode { pickAction, pickFile, pickedFile };
+public enum eSaveScreenMode { pickAction, pickFile, subMenu, pickedFile };
 
 public class SaveScreen : MonoBehaviour {
 	[Header ("Set in Inspector")]
@@ -77,6 +77,8 @@ public class SaveScreen : MonoBehaviour {
 			actionButtons[0].onClick.AddListener(delegate { ClickedLoadSaveOrDelete(0); });
 			actionButtons[1].onClick.AddListener(delegate { ClickedLoadSaveOrDelete(1); });
 			actionButtons[2].onClick.AddListener(delegate { ClickedLoadSaveOrDelete(2); });
+
+			canUpdate = true;
 		}
 		catch(NullReferenceException){}	
 	}
@@ -122,14 +124,15 @@ public class SaveScreen : MonoBehaviour {
 			canUpdate = true;
 		}
 
-		if (UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject != null) {
-			Utilities.S.PositionCursor(UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject, 100);
-		}
-
 		switch (saveScreenMode) {
 			case eSaveScreenMode.pickAction:
-				// Audio: Selection (when a new gameObject is selected)
 				if (canUpdate) {
+					// Set cursor position
+					if (UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject != null) {
+						Utilities.S.PositionCursor(UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject, 100);
+					}
+
+					// Audio: Selection (when a new gameObject is selected)
 					Utilities.S.PlayButtonSelectedSFX(ref previousSelectedActionButton);
 				}
 
@@ -138,27 +141,49 @@ public class SaveScreen : MonoBehaviour {
 				}
 				break;
 			case eSaveScreenMode.pickFile:
-				// Audio: Selection (when a new gameObject is selected)
 				if (canUpdate) {
+					// Set cursor position
+					if (UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject != null) {
+						Utilities.S.PositionCursor(UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject, 100);
+					}
+
+					// Audio: Selection (when a new gameObject is selected)
 					Utilities.S.PlayButtonSelectedSFX(ref previousSelectedSlotButton);
 				}
 
 				if (Input.GetButtonDown("SNES B Button")) {
 					// Audio: Deny
 					AudioManager.S.PlaySFX(eSoundName.deny);
+	
+					SetUp();
+				}
+				break;
+			case eSaveScreenMode.subMenu:
+				if (Input.GetButtonDown("SNES B Button")) {
+					// Audio: Deny
+					AudioManager.S.PlaySFX(eSoundName.deny);
+					RPG.S.pauseSubMenu.ResetSettings();
+
+					// Reactivate screen cursor
+					ScreenCursor.S.cursorGO[0].SetActive(true);
+
 					SetUp();
 				}
 				break;
 			case eSaveScreenMode.pickedFile:
 				if (PauseMessage.S.dialogueFinished) {
-					if (Input.GetButtonDown("SNES A Button")) {
+					if (Input.GetButtonDown("SNES A Button") || Input.GetButtonDown("SNES B Button")) {
+						// Audio: Confirm
+						AudioManager.S.PlaySFX(eSoundName.confirm);
+
 						SetUp();
 					}
 				}
 				break;
 		}
 	}
-
+	///////////////////////////////////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////////////////////////
 	void ClickedLoadSaveOrDelete(int loadSaveOrDelete){
 		// Remove Listeners and Update GUI 
 		Utilities.S.RemoveListeners(actionButtons);
@@ -176,15 +201,15 @@ public class SaveScreen : MonoBehaviour {
 
 		switch (loadSaveOrDelete) {
 		case 0:
-			slotButtons[0].onClick.AddListener (delegate{LoadFile (0);});
+			slotButtons[0].onClick.AddListener (delegate{ ClickedLoadButton(0);});
 			PauseMessage.S.DisplayText ("Load which file?");
 			break;
 		case 1:
-			slotButtons[0].onClick.AddListener (delegate{SaveFile (0);});
-			PauseMessage.S.DisplayText ("Save which file?");
+			slotButtons[0].onClick.AddListener (delegate{ ClickedSaveButton(0);});
+			PauseMessage.S.DisplayText ("Save your progress which file?");
 			break;
 		case 2:
-			slotButtons[0].onClick.AddListener (delegate{DeleteFile (0);});
+			slotButtons[0].onClick.AddListener (delegate{ ClickedDeleteButton(0);});
 			PauseMessage.S.DisplayText ("Delete which file?");
 			break;
 		}
@@ -194,8 +219,75 @@ public class SaveScreen : MonoBehaviour {
 
 		saveScreenMode = eSaveScreenMode.pickFile;
 	}
+	///////////////////////////////////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////////////////////////
+	void ClickedLoadButton(int ndx) {
+		// Set Text
+		PauseMessage.S.DisplayText("Are you sure that you would like to load this file?", false, true);
 
-	void LoadFile(int ndx){
+		// Set OnClick Methods
+		Utilities.S.RemoveListeners(RPG.S.pauseSubMenu.buttonCS);
+		RPG.S.pauseSubMenu.buttonCS[0].onClick.AddListener(delegate { LoadFile(0); });
+		RPG.S.pauseSubMenu.buttonCS[1].onClick.AddListener(delegate { No(0); });
+
+		ClickedActionButtonHelper(0);
+	}
+
+	void ClickedSaveButton(int ndx) {
+		// Set Text
+		PauseMessage.S.DisplayText("Are you sure that you would like to save your progress to this file?", false, true);
+
+        // Set OnClick Methods
+        Utilities.S.RemoveListeners(RPG.S.pauseSubMenu.buttonCS);
+        RPG.S.pauseSubMenu.buttonCS[0].onClick.AddListener(delegate { SaveFile(0); });
+        RPG.S.pauseSubMenu.buttonCS[1].onClick.AddListener(delegate { No(1); });
+
+		ClickedActionButtonHelper(0);
+	}
+
+	void ClickedDeleteButton(int ndx) {
+		// Set Text
+		PauseMessage.S.DisplayText("Are you sure that you would like to delete this file?", false, true);
+
+        // Set OnClick Methods
+        Utilities.S.RemoveListeners(RPG.S.pauseSubMenu.buttonCS);
+        RPG.S.pauseSubMenu.buttonCS[0].onClick.AddListener(delegate { DeleteFile(0); });
+        RPG.S.pauseSubMenu.buttonCS[1].onClick.AddListener(delegate { No(2); });
+
+		ClickedActionButtonHelper(0);
+	}
+
+	void ClickedActionButtonHelper(int ndx) {
+		// Remove Listeners
+		Utilities.S.RemoveListeners(slotButtons);
+
+		// Set sub menu order in hierarchy
+		RPG.S.pauseSubMenu.gameObject.transform.SetAsLastSibling();
+
+		// Set sub menu position
+		Utilities.S.SetRectPosition(RPG.S.pauseSubMenu.gameObject, -415, -180);
+
+		// Set sub menu text
+		RPG.S.pauseSubMenu.SetText("Yes", "No");
+
+		// Buttons Interactable
+		Utilities.S.ButtonsInteractable(slotButtons, false);
+
+		// Set button navigation
+		Utilities.S.SetVerticalButtonNavigation(RPG.S.pauseSubMenu.buttonCS[0], RPG.S.pauseSubMenu.buttonCS[1], RPG.S.pauseSubMenu.buttonCS[1]);
+		Utilities.S.SetVerticalButtonNavigation(RPG.S.pauseSubMenu.buttonCS[1], RPG.S.pauseSubMenu.buttonCS[0], RPG.S.pauseSubMenu.buttonCS[0]);
+
+		// Deactivate screen cursor
+		ScreenCursor.S.cursorGO[0].SetActive(false);
+
+		// Audio: Confirm
+		AudioManager.S.PlaySFX(eSoundName.confirm);
+
+		saveScreenMode = eSaveScreenMode.subMenu;
+	}
+	///////////////////////////////////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////////////////////////
+	void LoadFile(int ndx) {
 		// Slot 1
 		if (PlayerPrefs.HasKey("Player1Level")) { Party.stats[0].LVL = PlayerPrefs.GetInt("Player1Level"); }
 		if (PlayerPrefs.HasKey("Player2Level")) { Party.stats[1].LVL = PlayerPrefs.GetInt("Player2Level"); }
@@ -203,6 +295,7 @@ public class SaveScreen : MonoBehaviour {
 		if (PlayerPrefs.HasKey("Player1Exp")){ Party.stats[0].EXP = PlayerPrefs.GetInt("Player1Exp"); }
 		if (PlayerPrefs.HasKey("Player2Exp")){ Party.stats[1].EXP = PlayerPrefs.GetInt("Player2Exp"); }
 		if (PlayerPrefs.HasKey("Player3Exp")){ Party.stats[2].EXP = PlayerPrefs.GetInt("Player3Exp"); }
+		if (PlayerPrefs.HasKey("Gold")){ Party.S.gold = PlayerPrefs.GetInt("Gold"); }
 		if (PlayerPrefs.HasKey("Time")){ PauseScreen.S.fileStatsNumText.text = PlayerPrefs.GetString ("Time"); } // Stores Time in 0:00 format
 		if (PlayerPrefs.HasKey("Seconds")) { PauseScreen.S.seconds = PlayerPrefs.GetInt("Seconds"); }
 		if (PlayerPrefs.HasKey("Minutes")) { PauseScreen.S.minutes = PlayerPrefs.GetInt("Minutes"); }
@@ -216,6 +309,7 @@ public class SaveScreen : MonoBehaviour {
 
 		FileHelper("Loaded game!");
 	}
+
 	void SaveFile(int ndx){
 		// Slot 1
 		PlayerPrefs.SetInt("Player1Level", Party.stats[0].LVL);
@@ -232,6 +326,7 @@ public class SaveScreen : MonoBehaviour {
 
 		FileHelper("Saved game!");
 	}
+
 	void DeleteFile(int ndx){
 		// Slot 1		
 		PlayerPrefs.SetInt("Player1Level", 0);
@@ -250,6 +345,15 @@ public class SaveScreen : MonoBehaviour {
 	}
 
 	void FileHelper(string message) {
+		// Audio: Buff 1
+		AudioManager.S.PlaySFX(eSoundName.buff1);
+
+		// Reset sub menu
+		RPG.S.pauseSubMenu.ResetSettings();
+
+		// Reactivate screen cursor
+		ScreenCursor.S.cursorGO[0].SetActive(true);
+
 		// Remove Listeners and Update GUI 
 		Utilities.S.RemoveListeners(slotButtons);
 		UpdateGUI();
@@ -258,14 +362,22 @@ public class SaveScreen : MonoBehaviour {
 		Utilities.S.ButtonsInteractable(slotButtons, false);
 		Utilities.S.ButtonsInteractable(actionButtons, false);
 
-		// Audio: Buff 1
-		AudioManager.S.PlaySFX(eSoundName.buff1);
-
 		saveScreenMode = eSaveScreenMode.pickedFile;
 
 		PauseMessage.S.DisplayText(message);
 	}
 
+	void No(int ndx) {
+		AudioManager.S.PlaySFX(eSoundName.deny);
+		RPG.S.pauseSubMenu.ResetSettings();
+
+		// Reactivate screen cursor
+		ScreenCursor.S.cursorGO[0].SetActive(true);
+
+		ClickedLoadSaveOrDelete(ndx);
+	}
+	///////////////////////////////////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////////////////////////
 	void UpdateGUI(){
 		if (PlayerPrefs.HasKey ("Player1Exp")) {
 			slotDataText [0].text =
