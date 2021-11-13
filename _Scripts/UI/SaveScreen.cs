@@ -7,7 +7,7 @@ using System;
 TO BE IMPLEMENTED:
 Current HP/MP, Steps, Party Members, Inventory, Equipment, Doors/Chests/KeyItems, Quests Completed/Activated
  */
-public enum eSaveScreenMode { pickAction, pickFile, subMenu, pickedFile };
+public enum eSaveScreenMode { pickAction, pickFile, subMenu, cannotPeformAction, pickedFile };
 
 public class SaveScreen : MonoBehaviour {
 	[Header ("Set in Inspector")]
@@ -32,6 +32,12 @@ public class SaveScreen : MonoBehaviour {
 	// Ensures audio is only played once when button is selected
 	GameObject					previousSelectedActionButton;
 	GameObject					previousSelectedSlotButton;
+
+	// Index of the file the user is currently playing
+	public int					currentFileNdx;
+
+	// Load, Save, Delete
+	public int					currentActionNdx;
 	
 	void Awake() {
 		S = this;
@@ -59,6 +65,7 @@ public class SaveScreen : MonoBehaviour {
 			// Remove Listeners and Update GUI 
 			Utilities.S.RemoveListeners(actionButtons);
 			Utilities.S.RemoveListeners(slotButtons);
+
 			UpdateGUI();
 
 			PauseMessage.S.DisplayText("Would you like to\nLoad, Save, or Delete a file?");
@@ -91,7 +98,7 @@ public class SaveScreen : MonoBehaviour {
 	}
 
 	public void Deactivate(bool playSound = false) {
-		if (RPG.S.currentScene != "Battle") {
+		if (RPG.S.currentScene != "Battle" || RPG.S.currentScene != "Title_Screen") {
 			// Buttons Interactable
 			Utilities.S.ButtonsInteractable(PauseScreen.S.buttonCS, true);
 
@@ -104,6 +111,13 @@ public class SaveScreen : MonoBehaviour {
 			PauseMessage.S.DisplayText ("Welcome to the Pause Screen!");
 
 			PauseScreen.S.canUpdate = true;
+		}
+
+		if (RPG.S.currentScene == "Title_Screen") {
+			// Set Selected GameObject (New Game Button)
+			Utilities.S.SetSelectedGO(TitleScreen.S.previousSelectedButton);
+
+			PauseMessage.S.gameObject.SetActive(false);
 		}
 
 		if (playSound) {
@@ -170,6 +184,16 @@ public class SaveScreen : MonoBehaviour {
 					SetUp();
 				}
 				break;
+			case eSaveScreenMode.cannotPeformAction:
+				if (PauseMessage.S.dialogueFinished) {
+					if (Input.GetButtonDown("SNES A Button") || Input.GetButtonDown("SNES B Button")) {
+						// Audio: Deny
+						AudioManager.S.PlaySFX(eSoundName.deny);
+
+						ClickedLoadSaveOrDelete(currentActionNdx);
+					}
+				}
+                break;
 			case eSaveScreenMode.pickedFile:
 				if (PauseMessage.S.dialogueFinished) {
 					if (Input.GetButtonDown("SNES A Button") || Input.GetButtonDown("SNES B Button")) {
@@ -199,17 +223,28 @@ public class SaveScreen : MonoBehaviour {
 		// Set previously selected GameObject
 		previousSelectedSlotButton = slotButtons[0].gameObject;
 
+		currentActionNdx = loadSaveOrDelete;
+
 		switch (loadSaveOrDelete) {
 		case 0:
 			slotButtons[0].onClick.AddListener (delegate{ ClickedLoadButton(0);});
+			slotButtons[1].onClick.AddListener (delegate{ ClickedLoadButton(1);});
+			slotButtons[2].onClick.AddListener (delegate{ ClickedLoadButton(2);});
+
 			PauseMessage.S.DisplayText ("Load which file?");
 			break;
 		case 1:
 			slotButtons[0].onClick.AddListener (delegate{ ClickedSaveButton(0);});
-			PauseMessage.S.DisplayText ("Save your progress which file?");
+			slotButtons[1].onClick.AddListener (delegate{ ClickedSaveButton(1);});
+			slotButtons[2].onClick.AddListener (delegate{ ClickedSaveButton(2);});
+
+			PauseMessage.S.DisplayText ("Save your progress to which file?");
 			break;
 		case 2:
 			slotButtons[0].onClick.AddListener (delegate{ ClickedDeleteButton(0);});
+			slotButtons[1].onClick.AddListener (delegate{ ClickedDeleteButton(1);});
+			slotButtons[2].onClick.AddListener (delegate{ ClickedDeleteButton(2);});
+
 			PauseMessage.S.DisplayText ("Delete which file?");
 			break;
 		}
@@ -221,43 +256,65 @@ public class SaveScreen : MonoBehaviour {
 	}
 	///////////////////////////////////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////////////////////////////////
-	void ClickedLoadButton(int ndx) {
-		// Set Text
-		PauseMessage.S.DisplayText("Are you sure that you would like to load this file?", false, true);
+	void ClickedLoadButton(int fileNdx) {
+		// Prevent empty files from being loaded
+		if (PlayerPrefs.HasKey(fileNdx + "Time")) {
+			if (PlayerPrefs.GetString(fileNdx + "Time") == "0:00") {
+				// Cannot perform this action
+				CannotPerformAction("This file cannot be loaded because it is empty!");
+			} else {
+				// Set Text
+				PauseMessage.S.DisplayText("Are you sure that you would like to load this file?", false, true);
 
-		// Set OnClick Methods
-		Utilities.S.RemoveListeners(RPG.S.pauseSubMenu.buttonCS);
-		RPG.S.pauseSubMenu.buttonCS[0].onClick.AddListener(delegate { LoadFile(0); });
-		RPG.S.pauseSubMenu.buttonCS[1].onClick.AddListener(delegate { No(0); });
+				// Set OnClick Methods
+				Utilities.S.RemoveListeners(RPG.S.pauseSubMenu.buttonCS);
+				RPG.S.pauseSubMenu.buttonCS[0].onClick.AddListener(delegate { LoadFile(fileNdx); });
+				RPG.S.pauseSubMenu.buttonCS[1].onClick.AddListener(delegate { No(0); });
 
-		ClickedActionButtonHelper(0);
+				ClickedActionButtonHelper();
+			}
+        } else {
+			// Cannot perform this action
+			CannotPerformAction("This file cannot be loaded because it is empty!");
+		}
 	}
 
-	void ClickedSaveButton(int ndx) {
+	void ClickedSaveButton(int fileNdx) {
 		// Set Text
 		PauseMessage.S.DisplayText("Are you sure that you would like to save your progress to this file?", false, true);
 
         // Set OnClick Methods
         Utilities.S.RemoveListeners(RPG.S.pauseSubMenu.buttonCS);
-        RPG.S.pauseSubMenu.buttonCS[0].onClick.AddListener(delegate { SaveFile(0); });
+        RPG.S.pauseSubMenu.buttonCS[0].onClick.AddListener(delegate { SaveFile(fileNdx); });
         RPG.S.pauseSubMenu.buttonCS[1].onClick.AddListener(delegate { No(1); });
 
-		ClickedActionButtonHelper(0);
+		ClickedActionButtonHelper();
 	}
 
-	void ClickedDeleteButton(int ndx) {
-		// Set Text
-		PauseMessage.S.DisplayText("Are you sure that you would like to delete this file?", false, true);
+	void ClickedDeleteButton(int fileNdx) {
+		// Prevent empty files from being deleted
+		if (PlayerPrefs.HasKey(fileNdx + "Time")) {
+			if (PlayerPrefs.GetString(fileNdx + "Time") == "0:00") {
+				// Cannot perform this action
+				CannotPerformAction("This file cannot be deleted because it is empty!");
+			} else {
+				// Set Text
+				PauseMessage.S.DisplayText("Are you sure that you would like to delete this file?", false, true);
 
-        // Set OnClick Methods
-        Utilities.S.RemoveListeners(RPG.S.pauseSubMenu.buttonCS);
-        RPG.S.pauseSubMenu.buttonCS[0].onClick.AddListener(delegate { DeleteFile(0); });
-        RPG.S.pauseSubMenu.buttonCS[1].onClick.AddListener(delegate { No(2); });
+				// Set OnClick Methods
+				Utilities.S.RemoveListeners(RPG.S.pauseSubMenu.buttonCS);
+				RPG.S.pauseSubMenu.buttonCS[0].onClick.AddListener(delegate { DeleteFile(fileNdx); });
+				RPG.S.pauseSubMenu.buttonCS[1].onClick.AddListener(delegate { No(2); });
 
-		ClickedActionButtonHelper(0);
+				ClickedActionButtonHelper();
+			}
+        } else {
+			// Cannot perform this action
+			CannotPerformAction("This file cannot be deleted because it is empty!");
+		}
 	}
 
-	void ClickedActionButtonHelper(int ndx) {
+	void ClickedActionButtonHelper() {
 		// Remove Listeners
 		Utilities.S.RemoveListeners(slotButtons);
 
@@ -285,21 +342,33 @@ public class SaveScreen : MonoBehaviour {
 
 		saveScreenMode = eSaveScreenMode.subMenu;
 	}
+
+	void CannotPerformAction(string message) {
+		PauseMessage.S.DisplayText(message);
+
+		//Buttons Interactable
+		Utilities.S.ButtonsInteractable(slotButtons, false);
+
+		// Audio: Deny
+		AudioManager.S.PlaySFX(eSoundName.deny);
+
+		saveScreenMode = eSaveScreenMode.cannotPeformAction;
+	}
 	///////////////////////////////////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////////////////////////////////
-	void LoadFile(int ndx) {
+	void LoadFile(int fileNdx) {
 		// Slot 1
-		if (PlayerPrefs.HasKey("Player1Level")) { Party.stats[0].LVL = PlayerPrefs.GetInt("Player1Level"); }
-		if (PlayerPrefs.HasKey("Player2Level")) { Party.stats[1].LVL = PlayerPrefs.GetInt("Player2Level"); }
-		if (PlayerPrefs.HasKey("Player3Level")) { Party.stats[2].LVL = PlayerPrefs.GetInt("Player3Level"); }
-		if (PlayerPrefs.HasKey("Player1Exp")){ Party.stats[0].EXP = PlayerPrefs.GetInt("Player1Exp"); }
-		if (PlayerPrefs.HasKey("Player2Exp")){ Party.stats[1].EXP = PlayerPrefs.GetInt("Player2Exp"); }
-		if (PlayerPrefs.HasKey("Player3Exp")){ Party.stats[2].EXP = PlayerPrefs.GetInt("Player3Exp"); }
-		if (PlayerPrefs.HasKey("Gold")){ Party.S.gold = PlayerPrefs.GetInt("Gold"); }
-		if (PlayerPrefs.HasKey("Time")){ PauseScreen.S.fileStatsNumText.text = PlayerPrefs.GetString ("Time"); } // Stores Time in 0:00 format
-		if (PlayerPrefs.HasKey("Seconds")) { PauseScreen.S.seconds = PlayerPrefs.GetInt("Seconds"); }
-		if (PlayerPrefs.HasKey("Minutes")) { PauseScreen.S.minutes = PlayerPrefs.GetInt("Minutes"); }
-		if (PlayerPrefs.HasKey("Name")) { Party.stats[0].name = PlayerPrefs.GetString("Name"); }
+		if (PlayerPrefs.HasKey(fileNdx + "Player1Level")) { Party.stats[0].LVL = PlayerPrefs.GetInt(fileNdx + "Player1Level"); }
+		if (PlayerPrefs.HasKey(fileNdx + "Player2Level")) { Party.stats[1].LVL = PlayerPrefs.GetInt(fileNdx + "Player2Level"); }
+		if (PlayerPrefs.HasKey(fileNdx + "Player3Level")) { Party.stats[2].LVL = PlayerPrefs.GetInt(fileNdx + "Player3Level"); }
+		if (PlayerPrefs.HasKey(fileNdx + "Player1Exp")){ Party.stats[0].EXP = PlayerPrefs.GetInt(fileNdx + "Player1Exp"); }
+		if (PlayerPrefs.HasKey(fileNdx + "Player2Exp")){ Party.stats[1].EXP = PlayerPrefs.GetInt(fileNdx + "Player2Exp"); }
+		if (PlayerPrefs.HasKey(fileNdx + "Player3Exp")){ Party.stats[2].EXP = PlayerPrefs.GetInt(fileNdx + "Player3Exp"); }
+		if (PlayerPrefs.HasKey(fileNdx + "Gold")){ Party.S.gold = PlayerPrefs.GetInt(fileNdx + "Gold"); }
+		if (PlayerPrefs.HasKey(fileNdx + "Time")){ PauseScreen.S.fileStatsNumText.text = PlayerPrefs.GetString (fileNdx + "Time"); } // Stores Time in 0:00 format
+		if (PlayerPrefs.HasKey(fileNdx + "Seconds")) { PauseScreen.S.seconds = PlayerPrefs.GetInt(fileNdx + "Seconds"); }
+		if (PlayerPrefs.HasKey(fileNdx + "Minutes")) { PauseScreen.S.minutes = PlayerPrefs.GetInt(fileNdx + "Minutes"); }
+		if (PlayerPrefs.HasKey(fileNdx + "Name")) { Party.stats[0].name = PlayerPrefs.GetString(fileNdx + "Name"); }
 
 		// Level Up
 		Party.S.CheckForLevelUp ();
@@ -307,39 +376,43 @@ public class SaveScreen : MonoBehaviour {
 		Party.stats[1].hasLeveledUp = false;
 		Party.stats[2].hasLeveledUp = false;
 
-		FileHelper("Loaded game!");
+		currentFileNdx = fileNdx;
+
+		StartCoroutine(WarpManager.S.Warp(new Vector2(0, -2), true, "Area_2", 3));
+
+		//FileHelper("Loaded game!");
 	}
 
-	void SaveFile(int ndx){
+	void SaveFile(int fileNdx) {
 		// Slot 1
-		PlayerPrefs.SetInt("Player1Level", Party.stats[0].LVL);
-		PlayerPrefs.SetInt("Player2Level", Party.stats[1].LVL);
-		PlayerPrefs.SetInt("Player3Level", Party.stats[2].LVL);
-		PlayerPrefs.SetInt("Player1Exp", Party.stats[0].EXP);
-		PlayerPrefs.SetInt("Player2Exp", Party.stats[1].EXP);
-		PlayerPrefs.SetInt("Player3Exp", Party.stats[2].EXP);
-		PlayerPrefs.SetInt("Gold", Party.S.gold);
-		PlayerPrefs.SetString("Time", PauseScreen.S.GetTime()); // Stores Time in 0:00 format
-		PlayerPrefs.SetInt("Seconds", PauseScreen.S.seconds);
-		PlayerPrefs.SetInt("Minutes", PauseScreen.S.minutes);
-		PlayerPrefs.SetString("Name", Party.stats[0].name);
+		PlayerPrefs.SetInt(fileNdx + "Player1Level", Party.stats[0].LVL);
+		PlayerPrefs.SetInt(fileNdx + "Player2Level", Party.stats[1].LVL);
+		PlayerPrefs.SetInt(fileNdx + "Player3Level", Party.stats[2].LVL);
+		PlayerPrefs.SetInt(fileNdx + "Player1Exp", Party.stats[0].EXP);
+		PlayerPrefs.SetInt(fileNdx + "Player2Exp", Party.stats[1].EXP);
+		PlayerPrefs.SetInt(fileNdx + "Player3Exp", Party.stats[2].EXP);
+		PlayerPrefs.SetInt(fileNdx + "Gold", Party.S.gold);
+		PlayerPrefs.SetString(fileNdx + "Time", PauseScreen.S.GetTime()); // Stores Time in 0:00 format
+		PlayerPrefs.SetInt(fileNdx + "Seconds", PauseScreen.S.seconds);
+		PlayerPrefs.SetInt(fileNdx + "Minutes", PauseScreen.S.minutes);
+		PlayerPrefs.SetString(fileNdx + "Name", Party.stats[0].name);
 
 		FileHelper("Saved game!");
 	}
 
-	void DeleteFile(int ndx){
+	void DeleteFile(int fileNdx) {
 		// Slot 1		
-		PlayerPrefs.SetInt("Player1Level", 0);
-		PlayerPrefs.SetInt("Player2Level", 0);
-		PlayerPrefs.SetInt("Player3Level", 0);
-		PlayerPrefs.SetInt("Player1Exp", 0);
-		PlayerPrefs.SetInt("Player2Exp", 0);
-		PlayerPrefs.SetInt("Player3Exp", 0);
-		PlayerPrefs.SetInt("Gold", 0);
-		PlayerPrefs.SetString("Time", "0:00"); // Stores Time in 0:00 format
-		PlayerPrefs.SetInt("Seconds", 0);
-		PlayerPrefs.SetInt("Minutes", 0);
-		PlayerPrefs.SetString("Name", ""); 
+		PlayerPrefs.SetInt(fileNdx + "Player1Level", 0);
+		PlayerPrefs.SetInt(fileNdx + "Player2Level", 0);
+		PlayerPrefs.SetInt(fileNdx + "Player3Level", 0);
+		PlayerPrefs.SetInt(fileNdx + "Player1Exp", 0);
+		PlayerPrefs.SetInt(fileNdx + "Player2Exp", 0);
+		PlayerPrefs.SetInt(fileNdx + "Player3Exp", 0);
+		PlayerPrefs.SetInt(fileNdx + "Gold", 0);
+		PlayerPrefs.SetString(fileNdx + "Time", "0:00"); // Stores Time in 0:00 format
+		PlayerPrefs.SetInt(fileNdx + "Seconds", 0);
+		PlayerPrefs.SetInt(fileNdx + "Minutes", 0);
+		PlayerPrefs.SetString(fileNdx + "Name", ""); 
 
 		FileHelper("Deleted game!");
 	}
@@ -367,24 +440,29 @@ public class SaveScreen : MonoBehaviour {
 		PauseMessage.S.DisplayText(message);
 	}
 
-	void No(int ndx) {
+	void No(int actionNdx) {
 		AudioManager.S.PlaySFX(eSoundName.deny);
 		RPG.S.pauseSubMenu.ResetSettings();
 
 		// Reactivate screen cursor
 		ScreenCursor.S.cursorGO[0].SetActive(true);
 
-		ClickedLoadSaveOrDelete(ndx);
+		ClickedLoadSaveOrDelete(actionNdx);
 	}
 	///////////////////////////////////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////////////////////////////////
 	void UpdateGUI(){
-		if (PlayerPrefs.HasKey ("Player1Exp")) {
-			slotDataText [0].text =
-				"Name: " + PlayerPrefs.GetString("Name") + " " + "Level: " + PlayerPrefs.GetInt ("Player1Level") + "\n" +
-				"Time: " + PlayerPrefs.GetString("Time") + " " + "Gold: " + PlayerPrefs.GetInt ("Gold");
+		for(int i = 0; i < slotDataText.Count; i++) {
+			if (PlayerPrefs.HasKey(i + "Time")) {
+				if (PlayerPrefs.GetString(i + "Time") == "0:00") {
+					slotDataText[i].text = "New Game";
+				} else {
+					slotDataText[i].text =
+					"Name: " + PlayerPrefs.GetString(i + "Name") + " " + "Level: " + PlayerPrefs.GetInt(i + "Player1Level") + "\n" +
+					"Time: " + PlayerPrefs.GetString(i + "Time") + " " + "Gold: " + PlayerPrefs.GetInt(i + "Gold");
+				}
+			}
 		}
-
 		PauseScreen.S.UpdateGUI();
 	}
 }
