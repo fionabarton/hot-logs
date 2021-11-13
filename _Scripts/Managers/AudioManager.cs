@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum eSongName { nineteenForty, never, ninja, soap, things, startBattle, win, lose, selection };
+public enum eSongName { nineteenForty, never, ninja, soap, things, startBattle, win, lose, selection, gMinor, zelda };
 public enum eSoundName { dialogue, selection, damage1, damage2, damage3, death, confirm, deny, 
 	run, fireball, fireblast, buff1, buff2, highBeep1, highBeep2};
 
@@ -69,7 +69,7 @@ public class AudioManager : MonoBehaviour {
 	// Gradually raise volume to previousVolumeLvl
 	public IEnumerator VolumeSwell() {
 		// Wait 0.005 seconds
-        yield return new WaitForSeconds(0.005f);
+        yield return new WaitForSeconds(0.01f);
 
 		if (AudioListener.volume >= previousVolumeLvl) {
 			// Set volume and stop calling this coroutine
@@ -77,9 +77,11 @@ public class AudioManager : MonoBehaviour {
 			StopCoroutine("VolumeSwell");
 		} else {
 			// Raise volume and make a recursive call to this coroutine
-			AudioListener.volume += 0.001f;
+			AudioListener.volume += 0.0025f;
 			StartCoroutine("VolumeSwell");
 		}
+
+		yield return null;
 	}
 
 	public void PlaySong(eSongName songName) {
@@ -115,6 +117,8 @@ public class AudioManager : MonoBehaviour {
 			case eSongName.win: bgmCS[6].Play(); break;
 			case eSongName.lose: bgmCS[7].Play(); break;
 			case eSongName.selection: bgmCS[8].Play(); break;
+			case eSongName.gMinor: bgmCS[9].Play(); break;
+			case eSongName.zelda: bgmCS[10].Play(); break;
 		}
 	}
 
