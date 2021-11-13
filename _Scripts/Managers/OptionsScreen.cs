@@ -37,18 +37,26 @@ public class OptionsScreen : MonoBehaviour {
 		if (PlayerPrefs.HasKey("Master Volume")) {
 			sliders[0].value = PlayerPrefs.GetFloat("Master Volume");
 			AudioManager.S.SetMasterVolume(sliders[0].value);
+        } else {
+			AudioManager.S.SetMasterVolume(1);
 		}
 		if (PlayerPrefs.HasKey("BGM Volume")) {
 			sliders[1].value = PlayerPrefs.GetFloat("BGM Volume");
 			AudioManager.S.SetBGMVolume(sliders[1].value);
+		} else {
+			AudioManager.S.SetBGMVolume(0.5f);
 		}
 		if (PlayerPrefs.HasKey("SFX Volume")) {
 			sliders[2].value = PlayerPrefs.GetFloat("SFX Volume");
 			AudioManager.S.SetSFXVolume(sliders[2].value);
+		} else {
+			AudioManager.S.SetSFXVolume(0.5f);
 		}
 		if (PlayerPrefs.HasKey("Text Speed")) {
 			sliders[3].value = PlayerPrefs.GetFloat("Text Speed");
 			textSpeed = sliders[3].value;
+		} else {
+			textSpeed = 0.05f;
 		}
 
 		// Adds a listener to each slider and invokes a method when the value changes
@@ -78,7 +86,7 @@ public class OptionsScreen : MonoBehaviour {
 	}
 
 	public void Deactivate(bool playSound = false) {
-		if (RPG.S.currentScene != "Battle") {
+		if (RPG.S.currentScene != "Battle" || RPG.S.currentScene != "Title_Screen") {
 			// Buttons Interactable
 			Utilities.S.ButtonsInteractable(PauseScreen.S.buttonCS, true);
 
@@ -91,6 +99,13 @@ public class OptionsScreen : MonoBehaviour {
 			PauseMessage.S.DisplayText("Welcome to the Pause Screen!");
 
 			PauseScreen.S.canUpdate = true;
+		}
+
+		if (RPG.S.currentScene == "Title_Screen") {
+			// Set Selected GameObject (New Game Button)
+			Utilities.S.SetSelectedGO(TitleScreen.S.previousSelectedButton);
+
+			PauseMessage.S.gameObject.SetActive(false);
 		}
 
 		if (playSound) {
@@ -162,8 +177,6 @@ public class OptionsScreen : MonoBehaviour {
 
 		// Save settings
 		PlayerPrefs.SetFloat("Text Speed", sliders[3].value);
-
-		PauseMessage.S.StopAllCoroutines();
 
 		// Display text
 		PauseMessage.S.DisplayText("With the 'Text Speed' set at this value, text will be displayed on screen this quickly!");
