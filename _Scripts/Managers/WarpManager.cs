@@ -18,14 +18,20 @@ public class WarpManager : MonoBehaviour {
 	// Ensures audio is only played once when button is selected
 	public GameObject			previousSelectedLocationGO;
 
+	// Index and name of the player's current location
+	public int					locationNdx;
+	public string				locationName;
+	public string				visitedLocationNdxs;
+
 	void Awake() {
         S = this;
     }
 
     void Start() {
-		locations.Add(new WarpLocation("Home", "Area_1", new Vector3(0, 2, 0), "My town, Chi town. The windy city, stooge.", 1));
-		locations.Add(new WarpLocation("Brown Valley", "Area_2", new Vector3(0, -2, 0), "Connects Home to the overworld. Watch out for cretins.", 3));
-		locations.Add(new WarpLocation("Downtown", "Town_1", new Vector3(0, 2, 0), "Buy stuff.", 3));
+		locations.Add(new WarpLocation("Starting Point", "Area_1", new Vector3(0, 2, 0), "The location at which you started this wreck of a \"game\".", 1));
+		locations.Add(new WarpLocation("Brown Valley", "Area_2", new Vector3(0, -2, 0), "Enemies are afoot in this region; beware, fool!", 3));
+		locations.Add(new WarpLocation("Mountain Top", "Town_1", new Vector3(0, -11, 0), "A vaguely interesting area populated by a few vaguely interesting businesses.", 1));
+		locations.Add(new WarpLocation("Purple Cave", "Area_5", new Vector3(0, 2, 0), "Get to the end of this regal cave and face the ultimate foe!\nBeware: the walls don't have colliders yet!", 1));
 	}
 
 	// Record that the player has visited this location
@@ -33,6 +39,8 @@ public class WarpManager : MonoBehaviour {
 		// Return if the party has already visited this location
 		for (int i = 0; i < visitedLocations.Count; i++) {
 			if (sceneName == visitedLocations[i].sceneName) {
+				locationNdx = i;
+				locationName = visitedLocations[i].name;
 				return;
 			}
 		}
@@ -41,6 +49,9 @@ public class WarpManager : MonoBehaviour {
 		for (int i = 0; i < locations.Count; i++) {
 			if (sceneName == locations[i].sceneName) {
 				visitedLocations.Add(locations[i]);
+				locationNdx = visitedLocations.Count - 1;
+				locationName = locations[i].name;
+				visitedLocationNdxs += i;
 				return;
 			}
 		}
@@ -119,13 +130,13 @@ public class WarpManager : MonoBehaviour {
 		//if (visitedLocations.Count < buttons.Count) {
 		if (visitedLocations.Count > 1) {
 			// Set first button navigation
-			Utilities.S.SetButtonNavigation(
+			Utilities.S.SetVerticalButtonNavigation(
 				buttons[0],
 				buttons[1],
 				buttons[visitedLocations.Count - 1]);
 
 			// Set last button navigation
-			Utilities.S.SetButtonNavigation(
+			Utilities.S.SetVerticalButtonNavigation(
 				buttons[visitedLocations.Count - 1],
 				buttons[0],
 				buttons[visitedLocations.Count - 2]);
