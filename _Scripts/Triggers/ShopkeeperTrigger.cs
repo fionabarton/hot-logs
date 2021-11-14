@@ -32,8 +32,8 @@ public class ShopkeeperTrigger : ActivateOnButtonPress {
         CamManager.S.ChangeTarget(gameObject, true);
 
         // Set Text
-        DialogueManager.S.DisplayText("<color=yellow><Shop Keeper></color> Wanna buy some hot junk? Or maybe sell some hot junk?");
-		SubMenu.S.SetText("Buy junk!", "Sell junk!", "No thanks.", "", 3);
+        DialogueManager.S.DisplayText("<color=yellow><Shop Keeper></color> Wanna buy some hot junk? Or maybe you'd rather sell some hot junk instead? Hmmm?");
+		RPG.S.gameSubMenu.SetText("Buy junk!", "Sell junk!", "No thanks.", "", 3);
 
 		// Activate Sub Menu after Dialogue 
 		DialogueManager.S.activateSubMenu = true;
@@ -43,24 +43,24 @@ public class ShopkeeperTrigger : ActivateOnButtonPress {
 		DialogueManager.S.grayOutTextBox = true;
 
 		// Set OnClick Methods
-        Utilities.S.RemoveListeners(SubMenu.S.buttonCS);
-        SubMenu.S.buttonCS[0].onClick.AddListener(Buy);
-        SubMenu.S.buttonCS[1].onClick.AddListener(Sell);
-        SubMenu.S.buttonCS[2].onClick.AddListener(No);
-        //SubMenu.S.subMenuButtonCS[3].onClick.AddListener(Option3);
+        Utilities.S.RemoveListeners(RPG.S.gameSubMenu.buttonCS);
+        RPG.S.gameSubMenu.buttonCS[0].onClick.AddListener(Buy);
+        RPG.S.gameSubMenu.buttonCS[1].onClick.AddListener(Sell);
+        RPG.S.gameSubMenu.buttonCS[2].onClick.AddListener(No);
+        //RPG.S.gameSubMenu.subMenuButtonCS[3].onClick.AddListener(Option3);
 
         // Set button navigation
-        Utilities.S.SetButtonNavigation(SubMenu.S.buttonCS[0], SubMenu.S.buttonCS[1], SubMenu.S.buttonCS[2]);
-        Utilities.S.SetButtonNavigation(SubMenu.S.buttonCS[1], SubMenu.S.buttonCS[2], SubMenu.S.buttonCS[0]);
-        Utilities.S.SetButtonNavigation(SubMenu.S.buttonCS[2], SubMenu.S.buttonCS[0], SubMenu.S.buttonCS[1]);
+        Utilities.S.SetVerticalButtonNavigation(RPG.S.gameSubMenu.buttonCS[0], RPG.S.gameSubMenu.buttonCS[1], RPG.S.gameSubMenu.buttonCS[2]);
+        Utilities.S.SetVerticalButtonNavigation(RPG.S.gameSubMenu.buttonCS[1], RPG.S.gameSubMenu.buttonCS[2], RPG.S.gameSubMenu.buttonCS[0]);
+        Utilities.S.SetVerticalButtonNavigation(RPG.S.gameSubMenu.buttonCS[2], RPG.S.gameSubMenu.buttonCS[0], RPG.S.gameSubMenu.buttonCS[1]);
     }
 
 	void Buy() {
         // Audio: Confirm
         AudioManager.S.PlaySFX(eSoundName.confirm);
 
-        DialogueManager.S.ResetSubMenuSettings();
-        DialogueManager.S.DisplayText("That so fab. What you wanna buy?");
+        DialogueManager.S.ResetSettings();
+        DialogueManager.S.DisplayText("Fantastic! What would you like to buy? Hmmm?");
         mode = eShopkeeperMode.buy;
     }
 
@@ -68,8 +68,8 @@ public class ShopkeeperTrigger : ActivateOnButtonPress {
         // Audio: Confirm
         AudioManager.S.PlaySFX(eSoundName.confirm);
 
-        DialogueManager.S.ResetSubMenuSettings();
-        DialogueManager.S.DisplayText("How grand! What you wanna to sell?");
+        DialogueManager.S.ResetSettings();
+        DialogueManager.S.DisplayText("How grand! What would you like to sell? Hmmm?");
         mode = eShopkeeperMode.sell;
     }
 
@@ -77,8 +77,8 @@ public class ShopkeeperTrigger : ActivateOnButtonPress {
         // Audio: Deny
         AudioManager.S.PlaySFX(eSoundName.deny);
 
-        DialogueManager.S.ResetSubMenuSettings();
-		DialogueManager.S.DisplayText("That coo. Come again, little stinker.");
+        DialogueManager.S.ResetSettings();
+		DialogueManager.S.DisplayText("Hmmm? Oh, okay, that's cool. Please come again soon!");
 	}
 
 	public void ThisLoop() {
