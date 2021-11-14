@@ -56,7 +56,9 @@ public class SaveScreen : MonoBehaviour {
 	void SetUp() {
 		try{
 			// Freeze Player
-			RPG.S.paused = true;
+			if (RPG.S.currentScene != "Title_Screen") {
+				RPG.S.paused = true;
+			}
 			Player.S.mode = eRPGMode.idle;
 
 			// Switch ScreenMode 
@@ -361,26 +363,43 @@ public class SaveScreen : MonoBehaviour {
 		if (PlayerPrefs.HasKey(fileNdx + "Player1Level")) { Party.stats[0].LVL = PlayerPrefs.GetInt(fileNdx + "Player1Level"); }
 		if (PlayerPrefs.HasKey(fileNdx + "Player2Level")) { Party.stats[1].LVL = PlayerPrefs.GetInt(fileNdx + "Player2Level"); }
 		if (PlayerPrefs.HasKey(fileNdx + "Player3Level")) { Party.stats[2].LVL = PlayerPrefs.GetInt(fileNdx + "Player3Level"); }
-		if (PlayerPrefs.HasKey(fileNdx + "Player1Exp")){ Party.stats[0].EXP = PlayerPrefs.GetInt(fileNdx + "Player1Exp"); }
-		if (PlayerPrefs.HasKey(fileNdx + "Player2Exp")){ Party.stats[1].EXP = PlayerPrefs.GetInt(fileNdx + "Player2Exp"); }
-		if (PlayerPrefs.HasKey(fileNdx + "Player3Exp")){ Party.stats[2].EXP = PlayerPrefs.GetInt(fileNdx + "Player3Exp"); }
-		if (PlayerPrefs.HasKey(fileNdx + "Gold")){ Party.S.gold = PlayerPrefs.GetInt(fileNdx + "Gold"); }
-		if (PlayerPrefs.HasKey(fileNdx + "Time")){ PauseScreen.S.fileStatsNumText.text = PlayerPrefs.GetString (fileNdx + "Time"); } // Stores Time in 0:00 format
+		if (PlayerPrefs.HasKey(fileNdx + "Player1Exp")) { Party.stats[0].EXP = PlayerPrefs.GetInt(fileNdx + "Player1Exp"); }
+		if (PlayerPrefs.HasKey(fileNdx + "Player2Exp")) { Party.stats[1].EXP = PlayerPrefs.GetInt(fileNdx + "Player2Exp"); }
+		if (PlayerPrefs.HasKey(fileNdx + "Player3Exp")) { Party.stats[2].EXP = PlayerPrefs.GetInt(fileNdx + "Player3Exp"); }
+		if (PlayerPrefs.HasKey(fileNdx + "Gold")) { Party.S.gold = PlayerPrefs.GetInt(fileNdx + "Gold"); }
+		if (PlayerPrefs.HasKey(fileNdx + "Time")) { PauseScreen.S.fileStatsNumText.text = PlayerPrefs.GetString(fileNdx + "Time"); } // Stores Time in 0:00 format
 		if (PlayerPrefs.HasKey(fileNdx + "Seconds")) { PauseScreen.S.seconds = PlayerPrefs.GetInt(fileNdx + "Seconds"); }
 		if (PlayerPrefs.HasKey(fileNdx + "Minutes")) { PauseScreen.S.minutes = PlayerPrefs.GetInt(fileNdx + "Minutes"); }
 		if (PlayerPrefs.HasKey(fileNdx + "Name")) { Party.stats[0].name = PlayerPrefs.GetString(fileNdx + "Name"); }
+		if (PlayerPrefs.HasKey(fileNdx + "LocationNdx")) { WarpManager.S.locationNdx = PlayerPrefs.GetInt(fileNdx + "LocationNdx"); }
+		if (PlayerPrefs.HasKey(fileNdx + "LocationName")) { WarpManager.S.locationName = PlayerPrefs.GetString(fileNdx + "LocationName"); }
+		if (PlayerPrefs.HasKey(fileNdx + "VisitedLocations")) { WarpManager.S.visitedLocationNdxs = PlayerPrefs.GetString(fileNdx + "VisitedLocations"); }
 
 		// Level Up
-		Party.S.CheckForLevelUp ();
+		Party.S.CheckForLevelUp();
 		Party.stats[0].hasLeveledUp = false;
 		Party.stats[1].hasLeveledUp = false;
 		Party.stats[2].hasLeveledUp = false;
 
 		currentFileNdx = fileNdx;
 
-		StartCoroutine(WarpManager.S.Warp(new Vector2(0, -2), true, "Area_2", 3));
+		// Separate string into individual chars
+		char[] visitedLocationsNdxArray = WarpManager.S.visitedLocationNdxs.ToCharArray();
 
-		//FileHelper("Loaded game!");
+		// Add saved visited locations
+		WarpManager.S.visitedLocations.Clear();
+		for (int i = 0; i < visitedLocationsNdxArray.Length; i++) {
+			int ndx = visitedLocationsNdxArray[i] - 48;
+
+			WarpManager.S.visitedLocations.Add(WarpManager.S.locations[ndx]);
+        }
+
+        // Warp to this file's current location
+        StartCoroutine(WarpManager.S.Warp(
+			WarpManager.S.visitedLocations[PlayerPrefs.GetInt(fileNdx + "LocationNdx")].position,
+			true,
+			WarpManager.S.visitedLocations[PlayerPrefs.GetInt(fileNdx + "LocationNdx")].sceneName,
+			WarpManager.S.visitedLocations[PlayerPrefs.GetInt(fileNdx + "LocationNdx")].playerFacingDirection));
 	}
 
 	void SaveFile(int fileNdx) {
@@ -396,6 +415,9 @@ public class SaveScreen : MonoBehaviour {
 		PlayerPrefs.SetInt(fileNdx + "Seconds", PauseScreen.S.seconds);
 		PlayerPrefs.SetInt(fileNdx + "Minutes", PauseScreen.S.minutes);
 		PlayerPrefs.SetString(fileNdx + "Name", Party.stats[0].name);
+		PlayerPrefs.SetInt(fileNdx + "LocationNdx", WarpManager.S.locationNdx);
+		PlayerPrefs.SetString(fileNdx + "LocationName", WarpManager.S.locationName);
+		PlayerPrefs.SetString(fileNdx + "VisitedLocations", WarpManager.S.visitedLocationNdxs);
 
 		FileHelper("Saved game!");
 	}
@@ -412,7 +434,10 @@ public class SaveScreen : MonoBehaviour {
 		PlayerPrefs.SetString(fileNdx + "Time", "0:00"); // Stores Time in 0:00 format
 		PlayerPrefs.SetInt(fileNdx + "Seconds", 0);
 		PlayerPrefs.SetInt(fileNdx + "Minutes", 0);
-		PlayerPrefs.SetString(fileNdx + "Name", ""); 
+		PlayerPrefs.SetString(fileNdx + "Name", "");
+		PlayerPrefs.SetInt(fileNdx + "LocationNdx", 0);
+		PlayerPrefs.SetString(fileNdx + "LocationName", "");
+		PlayerPrefs.SetString(fileNdx + "VisitedLocations", "");
 
 		FileHelper("Deleted game!");
 	}
@@ -455,11 +480,12 @@ public class SaveScreen : MonoBehaviour {
 		for(int i = 0; i < slotDataText.Count; i++) {
 			if (PlayerPrefs.HasKey(i + "Time")) {
 				if (PlayerPrefs.GetString(i + "Time") == "0:00") {
-					slotDataText[i].text = "New Game";
+					slotDataText[i].text = "<color=yellow>New Game</color>";
 				} else {
 					slotDataText[i].text =
-					"Name: " + PlayerPrefs.GetString(i + "Name") + " " + "Level: " + PlayerPrefs.GetInt(i + "Player1Level") + "\n" +
-					"Time: " + PlayerPrefs.GetString(i + "Time") + " " + "Gold: " + PlayerPrefs.GetInt(i + "Gold");
+					"<color=yellow>Name:</color> " + PlayerPrefs.GetString(i + "Name") + "    " + "<color=yellow>Level:</color> " + PlayerPrefs.GetInt(i + "Player1Level") + "\n" +
+					"<color=yellow>Time:</color> " + PlayerPrefs.GetString(i + "Time") + "    " + "<color=yellow>Gold:</color> " + PlayerPrefs.GetInt(i + "Gold") + "    " +
+					"<color=yellow>Location:</color> " + PlayerPrefs.GetString(i + "LocationName");
 				}
 			}
 		}
