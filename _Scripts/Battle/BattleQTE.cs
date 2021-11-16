@@ -72,22 +72,23 @@ public class BattleQTE : MonoBehaviour {
 		// Reset points
 		_.bonusDamage = 0;
 
-		// Select QTE Mode/Type
-		//qteType = Random.Range(0, 4);
+        // Select QTE Mode/Type
+        //qteType = Random.Range(0, 4);
+		//qteType = 2;
         switch (_.PlayerNdx()) {
-			case 0: // Blob: MASH
-				qteType = 0;
-				break;
-			case 1: // Bill: SEQUENCE
-				qteType = 2;
-				break;
-			case 2: // Fake Bill: HOLD
-				qteType = 1;
-				break;
+            case 0: // Blob: MASH
+                qteType = 0;
+                break;
+            case 1: // Bill: SEQUENCE
+                qteType = 2;
+                break;
+            case 2: // Fake Bill: HOLD
+                qteType = 1;
+                break;
         }
 
-		// Provide instructions to player
-		switch (qteType) {
+        // Provide instructions to player
+        switch (qteType) {
             case 0:
 				BattleDialogue.S.displayMessageTextTop.text = "Get ready to MASH!";
 				BattleDialogue.S.DisplayText("MASH the action button 'til the progress bar is completely full!");
@@ -119,6 +120,13 @@ public class BattleQTE : MonoBehaviour {
 				playerForce = 500;
 				downwardForce = 20;
 
+				// Activate sprite gameObject
+				QTEInputSprites[0].gameObject.SetActive(true);
+				QTEInputSprites[0].CrossFade("QTEInputSprite_Button_Press", 0);
+
+				// Audio: Confirm
+				AudioManager.S.PlaySFX(eSoundName.confirm);
+
 				// Display Text
 				BattleDialogue.S.displayMessageTextTop.text = "<color=#FF0000FF>MASH</color>\nTHAT BUTTON!";
 				break;
@@ -127,6 +135,13 @@ public class BattleQTE : MonoBehaviour {
 				val = 0;
 				playerForce = 75;
 				buttonDown = false;
+
+				// Activate sprite gameObject
+				QTEInputSprites[0].gameObject.SetActive(true);
+				QTEInputSprites[0].CrossFade("QTEInputSprite_Button_Press", 0);
+
+				// Audio: Confirm
+				AudioManager.S.PlaySFX(eSoundName.confirm);
 
 				// Display Text
 				BattleDialogue.S.displayMessageTextTop.text = "<color=#FF0000>HOLD</color>\nTHAT BUTTON!";
@@ -143,6 +158,9 @@ public class BattleQTE : MonoBehaviour {
 
 				inputAmount = 3;
 
+				// Audio: Confirm
+				AudioManager.S.PlaySFX(eSoundName.confirm);
+
 				// Set Goal
 				StartCoroutine("SetGoals", inputAmount);
 				break;
@@ -150,6 +168,13 @@ public class BattleQTE : MonoBehaviour {
 				// Reset settings
 				val = 0;
 				downwardForce = 100;
+
+				// Activate sprite gameObject
+				QTEInputSprites[0].gameObject.SetActive(true);
+				QTEInputSprites[0].CrossFade("QTEInputSprite_Button_Press", 0);
+
+				// Audio: Confirm
+				AudioManager.S.PlaySFX(eSoundName.confirm);
 
 				// Display Text
 				BattleDialogue.S.displayMessageTextTop.text = "<color=#FF0000>STOP</color>\nTHAT BUTTON!";
@@ -175,18 +200,10 @@ public class BattleQTE : MonoBehaviour {
 				// Display Arrow Sprite
 				QTEInputSprites[0].gameObject.SetActive(true);
                 switch (directionToType) {
-					case 0:
-						QTEInputSprites[0].CrossFade("QTEInputSprite_Right", 0);
-						break;
-					case 1:
-						QTEInputSprites[0].CrossFade("QTEInputSprite_Up", 0);
-						break;
-					case 2:
-						QTEInputSprites[0].CrossFade("QTEInputSprite_Left", 0);
-						break;
-					case 3:
-						QTEInputSprites[0].CrossFade("QTEInputSprite_Down", 0);
-						break;
+					case 0: QTEInputSprites[0].CrossFade("QTEInputSprite_Right", 0); break;
+					case 1: QTEInputSprites[0].CrossFade("QTEInputSprite_Up", 0); break;
+					case 2: QTEInputSprites[0].CrossFade("QTEInputSprite_Left", 0); break;
+					case 3: QTEInputSprites[0].CrossFade("QTEInputSprite_Down", 0); break;
 				}
 				break;
 		}
@@ -391,7 +408,7 @@ public class BattleQTE : MonoBehaviour {
 		}
 
 		// Reset first input sprite position (for blocking)
-		QTEInputSprites[0].gameObject.transform.position = new Vector2(0, 3);
+		QTEInputSprites[0].gameObject.transform.position = new Vector2(0, 2.75f);
 
 		// Floating score to indicate bonus points
 
@@ -482,24 +499,16 @@ public class BattleQTE : MonoBehaviour {
 	string ConvertDirections(char letter) {
 		string word = "";
 		switch (letter) {
-			case '0':
-				word = "Right ";
-				break;
-			case '1':
-				word = "Up ";
-				break;
-			case '2':
-				word = "Left ";
-				break;
-			case '3':
-				word = "Down ";
-				break;
+			case '0': word = "Right "; break;
+			case '1': word = "Up "; break;
+			case '2': word = "Left "; break;
+			case '3': word = "Down "; break;
 		}
 		return word;
 	}
 
 	// Get a random string of directions and stagger the text
-	IEnumerator SetGoals(int inputAmount) { // Called in DelayedInitiative()
+	IEnumerator SetGoals(int inputAmount) { 
 		// build random goal string of directions
 		for (int i = 0; i < inputAmount; i++) {
 			int directionToType = Random.Range(0, 4);
@@ -522,33 +531,25 @@ public class BattleQTE : MonoBehaviour {
 
         // Set animation
         switch (directionNdx - 48) {
-            case 0:
-                QTEInputSprites[spriteNdx].CrossFade("QTEInputSprite_Right", 0);
-                break;
-            case 1:
-                QTEInputSprites[spriteNdx].CrossFade("QTEInputSprite_Up", 0);
-                break;
-            case 2:
-                QTEInputSprites[spriteNdx].CrossFade("QTEInputSprite_Left", 0);
-                break;
-            case 3:
-                QTEInputSprites[spriteNdx].CrossFade("QTEInputSprite_Down", 0);
-                break;
+            case 0: QTEInputSprites[spriteNdx].CrossFade("QTEInputSprite_Right", 0); break;
+            case 1: QTEInputSprites[spriteNdx].CrossFade("QTEInputSprite_Up", 0); break;
+            case 2: QTEInputSprites[spriteNdx].CrossFade("QTEInputSprite_Left", 0); break;
+            case 3: QTEInputSprites[spriteNdx].CrossFade("QTEInputSprite_Down", 0); break;
         }
 
 		// Set sprite positions
 		switch (spriteNdx) {
 			case 0:
-				QTEInputSprites[0].gameObject.transform.position = new Vector2(0, 3);
+				QTEInputSprites[0].gameObject.transform.position = new Vector2(0, 2.75f);
 				break;
 			case 1:
-				QTEInputSprites[0].gameObject.transform.position = new Vector2(-0.375f, 3);
-				QTEInputSprites[1].gameObject.transform.position = new Vector2(0.375f, 3);
+				QTEInputSprites[0].gameObject.transform.position = new Vector2(-0.375f, 2.75f);
+				QTEInputSprites[1].gameObject.transform.position = new Vector2(0.375f, 2.75f);
 				break;
 			case 2:
-				QTEInputSprites[0].gameObject.transform.position = new Vector2(-0.75f, 3);
-				QTEInputSprites[1].gameObject.transform.position = new Vector2(0, 3);
-				QTEInputSprites[2].gameObject.transform.position = new Vector2(0.75f, 3);
+				QTEInputSprites[0].gameObject.transform.position = new Vector2(-0.75f, 2.75f);
+				QTEInputSprites[1].gameObject.transform.position = new Vector2(0, 2.75f);
+				QTEInputSprites[2].gameObject.transform.position = new Vector2(0.75f, 2.75f);
 				break;
 		}
 	}
@@ -556,6 +557,11 @@ public class BattleQTE : MonoBehaviour {
 	// Build a string of directions based off user input and check if it matches the goal
 	void BuildInputString(string buttonName) {
 		StopAllCoroutines();
+
+		// Activate all input sprites
+		for (int i = 0; i < goalString.Length; i++) {
+			ActivateInputSprites(i, goalString[i]);
+		}
 
 		// Add to inputString
 		inputString += buttonName;
