@@ -103,6 +103,9 @@ public class TitleScreen : MonoBehaviour{
     }
 
     public void NewGame() {
+        // Remove listeners
+        Utilities.S.RemoveListeners(buttons);
+
         // Close Curtains
         BattleCurtain.S.Close();
 
