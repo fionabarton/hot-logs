@@ -50,7 +50,7 @@ public class BattleQTE : MonoBehaviour {
 	// Index of the party member that is blocking
 	public int blockerNdx;
 
-	public Animator QTEInputSprite;
+	public List<Animator> QTEInputSprites = new List<Animator>();
 
 	[Header("Set Dynamically")]
 	private Battle _;
@@ -72,8 +72,19 @@ public class BattleQTE : MonoBehaviour {
 		// Reset points
 		_.bonusDamage = 0;
 
-		// Randomly select QTE Mode/Type
-		qteType = Random.Range(0, 4);
+		// Select QTE Mode/Type
+		//qteType = Random.Range(0, 4);
+        switch (_.PlayerNdx()) {
+			case 0: // Blob: MASH
+				qteType = 0;
+				break;
+			case 1: // Bill: SEQUENCE
+				qteType = 2;
+				break;
+			case 2: // Fake Bill: HOLD
+				qteType = 1;
+				break;
+        }
 
 		// Provide instructions to player
 		switch (qteType) {
@@ -155,26 +166,26 @@ public class BattleQTE : MonoBehaviour {
 				// Set Goal (only ONE input)
 				int directionToType = Random.Range(0, 4);
 				goalString += directionToType.ToString();
-				BattleDialogue.S.displayMessageTextTop.text = "Press " + ConvertDirections(goalString[0]);
+				BattleDialogue.S.displayMessageTextTop.text = "Press " + ConvertDirections(goalString[0]) + " to\nBLOCK!";
 
 				// Set Timer
 				tooLateTime = 1.5f;
 				tooLateTimeDone = Time.time + tooLateTime;
 
 				// Display Arrow Sprite
-				QTEInputSprite.gameObject.SetActive(true);
+				QTEInputSprites[0].gameObject.SetActive(true);
                 switch (directionToType) {
 					case 0:
-						QTEInputSprite.CrossFade("QTEInputSprite_Right", 0);
+						QTEInputSprites[0].CrossFade("QTEInputSprite_Right", 0);
 						break;
 					case 1:
-						QTEInputSprite.CrossFade("QTEInputSprite_Up", 0);
+						QTEInputSprites[0].CrossFade("QTEInputSprite_Up", 0);
 						break;
 					case 2:
-						QTEInputSprite.CrossFade("QTEInputSprite_Left", 0);
+						QTEInputSprites[0].CrossFade("QTEInputSprite_Left", 0);
 						break;
 					case 3:
-						QTEInputSprite.CrossFade("QTEInputSprite_Down", 0);
+						QTEInputSprites[0].CrossFade("QTEInputSprite_Down", 0);
 						break;
 				}
 				break;
@@ -374,6 +385,14 @@ public class BattleQTE : MonoBehaviour {
 		// Deactivate progress bar
 		healthBar.gameObject.transform.parent.gameObject.SetActive(false);
 
+		// Deactivate all input sprites
+		for (int i = 0; i < QTEInputSprites.Count; i++) {
+			QTEInputSprites[i].gameObject.SetActive(false);
+		}
+
+		// Reset first input sprite position (for blocking)
+		QTEInputSprites[0].gameObject.transform.position = new Vector2(0, 3);
+
 		// Floating score to indicate bonus points
 
 		if (goodOrBad) {
@@ -454,9 +473,6 @@ public class BattleQTE : MonoBehaviour {
 			// Deactivate Battle Text
 			BattleDialogue.S.displayMessageTextTop.gameObject.transform.parent.gameObject.SetActive(false);
 
-			// Deactivate Arrow Sprite
-			QTEInputSprite.gameObject.SetActive(false);
-
 			_.NextTurn();
 		}
 	}
@@ -493,7 +509,47 @@ public class BattleQTE : MonoBehaviour {
 		// stagger display of UI text
 		for (int i = 0; i < goalString.Length; i++) {
 			BattleDialogue.S.displayMessageTextTop.text += ConvertDirections(goalString[i]);
+
+			ActivateInputSprites(i, goalString[i]);
+
 			yield return new WaitForSeconds(0.25f);
+		}
+	}
+
+	void ActivateInputSprites(int spriteNdx, int directionNdx) {
+		// Activate sprite gameObject
+		QTEInputSprites[spriteNdx].gameObject.SetActive(true);
+
+        // Set animation
+        switch (directionNdx - 48) {
+            case 0:
+                QTEInputSprites[spriteNdx].CrossFade("QTEInputSprite_Right", 0);
+                break;
+            case 1:
+                QTEInputSprites[spriteNdx].CrossFade("QTEInputSprite_Up", 0);
+                break;
+            case 2:
+                QTEInputSprites[spriteNdx].CrossFade("QTEInputSprite_Left", 0);
+                break;
+            case 3:
+                QTEInputSprites[spriteNdx].CrossFade("QTEInputSprite_Down", 0);
+                break;
+        }
+
+		// Set sprite positions
+		switch (spriteNdx) {
+			case 0:
+				QTEInputSprites[0].gameObject.transform.position = new Vector2(0, 3);
+				break;
+			case 1:
+				QTEInputSprites[0].gameObject.transform.position = new Vector2(-0.375f, 3);
+				QTEInputSprites[1].gameObject.transform.position = new Vector2(0.375f, 3);
+				break;
+			case 2:
+				QTEInputSprites[0].gameObject.transform.position = new Vector2(-0.75f, 3);
+				QTEInputSprites[1].gameObject.transform.position = new Vector2(0, 3);
+				QTEInputSprites[2].gameObject.transform.position = new Vector2(0.75f, 3);
+				break;
 		}
 	}
 
