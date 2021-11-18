@@ -359,27 +359,58 @@ public class SaveScreen : MonoBehaviour {
 	///////////////////////////////////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////////////////////////////////
 	void LoadFile(int fileNdx) {
+		// Reset stats to starting stats
+		Party.S.stats.Clear();
+
+		// Player 1
+		Party.S.stats.Add(new PartyStats("Blob", 40, 40, 40, 6, 6, 6,
+			2, 2, 2, 2, 1, 1, 1, 1,
+			0, 1, 6,
+			new List<Spell> { SpellManager.S.spells[1], SpellManager.S.spells[0], SpellManager.S.spells[2], SpellManager.S.spells[4], SpellManager.S.spells[5], SpellManager.S.spells[3] },
+			new List<bool>(new bool[30]),
+			new List<int> { 0, 0, 7, 23, 47, 110, 220, 450, 800, 1300, 2000 },
+			false)
+		);
+		// Player 2
+		Party.S.stats.Add(new PartyStats("Bill", 32, 32, 32, 15, 15, 15,
+			1, 1, 1, 1, 2, 2, 2, 2,
+			0, 1, 2,
+			new List<Spell> { SpellManager.S.spells[0], SpellManager.S.spells[1], SpellManager.S.spells[3], SpellManager.S.spells[4], SpellManager.S.spells[5], SpellManager.S.spells[2] },
+			new List<bool>(new bool[30]),
+			new List<int> { 0, 0, 9, 23, 55, 110, 250, 450, 850, 1300, 2100 },
+			false)
+		);
+		// Player 3
+		Party.S.stats.Add(new PartyStats("Fake Bill", 25, 25, 25, 10, 10, 10,
+			1, 1, 1, 1, 2, 2, 2, 2,
+			0, 1, 6,
+			new List<Spell> { SpellManager.S.spells[4], SpellManager.S.spells[3], SpellManager.S.spells[0], SpellManager.S.spells[2], SpellManager.S.spells[1], SpellManager.S.spells[5] },
+			new List<bool>(new bool[30]),
+			new List<int> { 0, 0, 9, 23, 55, 110, 250, 450, 850, 1300, 2100 },
+			false)
+		);
+
 		// Slot 1
-		if (PlayerPrefs.HasKey(fileNdx + "Player1Level")) { Party.stats[0].LVL = PlayerPrefs.GetInt(fileNdx + "Player1Level"); }
-		if (PlayerPrefs.HasKey(fileNdx + "Player2Level")) { Party.stats[1].LVL = PlayerPrefs.GetInt(fileNdx + "Player2Level"); }
-		if (PlayerPrefs.HasKey(fileNdx + "Player3Level")) { Party.stats[2].LVL = PlayerPrefs.GetInt(fileNdx + "Player3Level"); }
-		if (PlayerPrefs.HasKey(fileNdx + "Player1Exp")) { Party.stats[0].EXP = PlayerPrefs.GetInt(fileNdx + "Player1Exp"); }
-		if (PlayerPrefs.HasKey(fileNdx + "Player2Exp")) { Party.stats[1].EXP = PlayerPrefs.GetInt(fileNdx + "Player2Exp"); }
-		if (PlayerPrefs.HasKey(fileNdx + "Player3Exp")) { Party.stats[2].EXP = PlayerPrefs.GetInt(fileNdx + "Player3Exp"); }
+		if (PlayerPrefs.HasKey(fileNdx + "Player1Level")) { Party.S.stats[0].LVL = PlayerPrefs.GetInt(fileNdx + "Player1Level"); }
+		if (PlayerPrefs.HasKey(fileNdx + "Player2Level")) { Party.S.stats[1].LVL = PlayerPrefs.GetInt(fileNdx + "Player2Level"); }
+		if (PlayerPrefs.HasKey(fileNdx + "Player3Level")) { Party.S.stats[2].LVL = PlayerPrefs.GetInt(fileNdx + "Player3Level"); }
+		if (PlayerPrefs.HasKey(fileNdx + "Player1Exp")) { Party.S.stats[0].EXP = PlayerPrefs.GetInt(fileNdx + "Player1Exp"); }
+		if (PlayerPrefs.HasKey(fileNdx + "Player2Exp")) { Party.S.stats[1].EXP = PlayerPrefs.GetInt(fileNdx + "Player2Exp"); }
+		if (PlayerPrefs.HasKey(fileNdx + "Player3Exp")) { Party.S.stats[2].EXP = PlayerPrefs.GetInt(fileNdx + "Player3Exp"); }
 		if (PlayerPrefs.HasKey(fileNdx + "Gold")) { Party.S.gold = PlayerPrefs.GetInt(fileNdx + "Gold"); }
 		if (PlayerPrefs.HasKey(fileNdx + "Time")) { PauseScreen.S.fileStatsNumText.text = PlayerPrefs.GetString(fileNdx + "Time"); } // Stores Time in 0:00 format
 		if (PlayerPrefs.HasKey(fileNdx + "Seconds")) { PauseScreen.S.seconds = PlayerPrefs.GetInt(fileNdx + "Seconds"); }
 		if (PlayerPrefs.HasKey(fileNdx + "Minutes")) { PauseScreen.S.minutes = PlayerPrefs.GetInt(fileNdx + "Minutes"); }
-		if (PlayerPrefs.HasKey(fileNdx + "Name")) { Party.stats[0].name = PlayerPrefs.GetString(fileNdx + "Name"); }
+		if (PlayerPrefs.HasKey(fileNdx + "Name")) { Party.S.stats[0].name = PlayerPrefs.GetString(fileNdx + "Name"); }
 		if (PlayerPrefs.HasKey(fileNdx + "LocationNdx")) { WarpManager.S.locationNdx = PlayerPrefs.GetInt(fileNdx + "LocationNdx"); }
 		if (PlayerPrefs.HasKey(fileNdx + "LocationName")) { WarpManager.S.locationName = PlayerPrefs.GetString(fileNdx + "LocationName"); }
 		if (PlayerPrefs.HasKey(fileNdx + "VisitedLocations")) { WarpManager.S.visitedLocationNdxs = PlayerPrefs.GetString(fileNdx + "VisitedLocations"); }
 
 		// Level Up
 		Party.S.CheckForLevelUp();
-		Party.stats[0].hasLeveledUp = false;
-		Party.stats[1].hasLeveledUp = false;
-		Party.stats[2].hasLeveledUp = false;
+		Party.S.stats[0].hasLeveledUp = false;
+		Party.S.stats[1].hasLeveledUp = false;
+		Party.S.stats[2].hasLeveledUp = false;
 
 		currentFileNdx = fileNdx;
 
@@ -404,17 +435,17 @@ public class SaveScreen : MonoBehaviour {
 
 	void SaveFile(int fileNdx) {
 		// Slot 1
-		PlayerPrefs.SetInt(fileNdx + "Player1Level", Party.stats[0].LVL);
-		PlayerPrefs.SetInt(fileNdx + "Player2Level", Party.stats[1].LVL);
-		PlayerPrefs.SetInt(fileNdx + "Player3Level", Party.stats[2].LVL);
-		PlayerPrefs.SetInt(fileNdx + "Player1Exp", Party.stats[0].EXP);
-		PlayerPrefs.SetInt(fileNdx + "Player2Exp", Party.stats[1].EXP);
-		PlayerPrefs.SetInt(fileNdx + "Player3Exp", Party.stats[2].EXP);
+		PlayerPrefs.SetInt(fileNdx + "Player1Level", Party.S.stats[0].LVL);
+		PlayerPrefs.SetInt(fileNdx + "Player2Level", Party.S.stats[1].LVL);
+		PlayerPrefs.SetInt(fileNdx + "Player3Level", Party.S.stats[2].LVL);
+		PlayerPrefs.SetInt(fileNdx + "Player1Exp", Party.S.stats[0].EXP);
+		PlayerPrefs.SetInt(fileNdx + "Player2Exp", Party.S.stats[1].EXP);
+		PlayerPrefs.SetInt(fileNdx + "Player3Exp", Party.S.stats[2].EXP);
 		PlayerPrefs.SetInt(fileNdx + "Gold", Party.S.gold);
 		PlayerPrefs.SetString(fileNdx + "Time", PauseScreen.S.GetTime()); // Stores Time in 0:00 format
 		PlayerPrefs.SetInt(fileNdx + "Seconds", PauseScreen.S.seconds);
 		PlayerPrefs.SetInt(fileNdx + "Minutes", PauseScreen.S.minutes);
-		PlayerPrefs.SetString(fileNdx + "Name", Party.stats[0].name);
+		PlayerPrefs.SetString(fileNdx + "Name", Party.S.stats[0].name);
 		PlayerPrefs.SetInt(fileNdx + "LocationNdx", WarpManager.S.locationNdx);
 		PlayerPrefs.SetString(fileNdx + "LocationName", WarpManager.S.locationName);
 		PlayerPrefs.SetString(fileNdx + "VisitedLocations", WarpManager.S.visitedLocationNdxs);
