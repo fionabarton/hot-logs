@@ -24,6 +24,9 @@ public class Battle : MonoBehaviour {
 	// Enemy "Help!" Word Bubbles
 	public List<GameObject> enemyHelpBubbles;
 
+	// '...' Word Bubble
+	public GameObject		dotDotDotWordBubble;
+
 	public List<Animator>	playerAnimator;
 	public List<Animator>	enemyAnimator;
 
@@ -275,10 +278,10 @@ public class Battle : MonoBehaviour {
 				BattleDialogue.S.displayMessageTextTop.gameObject.transform.parent.gameObject.SetActive(true);
 				// Display Player Stats
 				BattleDialogue.S.displayMessageTextTop.text =
-					Party.stats[0].name + " HP: " + Party.stats[0].HP + "/" + Party.stats[0].maxHP +
-					" MP: " + Party.stats[0].MP + "/" + Party.stats[0].maxMP + "\n" +
-					Party.stats[1].name + " HP: " + Party.stats[1].HP + "/" + Party.stats[1].maxHP +
-					" MP: " + Party.stats[1].MP + "/" + Party.stats[1].maxMP;
+					Party.S.stats[0].name + " HP: " + Party.S.stats[0].HP + "/" + Party.S.stats[0].maxHP +
+					" MP: " + Party.S.stats[0].MP + "/" + Party.S.stats[0].maxMP + "\n" +
+					Party.S.stats[1].name + " HP: " + Party.S.stats[1].HP + "/" + Party.S.stats[1].maxHP +
+					" MP: " + Party.S.stats[1].MP + "/" + Party.S.stats[1].maxMP;
 
 				if (canUpdate) {
 					// Audio: Selection (when a new gameObject is selected)
@@ -305,10 +308,10 @@ public class Battle : MonoBehaviour {
                         BattleDialogue.S.displayMessageTextTop.text = enemyStats[2].name;
                         break;
                     case "Player1Button":
-                        BattleDialogue.S.displayMessageTextTop.text = Party.stats[0].name;
+                        BattleDialogue.S.displayMessageTextTop.text = Party.S.stats[0].name;
                         break;
                     case "Player2Button":
-                        BattleDialogue.S.displayMessageTextTop.text = Party.stats[1].name;
+                        BattleDialogue.S.displayMessageTextTop.text = Party.S.stats[1].name;
                         break;
                 }
 
@@ -394,6 +397,9 @@ public class Battle : MonoBehaviour {
 		// Deactivate Enemy "Help" Word Bubbles
 		Utilities.S.SetActiveList(enemyHelpBubbles, false);
 
+		// Deactivate '...' Word Bubble
+		dotDotDotWordBubble.SetActive(false);
+
 		// Reset Exp/Gold to add
 		expToAdd = 0;
 		goldToAdd = 0;
@@ -404,7 +410,7 @@ public class Battle : MonoBehaviour {
 		BattleInitiative.S.Initiative();
 
 		// Switch mode (playerTurn or enemyTurn) based off of turnNdx
-		if (turnNdx == turnOrder.IndexOf(Party.stats[0].name) || turnNdx == turnOrder.IndexOf(Party.stats[1].name) || turnNdx == turnOrder.IndexOf(Party.stats[2].name)) {
+		if (turnNdx == turnOrder.IndexOf(Party.S.stats[0].name) || turnNdx == turnOrder.IndexOf(Party.S.stats[1].name) || turnNdx == turnOrder.IndexOf(Party.S.stats[2].name)) {
 			battleMode = eBattleMode.playerTurn;
 		} else if (turnNdx == turnOrder.IndexOf(enemyStats[0].name) || turnNdx == turnOrder.IndexOf(enemyStats[1].name) || turnNdx == turnOrder.IndexOf(enemyStats[2].name)) {
 			battleMode = eBattleMode.enemyTurn;
@@ -419,13 +425,14 @@ public class Battle : MonoBehaviour {
 		if (turnNdx <= ((enemyAmount - 1) + (partyQty))) {
 			turnNdx += 1; } else { turnNdx = 0; }
 
+		// Deactivate cursors
 		Utilities.S.SetActiveList(BattleUI.S.targetCursors, false);
 
 		// Reset button to be selected (Fight Button)
 		previousSelectedGameObject = BattlePlayerActions.S.buttonsGO[0];
 
 		// Switch mode (playerTurn or enemyTurn) based off of turnNdx
-		if (turnNdx == turnOrder.IndexOf(Party.stats[0].name) || turnNdx == turnOrder.IndexOf(Party.stats[1].name) || turnNdx == turnOrder.IndexOf(Party.stats[2].name)) {
+		if (turnNdx == turnOrder.IndexOf(Party.S.stats[0].name) || turnNdx == turnOrder.IndexOf(Party.S.stats[1].name) || turnNdx == turnOrder.IndexOf(Party.S.stats[2].name)) {
 			battleMode = eBattleMode.playerTurn;
 		} else if (turnNdx == turnOrder.IndexOf(enemyStats[0].name) || turnNdx == turnOrder.IndexOf(enemyStats[1].name) || turnNdx == turnOrder.IndexOf(enemyStats[2].name)) {
 			battleMode = eBattleMode.enemyTurn;
@@ -434,7 +441,7 @@ public class Battle : MonoBehaviour {
 
 	// return current player turn index
 	public int PlayerNdx() {
-		if (turnNdx == turnOrder.IndexOf(Party.stats[0].name)) { return 0; } else if (turnNdx == turnOrder.IndexOf(Party.stats[1].name)) { return 1; } else { return 2; } 
+		if (turnNdx == turnOrder.IndexOf(Party.S.stats[0].name)) { return 0; } else if (turnNdx == turnOrder.IndexOf(Party.S.stats[1].name)) { return 1; } else { return 2; } 
 	}
 
 	// return current enemy turn index																																						
@@ -456,10 +463,13 @@ public class Battle : MonoBehaviour {
 		}
 
 		// If Defended previous turn, remove from Defenders list
-		RemoveDefender(Party.stats[PlayerNdx()].name);
+		RemoveDefender(Party.S.stats[PlayerNdx()].name);
 		playerShields[PlayerNdx()].SetActive(false);
-		
-		BattleDialogue.S.DisplayText("What will you do, " + Party.stats[PlayerNdx()].name + "?");
+
+		// Deactivate '...' Word Bubble
+		dotDotDotWordBubble.SetActive(false);
+
+		BattleDialogue.S.DisplayText("What will you do, " + Party.S.stats[PlayerNdx()].name + "?");
 
 		// Switch Mode
 		battleMode = eBattleMode.actionButtons;
@@ -483,6 +493,9 @@ public class Battle : MonoBehaviour {
 		// If Defended previous turn, remove from Defenders list
 		RemoveDefender(enemyStats[EnemyNdx()].name);
 		enemyShields[EnemyNdx()].SetActive(false);
+
+		// Deactivate '...' Word Bubble
+		dotDotDotWordBubble.SetActive(false);
 
 		//DisplayText: THE ENEMY IS ABOUT TO ACT!
 		BattleDialogue.S.DisplayText (enemyStats[EnemyNdx()].name + " is about to act!");

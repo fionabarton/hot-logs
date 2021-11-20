@@ -424,12 +424,12 @@ public class BattleQTE : MonoBehaviour {
 			// Calculate bonus damage
 			switch (qteType) {
 				case 0: /////////// MASH ///////////
-					_.bonusDamage = (int)1.5f * Party.stats[_.PlayerNdx()].LVL;
+					_.bonusDamage = (int)1.5f * Party.S.stats[_.PlayerNdx()].LVL;
 					break;
 				case 1: /////////// HOLD ///////////
 				case 3: /////////// STOP ///////////
 					// Divide Bonus Damage into thirds
-					int bonus = (int)1.5f * Party.stats[_.PlayerNdx()].LVL / 3;
+					int bonus = (int)1.5f * Party.S.stats[_.PlayerNdx()].LVL / 3;
 
 					if (val >= 90 && val <= 100) {
 						if(bonus < 3) { 
@@ -453,11 +453,11 @@ public class BattleQTE : MonoBehaviour {
 					} 
 					break;
 				case 2: /////////// SEQUENCE ///////////	
-					_.bonusDamage = (int)1.5f * Party.stats[_.PlayerNdx()].LVL;
+					_.bonusDamage = (int)1.5f * Party.S.stats[_.PlayerNdx()].LVL;
 					break;
 				case 4: /////////// BLOCK ///////////	
 					// Calculate HP bonus 
-					int amountToHeal = (int)1.5f * Party.stats[blockerNdx].LVL;
+					int amountToHeal = (int)1.5f * Party.S.stats[blockerNdx].LVL;
 
 					// Add HP to Player that is blocking
 					RPG.S.AddPlayerHP(blockerNdx, amountToHeal);
@@ -480,7 +480,10 @@ public class BattleQTE : MonoBehaviour {
 
 				// Animation: QTE FAIL
 				_.playerAnimator[_.animNdx].CrossFade("QTE_Fail", 0);
-            } 	
+
+				// Activate "..." Word Bubble
+				_.dotDotDotWordBubble.SetActive(true);
+			} 	
 		}
 
 		if(qteType != 4) {

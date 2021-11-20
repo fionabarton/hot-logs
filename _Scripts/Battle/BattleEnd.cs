@@ -108,6 +108,9 @@ public class BattleEnd : MonoBehaviour {
 		// Deactivate Enemy "Help" Word Bubble
 		_.enemyHelpBubbles[ndx].SetActive(false);
 
+		// Deactivate '...' Word Bubble
+		_.dotDotDotWordBubble.SetActive(false);
+
 		BattleUI.S.turnCursor.SetActive(false); // Deactivate Turn Cursor
 		Utilities.S.SetActiveList(BattleUI.S.targetCursors, false);
 
@@ -151,17 +154,17 @@ public class BattleEnd : MonoBehaviour {
 
 		// 1 Item Dropped!
 		if (_.droppedItems.Count <= 1) {
-			BattleDialogue.S.DisplayText(_.enemyStats[0].name + " dropped a " + _.droppedItems[0].name + "!\n" + Party.stats[0].name + " adds it to the inventory!");
+			BattleDialogue.S.DisplayText(_.enemyStats[0].name + " dropped a " + _.droppedItems[0].name + "!\n" + Party.S.stats[0].name + " adds it to the inventory!");
 			// 2 Items Dropped!
 		} else if (_.droppedItems.Count <= 2) {
 			if (_.droppedItems[0] == _.droppedItems[1]) {
-				BattleDialogue.S.DisplayText(_.enemyStats[0].name + " dropped two " + _.droppedItems[0].name + "s" + "!\n" + Party.stats[0].name + " adds them to the inventory!");
+				BattleDialogue.S.DisplayText(_.enemyStats[0].name + " dropped two " + _.droppedItems[0].name + "s" + "!\n" + Party.S.stats[0].name + " adds them to the inventory!");
 			} else {
-				BattleDialogue.S.DisplayText(_.enemyStats[0].name + " dropped a " + _.droppedItems[0].name + " and a " + _.droppedItems[1].name + "!\n" + Party.stats[0].name + " adds them to the inventory!");
+				BattleDialogue.S.DisplayText(_.enemyStats[0].name + " dropped a " + _.droppedItems[0].name + " and a " + _.droppedItems[1].name + "!\n" + Party.S.stats[0].name + " adds them to the inventory!");
 			}
 			// MANY Items Dropped!
 		} else {
-			BattleDialogue.S.DisplayText(_.enemyStats[0].name + " dropped a ton of crap.\nCheck your inventory later to find out what!");
+			BattleDialogue.S.DisplayText(_.enemyStats[0].name + " dropped a ton of junk.\nCheck your inventory later to find out what!");
 		}
 		// Switch Mode
 		_.battleMode = eBattleMode.addExpAndGold;
@@ -184,10 +187,10 @@ public class BattleEnd : MonoBehaviour {
 		_.playerShields[ndx].SetActive(false);
 
 		// Remove Player 1 or 2 from Turn Order
-		//if (ndx == 0) { _.turnOrder.Remove(Party.stats[0].name); } else if (ndx == 1) { _.turnOrder.Remove(Party.stats[1].name); }
-		_.turnOrder.Remove(Party.stats[ndx].name);
+		//if (ndx == 0) { _.turnOrder.Remove(Party.S.stats[0].name); } else if (ndx == 1) { _.turnOrder.Remove(Party.S.stats[1].name); }
+		_.turnOrder.Remove(Party.S.stats[ndx].name);
 
-		BattleDialogue.S.DisplayText("Oh no!\n" + Party.stats[ndx].name + " has been felled!");
+		BattleDialogue.S.DisplayText("Oh no!\n" + Party.S.stats[ndx].name + " has been felled!");
 
 		// Add PartyDeath or NextTurn 
 		// Switch Mode
@@ -229,7 +232,7 @@ public class BattleEnd : MonoBehaviour {
 
 		// Add EXP
 		for (int i = 0; i <= Party.S.partyNdx; i++) {
-			if (!Battle.S.playerDead[i]) { Party.stats[i].EXP += _.expToAdd; }
+			if (!Battle.S.playerDead[i]) { Party.S.stats[i].EXP += _.expToAdd; }
 		}
 
 		// Display Text
@@ -239,17 +242,17 @@ public class BattleEnd : MonoBehaviour {
 			BattleDialogue.S.DisplayText(BattleDialogue.S.message);
 		} else {
 			if (!_.playerDead[0]) {
-				BattleDialogue.S.DisplayText(Party.stats[0].name + " has earned " + _.expToAdd + " EXP " + "\nand stolen " + _.goldToAdd + " GP!");
+				BattleDialogue.S.DisplayText(Party.S.stats[0].name + " has earned " + _.expToAdd + " EXP " + "\nand stolen " + _.goldToAdd + " GP!");
 			} else if (!_.playerDead[1]) {
-				BattleDialogue.S.DisplayText(Party.stats[1].name + " has earned " + _.expToAdd + " EXP " + "\nand stolen " + _.goldToAdd + " GP!");
+				BattleDialogue.S.DisplayText(Party.S.stats[1].name + " has earned " + _.expToAdd + " EXP " + "\nand stolen " + _.goldToAdd + " GP!");
 			} else if (!_.playerDead[2]) {
-				BattleDialogue.S.DisplayText(Party.stats[2].name + " has earned " + _.expToAdd + " EXP " + "\nand stolen " + _.goldToAdd + " GP!");
+				BattleDialogue.S.DisplayText(Party.S.stats[2].name + " has earned " + _.expToAdd + " EXP " + "\nand stolen " + _.goldToAdd + " GP!");
 			}
 		}
 
 		// LevelUp or ReturnToWorldDelay
 		Party.S.CheckForLevelUp();
-		if (Party.stats[0].hasLeveledUp || Party.stats[1].hasLeveledUp || Party.stats[2].hasLeveledUp) {
+		if (Party.S.stats[0].hasLeveledUp || Party.S.stats[1].hasLeveledUp || Party.S.stats[2].hasLeveledUp) {
 			LevelUpDelay();
 		} else {
 			// Return to Overworld
@@ -264,8 +267,8 @@ public class BattleEnd : MonoBehaviour {
 	public List<int> membersToLevelUp = new List<int>();
 	public void LevelUp() {
 		// Get all members that have levelled up
-		for(int i = 0; i < Party.stats.Count; i++) {
-			if (Party.stats[i].hasLeveledUp) {
+		for(int i = 0; i < Party.S.stats.Count; i++) {
+			if (Party.S.stats[i].hasLeveledUp) {
 				membersToLevelUp.Add(i);
 			}
 		}
@@ -274,8 +277,8 @@ public class BattleEnd : MonoBehaviour {
 		if(membersToLevelUp.Count > 0) {
 			// Display text and document that the member has levelled up 
 			int ndx = membersToLevelUp[0];
-			BattleDialogue.S.DisplayText(Party.stats[ndx].name + " level up!" + "\nHP = " + Party.stats[ndx].HP + ", MP = " + Party.stats[ndx].MP + "," + "\nSTR = " + Party.stats[ndx].STR + ", DEF = " + Party.stats[ndx].DEF + ", WIS = " + Party.stats[ndx].WIS + ", AGI = " + Party.stats[ndx].AGI);
-			Party.stats[ndx].hasLeveledUp = false;
+			BattleDialogue.S.DisplayText(Party.S.stats[ndx].name + " level up!" + "\nHP = " + Party.S.stats[ndx].HP + ", MP = " + Party.S.stats[ndx].MP + "," + "\nSTR = " + Party.S.stats[ndx].STR + ", DEF = " + Party.S.stats[ndx].DEF + ", WIS = " + Party.S.stats[ndx].WIS + ", AGI = " + Party.S.stats[ndx].AGI);
+			Party.S.stats[ndx].hasLeveledUp = false;
 
 			// Remove member index from list
 			membersToLevelUp.RemoveAt(0);
@@ -290,8 +293,8 @@ public class BattleEnd : MonoBehaviour {
 	}
 	public void MultiLvlUp(int ndx) {
 		// Display Text
-		BattleDialogue.S.DisplayText(Party.stats[ndx].name + " level up!" + "\nHP = " + Party.stats[ndx].HP + ", MP = " + Party.stats[ndx].MP + "," + "\nSTR = " + Party.stats[ndx].STR + ", DEF = " + Party.stats[ndx].DEF + ", WIS = " + Party.stats[ndx].WIS + ", AGI = " + Party.stats[ndx].AGI);
-		Party.stats[ndx].hasLeveledUp = false;
+		BattleDialogue.S.DisplayText(Party.S.stats[ndx].name + " level up!" + "\nHP = " + Party.S.stats[ndx].HP + ", MP = " + Party.S.stats[ndx].MP + "," + "\nSTR = " + Party.S.stats[ndx].STR + ", DEF = " + Party.S.stats[ndx].DEF + ", WIS = " + Party.S.stats[ndx].WIS + ", AGI = " + Party.S.stats[ndx].AGI);
+		Party.S.stats[ndx].hasLeveledUp = false;
 
 		// Remove member index from list
 		membersToLevelUp.RemoveAt(0);
@@ -318,7 +321,7 @@ public class BattleEnd : MonoBehaviour {
 
 		// Set HP to 1 for Overworld
 		for(int i = 0; i <= Party.S.partyNdx; i++) {
-			if (_.playerDead[i]) { Party.stats[i].HP = 1; }
+			if (_.playerDead[i]) { Party.S.stats[i].HP = 1; }
 		}
 
 		Invoke("LoadOverworldDelay", 0.5f);
