@@ -15,7 +15,8 @@ public class SpellScreen : MonoBehaviour {
 	[Header("Set in Inspector")]
 	// Spells "Buttons"
 	public List<Button> 	spellsButtons;
-	public List<Text> 	  	spellsButtonNameTexts;
+	public List<Text> 	  	spellsButtonNameText;
+	public List<Text>		spellsButtonMPCostText;
 
 	public GameObject		previousSelectedSpellGO;
 
@@ -198,8 +199,8 @@ public class SpellScreen : MonoBehaviour {
 		}
 
 		// Empty Inventory
-		if (Party.stats[playerNdx].spellNdx == 0) {
-			PauseMessage.S.DisplayText(Party.stats[playerNdx].name + " knows no spells, fool!");
+		if (Party.S.stats[playerNdx].spellNdx == 0) {
+			PauseMessage.S.DisplayText(Party.S.stats[playerNdx].name + " knows no spells, fool!");
 
 			canUpdate = true;
 			// Switch ScreenMode
@@ -228,8 +229,6 @@ public class SpellScreen : MonoBehaviour {
 				Utilities.S.SetSelectedGO(spellsButtons[0].gameObject);
 			}
 
-
-
 			// Activate Cursor
 			ScreenCursor.S.cursorGO[0].SetActive(true);
 
@@ -248,31 +247,35 @@ public class SpellScreen : MonoBehaviour {
 	}
 
 	public void DisplaySpellsDescriptions (int playerNdx) {
-		for (int i = 0; i < Party.stats[playerNdx].spellNdx; i++) {
+		for (int i = 0; i < Party.S.stats[playerNdx].spellNdx; i++) {
 			if (UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject == spellsButtons[i].gameObject) {
-				PauseMessage.S.SetText(Party.stats[playerNdx].spells[i].description);
+				PauseMessage.S.SetText(Party.S.stats[playerNdx].spells[i].description);
 
 				// Cursor Position set to Selected Button
 				Utilities.S.PositionCursor(spellsButtons[i].gameObject, -160, 0, 0);
 
 				// Set selected button text color	
-				spellsButtons[i].gameObject.GetComponentInChildren<Text>().color = new Color32(205, 208, 0, 255);
+				spellsButtonNameText[i].color = new Color32(205, 208, 0, 255);
+				spellsButtonMPCostText[i].color = new Color32(205, 208, 0, 255);
 
 				// Audio: Selection (when a new gameObject is selected)
 				Utilities.S.PlayButtonSelectedSFX(ref previousSelectedSpellGO);
 			} else {
 				// Set non-selected button text color
-				spellsButtons[i].gameObject.GetComponentInChildren<Text>().color = new Color32(255, 255, 255, 255);
+				spellsButtonNameText[i].color = new Color32(255, 255, 255, 255);
+				spellsButtonMPCostText[i].color = new Color32(255, 255, 255, 255);
 			}
 		}
 	}
 	
 	public void DeactivateUnusedSpellsSlots (int playerNdx) {
 		for (int i = 0; i < spellsButtons.Count; i++) {
-			if (i < Party.stats[playerNdx].spellNdx) {
+			if (i < Party.S.stats[playerNdx].spellNdx) {
 				spellsButtons[i].gameObject.SetActive(true);
+				spellsButtonMPCostText[i].gameObject.SetActive(true);
 			} else {
 				spellsButtons[i].gameObject.SetActive(false);
+				spellsButtonMPCostText[i].gameObject.SetActive(false);
 			} 
 		}
 	}
@@ -281,10 +284,10 @@ public class SpellScreen : MonoBehaviour {
 		Utilities.S.RemoveListeners(PlayerButtons.S.buttonsCS);
 		Utilities.S.RemoveListeners(spellsButtons);
 
-		for (int i = 0; i < Party.stats[playerNdx].spellNdx; i++) {
+		for (int i = 0; i < Party.S.stats[playerNdx].spellNdx; i++) {
 			// Add listener to Spell Button
 			int copy = i;
-			spellsButtons[copy].onClick.AddListener(delegate { UseSpell(Party.stats[playerNdx].spells[copy]); });
+			spellsButtons[copy].onClick.AddListener(delegate { UseSpell(Party.S.stats[playerNdx].spells[copy]); });
 
 			// Assign Button Name Text
 			AssignSpellsNames(playerNdx);
@@ -292,17 +295,18 @@ public class SpellScreen : MonoBehaviour {
 	}
 
 	public void AssignSpellsNames(int playerNdx) {
-		for (int i = 0; i < Party.stats[playerNdx].spellNdx; i++) {
+		for (int i = 0; i < Party.S.stats[playerNdx].spellNdx; i++) {
 			// Assign Button Name Text
 			string ndx = (i + 1).ToString();
-			spellsButtonNameTexts[i].text = ndx + ") " + Party.stats[playerNdx].spells[i].name;
+			spellsButtonNameText[i].text = ndx + ") " + Party.S.stats[playerNdx].spells[i].name;
+			spellsButtonMPCostText[i].text = Party.S.stats[playerNdx].spells[i].cost.ToString();
 		}
 	}
 
 	// Set the first and last button’s navigation 
 	public void SetButtonNavigation() {
 		// Reset all button's navigation to automatic
-		for (int i = 0; i < Party.stats[playerNdx].spellNdx; i++) {
+		for (int i = 0; i < Party.S.stats[playerNdx].spellNdx; i++) {
 			// Get the Navigation data
 			Navigation navigation = spellsButtons[i].navigation;
 
@@ -314,19 +318,19 @@ public class SpellScreen : MonoBehaviour {
 		}
 
 		// Set button navigation if inventory is less than 10
-		//if (Party.stats[playerNdx].spellNdx < spellsButtons.Count) {
-		if (Party.stats[playerNdx].spellNdx > 1) {
+		//if (Party.S.stats[playerNdx].spellNdx < spellsButtons.Count) {
+		if (Party.S.stats[playerNdx].spellNdx > 1) {
 			// Set first button navigation
-			Utilities.S.SetButtonNavigation(
+			Utilities.S.SetVerticalButtonNavigation(
 				spellsButtons[0],
 				spellsButtons[1],
-				spellsButtons[Party.stats[playerNdx].spellNdx - 1]);
+				spellsButtons[Party.S.stats[playerNdx].spellNdx - 1]);
 
 			// Set last button navigation
-			Utilities.S.SetButtonNavigation(
-				spellsButtons[Party.stats[playerNdx].spellNdx - 1],
+			Utilities.S.SetVerticalButtonNavigation(
+				spellsButtons[Party.S.stats[playerNdx].spellNdx - 1],
 				spellsButtons[0],
-				spellsButtons[Party.stats[playerNdx].spellNdx - 2]);
+				spellsButtons[Party.S.stats[playerNdx].spellNdx - 2]);
 			//}
 		}
 	}
@@ -373,7 +377,7 @@ public class SpellScreen : MonoBehaviour {
 			} else if (spell.name == "Heal All") {
 				WorldSpells.S.AddFunctionToButton(WorldSpells.S.HealAllPartyMembers, "Heal all party members?", spell);
 			} else {
-				SpellManager.S.CantUseSpell("You ain't battlin' no one, so ya can't use dis spell!");
+				SpellManager.S.CantUseSpell("You ain't battlin' no one, so ya can't use this spell!");
 			}
 		}
 	}
