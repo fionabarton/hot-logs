@@ -10,7 +10,9 @@ public class ShopScreen : MonoBehaviour {
 	[Header("Set in Inspector")]
 	// Inventory Buttons
 	public List<Button> 	inventoryButtons;
-	public List<Text> 		inventoryButtonsText;
+	public List<Text> 		inventoryButtonsNameText;
+	public List<Text>		inventoryButtonsPriceText;
+	public List<Text>		inventoryButtonsQTYOwnedText;
 
 	[Header("Set Dynamically")]
 	// Singleton

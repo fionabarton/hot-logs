@@ -87,8 +87,12 @@ public class ShopScreen_PickItemMode : MonoBehaviour {
 		for (int i = 0; i < shopScreen.inventoryButtons.Count; i++) {
 			if (i < shopScreen.inventory.Count) {
 				shopScreen.inventoryButtons[i].gameObject.SetActive(true);
+				shopScreen.inventoryButtonsPriceText[i].gameObject.SetActive(true);
+				shopScreen.inventoryButtonsQTYOwnedText[i].gameObject.SetActive(true);
 			} else {
 				shopScreen.inventoryButtons[i].gameObject.SetActive(false);
+				shopScreen.inventoryButtonsPriceText[i].gameObject.SetActive(false);
+				shopScreen.inventoryButtonsQTYOwnedText[i].gameObject.SetActive(false);
 			}
 		}
 	}
@@ -107,29 +111,19 @@ public class ShopScreen_PickItemMode : MonoBehaviour {
 	}
 
 	public void AssignItemNames(ShopScreen shopScreen) {
-		for (int i = 0; i < shopScreen.inventoryButtonsText.Count; i++) {
-			//if(shopScreen.inventory.Count <= i) {
-			//	return;
-			//         }
-
-			//// Assign Button Name Text
-			//string ndx = (i + 1).ToString();
-			//shopScreen.inventoryButtonsText[i].text = ndx + ") " + shopScreen.inventory[i].name;
-
+		for (int i = 0; i < shopScreen.inventoryButtonsNameText.Count; i++) {
 			if (shopScreen.firstSlotNdx + i < shopScreen.inventory.Count) {
 				string inventoryNdx = (shopScreen.firstSlotNdx + i + 1).ToString();
 
-				shopScreen.inventoryButtonsText[i].text = inventoryNdx + ") " + shopScreen.inventory[shopScreen.firstSlotNdx + i].name;
+				shopScreen.inventoryButtonsNameText[i].text = inventoryNdx + ") " + shopScreen.inventory[shopScreen.firstSlotNdx + i].name;
+				shopScreen.inventoryButtonsPriceText[i].text = shopScreen.inventory[shopScreen.firstSlotNdx + i].value.ToString();
+				shopScreen.inventoryButtonsQTYOwnedText[i].text = Inventory.S.GetItemCount(shopScreen.inventory[shopScreen.firstSlotNdx + i]).ToString();
 			}
 		}
 	}
 
 	public void DisplayItemDescriptions(ShopScreen shopScreen) {
-		for (int i = 0; i < shopScreen.inventoryButtonsText.Count; i++) {
-			//if (shopScreen.inventory.Count <= i) {
-			//	return;
-			//}
-
+		for (int i = 0; i < shopScreen.inventoryButtonsNameText.Count; i++) {
 			if (UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject == shopScreen.inventoryButtons[i].gameObject) {
 				PauseMessage.S.SetText(shopScreen.inventory[shopScreen.firstSlotNdx + i].description);
 
@@ -137,7 +131,9 @@ public class ShopScreen_PickItemMode : MonoBehaviour {
 				Utilities.S.PositionCursor(shopScreen.inventoryButtons[i].gameObject, -160, 0, 0);
 
 				// Set selected button text color	
-				shopScreen.inventoryButtons[i].gameObject.GetComponentInChildren<Text>().color = new Color32(205, 208, 0, 255);
+				shopScreen.inventoryButtonsNameText[i].color = new Color32(205, 208, 0, 255);
+				shopScreen.inventoryButtonsPriceText[i].color = new Color32(205, 208, 0, 255);
+				shopScreen.inventoryButtonsQTYOwnedText[i].color = new Color32(205, 208, 0, 255);
 
 				// Audio: Selection (when a new gameObject is selected)
 				Utilities.S.PlayButtonSelectedSFX(ref shopScreen.previousSelectedGameObject);
@@ -145,7 +141,9 @@ public class ShopScreen_PickItemMode : MonoBehaviour {
 				shopScreen.previousSelectedNdx = i;
 			} else {
 				// Set non-selected button text color
-				shopScreen.inventoryButtons[i].gameObject.GetComponentInChildren<Text>().color = new Color32(255, 255, 255, 255);
+				shopScreen.inventoryButtonsNameText[i].color = new Color32(255, 255, 255, 255);
+				shopScreen.inventoryButtonsPriceText[i].color = new Color32(255, 255, 255, 255);
+				shopScreen.inventoryButtonsQTYOwnedText[i].color = new Color32(255, 255, 255, 255);
 			}
 		}
 	}
@@ -168,13 +166,13 @@ public class ShopScreen_PickItemMode : MonoBehaviour {
 		if (shopScreen.inventory.Count < shopScreen.inventoryButtons.Count) {
 			if (shopScreen.inventory.Count > 1) {
 				// Set first button navigation
-				Utilities.S.SetButtonNavigation(
+				Utilities.S.SetVerticalButtonNavigation(
 					shopScreen.inventoryButtons[0],
 					shopScreen.inventoryButtons[1],
 					shopScreen.inventoryButtons[shopScreen.inventory.Count - 1]);
 
 				// Set last button navigation
-				Utilities.S.SetButtonNavigation(
+				Utilities.S.SetVerticalButtonNavigation(
 					shopScreen.inventoryButtons[shopScreen.inventory.Count - 1],
 					shopScreen.inventoryButtons[0],
 					shopScreen.inventoryButtons[shopScreen.inventory.Count - 2]);
