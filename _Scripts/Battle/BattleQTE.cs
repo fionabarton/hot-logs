@@ -408,7 +408,7 @@ public class BattleQTE : MonoBehaviour {
 		}
 
 		// Reset first input sprite position (for blocking)
-		QTEInputSprites[0].gameObject.transform.position = new Vector2(0, 2.75f);
+		QTEInputSprites[0].gameObject.transform.position = new Vector2(0, 2.7f);
 
 		// Floating score to indicate bonus points
 
@@ -543,16 +543,16 @@ public class BattleQTE : MonoBehaviour {
 		// Set sprite positions
 		switch (spriteNdx) {
 			case 0:
-				QTEInputSprites[0].gameObject.transform.position = new Vector2(0, 2.75f);
+				QTEInputSprites[0].gameObject.transform.position = new Vector2(0, 2.7f);
 				break;
 			case 1:
-				QTEInputSprites[0].gameObject.transform.position = new Vector2(-0.375f, 2.75f);
-				QTEInputSprites[1].gameObject.transform.position = new Vector2(0.375f, 2.75f);
+				QTEInputSprites[0].gameObject.transform.position = new Vector2(-0.375f, 2.7f);
+				QTEInputSprites[1].gameObject.transform.position = new Vector2(0.375f, 2.7f);
 				break;
 			case 2:
-				QTEInputSprites[0].gameObject.transform.position = new Vector2(-0.75f, 2.75f);
-				QTEInputSprites[1].gameObject.transform.position = new Vector2(0, 2.75f);
-				QTEInputSprites[2].gameObject.transform.position = new Vector2(0.75f, 2.75f);
+				QTEInputSprites[0].gameObject.transform.position = new Vector2(-0.75f, 2.7f);
+				QTEInputSprites[1].gameObject.transform.position = new Vector2(0, 2.7f);
+				QTEInputSprites[2].gameObject.transform.position = new Vector2(0.75f, 2.7f);
 				break;
 		}
 	}
