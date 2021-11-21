@@ -91,24 +91,19 @@ public class ItemScreen_PickItemMode : MonoBehaviour {
 
 		// Set button navigation if inventory is less than 10
 		if (Inventory.S.GetItemList().Count < itemScreen.itemButtons.Count) {
-			// Set first button navigation
-			if (itemScreen.itemButtons.Count == 2) {
-				Utilities.S.SetButtonNavigation(
-				itemScreen.itemButtons[0],
-				itemScreen.itemButtons[Inventory.S.GetItemList().Count - 1],
-				itemScreen.itemButtons[Inventory.S.GetItemList().Count - 1]);
-			} else {
-				Utilities.S.SetButtonNavigation(
-				itemScreen.itemButtons[0],
-				itemScreen.itemButtons[1],
-				itemScreen.itemButtons[Inventory.S.GetItemList().Count - 1]);
-			}
+			if (Inventory.S.GetItemList().Count > 1) {
+				// Set first button navigation
+				Utilities.S.SetVerticalButtonNavigation(
+					itemScreen.itemButtons[0],
+					itemScreen.itemButtons[1],
+					itemScreen.itemButtons[Inventory.S.GetItemList().Count - 1]);
 
-			// Set last button navigation
-			Utilities.S.SetButtonNavigation(
-				itemScreen.itemButtons[Inventory.S.GetItemList().Count - 1],
-				itemScreen.itemButtons[0],
-				itemScreen.itemButtons[Inventory.S.GetItemList().Count - 2]);
+				// Set last button navigation
+				Utilities.S.SetVerticalButtonNavigation(
+					itemScreen.itemButtons[Inventory.S.GetItemList().Count - 1],
+					itemScreen.itemButtons[0],
+					itemScreen.itemButtons[Inventory.S.GetItemList().Count - 2]);
+			}
 		}
 	}
 
@@ -136,7 +131,9 @@ public class ItemScreen_PickItemMode : MonoBehaviour {
 				Utilities.S.PositionCursor(itemScreen.itemButtons[i].gameObject, -170, 0, 0);
 
 				// Set selected button text color	
-				itemScreen.itemButtons[i].gameObject.GetComponentInChildren<Text>().color = new Color32(205, 208, 0, 255);
+				itemScreen.itemButtonsNameText[i].color = new Color32(205, 208, 0, 255);
+				itemScreen.itemButtonsValueText[i].color = new Color32(205, 208, 0, 255);
+				itemScreen.itemButtonsQTYOwnedText[i].color = new Color32(205, 208, 0, 255);
 
 				// Audio: Selection (when a new gameObject is selected)
 				Utilities.S.PlayButtonSelectedSFX(ref ItemScreen.S.previousSelectedGameObject);
@@ -144,7 +141,9 @@ public class ItemScreen_PickItemMode : MonoBehaviour {
 				previousSelectedNdx = i;
 			} else {
 				// Set non-selected button text color
-				itemScreen.itemButtons[i].gameObject.GetComponentInChildren<Text>().color = new Color32(255, 255, 255, 255);
+				itemScreen.itemButtonsNameText[i].color = new Color32(255, 255, 255, 255);
+				itemScreen.itemButtonsValueText[i].color = new Color32(255, 255, 255, 255);
+				itemScreen.itemButtonsQTYOwnedText[i].color = new Color32(255, 255, 255, 255);
 			}
 		}
 	}
@@ -153,8 +152,12 @@ public class ItemScreen_PickItemMode : MonoBehaviour {
 		for (int i = 0; i < itemScreen.itemButtons.Count; i++) {
 			if (i < Inventory.S.GetItemList().Count) {
 				itemScreen.itemButtons[i].gameObject.SetActive(true);
+				itemScreen.itemButtonsValueText[i].gameObject.SetActive(true);
+				itemScreen.itemButtonsQTYOwnedText[i].gameObject.SetActive(true);
 			} else {
 				itemScreen.itemButtons[i].gameObject.SetActive(false);
+				itemScreen.itemButtonsValueText[i].gameObject.SetActive(false);
+				itemScreen.itemButtonsQTYOwnedText[i].gameObject.SetActive(false);
 			}
 		}
 	}

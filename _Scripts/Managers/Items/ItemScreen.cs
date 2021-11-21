@@ -10,7 +10,9 @@ public class ItemScreen : MonoBehaviour {
 	[Header("Set in Inspector")]
 	// Item "Buttons"
 	public List<Button> 	itemButtons;
-	public List<Text> 	  	itemButtonsText;
+	public List<Text> 	  	itemButtonsNameText;
+	public List<Text>		itemButtonsValueText;
+	public List<Text>		itemButtonsQTYOwnedText;
 
 	public Button			sortButton;
 
@@ -149,53 +151,55 @@ public class ItemScreen : MonoBehaviour {
 
 	// On vertical input, scroll the item list when the first or last slot is selected
 	void ScrollItemList() {
-		// If first or last slot selected...
-		if (firstOrLastSlotSelected) {
-			if (Input.GetAxisRaw("Vertical") == 0) {
-				verticalAxisIsInUse = false;
-			} else {
-				if (!verticalAxisIsInUse) {
-					if (UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject == itemButtons[0].gameObject) {
-						if (Input.GetAxisRaw("Vertical") > 0) {
-							if (firstSlotNdx == 0) {
-								firstSlotNdx = Inventory.S.GetItemList().Count - itemButtons.Count;
+		if (Inventory.S.GetItemList().Count > 1) {
+			// If first or last slot selected...
+			if (firstOrLastSlotSelected) {
+				if (Input.GetAxisRaw("Vertical") == 0) {
+					verticalAxisIsInUse = false;
+				} else {
+					if (!verticalAxisIsInUse) {
+						if (UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject == itemButtons[0].gameObject) {
+							if (Input.GetAxisRaw("Vertical") > 0) {
+								if (firstSlotNdx == 0) {
+									firstSlotNdx = Inventory.S.GetItemList().Count - itemButtons.Count;
 
-								// Set  selected GameObject
-								Utilities.S.SetSelectedGO(itemButtons[9].gameObject);
-							} else {
-								firstSlotNdx -= 1;
+									// Set  selected GameObject
+									Utilities.S.SetSelectedGO(itemButtons[9].gameObject);
+								} else {
+									firstSlotNdx -= 1;
+								}
+							}
+						} else if (UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject == itemButtons[9].gameObject) {
+							if (Input.GetAxisRaw("Vertical") < 0) {
+								if (firstSlotNdx + itemButtons.Count == Inventory.S.GetItemList().Count) {
+									firstSlotNdx = 0;
+
+									// Set  selected GameObject
+									Utilities.S.SetSelectedGO(itemButtons[0].gameObject);
+								} else {
+									firstSlotNdx += 1;
+								}
 							}
 						}
-					} else if (UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject == itemButtons[9].gameObject) {
-						if (Input.GetAxisRaw("Vertical") < 0) {
-							if (firstSlotNdx + itemButtons.Count == Inventory.S.GetItemList().Count) {
-								firstSlotNdx = 0;
 
-								// Set  selected GameObject
-								Utilities.S.SetSelectedGO(itemButtons[0].gameObject);
-							} else {
-								firstSlotNdx += 1;
-							}
-						}
+						AssignItemEffect();
+						AssignItemNames();
+
+						// Audio: Selection
+						AudioManager.S.PlaySFX(eSoundName.selection);
+
+						verticalAxisIsInUse = true;
 					}
-
-					AssignItemEffect();
-					AssignItemNames();
-
-					// Audio: Selection
-					AudioManager.S.PlaySFX(eSoundName.selection);
-
-					verticalAxisIsInUse = true;
 				}
 			}
-		}
 
-		// Check if first or last slot is selected
-		if (UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject == itemButtons[0].gameObject
-		 || UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject == itemButtons[9].gameObject) {
-			firstOrLastSlotSelected = true;
-		} else {
-			firstOrLastSlotSelected = false;
+			// Check if first or last slot is selected
+			if (UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject == itemButtons[0].gameObject
+			 || UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject == itemButtons[9].gameObject) {
+				firstOrLastSlotSelected = true;
+			} else {
+				firstOrLastSlotSelected = false;
+			}
 		}
 	}
 
@@ -232,8 +236,9 @@ public class ItemScreen : MonoBehaviour {
 			if(firstSlotNdx + i < Inventory.S.GetItemList().Count) {
 				string inventoryNdx = (firstSlotNdx + i + 1).ToString();
 
-				itemButtonsText[i].text = inventoryNdx + ") " + Inventory.S.GetItemList()[firstSlotNdx + i].name +
-				"(" + Inventory.S.GetItemCount(Inventory.S.GetItemList()[firstSlotNdx + i]) + ")";
+				itemButtonsNameText[i].text = inventoryNdx + ") " + Inventory.S.GetItemList()[firstSlotNdx + i].name;
+				itemButtonsValueText[i].text = Inventory.S.GetItemList()[firstSlotNdx + i].value.ToString();
+				itemButtonsQTYOwnedText[i].text = Inventory.S.GetItemCount(Inventory.S.GetItemList()[firstSlotNdx + i]).ToString();
 			}	
 		}
 	}
