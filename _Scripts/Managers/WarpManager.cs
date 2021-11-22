@@ -61,7 +61,7 @@ public class WarpManager : MonoBehaviour {
 		for (int i = 0; i < visitedLocations.Count; i++) {
             if (UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject == buttons[i].gameObject) {
 				PauseMessage.S.SetText("<color=#FFFFFF>Warp to:</color> " + 
-				visitedLocations[i].name + "?\n" + "<color=#FFFFFF>Description:</color> " + visitedLocations[i].description, true);
+				visitedLocations[i].name + "<color=#FFFFFF>?\nDescription:</color> " + visitedLocations[i].description, true);
 
 				// Cursor Position set to Selected Button
 				Utilities.S.PositionCursor(buttons[i].gameObject, cursorDistanceFromCenter, 0, 0);
@@ -81,7 +81,23 @@ public class WarpManager : MonoBehaviour {
 	public void DeactivateUnusedButtonSlots(List<Button> buttons) {
         for (int i = 0; i < buttons.Count; i++) {
 			buttons[i].gameObject.SetActive(false);
-        }
+
+			// Deactivate unique SpellScreen or ItemScreen buttons
+            if (SpellScreen.S.gameObject.activeInHierarchy) {
+				SpellScreen.S.spellsButtonMPCostText[i].gameObject.SetActive(false);
+
+				SpellScreen.S.nameHeaderText.text = "Warp Destination:";
+				SpellScreen.S.MPCostHeader.SetActive(false);
+
+			} else if (ItemScreen.S.gameObject.activeInHierarchy) {
+				ItemScreen.S.itemButtonsValueText[i].gameObject.SetActive(false);
+				ItemScreen.S.itemButtonsQTYOwnedText[i].gameObject.SetActive(false);
+
+				ItemScreen.S.nameHeaderText.text = "Warp Destination:";
+				ItemScreen.S.valueHeader.SetActive(false);
+				ItemScreen.S.QTYOwnedHeader.SetActive(false);
+			}
+		}
 
 		for (int i = 0; i < visitedLocations.Count; i++) {
 			buttons[i].gameObject.SetActive(true);
@@ -151,6 +167,11 @@ public class WarpManager : MonoBehaviour {
 							int facingDirection = 99,
 							bool camFollows = true, 
 							Vector3 camWarpPos = default(Vector3)) {
+		// If used a warp potion, remove it from the inventory 
+		if (ItemScreen.S.gameObject.activeInHierarchy) {
+			Inventory.S.RemoveItemFromInventory(ItemManager.S.items[23]);
+		}
+
 		// Enable Black Screen
 		RPG.S.blackScreen.enabled = true;
 		// Deactivate Player
