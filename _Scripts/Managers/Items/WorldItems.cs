@@ -48,16 +48,6 @@ public class WorldItems : MonoBehaviour {
 
 			ItemScreen.S.mode = eItemScreenMode.pickPartyMember;
 		} else {
-			//// Set cursor positions
-			//Utilities.S.PositionCursor(PlayerButtons.S.buttonsCS[0].gameObject, 0, 60, 3, 0);
-			//Utilities.S.PositionCursor(PlayerButtons.S.buttonsCS[1].gameObject, 0, 60, 3, 1);
-			//Utilities.S.PositionCursor(PlayerButtons.S.buttonsCS[2].gameObject, 0, 60, 3, 2);
-
-			//// Set animations to walk
-			//PlayerButtons.S.anim[0].CrossFade("Walk", 0);
-			//PlayerButtons.S.anim[1].CrossFade("Walk", 0);
-			//PlayerButtons.S.anim[2].CrossFade("Walk", 0);
-
 			for (int i = 0; i <= Party.S.partyNdx; i++) {
 				// Set cursor positions
 				Utilities.S.PositionCursor(PlayerButtons.S.buttonsCS[i].gameObject, 0, 60, 3, i);
@@ -72,15 +62,12 @@ public class WorldItems : MonoBehaviour {
 			// Set button colors
 			PlayerButtons.S.SetButtonsColor(PlayerButtons.S.buttonsCS, new Color32(253, 255, 116, 255));
 
-			// Activate cursors
-			//Utilities.S.SetActiveList(ScreenCursor.S.cursorGO, true);
-
 			ItemScreen.S.mode = eItemScreenMode.pickAllPartyMembers;
 		}
 	}
 
 	public void HPPotion(int ndx) {
-		if (Party.stats[ndx].HP < Party.stats[ndx].maxHP) {
+		if (Party.S.stats[ndx].HP < Party.S.stats[ndx].maxHP) {
 			// Remove from Inventory
 			Inventory.S.RemoveItemFromInventory(ItemManager.S.items[0]);
 
@@ -89,10 +76,10 @@ public class WorldItems : MonoBehaviour {
 			RPG.S.AddPlayerHP(ndx, randomValue);
 
 			// Display Text
-			if (Party.stats[ndx].HP >= Party.stats[ndx].maxHP) {
-				PauseMessage.S.DisplayText("Used Heal Potion!\nHealed " + Party.stats[ndx].name + " back to Max HP!");
+			if (Party.S.stats[ndx].HP >= Party.S.stats[ndx].maxHP) {
+				PauseMessage.S.DisplayText("Used Heal Potion!\nHealed " + Party.S.stats[ndx].name + " back to Max HP!");
 			} else {
-				PauseMessage.S.DisplayText("Used Heal Potion!\nHealed " + Party.stats[ndx].name + " for " + randomValue + " HP!");
+				PauseMessage.S.DisplayText("Used Heal Potion!\nHealed " + Party.S.stats[ndx].name + " for " + randomValue + " HP!");
 			}
 
 			// Set animation to success
@@ -102,7 +89,7 @@ public class WorldItems : MonoBehaviour {
 			AudioManager.S.PlaySFX(eSoundName.buff1);
 		} else {
 			// Display Text
-			PauseMessage.S.DisplayText(Party.stats[ndx].name + " already at full health...\n...no need to use this potion!");
+			PauseMessage.S.DisplayText(Party.S.stats[ndx].name + " already at full health...\n...no need to use this potion!");
 
 			// Set animation to idle
 			PlayerButtons.S.anim[ndx].CrossFade("Idle", 0);
@@ -114,7 +101,7 @@ public class WorldItems : MonoBehaviour {
 	}
 
 	public void MPPotion(int ndx) {
-		if (Party.stats[ndx].MP < Party.stats[ndx].maxMP) {
+		if (Party.S.stats[ndx].MP < Party.S.stats[ndx].maxMP) {
 			// Remove from Inventory
 			Inventory.S.RemoveItemFromInventory(ItemManager.S.items[1]);
 
@@ -123,10 +110,10 @@ public class WorldItems : MonoBehaviour {
 			RPG.S.AddPlayerMP(ndx, randomValue);
 
 			// Display Text
-			if (Party.stats[ndx].MP >= Party.stats[ndx].maxMP) {
-				PauseMessage.S.DisplayText("Used Magic Potion!\n" + Party.stats[ndx].name + " back to Max MP!");
+			if (Party.S.stats[ndx].MP >= Party.S.stats[ndx].maxMP) {
+				PauseMessage.S.DisplayText("Used Magic Potion!\n" + Party.S.stats[ndx].name + " back to Max MP!");
 			} else {
-				PauseMessage.S.DisplayText("Used Magic Potion!\n" + Party.stats[ndx].name + " gained " + randomValue + " MP!");
+				PauseMessage.S.DisplayText("Used Magic Potion!\n" + Party.S.stats[ndx].name + " gained " + randomValue + " MP!");
 			}
 
 			// Set animation to success
@@ -136,7 +123,7 @@ public class WorldItems : MonoBehaviour {
 			AudioManager.S.PlaySFX(eSoundName.buff1);
 		} else {
 			// Display Text
-			PauseMessage.S.DisplayText(Party.stats[ndx].name + " already at full magic...\n...no need to use this potion!");
+			PauseMessage.S.DisplayText(Party.S.stats[ndx].name + " already at full magic...\n...no need to use this potion!");
 
 			// Set animation to idle
 			PlayerButtons.S.anim[ndx].CrossFade("Idle", 0);
@@ -150,15 +137,15 @@ public class WorldItems : MonoBehaviour {
 	public void HealAllPotion(int unusedIntBecauseOfAddFunctionToButtonParameter = 0) {
 		int totalAmountToHeal = 0;
 
-		if (Party.stats[0].HP < Party.stats[0].maxHP ||
-			Party.stats[1].HP < Party.stats[1].maxHP ||
-			Party.stats[2].HP < Party.stats[2].maxHP) {
-			for (int i = 0; i < Party.stats.Count; i++) {
+		if (Party.S.stats[0].HP < Party.S.stats[0].maxHP ||
+			Party.S.stats[1].HP < Party.S.stats[1].maxHP ||
+			Party.S.stats[2].HP < Party.S.stats[2].maxHP) {
+			for (int i = 0; i < Party.S.stats.Count; i++) {
 				// Get amount and max amount to heal
 				int amountToHeal = UnityEngine.Random.Range(12, 20);
-				int maxAmountToHeal = Party.stats[i].maxHP - Party.stats[i].HP;
+				int maxAmountToHeal = Party.S.stats[i].maxHP - Party.S.stats[i].HP;
 				// Add Player's WIS to Heal Amount
-				amountToHeal += Party.stats[i].WIS;
+				amountToHeal += Party.S.stats[i].WIS;
 
 				// Add 12-20 HP to TARGET Player's HP
 				RPG.S.AddPlayerHP(i, amountToHeal);
@@ -176,12 +163,7 @@ public class WorldItems : MonoBehaviour {
 
 			// Display Text
 			PauseMessage.S.DisplayText("Used Heal All Potion!\nHealed ALL party members for an average of "
-				+ Utilities.S.CalculateAverage(totalAmountToHeal, Party.stats.Count) + " HP!");
-
-			// Set animations to success
-			//PlayerButtons.S.anim[0].CrossFade("Success", 0);
-			//PlayerButtons.S.anim[1].CrossFade("Success", 0);
-			//PlayerButtons.S.anim[2].CrossFade("Success", 0);
+				+ Utilities.S.CalculateAverage(totalAmountToHeal, Party.S.stats.Count) + " HP!");
 
 			// Set animations to success
 			for (int i = 0; i <= Party.S.partyNdx; i++) {
@@ -193,11 +175,6 @@ public class WorldItems : MonoBehaviour {
 		} else {
 			// Display Text
 			PauseMessage.S.DisplayText("The party is already at full health...\n...no need to use this potion!");
-
-			// Set animations to idle
-			//PlayerButtons.S.anim[0].CrossFade("Idle", 0);
-			//PlayerButtons.S.anim[1].CrossFade("Idle", 0);
-			//PlayerButtons.S.anim[2].CrossFade("Idle", 0);
 
 			// Set animations to idle
 			for (int i = 0; i <= Party.S.partyNdx; i++) {
@@ -218,9 +195,6 @@ public class WorldItems : MonoBehaviour {
 	}
 
 	public void WarpPotion() {
-		// Remove from Inventory
-		Inventory.S.RemoveItemFromInventory(ItemManager.S.items[23]);
-
 		ItemScreen.S.mode = eItemScreenMode.pickWhereToWarp;
 
 		// Set Selected GameObject
@@ -232,7 +206,7 @@ public class WorldItems : MonoBehaviour {
 		// Use ItemScreen's buttons to select/display warp locations
 		WarpManager.S.DeactivateUnusedButtonSlots(ItemScreen.S.itemButtons);
 		WarpManager.S.AssignButtonEffect(ItemScreen.S.itemButtons);
-		WarpManager.S.AssignButtonNames(ItemScreen.S.itemButtonsText);
+		WarpManager.S.AssignButtonNames(ItemScreen.S.itemButtonsNameText);
 		WarpManager.S.SetButtonNavigation(ItemScreen.S.itemButtons);
 
 		// Audio: Confirm
