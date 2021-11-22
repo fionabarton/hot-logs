@@ -17,6 +17,9 @@ public class SpellScreen : MonoBehaviour {
 	public List<Button> 	spellsButtons;
 	public List<Text> 	  	spellsButtonNameText;
 	public List<Text>		spellsButtonMPCostText;
+	
+	public Text				nameHeaderText;
+	public GameObject		MPCostHeader;
 
 	public GameObject		previousSelectedSpellGO;
 
@@ -56,6 +59,9 @@ public class SpellScreen : MonoBehaviour {
 	}
 
 	public void Activate() {
+		// Activate MP Cost header
+		MPCostHeader.SetActive(true);
+		
 		gameObject.SetActive(true);
 
 		// Audio: Confirm
@@ -154,6 +160,11 @@ public class SpellScreen : MonoBehaviour {
 
 			if (Input.GetButtonDown("SNES B Button")) {
 				GoBackToPickSpellMode();
+
+				// Activate MP Cost header
+				MPCostHeader.SetActive(true);
+				// Reset Slot Headers Text 
+				nameHeaderText.text = "Name:";
 			}
 		break;
 		case eSpellScreenMode.usedSpell:

@@ -37,6 +37,9 @@ public class SpellScreen_PickWhichSpellsToDisplay : MonoBehaviour {
 				// Activate PlayerButtons
 				PlayerButtons.S.gameObject.SetActive(true);
 
+				// Set Slot Headers Text 
+				spellScreen.nameHeaderText.text = "Name:";
+
 				// Set Selected gameObject
 				Utilities.S.SetSelectedGO(spellScreen.previousSelectedPlayerGO);
 
