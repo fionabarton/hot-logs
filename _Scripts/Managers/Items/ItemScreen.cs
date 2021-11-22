@@ -14,6 +14,10 @@ public class ItemScreen : MonoBehaviour {
 	public List<Text>		itemButtonsValueText;
 	public List<Text>		itemButtonsQTYOwnedText;
 
+	public Text				nameHeaderText;
+	public GameObject		valueHeader;
+	public GameObject		QTYOwnedHeader;
+
 	public Button			sortButton;
 
 	[Header("Set Dynamically")]

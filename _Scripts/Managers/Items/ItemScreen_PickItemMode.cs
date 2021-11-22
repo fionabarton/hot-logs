@@ -38,6 +38,11 @@ public class ItemScreen_PickItemMode : MonoBehaviour {
 			// Activate PlayerButtons
 			PlayerButtons.S.gameObject.SetActive(true);
 
+			// Activate Slot Headers 
+			itemScreen.nameHeaderText.text = "Name:";
+			itemScreen.valueHeader.SetActive(true);
+			itemScreen.QTYOwnedHeader.SetActive(true);
+
 			// If Inventory Empty 
 			if (Inventory.S.GetItemList().Count == 0) {
 				PauseMessage.S.DisplayText("You have no items, fool!");
