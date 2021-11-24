@@ -277,7 +277,15 @@ public class BattleEnd : MonoBehaviour {
 		if(membersToLevelUp.Count > 0) {
 			// Display text and document that the member has levelled up 
 			int ndx = membersToLevelUp[0];
-			BattleDialogue.S.DisplayText(Party.S.stats[ndx].name + " level up!" + "\nHP = " + Party.S.stats[ndx].HP + ", MP = " + Party.S.stats[ndx].MP + "," + "\nSTR = " + Party.S.stats[ndx].STR + ", DEF = " + Party.S.stats[ndx].DEF + ", WIS = " + Party.S.stats[ndx].WIS + ", AGI = " + Party.S.stats[ndx].AGI);
+			//BattleDialogue.S.DisplayText(Party.S.stats[ndx].name + " has reached level " + Party.S.stats[ndx].LVL + "!\nHP = " + Party.S.stats[ndx].HP + ", MP = " + Party.S.stats[ndx].MP + "," + "\nSTR = " + Party.S.stats[ndx].STR + ", DEF = " + Party.S.stats[ndx].DEF + ", WIS = " + Party.S.stats[ndx].WIS + ", AGI = " + Party.S.stats[ndx].AGI);
+			BattleDialogue.S.DisplayText(
+			Party.S.stats[ndx].name + " has reached level " + Party.S.stats[ndx].LVL + "!" +
+				"\nHP +" + Party.S.GetHPUpgrade(ndx) +
+				", MP +" + Party.S.GetMPUpgrade(ndx) + "," +
+				"\nSTR +" + Party.S.GetSTRUpgrade(ndx) +
+				", DEF +" + Party.S.GetDEFUpgrade(ndx) +
+				", WIS +" + Party.S.GetWISUpgrade(ndx) +
+				", AGI +" + Party.S.GetAGIUpgrade(ndx));
 			Party.S.stats[ndx].hasLeveledUp = false;
 
 			// Remove member index from list
@@ -293,7 +301,15 @@ public class BattleEnd : MonoBehaviour {
 	}
 	public void MultiLvlUp(int ndx) {
 		// Display Text
-		BattleDialogue.S.DisplayText(Party.S.stats[ndx].name + " level up!" + "\nHP = " + Party.S.stats[ndx].HP + ", MP = " + Party.S.stats[ndx].MP + "," + "\nSTR = " + Party.S.stats[ndx].STR + ", DEF = " + Party.S.stats[ndx].DEF + ", WIS = " + Party.S.stats[ndx].WIS + ", AGI = " + Party.S.stats[ndx].AGI);
+		//BattleDialogue.S.DisplayText(Party.S.stats[ndx].name + " has reached level " + Party.S.stats[ndx].LVL + "!\nHP = " + Party.S.stats[ndx].HP + ", MP = " + Party.S.stats[ndx].MP + "," + "\nSTR = " + Party.S.stats[ndx].STR + ", DEF = " + Party.S.stats[ndx].DEF + ", WIS = " + Party.S.stats[ndx].WIS + ", AGI = " + Party.S.stats[ndx].AGI);
+		BattleDialogue.S.DisplayText(
+			Party.S.stats[ndx].name + " has reached level " + Party.S.stats[ndx].LVL + "!" +
+			"\nHP +" + Party.S.GetHPUpgrade(ndx) + 
+			", MP +" + Party.S.GetMPUpgrade(ndx) + "," + 
+			"\nSTR +" + Party.S.GetSTRUpgrade(ndx) + 
+			", DEF +" + Party.S.GetDEFUpgrade(ndx) + 
+			", WIS +" + Party.S.GetWISUpgrade(ndx) + 
+			", AGI +" + Party.S.GetAGIUpgrade(ndx));
 		Party.S.stats[ndx].hasLeveledUp = false;
 
 		// Remove member index from list
