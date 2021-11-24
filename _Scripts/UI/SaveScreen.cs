@@ -369,7 +369,7 @@ public class SaveScreen : MonoBehaviour {
 			new List<Spell> { SpellManager.S.spells[1], SpellManager.S.spells[0], SpellManager.S.spells[2], SpellManager.S.spells[4], SpellManager.S.spells[5], SpellManager.S.spells[3] },
 			new List<bool>(new bool[30]),
 			new List<int> { 0, 0, 7, 23, 47, 110, 220, 450, 800, 1300, 2000 },
-			false)
+			false, 0)
 		);
 		// Player 2
 		Party.S.stats.Add(new PartyStats("Bill", 32, 32, 32, 15, 15, 15,
@@ -378,7 +378,7 @@ public class SaveScreen : MonoBehaviour {
 			new List<Spell> { SpellManager.S.spells[0], SpellManager.S.spells[1], SpellManager.S.spells[3], SpellManager.S.spells[4], SpellManager.S.spells[5], SpellManager.S.spells[2] },
 			new List<bool>(new bool[30]),
 			new List<int> { 0, 0, 9, 23, 55, 110, 250, 450, 850, 1300, 2100 },
-			false)
+			false, 0)
 		);
 		// Player 3
 		Party.S.stats.Add(new PartyStats("Fake Bill", 25, 25, 25, 10, 10, 10,
@@ -387,10 +387,9 @@ public class SaveScreen : MonoBehaviour {
 			new List<Spell> { SpellManager.S.spells[4], SpellManager.S.spells[3], SpellManager.S.spells[0], SpellManager.S.spells[2], SpellManager.S.spells[1], SpellManager.S.spells[5] },
 			new List<bool>(new bool[30]),
 			new List<int> { 0, 0, 9, 23, 55, 110, 250, 450, 850, 1300, 2100 },
-			false)
+			false, 0)
 		);
 
-		// Slot 1
 		if (PlayerPrefs.HasKey(fileNdx + "Player1Level")) { Party.S.stats[0].LVL = PlayerPrefs.GetInt(fileNdx + "Player1Level"); }
 		if (PlayerPrefs.HasKey(fileNdx + "Player2Level")) { Party.S.stats[1].LVL = PlayerPrefs.GetInt(fileNdx + "Player2Level"); }
 		if (PlayerPrefs.HasKey(fileNdx + "Player3Level")) { Party.S.stats[2].LVL = PlayerPrefs.GetInt(fileNdx + "Player3Level"); }
@@ -398,6 +397,7 @@ public class SaveScreen : MonoBehaviour {
 		if (PlayerPrefs.HasKey(fileNdx + "Player2Exp")) { Party.S.stats[1].EXP = PlayerPrefs.GetInt(fileNdx + "Player2Exp"); }
 		if (PlayerPrefs.HasKey(fileNdx + "Player3Exp")) { Party.S.stats[2].EXP = PlayerPrefs.GetInt(fileNdx + "Player3Exp"); }
 		if (PlayerPrefs.HasKey(fileNdx + "Gold")) { Party.S.gold = PlayerPrefs.GetInt(fileNdx + "Gold"); }
+		if (PlayerPrefs.HasKey(fileNdx + "Steps")) { Player.S.stepsCount = PlayerPrefs.GetInt(fileNdx + "Steps"); }
 		if (PlayerPrefs.HasKey(fileNdx + "Time")) { PauseScreen.S.fileStatsNumText.text = PlayerPrefs.GetString(fileNdx + "Time"); } // Stores Time in 0:00 format
 		if (PlayerPrefs.HasKey(fileNdx + "Seconds")) { PauseScreen.S.seconds = PlayerPrefs.GetInt(fileNdx + "Seconds"); }
 		if (PlayerPrefs.HasKey(fileNdx + "Minutes")) { PauseScreen.S.minutes = PlayerPrefs.GetInt(fileNdx + "Minutes"); }
@@ -442,6 +442,7 @@ public class SaveScreen : MonoBehaviour {
 		PlayerPrefs.SetInt(fileNdx + "Player2Exp", Party.S.stats[1].EXP);
 		PlayerPrefs.SetInt(fileNdx + "Player3Exp", Party.S.stats[2].EXP);
 		PlayerPrefs.SetInt(fileNdx + "Gold", Party.S.gold);
+		PlayerPrefs.SetInt(fileNdx + "Steps", Player.S.stepsCount);
 		PlayerPrefs.SetString(fileNdx + "Time", PauseScreen.S.GetTime()); // Stores Time in 0:00 format
 		PlayerPrefs.SetInt(fileNdx + "Seconds", PauseScreen.S.seconds);
 		PlayerPrefs.SetInt(fileNdx + "Minutes", PauseScreen.S.minutes);
@@ -462,6 +463,7 @@ public class SaveScreen : MonoBehaviour {
 		PlayerPrefs.SetInt(fileNdx + "Player2Exp", 0);
 		PlayerPrefs.SetInt(fileNdx + "Player3Exp", 0);
 		PlayerPrefs.SetInt(fileNdx + "Gold", 0);
+		PlayerPrefs.SetInt(fileNdx + "Steps", 0);
 		PlayerPrefs.SetString(fileNdx + "Time", "0:00"); // Stores Time in 0:00 format
 		PlayerPrefs.SetInt(fileNdx + "Seconds", 0);
 		PlayerPrefs.SetInt(fileNdx + "Minutes", 0);
