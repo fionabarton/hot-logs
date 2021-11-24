@@ -13,7 +13,7 @@ public class Party : MonoBehaviour {
 	private static Party			_S;
 	public static Party				S { get { return _S; } set { _S = value; } }
 
-	public static List<PartyStats>	stats = new List<PartyStats>();  
+	public List<PartyStats>			stats = new List<PartyStats>();
 
 	// Amount of members in the party
 	public int 						partyNdx;
@@ -30,22 +30,20 @@ public class Party : MonoBehaviour {
         stats.Add(new PartyStats("Blob", 40, 40, 40, 6, 6, 6,
             2, 2, 2, 2, 1, 1, 1, 1,
             0, 1, 6,
-            new List<Spell> { SpellManager.S.spells[0], SpellManager.S.spells[2], SpellManager.S.spells[1], SpellManager.S.spells[3], SpellManager.S.spells[4], SpellManager.S.spells[5] },
+            new List<Spell> { SpellManager.S.spells[1], SpellManager.S.spells[0], SpellManager.S.spells[2], SpellManager.S.spells[4], SpellManager.S.spells[5], SpellManager.S.spells[3] },
             new List<bool>(new bool[30]),
 			new List<int> { 0, 0, 7, 23, 47, 110, 220, 450, 800, 1300, 2000 },
-			false)
+			false, 0)
         );
-
-        // Player 2
-        stats.Add(new PartyStats("Bill", 32, 32, 32, 15, 15, 15,
+		// Player 2
+		stats.Add(new PartyStats("Bill", 32, 32, 32, 15, 15, 15,
             1, 1, 1, 1, 2, 2, 2, 2,
-            0, 1, 6,
-            new List<Spell> { SpellManager.S.spells[4], SpellManager.S.spells[3], SpellManager.S.spells[0], SpellManager.S.spells[2], SpellManager.S.spells[1], SpellManager.S.spells[5] },
+            0, 1, 2,
+            new List<Spell> { SpellManager.S.spells[0], SpellManager.S.spells[1], SpellManager.S.spells[3], SpellManager.S.spells[4], SpellManager.S.spells[5], SpellManager.S.spells[2] },
             new List<bool>(new bool[30]), 
 			new List<int> { 0, 0, 9, 23, 55, 110, 250, 450, 850, 1300, 2100 },
-			false)
+			false, 0)
         );
-
 		// Player 3
 		stats.Add(new PartyStats("Fake Bill", 25, 25, 25, 10, 10, 10,
 			1, 1, 1, 1, 2, 2, 2, 2,
@@ -53,66 +51,164 @@ public class Party : MonoBehaviour {
 			new List<Spell> { SpellManager.S.spells[4], SpellManager.S.spells[3], SpellManager.S.spells[0], SpellManager.S.spells[2], SpellManager.S.spells[1], SpellManager.S.spells[5] },
 			new List<bool>(new bool[30]),
 			new List<int> { 0, 0, 9, 23, 55, 110, 250, 450, 850, 1300, 2100 },
-			false)
+			false, 0)
 		);
-	}
+    }
 
-    // HP
-    public void SetNewHP(int playerNdx) {
+
+
+	// HP
+	public int GetHP(int playerNdx, int LVL) {
 		if (playerNdx == 0) {
-			stats[playerNdx].HP = ((10) * (3 + stats[playerNdx].LVL)); // Blob: Lvl 1 = 40
+			return ((10) * (3 + LVL)); // Blob: Lvl 1 = 40
 		} else {
-			stats[playerNdx].HP = ((8) * (3 + stats[playerNdx].LVL)); // Chani: Lvl 1 = 32
+			return ((8) * (3 + LVL)); // Chani: Lvl 1 = 32
 		}
+	}
+	public void SetHP(int playerNdx) {
+		stats[playerNdx].HP = GetHP(playerNdx, stats[playerNdx].LVL);
 		stats[playerNdx].maxHP = stats[playerNdx].HP;
 		stats[playerNdx].baseMaxHP = stats[playerNdx].HP;
 	}
+	public int GetHPUpgrade(int playerNdx) {
+		return GetHP(playerNdx, stats[playerNdx].LVL) - GetHP(playerNdx, stats[playerNdx].previousLVL);
+	}
 	// MP
-	public void SetNewMP(int playerNdx) {
+	public int GetMP(int playerNdx, int LVL) {
 		if (playerNdx == 0) {
-			stats[playerNdx].MP = (6 * stats[playerNdx].LVL); // Blob: Lvl 1 = 6
+			return (6 * LVL); // Blob: Lvl 1 = 6
 		} else {
-			stats[playerNdx].MP = ((9 * stats[playerNdx].LVL) + 6); // Chani: Lvl 1 = 15
+			return ((9 * LVL) + 6); // Chani: Lvl 1 = 15
 		}
+	}
+	public void SetMP(int playerNdx) {
+		stats[playerNdx].MP = GetMP(playerNdx, stats[playerNdx].LVL);
 		stats[playerNdx].maxMP = stats[playerNdx].MP;
 		stats[playerNdx].baseMaxMP = stats[playerNdx].MP;
 	}
+	public int GetMPUpgrade(int playerNdx) {
+		return GetMP(playerNdx, stats[playerNdx].LVL) - GetMP(playerNdx, stats[playerNdx].previousLVL);
+	}
 	// STR
-	public void SetNewSTR(int playerNdx) {
+	public int GetSTR(int playerNdx, int LVL) {
 		if (playerNdx == 0) {
-			stats[playerNdx].STR = (int)(2 * stats[playerNdx].LVL); // Blob: Lvl 1 = 2
+			return (int)(2 * LVL); // Blob: Lvl 1 = 2
 		} else {
-			stats[playerNdx].STR = (int)(1.5f * stats[playerNdx].LVL); // Chani: Lvl 1 = 1
+			return (int)(1.5f * LVL); // Chani: Lvl 1 = 1
 		}
+	}
+	public void SetSTR(int playerNdx) {
+		stats[playerNdx].STR = GetSTR(playerNdx, stats[playerNdx].LVL);
 		stats[playerNdx].baseSTR = stats[playerNdx].STR;
 	}
+	public int GetSTRUpgrade(int playerNdx) {
+		return GetSTR(playerNdx, stats[playerNdx].LVL) - GetSTR(playerNdx, stats[playerNdx].previousLVL);
+	}
+
 	// DEF
-	public void SetNewDEF(int playerNdx) {
+	public int GetDEF(int playerNdx, int LVL) {
 		if (playerNdx == 0) {
-			stats[playerNdx].DEF = (int)(2 * stats[playerNdx].LVL); // Blob: Lvl 1 = 2
+			return (int)(2 * LVL); // Blob: Lvl 1 = 2
 		} else {
-			stats[playerNdx].DEF = (int)(1.5f * stats[playerNdx].LVL); // Chani: Lvl 1 = 1
+			return (int)(1.5f * LVL); // Chani: Lvl 1 = 1
 		}
+	}
+	public void SetDEF(int playerNdx) {
+		stats[playerNdx].DEF = GetDEF(playerNdx, stats[playerNdx].LVL);
 		stats[playerNdx].baseDEF = stats[playerNdx].DEF;
 	}
+	public int GetDEFUpgrade(int playerNdx) {
+		return GetDEF(playerNdx, stats[playerNdx].LVL) - GetDEF(playerNdx, stats[playerNdx].previousLVL);
+	}
+
 	// WIS
-	public void SetNewWIS(int playerNdx) {
+	public int GetWIS(int playerNdx, int LVL) {
 		if (playerNdx == 0) {
-			stats[playerNdx].WIS = (int)(1.5f * stats[playerNdx].LVL); // Blob: Lvl 1 = 1
+			return (int)(1.5f * LVL); // Blob: Lvl 1 = 1
 		} else {
-			stats[playerNdx].WIS = (int)(2 * stats[playerNdx].LVL); // Chani: Lvl 1 = 2
+			return (int)(2 * LVL); // Chani: Lvl 1 = 2
 		}
+	}
+	public void SetWIS(int playerNdx) {
+		stats[playerNdx].WIS = GetWIS(playerNdx, stats[playerNdx].LVL);
 		stats[playerNdx].baseWIS = stats[playerNdx].WIS;
 	}
+	public int GetWISUpgrade(int playerNdx) {
+		return GetWIS(playerNdx, stats[playerNdx].LVL) - GetWIS(playerNdx, stats[playerNdx].previousLVL);
+	}
+
 	// AGI
-	public void SetNewAGI(int playerNdx) {
+	public int GetAGI(int playerNdx, int LVL) {
 		if (playerNdx == 0) {
-			stats[playerNdx].AGI = (int)(1.5f * stats[playerNdx].LVL); // Blob: Lvl 1 = 1
+			return (int)(1.5f * LVL); // Blob: Lvl 1 = 1
 		} else {
-			stats[playerNdx].AGI = (int)(2 * stats[playerNdx].LVL); // Chani: Lvl 1 = 2
+			return (int)(2 * LVL); // Chani: Lvl 1 = 2
 		}
+	}
+	public void SetAGI(int playerNdx) {
+		stats[playerNdx].AGI = GetAGI(playerNdx, stats[playerNdx].LVL);
 		stats[playerNdx].baseAGI = stats[playerNdx].AGI;
 	}
+	public int GetAGIUpgrade(int playerNdx) {
+		return GetAGI(playerNdx, stats[playerNdx].LVL) - GetAGI(playerNdx, stats[playerNdx].previousLVL);
+	}
+
+	//// HP
+	//public void SetNewHP(int playerNdx) {
+	//	if (playerNdx == 0) {
+	//		stats[playerNdx].HP = ((10) * (3 + stats[playerNdx].LVL)); // Blob: Lvl 1 = 40
+	//	} else {
+	//		stats[playerNdx].HP = ((8) * (3 + stats[playerNdx].LVL)); // Chani: Lvl 1 = 32
+	//	}
+	//	stats[playerNdx].maxHP = stats[playerNdx].HP;
+	//	stats[playerNdx].baseMaxHP = stats[playerNdx].HP;
+	//}
+	//// MP
+	//public void SetNewMP(int playerNdx) {
+	//	if (playerNdx == 0) {
+	//		stats[playerNdx].MP = (6 * stats[playerNdx].LVL); // Blob: Lvl 1 = 6
+	//	} else {
+	//		stats[playerNdx].MP = ((9 * stats[playerNdx].LVL) + 6); // Chani: Lvl 1 = 15
+	//	}
+	//	stats[playerNdx].maxMP = stats[playerNdx].MP;
+	//	stats[playerNdx].baseMaxMP = stats[playerNdx].MP;
+	//}
+	//// STR
+	//public void SetNewSTR(int playerNdx) {
+	//	if (playerNdx == 0) {
+	//		stats[playerNdx].STR = (int)(2 * stats[playerNdx].LVL); // Blob: Lvl 1 = 2
+	//	} else {
+	//		stats[playerNdx].STR = (int)(1.5f * stats[playerNdx].LVL); // Chani: Lvl 1 = 1
+	//	}
+	//	stats[playerNdx].baseSTR = stats[playerNdx].STR;
+	//}
+	//// DEF
+	//public void SetNewDEF(int playerNdx) {
+	//	if (playerNdx == 0) {
+	//		stats[playerNdx].DEF = (int)(2 * stats[playerNdx].LVL); // Blob: Lvl 1 = 2
+	//	} else {
+	//		stats[playerNdx].DEF = (int)(1.5f * stats[playerNdx].LVL); // Chani: Lvl 1 = 1
+	//	}
+	//	stats[playerNdx].baseDEF = stats[playerNdx].DEF;
+	//}
+	//// WIS
+	//public void SetNewWIS(int playerNdx) {
+	//	if (playerNdx == 0) {
+	//		stats[playerNdx].WIS = (int)(1.5f * stats[playerNdx].LVL); // Blob: Lvl 1 = 1
+	//	} else {
+	//		stats[playerNdx].WIS = (int)(2 * stats[playerNdx].LVL); // Chani: Lvl 1 = 2
+	//	}
+	//	stats[playerNdx].baseWIS = stats[playerNdx].WIS;
+	//}
+	//// AGI
+	//public void SetNewAGI(int playerNdx) {
+	//	if (playerNdx == 0) {
+	//		stats[playerNdx].AGI = (int)(1.5f * stats[playerNdx].LVL); // Blob: Lvl 1 = 1
+	//	} else {
+	//		stats[playerNdx].AGI = (int)(2 * stats[playerNdx].LVL); // Chani: Lvl 1 = 2
+	//	}
+	//	stats[playerNdx].baseAGI = stats[playerNdx].AGI;
+	//}
 
 	// SpellNdx (Mathf.Min used to prevent spellNdx from exceeding
 	// the amount of spells each party member is capable of learning)
@@ -143,16 +239,17 @@ public class Party : MonoBehaviour {
 	void LevelUp (int newLVL, int playerNdx) {
 		stats[playerNdx].hasLeveledUp = true;
 
+		stats[playerNdx].previousLVL = stats[playerNdx].LVL;
 		stats[playerNdx].LVL = newLVL;
 		SetNewSpellNdx(playerNdx);
 
 		// Assign Stats
-		SetNewHP(playerNdx);
-		SetNewMP(playerNdx);
-		SetNewSTR(playerNdx);
-		SetNewAGI(playerNdx);
-		SetNewDEF(playerNdx);
-		SetNewWIS(playerNdx);
+		SetHP(playerNdx);
+		SetMP(playerNdx);
+		SetSTR(playerNdx);
+		SetAGI(playerNdx);
+		SetDEF(playerNdx);
+		SetWIS(playerNdx);
 
 		// Add current equipment's stat effect(s) to party member's stats
 		for (int i = 0; i < EquipScreen.S.playerEquipment[0].Count; i++) {
@@ -193,11 +290,12 @@ public class PartyStats {
 	public List<bool> hasReachedThisLevel;
 	public List<int> expToNextLevel;
 	public bool hasLeveledUp;
+	public int previousLVL;
 
 	public PartyStats(string name, int HP, int maxHP, int baseMaxHP, int MP, int maxMP, int baseMaxMP,
 		int STR, int baseSTR, int DEF, int baseDEF, int WIS, int baseWIS, int AGI, int baseAGI,
 		int EXP, int LVL, int spellNdx, 
-		List<Spell> spells, List<bool> hasReachedThisLevel, List<int> expToNextLevel, bool hasLeveledUp) {
+		List<Spell> spells, List<bool> hasReachedThisLevel, List<int> expToNextLevel, bool hasLeveledUp, int previousLVL) {
 		this.name = name;
 		this.HP = HP;
 		this.maxHP = maxHP;
@@ -221,5 +319,6 @@ public class PartyStats {
 		this.spells = spells;
 		this.hasReachedThisLevel = hasReachedThisLevel;
 		this.expToNextLevel = expToNextLevel;
+		this.previousLVL = previousLVL;
 	}
 }
