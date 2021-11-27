@@ -17,9 +17,6 @@ public class RPG : MonoBehaviour {
 
 	public bool					canInput;
 
-	// Black Screen
-	public SpriteRenderer		blackScreen;
-
 	public SubMenu				gameSubMenu;
 	public SubMenu				pauseSubMenu;
 
@@ -54,15 +51,6 @@ public class RPG : MonoBehaviour {
 	}
 
 	void Start () {
-        // Change BlackScreen Alpha from 0 to 255
-		// It starts at 0 so it's easier to see things in the editor
-        Color c = Color.black;
-        c.a = 1;
-        blackScreen.color = c;
-
-        // Activate Black Screen
-        blackScreen.enabled = true;
-
 		//LoadSettings ();
 		StartCoroutine("LoadSettingsCo");
 
@@ -71,6 +59,18 @@ public class RPG : MonoBehaviour {
 	}
 
 	public void Loop() {
+		//// Testing
+		//if (Input.GetKeyDown(KeyCode.Z)) {
+		//	Debug.Log("");
+		//}
+
+		// Play clip
+		if (Input.GetKeyDown(KeyCode.V)) {
+			ColorScreen.S.PlayClip("Swell", 666);
+		} else if (Input.GetKeyDown(KeyCode.B)) {
+			ColorScreen.S.PlayClip("Flicker", 69);
+		}
+
 		// Pause Screen input
 		if (!ItemScreen.S.gameObject.activeInHierarchy &&
 			!SpellScreen.S.gameObject.activeInHierarchy &&
@@ -79,7 +79,7 @@ public class RPG : MonoBehaviour {
 			!OptionsScreen.S.gameObject.activeInHierarchy &&
 			!SaveScreen.S.gameObject.activeInHierarchy) {
 
-			if (currentScene != "Battle") {
+			if (currentScene != "Battle" && currentScene != "Title_Screen") {
 				if (!PauseScreen.S.gameObject.activeInHierarchy) {
 					if (Input.GetButtonDown("Pause")) {
 						PauseScreen.S.Pause();
@@ -135,6 +135,7 @@ public class RPG : MonoBehaviour {
 		OptionsScreen.S.Deactivate();
 		SaveScreen.S.Deactivate();
 		ShopScreen.S.Deactivate();
+		TitleScreen.S.Deactivate();
 
 		// Deactivate PlayerButtons
 		PlayerButtons.S.gameObject.SetActive(false);
@@ -169,23 +170,26 @@ public class RPG : MonoBehaviour {
 		////////////// Rain //////////////
 		RainSpawner.S.StopCoroutine("FixedUpdateCoroutine");
 		switch (currentScene){
-			case "Overworld_1":
-			case "Town_1":
+			case "Title_Screen":
 			case "Area_1":
-			case "Area_2":
-				if (Random.value > 0.5f){
-					switch (previousScene){
-						case "Cave_1":
-							RainSpawner.S.StopRaining();
-							break;
-						default:
-							RainSpawner.S.StartRaining();
-							break;
-					}
-				}else{
-					goto default;
-				}
+				RainSpawner.S.StartRaining();
 				break;
+			//case "Overworld_1":
+			//case "Town_1":
+			//case "Area_2":
+				//if (Random.value > 0.5f){
+				//	switch (previousScene){
+				//		case "Cave_1":
+				//			RainSpawner.S.StopRaining();
+				//			break;
+				//		default:
+				//			RainSpawner.S.StartRaining();
+				//			break;
+				//	}
+				//}else{
+				//	goto default;
+				//}
+				//break;
 			default:
 				RainSpawner.S.StopRaining();
 				break;
@@ -193,6 +197,9 @@ public class RPG : MonoBehaviour {
 
 		////////////// Music //////////////
 		switch (currentScene){
+			case "Title_Screen":
+				AudioManager.S.PlaySong(eSongName.zelda);
+				break;
 			case "Town_1":
 			case "Area_1":
 				if (!RainSpawner.S.isRaining){
@@ -202,7 +209,6 @@ public class RPG : MonoBehaviour {
 				}
 				break;
 			case "Overworld_1":
-			case "Area_5":
 			case "Area_2":
 				AudioManager.S.PlaySong(eSongName.things);
 				break;
@@ -213,6 +219,9 @@ public class RPG : MonoBehaviour {
 			case "Motel_1":
 			case "Area_3":
 				AudioManager.S.PlaySong(eSongName.soap);
+				break;
+			case "Area_5":
+				AudioManager.S.PlaySong(eSongName.gMinor);
 				break;
 			default:
 				break;
@@ -248,6 +257,9 @@ public class RPG : MonoBehaviour {
 
 				// Handle more specific settings
 				switch (currentScene){
+					case "Title_Screen":
+						TitleScreen.S.Activate();
+						break;
 					case "Battle":
 						// Enable BATTLE UI & GameObjects
 						battleUIGO.SetActive(true);
@@ -307,10 +319,10 @@ public class RPG : MonoBehaviour {
 		canInput = true;
 
 		// Deactivate Black Screen
-		blackScreen.enabled = false;
+		ColorScreen.S.gameObject.SetActive(false);
 
 		// Open Curtains 
-		if(currentScene == "Battle") {
+		if (currentScene == "Battle" || previousScene == "Title_Screen") {
 			BattleCurtain.S.Open();
 		}
 	}
@@ -348,17 +360,17 @@ public class RPG : MonoBehaviour {
 
 	// ************ Add/Subtract PLAYER HP ************ \\
 	public void AddSubtractPlayerHP(int ndx, bool addOrSubtract, int amount){
-		if (addOrSubtract) { Party.stats[ndx].HP += amount; } else { Party.stats[ndx].HP -= amount; }
+		if (addOrSubtract) { Party.S.stats[ndx].HP += amount; } else { Party.S.stats[ndx].HP -= amount; }
 
 		// Prevent going above Max HP & below Min HP
-		if (Party.stats[ndx].HP > Party.stats[ndx].maxHP) {
-			Party.stats[ndx].HP = Party.stats[ndx].maxHP;
-		} else if (Party.stats[ndx].HP <= 0) {
-			Party.stats[ndx].HP = 0;
+		if (Party.S.stats[ndx].HP > Party.S.stats[ndx].maxHP) {
+			Party.S.stats[ndx].HP = Party.S.stats[ndx].maxHP;
+		} else if (Party.S.stats[ndx].HP <= 0) {
+			Party.S.stats[ndx].HP = 0;
 		}
 
 		// Update Health Bars
-		ProgressBars.S.playerHealthBarsCS[ndx].UpdateBar(Party.stats[ndx].HP, Party.stats[ndx].maxHP);
+		ProgressBars.S.playerHealthBarsCS[ndx].UpdateBar(Party.S.stats[ndx].HP, Party.S.stats[ndx].maxHP);
 	}
 
 	public void AddPlayerHP(int ndx, int amount) {
@@ -370,17 +382,17 @@ public class RPG : MonoBehaviour {
 
 	// ************ Add/Subtract PLAYER MP ************ \\
 	public void AddSubtractPlayerMP(int ndx, bool addOrSubtract, int amount) {
-		if (addOrSubtract) { Party.stats[ndx].MP += amount; } else { Party.stats[ndx].MP -= amount; }
+		if (addOrSubtract) { Party.S.stats[ndx].MP += amount; } else { Party.S.stats[ndx].MP -= amount; }
 
 		// Prevent going above Max MP & below Min MP
-		if (Party.stats[ndx].MP > Party.stats[ndx].maxMP) {
-			Party.stats[ndx].MP = Party.stats[ndx].maxMP;
-		} else if (Party.stats[ndx].MP <= 0) {
-			Party.stats[ndx].MP = 0;
+		if (Party.S.stats[ndx].MP > Party.S.stats[ndx].maxMP) {
+			Party.S.stats[ndx].MP = Party.S.stats[ndx].maxMP;
+		} else if (Party.S.stats[ndx].MP <= 0) {
+			Party.S.stats[ndx].MP = 0;
 		}
 
 		// Update Magic Bars
-		ProgressBars.S.playerMagicBarsCS[ndx].UpdateBar(Party.stats[ndx].MP, Party.stats[ndx].maxMP, false);
+		ProgressBars.S.playerMagicBarsCS[ndx].UpdateBar(Party.S.stats[ndx].MP, Party.S.stats[ndx].maxMP, false);
 	}
 
 	public void AddPlayerMP(int ndx, int amount) {

@@ -172,8 +172,8 @@ public class WarpManager : MonoBehaviour {
 			Inventory.S.RemoveItemFromInventory(ItemManager.S.items[23]);
 		}
 
-		// Enable Black Screen
-		RPG.S.blackScreen.enabled = true;
+		// Activate Black Screen
+		ColorScreen.S.ActivateBlackScreen();
 		// Deactivate Player
 		Player.S.gameObject.SetActive(false);
 
@@ -207,8 +207,8 @@ public class WarpManager : MonoBehaviour {
 		yield return new WaitForSeconds(0.5f);
 
 		if (!warpToNewScene) {
-			// Disable Black Screen
-			RPG.S.blackScreen.enabled = false;
+			// Deactivate Black Screen
+			ColorScreen.S.gameObject.SetActive(false);
 			// Enable Player
 			Player.S.gameObject.SetActive(true);
 		} else {
