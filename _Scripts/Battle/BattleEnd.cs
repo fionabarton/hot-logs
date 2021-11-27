@@ -332,11 +332,11 @@ public class BattleEnd : MonoBehaviour {
 
 		CancelInvoke(); // Cancels coroutines so they don't continue past this point
 
-		// Enable Black Screen
-		RPG.S.blackScreen.enabled = true;
+		// Activate Black Screen
+		ColorScreen.S.ActivateBlackScreen();
 
 		// Set HP to 1 for Overworld
-		for(int i = 0; i <= Party.S.partyNdx; i++) {
+		for (int i = 0; i <= Party.S.partyNdx; i++) {
 			if (_.playerDead[i]) { Party.S.stats[i].HP = 1; }
 		}
 
