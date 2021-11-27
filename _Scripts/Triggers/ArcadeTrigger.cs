@@ -18,7 +18,7 @@ public class ArcadeTrigger : ActivateOnButtonPress {
 		DialogueManager.S.DisplayText(message);
 
 		// Set SubMenu Text
-		SubMenu.S.SetText("Let's play!", "No thanks.");
+		RPG.S.gameSubMenu.SetText("Let's play!", "No thanks.");
 
 		// Activate Sub Menu after Dialogue 
 		DialogueManager.S.activateSubMenu = true;
@@ -28,22 +28,22 @@ public class ArcadeTrigger : ActivateOnButtonPress {
 		DialogueManager.S.grayOutTextBox = true;
 
 		// Set OnClick Methods
-		Utilities.S.RemoveListeners(SubMenu.S.buttonCS);
-		SubMenu.S.buttonCS[0].onClick.AddListener(Play);
-		SubMenu.S.buttonCS[1].onClick.AddListener(No);
-		//SubMenu.S.subMenuButtonCS[2].onClick.AddListener(No);
-		//SubMenu.S.subMenuButtonCS[3].onClick.AddListener(Option3);
+		Utilities.S.RemoveListeners(RPG.S.gameSubMenu.buttonCS);
+		RPG.S.gameSubMenu.buttonCS[0].onClick.AddListener(Play);
+		RPG.S.gameSubMenu.buttonCS[1].onClick.AddListener(No);
+		//RPG.S.gameSubMenu.subMenuButtonCS[2].onClick.AddListener(No);
+		//RPG.S.gameSubMenu.subMenuButtonCS[3].onClick.AddListener(Option3);
 
 		// Set button navigation
-		Utilities.S.SetButtonNavigation(SubMenu.S.buttonCS[0], SubMenu.S.buttonCS[1], SubMenu.S.buttonCS[1]);
-		Utilities.S.SetButtonNavigation(SubMenu.S.buttonCS[1], SubMenu.S.buttonCS[0], SubMenu.S.buttonCS[0]);
+		Utilities.S.SetVerticalButtonNavigation(RPG.S.gameSubMenu.buttonCS[0], RPG.S.gameSubMenu.buttonCS[1], RPG.S.gameSubMenu.buttonCS[1]);
+		Utilities.S.SetVerticalButtonNavigation(RPG.S.gameSubMenu.buttonCS[1], RPG.S.gameSubMenu.buttonCS[0], RPG.S.gameSubMenu.buttonCS[0]);
 	}
 
 	void Play() {
 		// Audio: Buff 1
 		AudioManager.S.PlaySFX(eSoundName.buff1);
 
-		DialogueManager.S.ResetSubMenuSettings();
+		DialogueManager.S.ResetSettings();
 		LoadGame();
 	}
 
@@ -51,7 +51,7 @@ public class ArcadeTrigger : ActivateOnButtonPress {
 		// Audio: Deny
 		AudioManager.S.PlaySFX(eSoundName.deny);
 
-		DialogueManager.S.ResetSubMenuSettings();
+		DialogueManager.S.ResetSettings();
 		DialogueManager.S.DisplayText("I ain't got time for no games! Ho yeah!");
 	}
 
@@ -77,8 +77,8 @@ public class ArcadeTrigger : ActivateOnButtonPress {
 		RPG.S.paused = true;
 		Player.S.mode = eRPGMode.idle;
 
-		// Enable Black Screen
-		RPG.S.blackScreen.enabled = true;
+		// Activate Black Screen
+		ColorScreen.S.ActivateBlackScreen();
 
 		yield return new WaitForSeconds(1);
 
