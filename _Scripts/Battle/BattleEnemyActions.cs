@@ -25,7 +25,7 @@ public class BattleEnemyActions : MonoBehaviour {
 		// Attempt to run if the enemy's attack won't do any damage to the player
 		if (Random.value < _.enemyStats[_.EnemyNdx()].chanceToCallMove) {
 			// Calculate Max Damage ((Lvl * 4) + Str - Def)
-			int maxAttackerDamage = (_.enemyStats[_.EnemyNdx()].LVL * 4) + _.enemyStats[_.EnemyNdx()].STR - Party.stats[0].DEF;
+			int maxAttackerDamage = (_.enemyStats[_.EnemyNdx()].LVL * 4) + _.enemyStats[_.EnemyNdx()].STR - Party.S.stats[0].DEF;
 
 			// If attack doesn't do any damage...
 			if (maxAttackerDamage <= 0) {
@@ -81,15 +81,15 @@ public class BattleEnemyActions : MonoBehaviour {
 		int randomInt = Random.Range(2, 4);
 		AudioManager.S.PlaySFX(randomInt);
 
-		// Animation: Shake Player 
+		// Animation: Shake Screen
 		Battle.S.battleUIAnim.CrossFade ("BattleUI_Shake", 0); 
 
 		// Calculate Attack Damage
 		Battle.S.CalculateAttackDamage(_.enemyStats[_.EnemyNdx()].LVL,
 									   _.enemyStats[_.EnemyNdx()].STR, _.enemyStats[_.EnemyNdx()].AGI,
-									   Party.stats[playerToAttack].DEF, Party.stats[playerToAttack].AGI,
-									   _.enemyStats[_.EnemyNdx()].name, Party.stats[playerToAttack].name,
-										Party.stats[playerToAttack].HP);
+									   Party.S.stats[playerToAttack].DEF, Party.S.stats[playerToAttack].AGI,
+									   _.enemyStats[_.EnemyNdx()].name, Party.S.stats[playerToAttack].name,
+										Party.S.stats[playerToAttack].HP);
 
 		// Subtract Player Health
 		RPG.S.SubtractPlayerHP (playerToAttack, _.attackDamage);
@@ -112,7 +112,7 @@ public class BattleEnemyActions : MonoBehaviour {
 		RPG.S.InstantiateFloatingScore(_.playerSprite[playerToAttack], _.attackDamage, Color.red);
 
 		// Player Death or Next Turn
-		if (Party.stats[playerToAttack].HP < 1) {
+		if (Party.S.stats[playerToAttack].HP < 1) {
 			BattleEnd.S.PlayerDeath(playerToAttack);
 		} else {
 			// BLOCK!!!
@@ -165,48 +165,13 @@ public class BattleEnemyActions : MonoBehaviour {
 
 	// Index = 4
 	// Heal Spell
-	public void HealSpell (){
+	public void AttemptHealSpell (){
 		// Enough MP
 		if (_.enemyStats [_.EnemyNdx()].MP >= 3) {
 			// Not at Full HP
 			if (_.enemyStats [_.EnemyNdx()].HP < _.enemyStats [_.EnemyNdx()].maxHP) {
-				// Subtract Spell cost from Enemy's MP
-				_.enemyStats [_.EnemyNdx()].MP -= 3;
-
-				// Get amount and max amount to heal
-				int amountToHeal = UnityEngine.Random.Range(30, 45);
-				int maxAmountToHeal = _.enemyStats[_.EnemyNdx()].maxHP - _.enemyStats[_.EnemyNdx()].HP;
-				// Add Enemy's WIS to Heal Amount
-				amountToHeal += _.enemyStats[_.EnemyNdx()].WIS;
-
-				// Add 30-45 HP to TARGET Player's HP
-				RPG.S.AddEnemyHP (_.EnemyNdx(), amountToHeal);
-
-				// Display Text
-				if (amountToHeal >= maxAmountToHeal) {
-					BattleDialogue.S.DisplayText (_.enemyStats [_.EnemyNdx()].name + " casts a Heal Spell!\nHealed itself back to Max HP!");
-
-					// Prevents Floating Score being higher than the acutal amount healed
-					amountToHeal = maxAmountToHeal;
-				} else {
-					BattleDialogue.S.DisplayText (_.enemyStats [_.EnemyNdx()].name + " casts a Heal Spell!\nHealed itself for " + amountToHeal + " HP!");
-				}
-
-				// Get and position Poof game object
-				GameObject poof = ObjectPool.S.GetPooledObject("Poof");
-				ObjectPool.S.PosAndEnableObj(poof, _.enemySprite[_.EnemyNdx()].gameObject);
-
-				// Display Floating Score
-				RPG.S.InstantiateFloatingScore(_.enemySprite[_.EnemyNdx()].gameObject, amountToHeal, Color.green);
-
-				// Audio: Buff
-				AudioManager.S.PlaySFX(eSoundName.buff1);
-
-				_.NextTurn ();
-
-				// TBR
-				// Animation: Enemy HEAL
-
+				// Play enemy heal animation
+				ColorScreen.S.PlayClip("Swell", 1);
 			} else {
 				// Already at Full HP
 				BattleDialogue.S.DisplayText (_.enemyStats [_.EnemyNdx()].name + " thought about casting a Heal Spell...\n...But then remembered they're at full health...\n...and gave up!");
@@ -231,6 +196,43 @@ public class BattleEnemyActions : MonoBehaviour {
 		// Animation: Enemy STUNNED
 	}
 
+	// Called after BattleBlackScreen "Swell" animation
+	public void HealSpell() {
+		// Subtract Spell cost from Enemy's MP
+		_.enemyStats[_.EnemyNdx()].MP -= 3;
+
+		// Get amount and max amount to heal
+		int amountToHeal = UnityEngine.Random.Range(30, 45);
+		int maxAmountToHeal = _.enemyStats[_.EnemyNdx()].maxHP - _.enemyStats[_.EnemyNdx()].HP;
+		// Add Enemy's WIS to Heal Amount
+		amountToHeal += _.enemyStats[_.EnemyNdx()].WIS;
+
+		// Add 30-45 HP to TARGET Player's HP
+		RPG.S.AddEnemyHP(_.EnemyNdx(), amountToHeal);
+
+		// Display Text
+		if (amountToHeal >= maxAmountToHeal) {
+			BattleDialogue.S.DisplayText(_.enemyStats[_.EnemyNdx()].name + " casts a Heal Spell!\nHealed itself back to Max HP!");
+
+			// Prevents Floating Score being higher than the acutal amount healed
+			amountToHeal = maxAmountToHeal;
+		} else {
+			BattleDialogue.S.DisplayText(_.enemyStats[_.EnemyNdx()].name + " casts a Heal Spell!\nHealed itself for " + amountToHeal + " HP!");
+		}
+
+		// Get and position Poof game object
+		GameObject poof = ObjectPool.S.GetPooledObject("Poof");
+		ObjectPool.S.PosAndEnableObj(poof, _.enemySprite[_.EnemyNdx()].gameObject);
+
+		// Display Floating Score
+		RPG.S.InstantiateFloatingScore(_.enemySprite[_.EnemyNdx()].gameObject, amountToHeal, Color.green);
+
+		// Audio: Buff
+		AudioManager.S.PlaySFX(eSoundName.buff1);
+
+		_.NextTurn();
+	}
+
 	// Index = 5
 	// Attack All
 	public void AttackAll (){
@@ -244,7 +246,7 @@ public class BattleEnemyActions : MonoBehaviour {
 			// Miss/Dodge
 			// 5% chance to Miss/Dodge...
 			// ...but 25% chance if Defender WIS is more than Attacker's 
-			if (Random.value <= 0.05f || (_.enemyStats[_.EnemyNdx()].WIS > Party.stats[0].WIS && Random.value < 0.25f)) {
+			if (Random.value <= 0.05f || (_.enemyStats[_.EnemyNdx()].WIS > Party.S.stats[0].WIS && Random.value < 0.25f)) {
 				if (Random.value <= 0.5f) {
 					BattleDialogue.S.DisplayText (_.enemyStats [_.EnemyNdx()].name + " attempted to cast Fireblast... but missed the party completely!");
 				} else {
@@ -256,7 +258,10 @@ public class BattleEnemyActions : MonoBehaviour {
 
 				_.NextTurn ();
 			} else {
-				// Shake Player Anim
+				// Animation: Enemy ATTACK in center
+				_.enemyAnimator[_.animNdx].CrossFade("Attack", 0);
+
+				// Shake Screen Anim
 				Battle.S.battleUIAnim.CrossFade ("BattleUI_Shake", 0); 
 
 				int qtyKilled = 0;
@@ -277,10 +282,10 @@ public class BattleEnemyActions : MonoBehaviour {
 				// Loop through Players
 				for (int i = 0; i < (Party.S.partyNdx + 1); i++) {
 					// Subtract Player's DEF from Damage
-					_.attackDamage -= Party.stats[i].DEF;
+					_.attackDamage -= Party.S.stats[i].DEF;
 
 					// If DEFENDING, cut AttackDamage in HALF
-					_.CheckIfDefending(Party.stats[i].name);
+					_.CheckIfDefending(Party.S.stats[i].name);
 
 					if (_.attackDamage < 0) {
 						_.attackDamage = 0;
@@ -294,6 +299,9 @@ public class BattleEnemyActions : MonoBehaviour {
 
 					// Shake Enemy 1, 2, & 3's Anim
 					if (!_.playerDead[i]) {
+						// Animation: Player Damage
+						_.playerAnimator[i].CrossFade("Damage", 0);
+
 						// Get and position Explosion game object
 						GameObject explosion = ObjectPool.S.GetPooledObject("Explosion");
 						ObjectPool.S.PosAndEnableObj (explosion, _.playerSprite[i]);
@@ -306,7 +314,7 @@ public class BattleEnemyActions : MonoBehaviour {
 					_.attackDamage = tAttackDamage;
 
 					// If Player HP < 0, DEAD!
-					if (Party.stats[i].HP < 1 && !_.playerDead[i]) {
+					if (Party.S.stats[i].HP < 1 && !_.playerDead[i]) {
 						qtyKilled += 1;
 						tDead[i] = true;
 					}
@@ -418,9 +426,9 @@ public class BattleEnemyActions : MonoBehaviour {
 		case 3: BattleDialogue.S.DisplayText("Used Fireblast Spell!\nHit ENTIRE party for an average of " + Utilities.S.CalculateAverage(totalAttackDamage, (Party.S.partyNdx + 1)) + " HP!" + "\nThree party members have been felled!"); break;
 		}
 
-		if (player1) { PlayersDeathHelper(0, Party.stats[0].name); }
-		if (player2) { PlayersDeathHelper(1, Party.stats[1].name); }
-		if (player3) { PlayersDeathHelper(2, Party.stats[2].name); }
+		if (player1) { PlayersDeathHelper(0, Party.S.stats[0].name); }
+		if (player2) { PlayersDeathHelper(1, Party.S.stats[1].name); }
+		if (player3) { PlayersDeathHelper(2, Party.S.stats[2].name); }
 
 		// Add PartyDeath or NextTurn
 		if (_.partyQty < 0) {

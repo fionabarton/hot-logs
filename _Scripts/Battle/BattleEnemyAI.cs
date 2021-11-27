@@ -20,7 +20,7 @@ public class BattleEnemyAI : MonoBehaviour {
 
 	// More Spells, Use Items, Call for Backup
 	public void EnemyAI(eEnemyAI enemyAI) {
-		Debug.Log(Party.stats[GetPlayerWithLowestHP()].name);
+		Debug.Log(Party.S.stats[GetPlayerWithLowestHP()].name);
 		Debug.Log(_.enemyStats[GetEnemyWithLowestHP()].name);
 
 		BattlePlayerActions.S.ButtonsDisableAll();
@@ -76,7 +76,12 @@ public class BattleEnemyAI : MonoBehaviour {
 				break;
 			case eEnemyAI.CallForBackup:
 				// Call for backup next turn
-				ChanceToCallMove(7);
+				if (Random.value < _.enemyStats[_.EnemyNdx()].chanceToCallMove/3) {
+					ChanceToCallMove(7);
+                } else {
+					// Attack or Defend 
+					ChanceToCallMove(0, 1);
+				}
 				break;
 			case eEnemyAI.DontUseMP:
 			default:
@@ -91,8 +96,8 @@ public class BattleEnemyAI : MonoBehaviour {
 
 		for (int i = 0; i <= Party.S.partyNdx; i++) {
             if (!_.playerDead[i]) {
-				if(Party.stats[i].HP < lowestHP) {
-					lowestHP = Party.stats[i].HP;
+				if(Party.S.stats[i].HP < lowestHP) {
+					lowestHP = Party.S.stats[i].HP;
 					ndx = i;
 				}
             }
@@ -156,7 +161,7 @@ public class BattleEnemyAI : MonoBehaviour {
 			case 1: BattleEnemyActions.S.Defend(); break;
 			case 2: BattleEnemyActions.S.Run(); break;
 			case 3: BattleEnemyActions.S.Stunned(); break;
-			case 4: BattleEnemyActions.S.HealSpell(); break;
+			case 4: BattleEnemyActions.S.AttemptHealSpell(); break;
 			case 5: BattleEnemyActions.S.AttackAll(); break;
 			case 6: BattleEnemyActions.S.CallForBackup(); break;
 			case 7: BattleEnemyActions.S.CallForBackupNextTurn(); break;
