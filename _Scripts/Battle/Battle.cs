@@ -8,7 +8,7 @@ public enum eBattleMode {
 actionButtons, playerTurn, canGoBackToFightButton, canGoBackToFightButtonMultipleTargets,
 qteInitialize, qte, itemOrSpellMenu, triedToRunFromBoss, 
 enemyTurn, enemyAction, 
-dropItem, addExpAndGold, addExpAndGoldNoDrops, partyDeath, levelUp, multiLvlUp, returnToWorld };
+dropItem, addExpAndGold, addExpAndGoldNoDrops, partyDeath, levelUp, multiLvlUp, returnToWorld, noInputPermitted };
 
 public class Battle : MonoBehaviour {
 	[Header("Set in Inspector")]
@@ -132,20 +132,20 @@ public class Battle : MonoBehaviour {
 						break;
 					case eBattleMode.playerTurn:
 						if (Input.GetButtonDown("SNES A Button")) {
-							// Reset Animation: Player Idle
-							for (int i = 0; i <= Party.S.partyNdx; i++) {
-								if (!playerDead[i]) {
-									playerAnimator[i].CrossFade("Idle", 0);
-								} else {
-									playerAnimator[i].CrossFade("Death", 0);
-								}
-							}
-							// Reset Animation: Enemy Idle
-							for (int i = 0; i < enemyAnimator.Count; i++) {
-								if (!enemyStats[i].isDead) {
-									enemyAnimator[i].CrossFade("Idle", 0);
-								}
-							}
+							//// Reset Animation: Player Idle
+							//for (int i = 0; i <= Party.S.partyNdx; i++) {
+							//	if (!playerDead[i]) {
+							//		playerAnimator[i].CrossFade("Idle", 0);
+							//	} else {
+							//		playerAnimator[i].CrossFade("Death", 0);
+							//	}
+							//}
+							//// Reset Animation: Enemy Idle
+							//for (int i = 0; i < enemyAnimator.Count; i++) {
+							//	if (!enemyStats[i].isDead) {
+							//		enemyAnimator[i].CrossFade("Idle", 0);
+							//	}
+							//}
 
 							PlayerTurn();
 						}
@@ -173,20 +173,20 @@ public class Battle : MonoBehaviour {
 						break;
 					case eBattleMode.enemyTurn:
 						if (Input.GetButtonDown("SNES A Button")) {
-							// Reset Animation: Player Idle
-							for (int i = 0; i <= Party.S.partyNdx; i++) {
-								if (!playerDead[i]) {
-									playerAnimator[i].CrossFade("Idle", 0);
-								} else {
-									playerAnimator[i].CrossFade("Death", 0);
-								}
-							}
-							// Reset Animation: Enemy Idle
-							for (int i = 0; i < enemyAnimator.Count; i++) {
-								if (!enemyStats[i].isDead) {
-									enemyAnimator[i].CrossFade("Idle", 0);
-								}
-							}
+							//// Reset Animation: Player Idle
+							//for (int i = 0; i <= Party.S.partyNdx; i++) {
+							//	if (!playerDead[i]) {
+							//		playerAnimator[i].CrossFade("Idle", 0);
+							//	} else {
+							//		playerAnimator[i].CrossFade("Death", 0);
+							//	}
+							//}
+							//// Reset Animation: Enemy Idle
+							//for (int i = 0; i < enemyAnimator.Count; i++) {
+							//	if (!enemyStats[i].isDead) {
+							//		enemyAnimator[i].CrossFade("Idle", 0);
+							//	}
+							//}
 							EnemyTurn();
 						}
 						break;
@@ -278,10 +278,10 @@ public class Battle : MonoBehaviour {
 				BattleDialogue.S.displayMessageTextTop.gameObject.transform.parent.gameObject.SetActive(true);
 				// Display Player Stats
 				BattleDialogue.S.displayMessageTextTop.text =
-					Party.S.stats[0].name + " HP: " + Party.S.stats[0].HP + "/" + Party.S.stats[0].maxHP +
-					" MP: " + Party.S.stats[0].MP + "/" + Party.S.stats[0].maxMP + "\n" +
-					Party.S.stats[1].name + " HP: " + Party.S.stats[1].HP + "/" + Party.S.stats[1].maxHP +
-					" MP: " + Party.S.stats[1].MP + "/" + Party.S.stats[1].maxMP;
+					Party.S.stats[0].name + " - HP: " + Party.S.stats[0].HP + "/" + Party.S.stats[0].maxHP +
+					" - MP: " + Party.S.stats[0].MP + "/" + Party.S.stats[0].maxMP + "\n" +
+					Party.S.stats[1].name + " - HP: " + Party.S.stats[1].HP + "/" + Party.S.stats[1].maxHP +
+					" - MP: " + Party.S.stats[1].MP + "/" + Party.S.stats[1].maxMP;
 
 				if (canUpdate) {
 					// Audio: Selection (when a new gameObject is selected)
@@ -450,6 +450,21 @@ public class Battle : MonoBehaviour {
 	}
 
 	public void PlayerTurn(bool setPreviousSelected = true) { // if (Input.GetButtonDown ("Submit"))
+		// Reset Animation: Player Idle
+		for (int i = 0; i <= Party.S.partyNdx; i++) {
+			if (!playerDead[i]) {
+				playerAnimator[i].CrossFade("Idle", 0);
+			} else {
+				playerAnimator[i].CrossFade("Death", 0);
+			}
+		}
+		// Reset Animation: Enemy Idle
+		for (int i = 0; i < enemyAnimator.Count; i++) {
+			if (!enemyStats[i].isDead) {
+				enemyAnimator[i].CrossFade("Idle", 0);
+			}
+		}
+
 		BattleUI.S.DisplayTurnOrder();
 
 		BattlePlayerActions.S.ButtonsInitialInteractable();
@@ -480,6 +495,21 @@ public class Battle : MonoBehaviour {
 
     // Enemy is about to act!
     public void EnemyTurn () { // if (Input.GetButtonDown ("Submit"))
+		// Reset Animation: Player Idle
+		for (int i = 0; i <= Party.S.partyNdx; i++) {
+			if (!playerDead[i]) {
+				playerAnimator[i].CrossFade("Idle", 0);
+			} else {
+				playerAnimator[i].CrossFade("Death", 0);
+			}
+		}
+		// Reset Animation: Enemy Idle
+		for (int i = 0; i < enemyAnimator.Count; i++) {
+			if (!enemyStats[i].isDead) {
+				enemyAnimator[i].CrossFade("Idle", 0);
+			}
+		}
+
 		// Reset BattlePlayerActions.S.buttonsCS text color
 		Utilities.S.SetTextColor(BattlePlayerActions.S.buttonsCS, new Color32(39, 201, 255, 255));
 
