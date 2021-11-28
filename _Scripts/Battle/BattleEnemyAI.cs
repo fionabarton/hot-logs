@@ -162,7 +162,7 @@ public class BattleEnemyAI : MonoBehaviour {
 			case 2: BattleEnemyActions.S.Run(); break;
 			case 3: BattleEnemyActions.S.Stunned(); break;
 			case 4: BattleEnemyActions.S.AttemptHealSpell(); break;
-			case 5: BattleEnemyActions.S.AttackAll(); break;
+			case 5: BattleEnemyActions.S.AttemptAttackAll(); break;
 			case 6: BattleEnemyActions.S.CallForBackup(); break;
 			case 7: BattleEnemyActions.S.CallForBackupNextTurn(); break;
 			default:BattleEnemyActions.S.Attack(); break;

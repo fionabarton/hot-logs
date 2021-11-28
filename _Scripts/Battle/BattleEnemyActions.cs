@@ -170,7 +170,6 @@ public class BattleEnemyActions : MonoBehaviour {
 		if (_.enemyStats [_.EnemyNdx()].MP >= 3) {
 			// Not at Full HP
 			if (_.enemyStats [_.EnemyNdx()].HP < _.enemyStats [_.EnemyNdx()].maxHP) {
-				// Play enemy heal animation
 				ColorScreen.S.PlayClip("Swell", 1);
 			} else {
 				// Already at Full HP
@@ -235,114 +234,121 @@ public class BattleEnemyActions : MonoBehaviour {
 
 	// Index = 5
 	// Attack All
-	public void AttackAll (){
+	public void AttemptAttackAll() {
 		// Enough MP
-		if (_.enemyStats [_.EnemyNdx()].MP >= 3) {
-			// Subtract Enemy MP
-			_.enemyStats [_.EnemyNdx()].MP -= 3;
-
-			// *** TBR: Reference the Defender (still living) with the highest WIS ***
-			// 
-			// Miss/Dodge
-			// 5% chance to Miss/Dodge...
-			// ...but 25% chance if Defender WIS is more than Attacker's 
-			if (Random.value <= 0.05f || (_.enemyStats[_.EnemyNdx()].WIS > Party.S.stats[0].WIS && Random.value < 0.25f)) {
-				if (Random.value <= 0.5f) {
-					BattleDialogue.S.DisplayText (_.enemyStats [_.EnemyNdx()].name + " attempted to cast Fireblast... but missed the party completely!");
-				} else {
-					BattleDialogue.S.DisplayText (_.enemyStats [_.EnemyNdx()].name + " cast Fireblast, but the party deftly dodged out of the way!");
-				}
-
-				// Audio: Deny
-				AudioManager.S.PlaySFX(eSoundName.deny);
-
-				_.NextTurn ();
-			} else {
-				// Animation: Enemy ATTACK in center
-				_.enemyAnimator[_.animNdx].CrossFade("Attack", 0);
-
-				// Shake Screen Anim
-				Battle.S.battleUIAnim.CrossFade ("BattleUI_Shake", 0); 
-
-				int qtyKilled = 0;
-				bool[] tDead = new bool[3];
-
-				// Subtract 12-20 HP
-				_.attackDamage = Random.Range (10, 15);
-
-				// Add Enemy's WIS to Damage
-				_.attackDamage += _.enemyStats[_.EnemyNdx()].WIS;
-
-				// Cache AttackDamage. When more than one Defender, prevents splitting it in 1/2 more than once.
-				int tAttackDamage = _.attackDamage;
-
-				// Used to Calculate AVERAGE Damage
-				int totalAttackDamage = 0;
-
-				// Loop through Players
-				for (int i = 0; i < (Party.S.partyNdx + 1); i++) {
-					// Subtract Player's DEF from Damage
-					_.attackDamage -= Party.S.stats[i].DEF;
-
-					// If DEFENDING, cut AttackDamage in HALF
-					_.CheckIfDefending(Party.S.stats[i].name);
-
-					if (_.attackDamage < 0) {
-						_.attackDamage = 0;
-					} 
-
-					// Subtract Player Health
-					RPG.S.SubtractPlayerHP (i, _.attackDamage);
-
-					// Add to to TotalAttackDamage (Used to Calculate AVERAGE Damage)
-					totalAttackDamage += _.attackDamage;
-
-					// Shake Enemy 1, 2, & 3's Anim
-					if (!_.playerDead[i]) {
-						// Animation: Player Damage
-						_.playerAnimator[i].CrossFade("Damage", 0);
-
-						// Get and position Explosion game object
-						GameObject explosion = ObjectPool.S.GetPooledObject("Explosion");
-						ObjectPool.S.PosAndEnableObj (explosion, _.playerSprite[i]);
-
-						// Display Floating Score
-						RPG.S.InstantiateFloatingScore(_.playerSprite[i], _.attackDamage, Color.red);
-					}
-
-					// If DEFENDING, Reset AttackDamage for next Enemy
-					_.attackDamage = tAttackDamage;
-
-					// If Player HP < 0, DEAD!
-					if (Party.S.stats[i].HP < 1 && !_.playerDead[i]) {
-						qtyKilled += 1;
-						tDead[i] = true;
-					}
-				}
-
-				// If no one is killed...
-				if (qtyKilled <= 0) {
-					BattleDialogue.S.DisplayText ("Used Fireblast Spell!\nHit ENTIRE party for an average of " + Utilities.S.CalculateAverage (totalAttackDamage, (Party.S.partyNdx + 1)) + " HP!");
-
-					// Audio: Fireblast
-					AudioManager.S.PlaySFX(eSoundName.fireblast);
-
-					_.NextTurn (); 
-				} else {
-					// Audio: Death
-					AudioManager.S.PlaySFX(eSoundName.death);
-
-					PlayersDeath(qtyKilled, totalAttackDamage, tDead[0], tDead[1], tDead[2]);
-				}
-			}
+		if (_.enemyStats[_.EnemyNdx()].MP >= 3) {
+			ColorScreen.S.PlayClip("Flicker", 2);
 		} else {
 			// Not enough MP
-			BattleDialogue.S.DisplayText (_.enemyStats [_.EnemyNdx()].name + " attempts to cast Fireblast...\n...But doesn't have enough MP to do so!");
+			BattleDialogue.S.DisplayText(_.enemyStats[_.EnemyNdx()].name + " attempts to cast Fireblast...\n...But doesn't have enough MP to do so!");
 
 			// Audio: Deny
 			AudioManager.S.PlaySFX(eSoundName.deny);
 
-			_.NextTurn (); 
+			// Animation: Enemy ATTACK in center
+			_.enemyAnimator[_.animNdx].CrossFade("Attack", 0);
+
+			_.NextTurn();
+		}
+	}
+
+	public void AttackAll() {
+		// Subtract Enemy MP
+		_.enemyStats [_.EnemyNdx()].MP -= 3;
+
+		// Animation: Enemy ATTACK in center
+		_.enemyAnimator[_.animNdx].CrossFade("Attack", 0);
+
+		// *** TBR: Reference the Defender (still living) with the highest WIS ***
+		// 
+		// Miss/Dodge
+		// 5% chance to Miss/Dodge...
+		// ...but 25% chance if Defender WIS is more than Attacker's 
+		if (Random.value <= 0.05f || (_.enemyStats[_.EnemyNdx()].WIS > Party.S.stats[0].WIS && Random.value < 0.25f)) {
+			if (Random.value <= 0.5f) {
+				BattleDialogue.S.DisplayText (_.enemyStats [_.EnemyNdx()].name + " attempted to cast Fireblast... but missed the party completely!");
+			} else {
+				BattleDialogue.S.DisplayText (_.enemyStats [_.EnemyNdx()].name + " cast Fireblast, but the party deftly dodged out of the way!");
+			}
+
+			// Audio: Deny
+			AudioManager.S.PlaySFX(eSoundName.deny);
+
+			_.NextTurn ();
+		} else {
+			// Shake Screen Anim
+			Battle.S.battleUIAnim.CrossFade ("BattleUI_Shake", 0); 
+
+			int qtyKilled = 0;
+			bool[] tDead = new bool[3];
+
+			// Subtract 12-20 HP
+			_.attackDamage = Random.Range (10, 15);
+
+			// Add Enemy's WIS to Damage
+			_.attackDamage += _.enemyStats[_.EnemyNdx()].WIS;
+
+			// Cache AttackDamage. When more than one Defender, prevents splitting it in 1/2 more than once.
+			int tAttackDamage = _.attackDamage;
+
+			// Used to Calculate AVERAGE Damage
+			int totalAttackDamage = 0;
+
+			// Loop through Players
+			for (int i = 0; i < (Party.S.partyNdx + 1); i++) {
+				// Subtract Player's DEF from Damage
+				_.attackDamage -= Party.S.stats[i].DEF;
+
+				// If DEFENDING, cut AttackDamage in HALF
+				_.CheckIfDefending(Party.S.stats[i].name);
+
+				if (_.attackDamage < 0) {
+					_.attackDamage = 0;
+				} 
+
+				// Subtract Player Health
+				RPG.S.SubtractPlayerHP (i, _.attackDamage);
+
+				// Add to to TotalAttackDamage (Used to Calculate AVERAGE Damage)
+				totalAttackDamage += _.attackDamage;
+
+				// Shake Enemy 1, 2, & 3's Anim
+				if (!_.playerDead[i]) {
+					// Animation: Player Damage
+					_.playerAnimator[i].CrossFade("Damage", 0);
+
+					// Get and position Explosion game object
+					GameObject explosion = ObjectPool.S.GetPooledObject("Explosion");
+					ObjectPool.S.PosAndEnableObj (explosion, _.playerSprite[i]);
+
+					// Display Floating Score
+					RPG.S.InstantiateFloatingScore(_.playerSprite[i], _.attackDamage, Color.red);
+				}
+
+				// If DEFENDING, Reset AttackDamage for next Enemy
+				_.attackDamage = tAttackDamage;
+
+				// If Player HP < 0, DEAD!
+				if (Party.S.stats[i].HP < 1 && !_.playerDead[i]) {
+					qtyKilled += 1;
+					tDead[i] = true;
+				}
+			}
+
+			// If no one is killed...
+			if (qtyKilled <= 0) {
+				BattleDialogue.S.DisplayText ("Used Fireblast Spell!\nHit ENTIRE party for an average of " + Utilities.S.CalculateAverage (totalAttackDamage, (Party.S.partyNdx + 1)) + " HP!");
+
+				// Audio: Fireblast
+				AudioManager.S.PlaySFX(eSoundName.fireblast);
+
+				_.NextTurn (); 
+			} else {
+				// Audio: Death
+				AudioManager.S.PlaySFX(eSoundName.death);
+
+				PlayersDeath(qtyKilled, totalAttackDamage, tDead[0], tDead[1], tDead[2]);
+			}
 		}
 	}
 
