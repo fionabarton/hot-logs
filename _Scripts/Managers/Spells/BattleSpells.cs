@@ -27,6 +27,9 @@ public class BattleSpells : MonoBehaviour {
 			// Audio: Confirm
 			AudioManager.S.PlaySFX(eSoundName.confirm);
 
+			// Remove all listeners
+			Utilities.S.RemoveListeners(BattlePlayerActions.S.playerButtonCS);
+
 			if (spell.type == eSpellType.healing) {
 				BattlePlayerActions.S.ButtonsInteractable(false, false, false, false, false, false, false, false, true, true);
 
@@ -125,6 +128,8 @@ public class BattleSpells : MonoBehaviour {
 	}
 
     public void HealSelectedPartyMember(int ndx, Spell spell) {
+		Debug.Log("Party Heal");
+
 		// Subtract Spell cost from Player's MP
 		RPG.S.SubtractPlayerMP(_.PlayerNdx(), spell.cost);
 			
@@ -168,7 +173,13 @@ public class BattleSpells : MonoBehaviour {
 	//////////////////////////////////////////////////////////
 	/// Fireball - Attack the selected enemy
 	////////////////////////////////////////////////////////// 
-	public void AttackSelectedEnemies(int ndx, Spell spell) {
+	public void AttemptAttackSelectedEnemy(int ndx, Spell spell) {
+		ColorScreen.S.PlayClip("Flicker", 0);
+		ColorScreen.S.targetNdx = ndx;
+		ColorScreen.S.spell = spell;
+	}
+
+	public void AttackSelectedEnemy(int ndx, Spell spell) {
 		// Subtract Spell cost from Player's MP
 		RPG.S.SubtractPlayerMP (_.PlayerNdx(), spell.cost);
 
@@ -225,7 +236,7 @@ public class BattleSpells : MonoBehaviour {
 				// Audio: Fireball
 				AudioManager.S.PlaySFX(eSoundName.fireball);
 
-				_.NextTurn ();
+				_.NextTurn();
 			}
 		}
 		SpellHelper ();
@@ -234,12 +245,17 @@ public class BattleSpells : MonoBehaviour {
 	//////////////////////////////////////////////////////////
 	/// Fireblast
 	//////////////////////////////////////////////////////////
+	public void AttemptAttackAllEnemies(int unusedIntBecauseOfAddFunctionToButtonParameter, Spell spell) {
+		ColorScreen.S.PlayClip("Flicker", 1);
+		ColorScreen.S.spell = spell;
+	}
+	
 	public void AttackAllEnemies (int unusedIntBecauseOfAddFunctionToButtonParameter, Spell spell) {
 		// Subtract Spell cost from Player's MP
 		RPG.S.SubtractPlayerMP (_.PlayerNdx(), spell.cost);
 
 		// *** TBR: Reference the Defender (still living) with the highest WIS ***
-	
+
 		// Miss/Dodge
 		// 5% chance to Miss/Dodge...
 		// ...but 25% chance if Defender WIS is more than Attacker's 

@@ -370,9 +370,9 @@ public class SpellScreen : MonoBehaviour {
 			if (spell.name == "Heal") {
 				BattleSpells.S.AddFunctionToButton(BattleSpells.S.AttemptHealSelectedPartyMember, "Heal which party member?", spell);
 			} else if (spell.name == "Fireball") {
-				BattleSpells.S.AddFunctionToButton(BattleSpells.S.AttackSelectedEnemies, "Attack which enemy?", spell);
+				BattleSpells.S.AddFunctionToButton(BattleSpells.S.AttemptAttackSelectedEnemy, "Attack which enemy?", spell);
 			} else if (spell.name == "Fireblast") {
-				BattleSpells.S.AddFunctionToButton(BattleSpells.S.AttackAllEnemies, "Attack all enemies?", spell);
+				BattleSpells.S.AddFunctionToButton(BattleSpells.S.AttemptAttackAllEnemies, "Attack all enemies?", spell);
 			} else if (spell.name == "Heal All") {
 				BattleSpells.S.AddFunctionToButton(BattleSpells.S.AttemptHealAll, "Heal all party members?", spell);
 			} else if (spell.name == "Revive") {
