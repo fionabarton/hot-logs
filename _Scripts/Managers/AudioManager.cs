@@ -4,7 +4,7 @@ using UnityEngine;
 
 public enum eSongName { nineteenForty, never, ninja, soap, things, startBattle, win, lose, selection, gMinor, zelda };
 public enum eSoundName { dialogue, selection, damage1, damage2, damage3, death, confirm, deny, 
-	run, fireball, fireblast, buff1, buff2, highBeep1, highBeep2};
+	run, fireball, fireblast, buff1, buff2, highBeep1, highBeep2, swell, flicker};
 
 public class AudioManager : MonoBehaviour {
 	[Header ("Set in Inspector")]
@@ -40,9 +40,9 @@ public class AudioManager : MonoBehaviour {
 			PauseAndMuteAudio();
 		}
 	}
-
+	
 	// Play a song that doesn't loop, then when it's over, resume playback of the song that was playing previously
-    public IEnumerator PlaySongThenResumePreviousSong(int ndx) {
+	public IEnumerator PlaySongThenResumePreviousSong(int ndx) {
         // Get current song's playback time, then stop its playback
         float time = bgmCS[currentSongNdx].time;
 		bgmCS[currentSongNdx].Stop();
@@ -63,25 +63,23 @@ public class AudioManager : MonoBehaviour {
 
 		// Set volume to 0, then gradually raise to previousVolumeLvl
 		AudioListener.volume = 0;
-		StartCoroutine("VolumeSwell");
+
+		// Add VolumeSwell() to UpdateManager
+		UpdateManager.fixedUpdateDelegate += VolumeSwell;
 	}
 
 	// Gradually raise volume to previousVolumeLvl
-	public IEnumerator VolumeSwell() {
-		// Wait 0.005 seconds
-        yield return new WaitForSeconds(0.01f);
-
+	public void VolumeSwell() {
 		if (AudioListener.volume >= previousVolumeLvl) {
 			// Set volume and stop calling this coroutine
 			AudioListener.volume = previousVolumeLvl;
-			StopCoroutine("VolumeSwell");
-		} else {
-			// Raise volume and make a recursive call to this coroutine
-			AudioListener.volume += 0.0025f;
-			StartCoroutine("VolumeSwell");
-		}
 
-		yield return null;
+			// Remove FixedLoop() from UpdateManager
+			UpdateManager.fixedUpdateDelegate -= VolumeSwell;
+		} else {
+			// Raise volume 
+			AudioListener.volume += 0.075f * Time.fixedDeltaTime;
+		}
 	}
 
 	public void PlaySong(eSongName songName) {
@@ -156,6 +154,8 @@ public class AudioManager : MonoBehaviour {
 			case eSoundName.buff2: sfxCS[12].Play(); break;
 			case eSoundName.highBeep1: sfxCS[13].Play(); break;
 			case eSoundName.highBeep2: sfxCS[14].Play(); break;
+			case eSoundName.swell: sfxCS[15].Play(); break;
+			case eSoundName.flicker: sfxCS[16].Play(); break;
 		}
 	}
 
