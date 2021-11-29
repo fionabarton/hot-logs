@@ -61,10 +61,16 @@ public class ColorScreen : MonoBehaviour{
         // Add event to clip
         switch (functionName) {
             case "Swell":
+                // Audio: Swell
+                AudioManager.S.PlaySFX(eSoundName.swell);
+
                 evt.time = 1.325f;
                 clips[0].AddEvent(evt);
                 break;
             case "Flicker":
+                // Audio: Flicker
+                AudioManager.S.PlaySFX(eSoundName.flicker);
+
                 evt.time = 0.4f; // 2 flicks
                 //evt.time = 0.65f; // 3 flicks
                 clips[1].AddEvent(evt);
