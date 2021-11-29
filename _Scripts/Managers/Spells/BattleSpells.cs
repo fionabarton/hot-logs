@@ -187,6 +187,9 @@ public class BattleSpells : MonoBehaviour {
 		// 5% chance to Miss/Dodge...
 		// ...but 25% chance if Defender WIS is more than Attacker's 
 		if (UnityEngine.Random.value <= 0.05f || (_.enemyStats [ndx].WIS > Party.S.stats[_.PlayerNdx()].WIS && UnityEngine.Random.value < 0.25f)) {
+			// Set anim
+			_.playerAnimator[_.PlayerNdx()].CrossFade("Fail_Spell", 0);
+
 			if (UnityEngine.Random.value <= 0.5f) {
 				BattleDialogue.S.DisplayText(Party.S.stats[_.PlayerNdx()].name + " attempted the spell... but missed " + _.enemyStats[ndx].name + " completely!");
 			} else {
@@ -198,6 +201,9 @@ public class BattleSpells : MonoBehaviour {
 
 			_.NextTurn ();
 		} else {
+			// Set anim
+			_.playerAnimator[_.PlayerNdx()].CrossFade("Win_Battle", 0);
+
 			// Subtract 8-12 HP
 			_.attackDamage = UnityEngine.Random.Range (spell.statEffectMinValue, spell.statEffectMaxValue);
 			// Add Player's WIS to Damage
@@ -260,6 +266,9 @@ public class BattleSpells : MonoBehaviour {
 		// 5% chance to Miss/Dodge...
 		// ...but 25% chance if Defender WIS is more than Attacker's 
 		if (UnityEngine.Random.value <= 0.05f || (_.enemyStats[0].WIS > Party.S.stats[_.PlayerNdx()].WIS && UnityEngine.Random.value < 0.25f)) {
+			// Set anim
+			_.playerAnimator[_.PlayerNdx()].CrossFade("Fail_Spell", 0);
+
 			if (UnityEngine.Random.value <= 0.5f) {
 				BattleDialogue.S.DisplayText(Party.S.stats[_.PlayerNdx()].name + " attempted the spell... but missed those goons completely!");
 			} else {
@@ -271,6 +280,9 @@ public class BattleSpells : MonoBehaviour {
 
 			_.NextTurn ();
 		} else {
+			// Set anim
+			_.playerAnimator[_.PlayerNdx()].CrossFade("Win_Battle", 0);
+
 			List<int> deadEnemies = new List<int>();
 
 			// Subtract 12-20 HP
