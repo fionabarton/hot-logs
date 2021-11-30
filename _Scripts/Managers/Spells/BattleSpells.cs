@@ -94,6 +94,8 @@ public class BattleSpells : MonoBehaviour {
     /// Heal - Heal the selected party member 
     //////////////////////////////////////////////////////////
     public void AttemptHealSelectedPartyMember(int ndx, Spell spell) {
+		SpellHelper();
+
 		if (_.playerDead[ndx]) {
 			// Display Text
 			BattleDialogue.S.DisplayText(Party.S.stats[ndx].name + " is dead...\n...and dead folk can't be healed, dummy!");
@@ -104,7 +106,7 @@ public class BattleSpells : MonoBehaviour {
 			// Switch Mode
 			_.battleMode = eBattleMode.playerTurn;
 
-			SpellHelper();
+			//SpellHelper();
 
 			return;
 		}
@@ -123,12 +125,12 @@ public class BattleSpells : MonoBehaviour {
 			// Switch Mode
 			_.battleMode = eBattleMode.playerTurn;
 
-			SpellHelper();
+			//SpellHelper();
 		}
 	}
 
     public void HealSelectedPartyMember(int ndx, Spell spell) {
-		Debug.Log("Party Heal");
+		//Debug.Log("Party Heal");
 
 		// Subtract Spell cost from Player's MP
 		RPG.S.SubtractPlayerMP(_.PlayerNdx(), spell.cost);
@@ -167,16 +169,19 @@ public class BattleSpells : MonoBehaviour {
 
 		_.NextTurn ();
 		
-		SpellHelper();
+		//SpellHelper();
 	}
 
 	//////////////////////////////////////////////////////////
 	/// Fireball - Attack the selected enemy
 	////////////////////////////////////////////////////////// 
 	public void AttemptAttackSelectedEnemy(int ndx, Spell spell) {
+		SpellHelper();
 		ColorScreen.S.PlayClip("Flicker", 0);
 		ColorScreen.S.targetNdx = ndx;
 		ColorScreen.S.spell = spell;
+
+		//SpellHelper();
 	}
 
 	public void AttackSelectedEnemy(int ndx, Spell spell) {
@@ -245,15 +250,17 @@ public class BattleSpells : MonoBehaviour {
 				_.NextTurn();
 			}
 		}
-		SpellHelper ();
 	}
 
 	//////////////////////////////////////////////////////////
 	/// Fireblast
 	//////////////////////////////////////////////////////////
 	public void AttemptAttackAllEnemies(int unusedIntBecauseOfAddFunctionToButtonParameter, Spell spell) {
+		SpellHelper();
 		ColorScreen.S.PlayClip("Flicker", 1);
 		ColorScreen.S.spell = spell;
+
+		//SpellHelper();
 	}
 	
 	public void AttackAllEnemies (int unusedIntBecauseOfAddFunctionToButtonParameter, Spell spell) {
@@ -351,7 +358,6 @@ public class BattleSpells : MonoBehaviour {
 				EnemiesDeath(deadEnemies, totalAttackDamage);
 			}
 		}
-		SpellHelper ();
 	}
 
 	// Handle enemy deaths
@@ -426,6 +432,8 @@ public class BattleSpells : MonoBehaviour {
 	/// Heal All - Heal all party members 
 	//////////////////////////////////////////////////////////
 	public void AttemptHealAll(int unusedIntBecauseOfAddFunctionToButtonParameter, Spell spell) {
+		SpellHelper();
+
 		if (Party.S.stats[0].HP < Party.S.stats[0].maxHP ||
 			Party.S.stats[1].HP < Party.S.stats[1].maxHP ||
 			Party.S.stats[2].HP < Party.S.stats[2].maxHP) {
@@ -444,8 +452,9 @@ public class BattleSpells : MonoBehaviour {
 			// Switch Mode
 			_.battleMode = eBattleMode.playerTurn;
 
-			SpellHelper();
+			//SpellHelper();
 		}
+		//SpellHelper();
 	}
 
 	public void HealAll(int unusedIntBecauseOfAddFunctionToButtonParameter, Spell spell) {
@@ -493,21 +502,17 @@ public class BattleSpells : MonoBehaviour {
 
 		_.NextTurn();
 		
-		SpellHelper();
+		//SpellHelper();
 	}
 
-	public void ReviveSelectedPartyMember(int ndx, Spell spell) {
-        if (_.playerDead[ndx]) {
-            _.playerDead[ndx] = false;
+	public void AttemptReviveSelectedPartyMember(int ndx, Spell spell) {
+		SpellHelper();
 
-            // Add to PartyQty 
-            _.partyQty += 1;
-
-            // Add Player to Turn Order
-            _.turnOrder.Add(Party.S.stats[ndx].name);
-
-			HealSelectedPartyMember(ndx, spell);
-        } else {
+		if (_.playerDead[ndx]) {
+			ColorScreen.S.PlayClip("Swell", 3);
+			ColorScreen.S.targetNdx = ndx;
+			ColorScreen.S.spell = spell;
+		} else {
 			// Display Text
 			BattleDialogue.S.DisplayText(Party.S.stats[ndx].name + " ain't dead...\n...and dead folk don't need to be revived, dummy!");
 
@@ -517,6 +522,17 @@ public class BattleSpells : MonoBehaviour {
 			// Switch Mode
 			_.battleMode = eBattleMode.playerTurn;
 		}
-		SpellHelper();
+	}
+
+	public void ReviveSelectedPartyMember(int ndx, Spell spell) {
+		_.playerDead[ndx] = false;
+
+		// Add to PartyQty 
+		_.partyQty += 1;
+
+		// Add Player to Turn Order
+		_.turnOrder.Add(Party.S.stats[ndx].name);
+
+		HealSelectedPartyMember(ndx, spell);
 	}
 }
