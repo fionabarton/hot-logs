@@ -376,7 +376,7 @@ public class SpellScreen : MonoBehaviour {
 			} else if (spell.name == "Heal All") {
 				BattleSpells.S.AddFunctionToButton(BattleSpells.S.AttemptHealAll, "Heal all party members?", spell);
 			} else if (spell.name == "Revive") {
-				BattleSpells.S.AddFunctionToButton(BattleSpells.S.ReviveSelectedPartyMember, "Revive which party member?", spell);
+				BattleSpells.S.AddFunctionToButton(BattleSpells.S.AttemptReviveSelectedPartyMember, "Revive which party member?", spell);
 			} else {
 				SpellManager.S.CantUseSpell("Can't use this spell during battle!");
 			}
