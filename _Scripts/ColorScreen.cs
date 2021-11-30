@@ -36,6 +36,9 @@ public class ColorScreen : MonoBehaviour{
         // Store animator's clips: (0: Swell, 1: Flicker)
         clips.Add(anim.runtimeAnimatorController.animationClips[0]);
         clips.Add(anim.runtimeAnimatorController.animationClips[1]);
+
+        //Debug.Log(clips[0].length);
+        //Debug.Log(clips[1].length);
     }
 
     public void ActivateBlackScreen() {
@@ -43,6 +46,9 @@ public class ColorScreen : MonoBehaviour{
     }
 
     public void PlayClip(string functionName, int actionNdx) {
+        // Remove all animation events
+        RemoveEvents();
+
         // Prevent battle input
         Battle.S.battleMode = eBattleMode.noInputPermitted;
 
@@ -86,9 +92,6 @@ public class ColorScreen : MonoBehaviour{
     /// </summary>
 
     public void Swell(int actionNdx = 0) {
-        // Remove all animation events
-        RemoveEvents();
-
         // Function to call after animation is played
         switch (actionNdx) {
             case 0: // Party: Heal Spell
@@ -100,14 +103,15 @@ public class ColorScreen : MonoBehaviour{
             case 2: // Party: Heal All Spell
                 BattleSpells.S.HealAll(targetNdx, spell);
                 break;
+            case 3: // Party: Revive Spell
+                BattleSpells.S.ReviveSelectedPartyMember(targetNdx, spell);
+                break;
         }
-    }
-	public void Flicker(int actionNdx = 0) {
+
         // Remove all animation events
         RemoveEvents();
-
-        Debug.Log("Called Flicker" + " Ndx: " + actionNdx);
-
+    }
+	public void Flicker(int actionNdx = 0) {
         // Function to call after animation is played
         switch (actionNdx) {
             case 0: // Party: Fireball Spell
@@ -120,6 +124,9 @@ public class ColorScreen : MonoBehaviour{
                 BattleEnemyActions.S.AttackAll();
                 break;
         }
+
+        // Remove all animation events
+        RemoveEvents();
     }
 
     public void RemoveEvents() {
