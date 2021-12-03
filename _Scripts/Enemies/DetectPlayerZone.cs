@@ -8,15 +8,22 @@ using UnityEngine;
 public class DetectPlayerZone : MonoBehaviour {
 	[Header("Set Dynamically")]
 	private EnemyMovement	enemyMovementCS;
+	private Enemy			enemyCS;
 
 	void OnEnable(){
-		enemyMovementCS = GetComponentInParent<EnemyMovement> ();
+		enemyMovementCS = GetComponentInParent<EnemyMovement>();
+		enemyCS = GetComponentInParent<Enemy>();
 	}
 
 	void OnTriggerEnter2D(Collider2D coll){
 		if (coll.gameObject.tag == "Player") {
-			enemyMovementCS.anim.speed = 1;
-			enemyMovementCS.mode = enemyMovementCS.defaultMovementMode;
+			enemyCS.exclamationBubble.SetActive(true);
+			Invoke("ActivateDetectPlayerMode", 0.5f);
 		}
+	}
+
+	void ActivateDetectPlayerMode() {
+		enemyMovementCS.anim.speed = 1;
+		enemyMovementCS.currentMode = enemyMovementCS.onDetectPlayerMode;
 	}
 }

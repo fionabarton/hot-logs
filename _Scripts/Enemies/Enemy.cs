@@ -18,6 +18,8 @@ public class Enemy : MonoBehaviour {
 	// Amount of enemies to battle. If 999, set to a random amount
 	public int				enemyAmount = 999;
 
+	public GameObject		exclamationBubble;
+
 	[Header("Set Dynamically")]
 	// Used to track enemy in order to handle what happens if it's dead,
 	// defaultMovementMode has been changed, etc.
