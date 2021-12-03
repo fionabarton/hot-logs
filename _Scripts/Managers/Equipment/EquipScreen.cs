@@ -56,6 +56,22 @@ public class EquipScreen : MonoBehaviour {
 		playerEquipment.Add(new List<Item> {
 			ItemManager.S.items[18], ItemManager.S.items[19], ItemManager.S.items[20], ItemManager.S.items[21]
 		});
+
+		// Add effect of each party member's equipment
+		EquipStatsEffect.S.AddItemEffect(0, ItemManager.S.items[18]);
+		EquipStatsEffect.S.AddItemEffect(0, ItemManager.S.items[19]);
+		EquipStatsEffect.S.AddItemEffect(0, ItemManager.S.items[20]);
+		EquipStatsEffect.S.AddItemEffect(0, ItemManager.S.items[21]);
+
+		EquipStatsEffect.S.AddItemEffect(1, ItemManager.S.items[18]);
+		EquipStatsEffect.S.AddItemEffect(1, ItemManager.S.items[19]);
+		EquipStatsEffect.S.AddItemEffect(1, ItemManager.S.items[20]);
+		EquipStatsEffect.S.AddItemEffect(1, ItemManager.S.items[21]);
+
+		EquipStatsEffect.S.AddItemEffect(2, ItemManager.S.items[18]);
+		EquipStatsEffect.S.AddItemEffect(2, ItemManager.S.items[19]);
+		EquipStatsEffect.S.AddItemEffect(2, ItemManager.S.items[20]);
+		EquipStatsEffect.S.AddItemEffect(2, ItemManager.S.items[21]);
 	}
 
     void OnEnable () {
@@ -174,9 +190,9 @@ public class EquipScreen : MonoBehaviour {
 	
 	// Display member's name and current stats
 	public void DisplayCurrentStats(int playerNdx){
-		playerName.text = Party.stats[playerNdx].name;
-		currentStats.text = Party.stats[playerNdx].LVL + "\n" + Party.stats[playerNdx].HP + "/" + Party.stats[playerNdx].maxHP + "\n" + Party.stats[playerNdx].MP + "/" + Party.stats[playerNdx].maxMP;
-		EquipStatsEffect.S.currentAttributeAmounts.text = Party.stats[playerNdx].STR + "\n" + Party.stats[playerNdx].DEF + "\n" + Party.stats[playerNdx].WIS + "\n" + Party.stats[playerNdx].AGI;
+		playerName.text = Party.S.stats[playerNdx].name;
+		currentStats.text = Party.S.stats[playerNdx].LVL + "\n" + Party.S.stats[playerNdx].HP + "/" + Party.S.stats[playerNdx].maxHP + "\n" + Party.S.stats[playerNdx].MP + "/" + Party.S.stats[playerNdx].maxMP;
+		EquipStatsEffect.S.currentAttributeAmounts.text = Party.S.stats[playerNdx].STR + "\n" + Party.S.stats[playerNdx].DEF + "\n" + Party.S.stats[playerNdx].WIS + "\n" + Party.S.stats[playerNdx].AGI;
 		EquipStatsEffect.S.potentialStats.text = "";
 	}
 
@@ -215,8 +231,7 @@ public class EquipScreen : MonoBehaviour {
 		// Equip new item
 		playerEquipment[playerNdx][(int)item.type] = item;
 
-		//PauseMessage.S.DisplayText(Stats.S.playerName[playerNdx] + " equipped " + item.name + "!");
-		PauseMessage.S.DisplayText(Party.stats[playerNdx].name + " equipped " + item.name + "!");
+		PauseMessage.S.DisplayText(Party.S.stats[playerNdx].name + " equipped " + item.name + "!");
 
 		// Add Item StatEffect
 		EquipStatsEffect.S.AddItemEffect(playerNdx, item);
@@ -242,5 +257,20 @@ public class EquipScreen : MonoBehaviour {
 
 		// Set Selected GameObject 
 		Utilities.S.SetSelectedGO(selectedGO);
+	}
+
+	public int GetEquippedItemCount(Item item) {
+		int count = 0;
+		
+		// Loop through each party member
+		for (int i = 0; i <= Party.S.partyNdx; i++) {
+			// Loop through each equipment slot (weapon, armor, helmet, accessory)
+			for (int j = 0; j < 4; j++) {
+				if(playerEquipment[i][j].name == item.name) {
+					count += 1;
+                }
+			}
+		}
+		return count;
 	}
 }
