@@ -89,10 +89,12 @@ public class ShopScreen_PickItemMode : MonoBehaviour {
 				shopScreen.inventoryButtons[i].gameObject.SetActive(true);
 				shopScreen.inventoryButtonsPriceText[i].gameObject.SetActive(true);
 				shopScreen.inventoryButtonsQTYOwnedText[i].gameObject.SetActive(true);
+				shopScreen.inventoryButtonsQTYEquippedText[i].gameObject.SetActive(true);
 			} else {
 				shopScreen.inventoryButtons[i].gameObject.SetActive(false);
 				shopScreen.inventoryButtonsPriceText[i].gameObject.SetActive(false);
 				shopScreen.inventoryButtonsQTYOwnedText[i].gameObject.SetActive(false);
+				shopScreen.inventoryButtonsQTYEquippedText[i].gameObject.SetActive(false);
 			}
 		}
 	}
@@ -118,6 +120,7 @@ public class ShopScreen_PickItemMode : MonoBehaviour {
 				shopScreen.inventoryButtonsNameText[i].text = inventoryNdx + ") " + shopScreen.inventory[shopScreen.firstSlotNdx + i].name;
 				shopScreen.inventoryButtonsPriceText[i].text = shopScreen.inventory[shopScreen.firstSlotNdx + i].value.ToString();
 				shopScreen.inventoryButtonsQTYOwnedText[i].text = Inventory.S.GetItemCount(shopScreen.inventory[shopScreen.firstSlotNdx + i]).ToString();
+				shopScreen.inventoryButtonsQTYEquippedText[i].text = EquipScreen.S.GetEquippedItemCount(shopScreen.inventory[shopScreen.firstSlotNdx + i]).ToString();
 			}
 		}
 	}
@@ -134,6 +137,7 @@ public class ShopScreen_PickItemMode : MonoBehaviour {
 				shopScreen.inventoryButtonsNameText[i].color = new Color32(205, 208, 0, 255);
 				shopScreen.inventoryButtonsPriceText[i].color = new Color32(205, 208, 0, 255);
 				shopScreen.inventoryButtonsQTYOwnedText[i].color = new Color32(205, 208, 0, 255);
+				shopScreen.inventoryButtonsQTYEquippedText[i].color = new Color32(205, 208, 0, 255);
 
 				// Audio: Selection (when a new gameObject is selected)
 				Utilities.S.PlayButtonSelectedSFX(ref shopScreen.previousSelectedGameObject);
@@ -144,6 +148,7 @@ public class ShopScreen_PickItemMode : MonoBehaviour {
 				shopScreen.inventoryButtonsNameText[i].color = new Color32(255, 255, 255, 255);
 				shopScreen.inventoryButtonsPriceText[i].color = new Color32(255, 255, 255, 255);
 				shopScreen.inventoryButtonsQTYOwnedText[i].color = new Color32(255, 255, 255, 255);
+				shopScreen.inventoryButtonsQTYEquippedText[i].color = new Color32(255, 255, 255, 255);
 			}
 		}
 	}

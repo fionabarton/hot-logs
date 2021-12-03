@@ -13,6 +13,7 @@ public class ShopScreen : MonoBehaviour {
 	public List<Text> 		inventoryButtonsNameText;
 	public List<Text>		inventoryButtonsPriceText;
 	public List<Text>		inventoryButtonsQTYOwnedText;
+	public List<Text>		inventoryButtonsQTYEquippedText;
 
 	[Header("Set Dynamically")]
 	// Singleton
