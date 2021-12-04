@@ -132,21 +132,6 @@ public class Battle : MonoBehaviour {
 						break;
 					case eBattleMode.playerTurn:
 						if (Input.GetButtonDown("SNES A Button")) {
-							//// Reset Animation: Player Idle
-							//for (int i = 0; i <= Party.S.partyNdx; i++) {
-							//	if (!playerDead[i]) {
-							//		playerAnimator[i].CrossFade("Idle", 0);
-							//	} else {
-							//		playerAnimator[i].CrossFade("Death", 0);
-							//	}
-							//}
-							//// Reset Animation: Enemy Idle
-							//for (int i = 0; i < enemyAnimator.Count; i++) {
-							//	if (!enemyStats[i].isDead) {
-							//		enemyAnimator[i].CrossFade("Idle", 0);
-							//	}
-							//}
-
 							PlayerTurn();
 						}
 						break;
@@ -173,20 +158,6 @@ public class Battle : MonoBehaviour {
 						break;
 					case eBattleMode.enemyTurn:
 						if (Input.GetButtonDown("SNES A Button")) {
-							//// Reset Animation: Player Idle
-							//for (int i = 0; i <= Party.S.partyNdx; i++) {
-							//	if (!playerDead[i]) {
-							//		playerAnimator[i].CrossFade("Idle", 0);
-							//	} else {
-							//		playerAnimator[i].CrossFade("Death", 0);
-							//	}
-							//}
-							//// Reset Animation: Enemy Idle
-							//for (int i = 0; i < enemyAnimator.Count; i++) {
-							//	if (!enemyStats[i].isDead) {
-							//		enemyAnimator[i].CrossFade("Idle", 0);
-							//	}
-							//}
 							EnemyTurn();
 						}
 						break;
