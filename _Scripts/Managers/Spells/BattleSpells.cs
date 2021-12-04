@@ -106,8 +106,6 @@ public class BattleSpells : MonoBehaviour {
 			// Switch Mode
 			_.battleMode = eBattleMode.playerTurn;
 
-			//SpellHelper();
-
 			return;
 		}
 
@@ -124,8 +122,6 @@ public class BattleSpells : MonoBehaviour {
 
 			// Switch Mode
 			_.battleMode = eBattleMode.playerTurn;
-
-			//SpellHelper();
 		}
 	}
 
@@ -168,8 +164,6 @@ public class BattleSpells : MonoBehaviour {
 		AudioManager.S.PlaySFX(eSoundName.buff1);
 
 		_.NextTurn ();
-		
-		//SpellHelper();
 	}
 
 	//////////////////////////////////////////////////////////
@@ -180,8 +174,6 @@ public class BattleSpells : MonoBehaviour {
 		ColorScreen.S.PlayClip("Flicker", 0);
 		ColorScreen.S.targetNdx = ndx;
 		ColorScreen.S.spell = spell;
-
-		//SpellHelper();
 	}
 
 	public void AttackSelectedEnemy(int ndx, Spell spell) {
@@ -259,8 +251,6 @@ public class BattleSpells : MonoBehaviour {
 		SpellHelper();
 		ColorScreen.S.PlayClip("Flicker", 1);
 		ColorScreen.S.spell = spell;
-
-		//SpellHelper();
 	}
 	
 	public void AttackAllEnemies (int unusedIntBecauseOfAddFunctionToButtonParameter, Spell spell) {
@@ -451,10 +441,7 @@ public class BattleSpells : MonoBehaviour {
 
 			// Switch Mode
 			_.battleMode = eBattleMode.playerTurn;
-
-			//SpellHelper();
 		}
-		//SpellHelper();
 	}
 
 	public void HealAll(int unusedIntBecauseOfAddFunctionToButtonParameter, Spell spell) {
@@ -501,8 +488,6 @@ public class BattleSpells : MonoBehaviour {
 		AudioManager.S.PlaySFX(eSoundName.buff1);
 
 		_.NextTurn();
-		
-		//SpellHelper();
 	}
 
 	public void AttemptReviveSelectedPartyMember(int ndx, Spell spell) {
