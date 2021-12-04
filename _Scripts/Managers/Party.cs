@@ -38,7 +38,7 @@ public class Party : MonoBehaviour {
 		// Player 2
 		stats.Add(new PartyStats("Bill", 32, 32, 32, 15, 15, 15,
             1, 1, 1, 1, 2, 2, 2, 2,
-            0, 1, 2,
+            0, 1, 6,
             new List<Spell> { SpellManager.S.spells[0], SpellManager.S.spells[1], SpellManager.S.spells[3], SpellManager.S.spells[4], SpellManager.S.spells[5], SpellManager.S.spells[2] },
             new List<bool>(new bool[30]), 
 			new List<int> { 0, 0, 9, 23, 55, 110, 250, 450, 850, 1300, 2100 },
@@ -152,63 +152,6 @@ public class Party : MonoBehaviour {
 	public int GetAGIUpgrade(int playerNdx) {
 		return GetAGI(playerNdx, stats[playerNdx].LVL) - GetAGI(playerNdx, stats[playerNdx].previousLVL);
 	}
-
-	//// HP
-	//public void SetNewHP(int playerNdx) {
-	//	if (playerNdx == 0) {
-	//		stats[playerNdx].HP = ((10) * (3 + stats[playerNdx].LVL)); // Blob: Lvl 1 = 40
-	//	} else {
-	//		stats[playerNdx].HP = ((8) * (3 + stats[playerNdx].LVL)); // Chani: Lvl 1 = 32
-	//	}
-	//	stats[playerNdx].maxHP = stats[playerNdx].HP;
-	//	stats[playerNdx].baseMaxHP = stats[playerNdx].HP;
-	//}
-	//// MP
-	//public void SetNewMP(int playerNdx) {
-	//	if (playerNdx == 0) {
-	//		stats[playerNdx].MP = (6 * stats[playerNdx].LVL); // Blob: Lvl 1 = 6
-	//	} else {
-	//		stats[playerNdx].MP = ((9 * stats[playerNdx].LVL) + 6); // Chani: Lvl 1 = 15
-	//	}
-	//	stats[playerNdx].maxMP = stats[playerNdx].MP;
-	//	stats[playerNdx].baseMaxMP = stats[playerNdx].MP;
-	//}
-	//// STR
-	//public void SetNewSTR(int playerNdx) {
-	//	if (playerNdx == 0) {
-	//		stats[playerNdx].STR = (int)(2 * stats[playerNdx].LVL); // Blob: Lvl 1 = 2
-	//	} else {
-	//		stats[playerNdx].STR = (int)(1.5f * stats[playerNdx].LVL); // Chani: Lvl 1 = 1
-	//	}
-	//	stats[playerNdx].baseSTR = stats[playerNdx].STR;
-	//}
-	//// DEF
-	//public void SetNewDEF(int playerNdx) {
-	//	if (playerNdx == 0) {
-	//		stats[playerNdx].DEF = (int)(2 * stats[playerNdx].LVL); // Blob: Lvl 1 = 2
-	//	} else {
-	//		stats[playerNdx].DEF = (int)(1.5f * stats[playerNdx].LVL); // Chani: Lvl 1 = 1
-	//	}
-	//	stats[playerNdx].baseDEF = stats[playerNdx].DEF;
-	//}
-	//// WIS
-	//public void SetNewWIS(int playerNdx) {
-	//	if (playerNdx == 0) {
-	//		stats[playerNdx].WIS = (int)(1.5f * stats[playerNdx].LVL); // Blob: Lvl 1 = 1
-	//	} else {
-	//		stats[playerNdx].WIS = (int)(2 * stats[playerNdx].LVL); // Chani: Lvl 1 = 2
-	//	}
-	//	stats[playerNdx].baseWIS = stats[playerNdx].WIS;
-	//}
-	//// AGI
-	//public void SetNewAGI(int playerNdx) {
-	//	if (playerNdx == 0) {
-	//		stats[playerNdx].AGI = (int)(1.5f * stats[playerNdx].LVL); // Blob: Lvl 1 = 1
-	//	} else {
-	//		stats[playerNdx].AGI = (int)(2 * stats[playerNdx].LVL); // Chani: Lvl 1 = 2
-	//	}
-	//	stats[playerNdx].baseAGI = stats[playerNdx].AGI;
-	//}
 
 	// SpellNdx (Mathf.Min used to prevent spellNdx from exceeding
 	// the amount of spells each party member is capable of learning)
