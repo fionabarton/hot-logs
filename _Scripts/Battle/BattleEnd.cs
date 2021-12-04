@@ -275,9 +275,12 @@ public class BattleEnd : MonoBehaviour {
 
 		// If any amount of members have levelled up...
 		if(membersToLevelUp.Count > 0) {
+			// Audio: Buff 1
+			AudioManager.S.PlaySFX(eSoundName.buff1);
+
 			// Display text and document that the member has levelled up 
 			int ndx = membersToLevelUp[0];
-			//BattleDialogue.S.DisplayText(Party.S.stats[ndx].name + " has reached level " + Party.S.stats[ndx].LVL + "!\nHP = " + Party.S.stats[ndx].HP + ", MP = " + Party.S.stats[ndx].MP + "," + "\nSTR = " + Party.S.stats[ndx].STR + ", DEF = " + Party.S.stats[ndx].DEF + ", WIS = " + Party.S.stats[ndx].WIS + ", AGI = " + Party.S.stats[ndx].AGI);
+
 			BattleDialogue.S.DisplayText(
 			Party.S.stats[ndx].name + " has reached level " + Party.S.stats[ndx].LVL + "!" +
 				"\nHP +" + Party.S.GetHPUpgrade(ndx) +
@@ -300,8 +303,10 @@ public class BattleEnd : MonoBehaviour {
 		} 
 	}
 	public void MultiLvlUp(int ndx) {
+		// Audio: Buff 1
+		AudioManager.S.PlaySFX(eSoundName.buff1);
+
 		// Display Text
-		//BattleDialogue.S.DisplayText(Party.S.stats[ndx].name + " has reached level " + Party.S.stats[ndx].LVL + "!\nHP = " + Party.S.stats[ndx].HP + ", MP = " + Party.S.stats[ndx].MP + "," + "\nSTR = " + Party.S.stats[ndx].STR + ", DEF = " + Party.S.stats[ndx].DEF + ", WIS = " + Party.S.stats[ndx].WIS + ", AGI = " + Party.S.stats[ndx].AGI);
 		BattleDialogue.S.DisplayText(
 			Party.S.stats[ndx].name + " has reached level " + Party.S.stats[ndx].LVL + "!" +
 			"\nHP +" + Party.S.GetHPUpgrade(ndx) + 
