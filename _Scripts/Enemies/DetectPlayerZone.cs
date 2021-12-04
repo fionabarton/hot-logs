@@ -18,6 +18,10 @@ public class DetectPlayerZone : MonoBehaviour {
 	void OnTriggerEnter2D(Collider2D coll){
 		if (coll.gameObject.tag == "Player") {
 			enemyCS.exclamationBubble.SetActive(true);
+
+			// Audio: Flicker
+			AudioManager.S.PlaySFX(eSoundName.flicker);
+
 			Invoke("ActivateDetectPlayerMode", 0.5f);
 		}
 	}
