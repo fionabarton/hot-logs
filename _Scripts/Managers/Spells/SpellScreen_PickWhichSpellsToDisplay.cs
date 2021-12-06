@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using System;
 
 /// <summary>
@@ -8,6 +9,9 @@ using System;
 /// - Select which party member's spells to use
 /// </summary>
 public class SpellScreen_PickWhichSpellsToDisplay : MonoBehaviour {
+	[Header("Set in Inspector")]
+	public Text titleText;
+
 	[Header("Set Dynamically")]
 	// Singleton
 	private static SpellScreen_PickWhichSpellsToDisplay _S;
@@ -66,11 +70,12 @@ public class SpellScreen_PickWhichSpellsToDisplay : MonoBehaviour {
 		if (spellScreen.canUpdate) {
 			// Display each Member's Spells
 			for (int i = 0; i < PlayerButtons.S.buttonsCS.Count; i++) {
-					if (UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject == PlayerButtons.S.buttonsCS[i].gameObject) {
-						spellScreen.DeactivateUnusedSpellsSlots(i);
-						spellScreen.DisplaySpellsDescriptions(i);
-						spellScreen.AssignSpellsNames(i);
-						Utilities.S.PositionCursor(PlayerButtons.S.buttonsCS[i].gameObject, 0, 60, 3);
+				if (UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject == PlayerButtons.S.buttonsCS[i].gameObject) {
+					spellScreen.DeactivateUnusedSpellsSlots(i);
+					spellScreen.DisplaySpellsDescriptions(i);
+					spellScreen.AssignSpellsNames(i);
+					Utilities.S.PositionCursor(PlayerButtons.S.buttonsCS[i].gameObject, 0, 60, 3);
+					titleText.text = "Spells: " + "<color=white>" + Party.S.stats[i].name + "</color>";
 
 					// Audio: Selection (when a new gameObject is selected)
 					Utilities.S.PlayButtonSelectedSFX(ref spellScreen.previousSelectedPlayerGO);
