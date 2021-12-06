@@ -98,7 +98,7 @@ public class ColorScreen : MonoBehaviour{
                 BattleSpells.S.HealSelectedPartyMember(targetNdx, spell);
                 break;
             case 1: // Enemy: Heal Spell
-                BattleEnemyActions.S.HealSpell();
+                BattleEnemyActions.S.HealSpell(targetNdx);
                 break;
             case 2: // Party: Heal All Spell
                 BattleSpells.S.HealAll(targetNdx, spell);
