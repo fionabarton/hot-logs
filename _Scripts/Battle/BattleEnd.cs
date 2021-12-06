@@ -128,6 +128,9 @@ public class BattleEnd : MonoBehaviour {
                 }
             }
 
+			// Deactivate top display message
+			BattleDialogue.S.displayMessageTextTop.gameObject.transform.parent.gameObject.SetActive(false);
+
 			// DropItem or AddExpAndGold
 			if (_.droppedItems.Count >= 1) {
 				// Switch Mode
