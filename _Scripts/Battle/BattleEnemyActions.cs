@@ -168,21 +168,40 @@ public class BattleEnemyActions : MonoBehaviour {
 	public void AttemptHealSpell (){
 		// Enough MP
 		if (_.enemyStats [_.EnemyNdx()].MP >= 3) {
+
+			// Get index of enemy with the lowest HP
+			int enemyNdx = BattleEnemyAI.S.GetEnemyWithLowestHP();
+
 			// Not at Full HP
-			if (_.enemyStats [_.EnemyNdx()].HP < _.enemyStats [_.EnemyNdx()].maxHP) {
+			if (enemyNdx != -1) {
 				ColorScreen.S.PlayClip("Swell", 1);
+				ColorScreen.S.targetNdx = enemyNdx;
 			} else {
 				// Already at Full HP
-				BattleDialogue.S.DisplayText (_.enemyStats [_.EnemyNdx()].name + " thought about casting a Heal Spell...\n...But then remembered they're at full health...\n...and gave up!");
+				BattleDialogue.S.DisplayText(_.enemyStats[_.EnemyNdx()].name + " thought about casting a Heal Spell...\n...But then remembered everyone's at full health...\n...and gave up!");
 
 				// Audio: Deny
 				AudioManager.S.PlaySFX(eSoundName.deny);
 
-				_.NextTurn (); 
+				_.NextTurn();
 			}
+
+
+			//// Not at Full HP
+			//if (_.enemyStats[_.EnemyNdx()].HP < _.enemyStats[_.EnemyNdx()].maxHP) {
+			//	ColorScreen.S.PlayClip("Swell", 1);
+			//} else {
+			//	// Already at Full HP
+			//	BattleDialogue.S.DisplayText (_.enemyStats[_.EnemyNdx()].name + " thought about casting a Heal Spell...\n...But then remembered they're at full health...\n...and gave up!");
+
+			//	// Audio: Deny
+			//	AudioManager.S.PlaySFX(eSoundName.deny);
+
+			//	_.NextTurn (); 
+			//}
 		} else {
 			// Not enough MP
-			BattleDialogue.S.DisplayText (_.enemyStats [_.EnemyNdx()].name + " attempts to cast a Heal Spell...\n...But doesn't have enough MP to do so!");
+			BattleDialogue.S.DisplayText (_.enemyStats[_.EnemyNdx()].name + " attempts to cast a Heal Spell...\n...But doesn't have enough MP to do so!");
 
 			// Audio: Deny
 			AudioManager.S.PlaySFX(eSoundName.deny);
@@ -196,35 +215,43 @@ public class BattleEnemyActions : MonoBehaviour {
 	}
 
 	// Called after BattleBlackScreen "Swell" animation
-	public void HealSpell() {
+	public void HealSpell(int ndx) {
 		// Subtract Spell cost from Enemy's MP
 		_.enemyStats[_.EnemyNdx()].MP -= 3;
 
 		// Get amount and max amount to heal
 		int amountToHeal = UnityEngine.Random.Range(30, 45);
-		int maxAmountToHeal = _.enemyStats[_.EnemyNdx()].maxHP - _.enemyStats[_.EnemyNdx()].HP;
+		int maxAmountToHeal = _.enemyStats[ndx].maxHP - _.enemyStats[ndx].HP;
 		// Add Enemy's WIS to Heal Amount
-		amountToHeal += _.enemyStats[_.EnemyNdx()].WIS;
+		amountToHeal += _.enemyStats[ndx].WIS;
 
 		// Add 30-45 HP to TARGET Player's HP
-		RPG.S.AddEnemyHP(_.EnemyNdx(), amountToHeal);
+		RPG.S.AddEnemyHP(ndx, amountToHeal);
 
 		// Display Text
 		if (amountToHeal >= maxAmountToHeal) {
-			BattleDialogue.S.DisplayText(_.enemyStats[_.EnemyNdx()].name + " casts a Heal Spell!\nHealed itself back to Max HP!");
+			if(ndx == _.EnemyNdx()) {
+				BattleDialogue.S.DisplayText(_.enemyStats[ndx].name + " casts a Heal Spell!\nHealed itself back to Max HP!");
+			} else {
+				BattleDialogue.S.DisplayText(_.enemyStats[_.EnemyNdx()].name + " casts a Heal Spell!\nHealed "+ _.enemyStats[ndx].name + " back to Max HP!");
+			}
 
 			// Prevents Floating Score being higher than the acutal amount healed
 			amountToHeal = maxAmountToHeal;
 		} else {
-			BattleDialogue.S.DisplayText(_.enemyStats[_.EnemyNdx()].name + " casts a Heal Spell!\nHealed itself for " + amountToHeal + " HP!");
+			if (ndx == _.EnemyNdx()) {
+				BattleDialogue.S.DisplayText(_.enemyStats[ndx].name + " casts a Heal Spell!\nHealed itself for " + amountToHeal + " HP!");
+			} else {
+				BattleDialogue.S.DisplayText(_.enemyStats[_.EnemyNdx()].name + " casts a Heal Spell!\nHealed " + _.enemyStats[ndx].name + " for " + amountToHeal + " HP!");
+			}
 		}
 
 		// Get and position Poof game object
 		GameObject poof = ObjectPool.S.GetPooledObject("Poof");
-		ObjectPool.S.PosAndEnableObj(poof, _.enemySprite[_.EnemyNdx()].gameObject);
+		ObjectPool.S.PosAndEnableObj(poof, _.enemySprite[ndx].gameObject);
 
 		// Display Floating Score
-		RPG.S.InstantiateFloatingScore(_.enemySprite[_.EnemyNdx()].gameObject, amountToHeal, Color.green);
+		RPG.S.InstantiateFloatingScore(_.enemySprite[ndx].gameObject, amountToHeal, Color.green);
 
 		// Audio: Buff
 		AudioManager.S.PlaySFX(eSoundName.buff1);
