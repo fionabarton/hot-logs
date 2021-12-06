@@ -9,6 +9,9 @@ using System;
 /// - Select an item to buy or sell
 /// </summary>
 public class ShopScreen_PickItemMode : MonoBehaviour {
+	[Header("Set in Inspector")]
+	public Text titleText;
+
 	[Header("Set Dynamically")]
 	// Singleton
 	private static ShopScreen_PickItemMode _S;
@@ -26,6 +29,9 @@ public class ShopScreen_PickItemMode : MonoBehaviour {
 			// Reimport inventory if an item was sold
 			if (!shopScreen.buyOrSellMode) {
 				shopScreen.ImportInventory(Inventory.S.GetItemList());
+				titleText.text = "Shop: " + "<color=white>Sell</color>";
+			} else {
+				titleText.text = "Shop: " + "<color=white>Buy</color>";
 			}
 
 			DeactivateUnusedItemSlots(shopScreen);
