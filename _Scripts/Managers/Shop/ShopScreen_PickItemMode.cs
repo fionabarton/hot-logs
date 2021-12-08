@@ -48,6 +48,9 @@ public class ShopScreen_PickItemMode : MonoBehaviour {
 			PlayerButtons.S.gameObject.SetActive(true);
 			Utilities.S.ButtonsInteractable(PlayerButtons.S.buttonsCS, false);
 
+			// Activate Player Stats
+			ShopScreen_DisplayPotentialStats.S.ActivatePotentialStats();
+
 			// If Inventory Empty... 
 			if (Inventory.S.GetItemList().Count == 0 && !shopScreen.buyOrSellMode) {
 				PauseMessage.S.DisplayText("You have nothing to sell, fool!");
@@ -135,6 +138,9 @@ public class ShopScreen_PickItemMode : MonoBehaviour {
 		for (int i = 0; i < shopScreen.inventoryButtonsNameText.Count; i++) {
 			if (UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject == shopScreen.inventoryButtons[i].gameObject) {
 				PauseMessage.S.SetText(shopScreen.inventory[shopScreen.firstSlotNdx + i].description);
+
+				// Display potential player stats
+				ShopScreen_DisplayPotentialStats.S.DisplayPotentialStats(shopScreen.inventory[shopScreen.firstSlotNdx + i]);
 
 				// Cursor Position set to Selected Button
 				Utilities.S.PositionCursor(shopScreen.inventoryButtons[i].gameObject, -160, 0, 0);
