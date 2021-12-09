@@ -193,6 +193,9 @@ public class ItemScreen : MonoBehaviour {
 						AudioManager.S.PlaySFX(eSoundName.selection);
 
 						verticalAxisIsInUse = true;
+
+						// Allows scrolling when the vertical axis is held down in 0.15 seconds
+						Invoke("VerticalAxisScrollDelay", 0.15f);
 					}
 				}
 			}
@@ -205,6 +208,11 @@ public class ItemScreen : MonoBehaviour {
 				firstOrLastSlotSelected = false;
 			}
 		}
+	}
+
+	// Allows scrolling when the vertical axis is held down 
+	void VerticalAxisScrollDelay() {
+		verticalAxisIsInUse = false;
 	}
 
 	void GoBackToPickItemMode() {
