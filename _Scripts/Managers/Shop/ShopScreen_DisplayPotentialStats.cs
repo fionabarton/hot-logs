@@ -42,7 +42,15 @@ public class ShopScreen_DisplayPotentialStats : MonoBehaviour {
 				continue;
 			}
 
+			// Activate party member's stats gameObject
 			nameText[i].gameObject.transform.parent.gameObject.SetActive(true);
+
+			// This item is already equipped
+			if (tItem == EquipScreen.S.playerEquipment[i][(int)tItem.type]) {
+				statsNameText[i].text = "Already equipped!";
+				statsAmountText[i].text = "";
+				continue;
+			}
 
 			// Get Current Stats
 			List<int> potential = new List<int>() { Party.S.stats[i].STR, Party.S.stats[i].DEF, Party.S.stats[i].WIS, Party.S.stats[i].AGI };
@@ -70,46 +78,31 @@ public class ShopScreen_DisplayPotentialStats : MonoBehaviour {
 			string amountString = "";
 			int totaStatDifference = 0;
 
-			// Build strings
-			if (statDifference[0] != 0) {
-				nameString += "STR\n";
+			// Build stat name and amount strings
+			for(int j = 0; j < statDifference.Count; j++) {
+				if (statDifference[j] != 0) {
+                    switch (j) {
+						case 0:
+							nameString += "STR\n";
+							break;
+						case 1:
+							nameString += "DEF\n";
+							break;
+						case 2:
+							nameString += "WIS\n";
+							break;
+						case 3:
+							nameString += "AGI\n";
+							break;
+					}
 
-				if (statDifference[0] > 0) {
-					amountString += "+";
+					if (statDifference[j] > 0) {
+						amountString += "+";
+					}
+
+					amountString += statDifference[j] + "\n";
+					totaStatDifference += statDifference[j];
 				}
-
-				amountString += statDifference[0] + "\n";
-				totaStatDifference += statDifference[0];
-			}
-			if (statDifference[1] != 0) {
-				nameString += "DEF\n";
-
-				if (statDifference[1] > 0) {
-					amountString += "+";
-				}
-
-				amountString += statDifference[1] + "\n";
-				totaStatDifference += statDifference[1];
-			}
-			if (statDifference[2] != 0) {
-				nameString += "WIS\n";
-
-				if (statDifference[2] > 0) {
-					amountString += "+";
-				}
-
-				amountString += statDifference[2] + "\n";
-				totaStatDifference += statDifference[2];
-			}
-			if (statDifference[3] != 0) {
-				nameString += "AGI\n";
-
-				if (statDifference[3] > 0) {
-					amountString += "+";
-				}
-
-				amountString += statDifference[3] + "\n";
-				totaStatDifference += statDifference[3];
 			}
 
 			// Update GUI
@@ -126,4 +119,4 @@ public class ShopScreen_DisplayPotentialStats : MonoBehaviour {
 			}
 		}
 	}
-}
+} // 137
