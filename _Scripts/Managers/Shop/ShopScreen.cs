@@ -96,7 +96,9 @@ public class ShopScreen : MonoBehaviour {
 		switch (shopScreenMode) {
 		case eShopScreenMode.pickItem:
 			// On vertical input, scroll the item list when the first or last slot is selected
-			ScrollItemList();
+			if (inventory.Count > inventoryButtons.Count) {
+				ScrollItemList();
+			}
 
 			ShopScreen_PickItemMode.S.Loop(S);
 			break;
@@ -147,8 +149,8 @@ public class ShopScreen : MonoBehaviour {
 
 						verticalAxisIsInUse = true;
 
-						// Allows scrolling when the vertical axis is held down in 0.15 seconds
-						Invoke("VerticalAxisScrollDelay", 0.15f);
+						// Allows scrolling when the vertical axis is held down in 0.2 seconds
+						Invoke("VerticalAxisScrollDelay", 0.2f);
 					}
 				}
 			}
