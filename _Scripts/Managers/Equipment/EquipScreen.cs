@@ -92,6 +92,9 @@ public class EquipScreen : MonoBehaviour {
 			
 			PlayerButtons.S.buttonsCS[0].Select();
 			PlayerButtons.S.buttonsCS[0].OnSelect(null);
+
+			// Set anim controller to party member 1
+			playerAnim.runtimeAnimatorController = PlayerButtons.S.anim[0].runtimeAnimatorController;
 		}
 		catch (NullReferenceException) { }
 	}
