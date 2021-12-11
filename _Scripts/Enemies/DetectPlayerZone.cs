@@ -27,6 +27,7 @@ public class DetectPlayerZone : MonoBehaviour {
 	}
 
 	void ActivateDetectPlayerMode() {
+		enemyMovementCS.rigid.velocity = Vector2.zero;
 		enemyMovementCS.anim.speed = 1;
 		enemyMovementCS.currentMode = enemyMovementCS.onDetectPlayerMode;
 	}
