@@ -185,20 +185,6 @@ public class BattleEnemyActions : MonoBehaviour {
 
 				_.NextTurn();
 			}
-
-
-			//// Not at Full HP
-			//if (_.enemyStats[_.EnemyNdx()].HP < _.enemyStats[_.EnemyNdx()].maxHP) {
-			//	ColorScreen.S.PlayClip("Swell", 1);
-			//} else {
-			//	// Already at Full HP
-			//	BattleDialogue.S.DisplayText (_.enemyStats[_.EnemyNdx()].name + " thought about casting a Heal Spell...\n...But then remembered they're at full health...\n...and gave up!");
-
-			//	// Audio: Deny
-			//	AudioManager.S.PlaySFX(eSoundName.deny);
-
-			//	_.NextTurn (); 
-			//}
 		} else {
 			// Not enough MP
 			BattleDialogue.S.DisplayText (_.enemyStats[_.EnemyNdx()].name + " attempts to cast a Heal Spell...\n...But doesn't have enough MP to do so!");

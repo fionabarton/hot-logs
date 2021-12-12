@@ -91,10 +91,10 @@ public class BattlePlayerActions : MonoBehaviour {
 
 	public void AttackEnemy(int ndx) {
 		// Calculate Attack Damage
-		_.CalculateAttackDamage(Party.stats[_.PlayerNdx()].LVL,
-								Party.stats[_.PlayerNdx()].STR, Party.stats[_.PlayerNdx()].AGI,
+		_.CalculateAttackDamage(Party.S.stats[_.PlayerNdx()].LVL,
+								Party.S.stats[_.PlayerNdx()].STR, Party.S.stats[_.PlayerNdx()].AGI,
 								_.enemyStats[ndx].DEF, _.enemyStats[ndx].AGI,
-								Party.stats[_.PlayerNdx()].name, _.enemyStats[ndx].name,
+								Party.S.stats[_.PlayerNdx()].name, _.enemyStats[ndx].name,
 								_.enemyStats[ndx].HP);
 
 		// Subtract Enemy Health
@@ -160,7 +160,7 @@ public class BattlePlayerActions : MonoBehaviour {
 				if (_.partyQty >= 1) {
 					BattleDialogue.S.DisplayText("The party has fled the battle!");
 				} else {
-					BattleDialogue.S.DisplayText(Party.stats[_.PlayerNdx()].name + " has fled the battle!");
+					BattleDialogue.S.DisplayText(Party.S.stats[_.PlayerNdx()].name + " has fled the battle!");
 				}
 
 				// Animation: Party RUN
@@ -174,7 +174,7 @@ public class BattlePlayerActions : MonoBehaviour {
 				Utilities.S.SetActiveList(_.playerShields, false);
 
 				// You ran away, so the enemy is chasing after you!
-				EnemyManager.S.CacheEnemyMovement(eMovement.pursueRun);
+				EnemyManager.S.GetEnemyMovement(eMovement.pursueRun);
 
 				// Return to Overworld
 				BattleEnd.S.ReturnToWorldDelay();
@@ -205,13 +205,13 @@ public class BattlePlayerActions : MonoBehaviour {
 		ButtonsDisableAll();
 
 		// Defend until next turn
-		_.AddDefender(Party.stats[_.PlayerNdx()].name);
+		_.AddDefender(Party.S.stats[_.PlayerNdx()].name);
 
 		// TBR
 		// Animation: Player DEFEND
 		_.playerShields[_.PlayerNdx()].SetActive(true);
 
-		BattleDialogue.S.DisplayText(Party.stats[_.PlayerNdx()].name + " defends themself until their next turn!");
+		BattleDialogue.S.DisplayText(Party.S.stats[_.PlayerNdx()].name + " defends themself until their next turn!");
 
 		_.NextTurn();
 
@@ -225,7 +225,7 @@ public class BattlePlayerActions : MonoBehaviour {
 		// Cache Selected Gameobject (Spell Button) 
 		Battle.S.previousSelectedGameObject = buttonsGO[1];
 
-		if (Party.stats[_.PlayerNdx()].spellNdx > 0) {
+		if (Party.S.stats[_.PlayerNdx()].spellNdx > 0) {
 			Utilities.S.SetActiveList(BattleUI.S.targetCursors, false);
 
 			// Switch Mode
@@ -241,7 +241,7 @@ public class BattlePlayerActions : MonoBehaviour {
 
 		} else {
 			// Knows no Spells, go back to Player Turn
-			BattleDialogue.S.DisplayText(Party.stats[_.PlayerNdx()].name + " doesn't know any spells!");
+			BattleDialogue.S.DisplayText(Party.S.stats[_.PlayerNdx()].name + " doesn't know any spells!");
 
 			// Switch Mode
 			_.battleMode = eBattleMode.playerTurn;
@@ -270,7 +270,7 @@ public class BattlePlayerActions : MonoBehaviour {
 			ItemScreen.S.Activate();
 		} else {
 			// Has no Items, go back to Player Turn 
-			BattleDialogue.S.DisplayText(Party.stats[_.PlayerNdx()].name + " has no items!");
+			BattleDialogue.S.DisplayText(Party.S.stats[_.PlayerNdx()].name + " has no items!");
 
 			// Switch Mode
 			_.battleMode = eBattleMode.playerTurn;
@@ -308,14 +308,6 @@ public class BattlePlayerActions : MonoBehaviour {
 			}
 		}
 	}
-	
-	//public void SetSelectedPlayerButton() {
-	//	for (int i = _.playerDead.Count - 1; i >= 0; i--) {
-	//		if (!_.playerDead[i]) {
-	//			Utilities.S.SetSelectedGO(playerButtonGO[i]);
-	//		}
-	//	}
-	//}
 
 	// Activate/Deactivate Player/Enemy Buttons, Shadows, Progress Bars, Sprites
 	public void EnemyButtonSetActive(int enemyNdx, bool setActive) {

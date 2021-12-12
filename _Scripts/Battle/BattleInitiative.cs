@@ -65,12 +65,12 @@ public class BattleInitiative : MonoBehaviour {
 		}
 
 		// Update progress bars
-		ProgressBars.S.playerHealthBarsCS[0].UpdateBar(Party.stats[0].HP, Party.stats[0].maxHP);
-		ProgressBars.S.playerHealthBarsCS[1].UpdateBar(Party.stats[1].HP, Party.stats[1].maxHP);
-		ProgressBars.S.playerHealthBarsCS[2].UpdateBar(Party.stats[2].HP, Party.stats[2].maxHP);
-		ProgressBars.S.playerMagicBarsCS[0].UpdateBar(Party.stats[0].MP, Party.stats[0].maxMP, false);
-		ProgressBars.S.playerMagicBarsCS[1].UpdateBar(Party.stats[1].MP, Party.stats[1].maxMP, false);
-		ProgressBars.S.playerMagicBarsCS[2].UpdateBar(Party.stats[2].MP, Party.stats[2].maxMP, false);
+		ProgressBars.S.playerHealthBarsCS[0].UpdateBar(Party.S.stats[0].HP, Party.S.stats[0].maxHP);
+		ProgressBars.S.playerHealthBarsCS[1].UpdateBar(Party.S.stats[1].HP, Party.S.stats[1].maxHP);
+		ProgressBars.S.playerHealthBarsCS[2].UpdateBar(Party.S.stats[2].HP, Party.S.stats[2].maxHP);
+		ProgressBars.S.playerMagicBarsCS[0].UpdateBar(Party.S.stats[0].MP, Party.S.stats[0].maxMP, false);
+		ProgressBars.S.playerMagicBarsCS[1].UpdateBar(Party.S.stats[1].MP, Party.S.stats[1].maxMP, false);
+		ProgressBars.S.playerMagicBarsCS[2].UpdateBar(Party.S.stats[2].MP, Party.S.stats[2].maxMP, false);
 
 		//////////////////////////////////////////// ENEMIES ////////////////////////////////////////////
 
@@ -91,7 +91,7 @@ public class BattleInitiative : MonoBehaviour {
 		}
 
 		// Set Enemy Amount (for testing)
-		//_.enemyAmount = 1;
+		//_.enemyAmount = 3;
 
 		// Deactivate all enemies
 		for (int i = 0; i < _.enemySprite.Count; i++) {
@@ -152,7 +152,7 @@ public class BattleInitiative : MonoBehaviour {
 		} else if (_.randomFactor < 50) {
 			// Party goes first!
 			if (_.randomFactor < 25) {
-				BattleDialogue.S.DisplayText(Party.stats[0].name + " surprises the Enemy!");
+				BattleDialogue.S.DisplayText(Party.S.stats[0].name + " surprises the Enemy!");
 
 				// Calculate Initiative
 				CalculateInitiative ("party");
@@ -174,13 +174,13 @@ public class BattleInitiative : MonoBehaviour {
 		// For all characters to engage in battle, calculate their turn order
 
 		// Player 1
-		RollInitiative(Party.stats[0].name, Party.stats[0].AGI, Party.stats[0].LVL, true, whoGoesFirst);
+		RollInitiative(Party.S.stats[0].name, Party.S.stats[0].AGI, Party.S.stats[0].LVL, true, whoGoesFirst);
 		// Player 2
 		if (_.partyQty >= 1) {
-			RollInitiative(Party.stats[1].name, Party.stats[1].AGI, Party.stats[1].LVL, true, whoGoesFirst);
+			RollInitiative(Party.S.stats[1].name, Party.S.stats[1].AGI, Party.S.stats[1].LVL, true, whoGoesFirst);
 		// Player 3
 			if (_.partyQty >= 2) {
-				RollInitiative(Party.stats[2].name, Party.stats[2].AGI, Party.stats[2].LVL, true, whoGoesFirst);
+				RollInitiative(Party.S.stats[2].name, Party.S.stats[2].AGI, Party.S.stats[2].LVL, true, whoGoesFirst);
 			}
 		}
 
