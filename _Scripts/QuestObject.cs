@@ -13,17 +13,15 @@ using UnityEngine;
 /// </summary>
 ///
 public class QuestObject : MonoBehaviour {
-	[Header ("Set in Inspector")]
-	public int          questNumber;
+	[Header("Set in Inspector")]
+	public int questNumber;
 
 	public eQuestAction questAction;
 
 	// Deactivate GameObject if associated Quest has been Completed
 	void OnEnable() {
 		if (QuestManager.S.completed[questNumber]) {
-
-			switch (questAction)
-			{
+			switch (questAction) {
 				case eQuestAction.deactivateGo:
 					gameObject.SetActive(false);
 					break;
@@ -31,11 +29,8 @@ public class QuestObject : MonoBehaviour {
 					gameObject.SetActive(true);
 					break;
 			}
-		}
-        else
-        {
-			switch (questAction)
-			{
+		} else {
+			switch (questAction) {
 				case eQuestAction.deactivateGo:
 					gameObject.SetActive(true);
 					break;

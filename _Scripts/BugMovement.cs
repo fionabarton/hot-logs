@@ -81,7 +81,7 @@ public class BugMovement : MonoBehaviour {
 		// if Visible
 		if (canMove) {
 			// if not Paused, no Dialogue Text Box
-			if (!RPG.S.paused && !DialogueManager.S.TextBoxSpriteGO.activeInHierarchy) {
+			if (!RPG.S.paused && !DialogueManager.S.textBoxSpriteGO.activeInHierarchy) {
 				Move();
 			} else {
 				rigid.velocity = Vector2.zero;

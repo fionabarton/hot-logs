@@ -32,7 +32,7 @@ public class Parallax : MonoBehaviour {
 	}
 		
 	public IEnumerator FixedUpdateCoroutine () {
-		if (!RPG.S.paused) { 
+		//if (!RPG.S.paused) { 
 
 			// Get this.position
 			pos = transform.position;
@@ -110,6 +110,6 @@ public class Parallax : MonoBehaviour {
 
 			yield return new WaitForFixedUpdate ();
 			StartCoroutine ("FixedUpdateCoroutine");
-		}
+		//}
 	}
 }

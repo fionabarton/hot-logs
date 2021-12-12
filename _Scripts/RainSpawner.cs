@@ -19,13 +19,13 @@ public class RainSpawner : MonoBehaviour {
 
 	public bool 			isRaining;
 	private int 			dropNdx;
-	private int				amountOfDropsToSpawnPerFrame = 5;
+	private int				amountOfDropsToSpawnPerFrame = 2;
 
 	void Awake() {
 		S = this;
 	}
 
-	public void StartRaining(int amountOfDropsToSpawnPerFrame = 5) {
+	public void StartRaining(int amountOfDropsToSpawnPerFrame = 2) {
 		isRaining = true;
 		darkFilter.SetActive(true);
 		this.amountOfDropsToSpawnPerFrame = amountOfDropsToSpawnPerFrame;

@@ -2,15 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum eMovement { random, patrol, pursueWalk, pursueRun, flee, idle, reverse, auto };
+public enum eMovement { randomWalk, patrol, pursueWalk, pursueRun, flee, idle, reverse, auto };
 
 /// <summary>
 /// Movement AI for NPCs 
 /// </summary>
 public class NPCMovement : MonoBehaviour {
-
 	[Header("Set in Inspector")]
-	public eMovement 		mode = eMovement.random;
+	public eMovement 		mode = eMovement.randomWalk;
 	public float			speed = 2;
 
 	public Vector2			walkZone = new Vector2(2.5f, 2.5f);
@@ -47,14 +46,14 @@ public class NPCMovement : MonoBehaviour {
 
 	public IEnumerator FixedUpdateCoroutine () {
 		// If not paused, and there isn't any dialogue being displayed...
-		if (!RPG.S.paused && !DialogueManager.S.TextBoxSpriteGO.activeInHierarchy) {
+		if (!RPG.S.paused && !DialogueManager.S.textBoxSpriteGO.activeInHierarchy) {
 			// Flip
 			if ((rigid.velocity.x < 0 && !facingRight) || (rigid.velocity.x > 0 && facingRight)) {
 				Utilities.S.Flip(gameObject, ref facingRight);
 			} 
 
 			switch (mode) {
-			case eMovement.random:
+			case eMovement.randomWalk:
 				// Decrement timer
 				timer -= Time.deltaTime;
 

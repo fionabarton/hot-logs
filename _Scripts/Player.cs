@@ -282,7 +282,7 @@ public class Player : MonoBehaviour {
 		mode = tMode;
 
 		// Overworld Player Stats UI
-		if (!RPG.S.paused && !DialogueManager.S.TextBoxSpriteGO.activeInHierarchy) {
+		if (!RPG.S.paused && !DialogueManager.S.textBoxSpriteGO.activeInHierarchy) {
 			if (RPG.S.currentScene != "Battle"){
 				if (mode == eRPGMode.idle) {
 					// Set amount of time for Player Stats to stay onscreen
@@ -334,7 +334,7 @@ public class Player : MonoBehaviour {
 					// Overworld Player Stats UI
 					switch (mode) {
 						case eRPGMode.idle:
-							if (!RPG.S.paused && !DialogueManager.S.TextBoxSpriteGO.activeInHierarchy) {
+							if (!RPG.S.paused && !DialogueManager.S.textBoxSpriteGO.activeInHierarchy) {
 								if (RPG.S.currentScene != "Battle") {
 									if (!PlayerButtons.S.gameObject.activeInHierarchy) {
 										if (Time.time >= playerUITimer) {
