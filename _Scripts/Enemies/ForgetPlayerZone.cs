@@ -15,7 +15,7 @@ public class ForgetPlayerZone : MonoBehaviour {
 
 	void OnTriggerExit2D(Collider2D coll){
 		if (coll.gameObject.tag == "Player") {
-			enemyMovementCS.mode = eMovement.random;
+			enemyMovementCS.currentMode = enemyMovementCS.onForgetPlayerMode;
 		}
 	}
 }
