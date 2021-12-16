@@ -57,7 +57,7 @@ public class EquipScreen_PickTypeToEquipMode : MonoBehaviour {
 					SortItems.S.SortByItemType(Inventory.S.items, equipScreen.playerEquipment[equipScreen.playerNdx][i].type);
 
 					// Set selected button text color	
-					equipScreen.equippedButtons[i].gameObject.GetComponentInChildren<Text>().color = new Color32(205, 208, 0, 255);
+					equipScreen.equippedButtonsTxt[i].color = new Color32(205, 208, 0, 255);
 
 					// Deactivate Unused Inventory Buttons Slots
 					for (int j = 0; j < equipScreen.inventoryButtons.Count; j++) {
@@ -78,7 +78,7 @@ public class EquipScreen_PickTypeToEquipMode : MonoBehaviour {
 					Utilities.S.PlayButtonSelectedSFX(ref previousSelectedGameObject);
 				} else {
 					// Set non-selected button text color
-					equipScreen.equippedButtons[i].gameObject.GetComponentInChildren<Text>().color = new Color32(39, 201, 255, 255);
+					equipScreen.equippedButtonsTxt[i].color = new Color32(39, 201, 255, 255);
 				}
 			}
 

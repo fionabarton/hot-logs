@@ -33,12 +33,12 @@ public class EquipStatsEffect : MonoBehaviour {
 		item.isEquipped = true;
 
 		switch (item.statEffect) {
-			case eItemStatEffect.AGI: Party.stats[playerNdx].AGI += item.statEffectMaxValue; break;
-			case eItemStatEffect.DEF: Party.stats[playerNdx].DEF += item.statEffectMaxValue; break;
-			case eItemStatEffect.HP: Party.stats[playerNdx].HP += item.statEffectMaxValue; break;
-			case eItemStatEffect.MP: Party.stats[playerNdx].MP += item.statEffectMaxValue; break;
-			case eItemStatEffect.STR: Party.stats[playerNdx].STR += item.statEffectMaxValue; break;
-			case eItemStatEffect.WIS: Party.stats[playerNdx].WIS += item.statEffectMaxValue; break;
+			case eItemStatEffect.AGI: Party.S.stats[playerNdx].AGI += item.statEffectMaxValue; break;
+			case eItemStatEffect.DEF: Party.S.stats[playerNdx].DEF += item.statEffectMaxValue; break;
+			case eItemStatEffect.HP: Party.S.stats[playerNdx].HP += item.statEffectMaxValue; break;
+			case eItemStatEffect.MP: Party.S.stats[playerNdx].MP += item.statEffectMaxValue; break;
+			case eItemStatEffect.STR: Party.S.stats[playerNdx].STR += item.statEffectMaxValue; break;
+			case eItemStatEffect.WIS: Party.S.stats[playerNdx].WIS += item.statEffectMaxValue; break;
 		}
 	}
 
@@ -48,12 +48,12 @@ public class EquipStatsEffect : MonoBehaviour {
 
 		// Subtract Item Effect
 		switch (item.statEffect) {
-			case eItemStatEffect.AGI: Party.stats[playerNdx].AGI -= item.statEffectMaxValue; break;
-			case eItemStatEffect.DEF: Party.stats[playerNdx].DEF -= item.statEffectMaxValue; break;
-			case eItemStatEffect.HP: Party.stats[playerNdx].HP -= item.statEffectMaxValue; break;
-			case eItemStatEffect.MP: Party.stats[playerNdx].MP -= item.statEffectMaxValue; break;
-			case eItemStatEffect.STR: Party.stats[playerNdx].STR -= item.statEffectMaxValue; break;
-			case eItemStatEffect.WIS: Party.stats[playerNdx].WIS -= item.statEffectMaxValue; break;
+			case eItemStatEffect.AGI: Party.S.stats[playerNdx].AGI -= item.statEffectMaxValue; break;
+			case eItemStatEffect.DEF: Party.S.stats[playerNdx].DEF -= item.statEffectMaxValue; break;
+			case eItemStatEffect.HP: Party.S.stats[playerNdx].HP -= item.statEffectMaxValue; break;
+			case eItemStatEffect.MP: Party.S.stats[playerNdx].MP -= item.statEffectMaxValue; break;
+			case eItemStatEffect.STR: Party.S.stats[playerNdx].STR -= item.statEffectMaxValue; break;
+			case eItemStatEffect.WIS: Party.S.stats[playerNdx].WIS -= item.statEffectMaxValue; break;
 		}
 	}
 
@@ -65,7 +65,7 @@ public class EquipStatsEffect : MonoBehaviour {
 		}
 
 		// Get Current Stats
-		List<int> potential = new List<int>() { Party.stats[playerNdx].STR, Party.stats[playerNdx].DEF, Party.stats[playerNdx].WIS, Party.stats[playerNdx].AGI };
+		List<int> potential = new List<int>() { Party.S.stats[playerNdx].STR, Party.S.stats[playerNdx].DEF, Party.S.stats[playerNdx].WIS, Party.S.stats[playerNdx].AGI };
 
 		// Subtract stats of currently equipped item 
 		switch (playerEquipment[playerNdx][(int)tItem.type].statEffect) {
@@ -84,19 +84,19 @@ public class EquipStatsEffect : MonoBehaviour {
 		}
 
 		// Find difference between current & potential Stats
-		List<int> statDifference = new List<int>() { potential[0] - Party.stats[playerNdx].STR, potential[1] - Party.stats[playerNdx].DEF, potential[2] - Party.stats[playerNdx].WIS, potential[3] - Party.stats[playerNdx].AGI };
+		List<int> statDifference = new List<int>() { potential[0] - Party.S.stats[playerNdx].STR, potential[1] - Party.S.stats[playerNdx].DEF, potential[2] - Party.S.stats[playerNdx].WIS, potential[3] - Party.S.stats[playerNdx].AGI };
 
 		// If Current Stats != Potential Stats, activate potential stats & arrows
-		if (potential[0] != Party.stats[playerNdx].STR) {
+		if (potential[0] != Party.S.stats[playerNdx].STR) {
 			ActivatePotentialStatsAndArrow(0, statDifference[0]);
 		}
-		if (potential[1] != Party.stats[playerNdx].DEF) {
+		if (potential[1] != Party.S.stats[playerNdx].DEF) {
 			ActivatePotentialStatsAndArrow(1, statDifference[1]);
 		}
-		if (potential[2] != Party.stats[playerNdx].WIS) {
+		if (potential[2] != Party.S.stats[playerNdx].WIS) {
 			ActivatePotentialStatsAndArrow(2, statDifference[2]);
 		}
-		if (potential[3] != Party.stats[playerNdx].AGI) {
+		if (potential[3] != Party.S.stats[playerNdx].AGI) {
 			ActivatePotentialStatsAndArrow(3, statDifference[3]);
 		}
 

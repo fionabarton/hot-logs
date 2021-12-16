@@ -71,13 +71,13 @@ public class EquipScreen_PickItemToEquipMode : MonoBehaviour {
 		//if (SortItems.S.tItems.Count < equipScreen.inventoryButtons.Count) {
 		if (SortItems.S.tItems.Count > 1) {
 			// Set first button navigation
-			Utilities.S.SetButtonNavigation(
+			Utilities.S.SetVerticalButtonNavigation(
 				equipScreen.inventoryButtons[0],
 				equipScreen.inventoryButtons[1],
 				equipScreen.inventoryButtons[SortItems.S.tItems.Count - 1]);
 
 			// Set last button navigation
-			Utilities.S.SetButtonNavigation(
+			Utilities.S.SetVerticalButtonNavigation(
 				equipScreen.inventoryButtons[SortItems.S.tItems.Count - 1],
 				equipScreen.inventoryButtons[0],
 				equipScreen.inventoryButtons[SortItems.S.tItems.Count - 2]);
@@ -118,7 +118,7 @@ public class EquipScreen_PickItemToEquipMode : MonoBehaviour {
 					Utilities.S.PositionCursor(equipScreen.inventoryButtons[i].gameObject, -160, 0, 0);
 
 					// Set selected button text color	
-					equipScreen.inventoryButtons[i].gameObject.GetComponentInChildren<Text>().color = new Color32(205, 208, 0, 255);
+					equipScreen.inventoryButtonsTxt[i].color = new Color32(205, 208, 0, 255);
 
 					// Calculate and display potential stats
 					EquipStatsEffect.S.DisplayPotentialStats(playerNdx, SortItems.S.tItems[i], equipScreen.playerEquipment);
@@ -127,7 +127,7 @@ public class EquipScreen_PickItemToEquipMode : MonoBehaviour {
 					Utilities.S.PlayButtonSelectedSFX(ref previousSelectedGameObject);
 				} else {
 					// Set non-selected button text color
-					equipScreen.inventoryButtons[i].gameObject.GetComponentInChildren<Text>().color = new Color32(39, 201, 255, 255);
+					equipScreen.inventoryButtonsTxt[i].color = new Color32(39, 201, 255, 255);
 				}
 			}
 		}
