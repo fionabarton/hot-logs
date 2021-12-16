@@ -208,7 +208,7 @@ public class WarpManager : MonoBehaviour {
 
 		if (!warpToNewScene) {
 			// Deactivate Black Screen
-			ColorScreen.S.gameObject.SetActive(false);
+			ColorScreen.S.anim.Play("Clear Screen", 0, 0);
 			// Enable Player
 			Player.S.gameObject.SetActive(true);
 		} else {

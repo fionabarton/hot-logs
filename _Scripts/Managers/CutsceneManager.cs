@@ -167,6 +167,9 @@ public class CutsceneManager : MonoBehaviour
                             DialogueManager.S.DisplayText(message, false);
                             break;
                         case 7: // Enable DialogueTrigger & reset CutsceneManager
+                            // Audio: Win
+                            StartCoroutine(AudioManager.S.PlaySongThenResumePreviousSong(6));
+
                             dt = actors[0].GetComponent<DialogueTrigger>();
                             dt.enabled = true;
                             dt = actors[1].GetComponent<DialogueTrigger>();

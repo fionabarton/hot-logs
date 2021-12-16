@@ -38,7 +38,7 @@ public class OptionsScreen : MonoBehaviour {
 			sliders[0].value = PlayerPrefs.GetFloat("Master Volume");
 			AudioManager.S.SetMasterVolume(sliders[0].value);
         } else {
-			AudioManager.S.SetMasterVolume(1);
+			AudioManager.S.SetMasterVolume(0.25f);
 		}
 		if (PlayerPrefs.HasKey("BGM Volume")) {
 			sliders[1].value = PlayerPrefs.GetFloat("BGM Volume");
@@ -83,6 +83,8 @@ public class OptionsScreen : MonoBehaviour {
 
 		// Audio: Confirm
 		AudioManager.S.PlaySFX(eSoundName.confirm);
+
+		canUpdate = true;
 	}
 
 	public void Deactivate(bool playSound = false) {

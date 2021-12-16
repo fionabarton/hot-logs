@@ -28,7 +28,7 @@ public class PasswordManager : MonoBehaviour {
 	public string 			passwordString;
 	public ePasswordMode 	mode = ePasswordMode.inactive;
 
-	// 3-Letter Words
+	// 1,292 3-Letter Words (21,156,689,088 possible combinations of 3 3-letter words)
 	private List<string> 		words = new List<string> () {"AAH", "AAL", "AAS", "ABA", "ABB", "ABO", "ABS", "ABY", "ACE", "ACH", "ACT", "ADD", "ADO", "ADS", "ADZ", "AFF", "AFT", "AGA", "AGE", "AGO", "AGS", "AHA", "AHI", "AHS", "AIA", 
 		"AID", "AIL", "AIM", "AIN", "AIR", "AIS", "AIT", "AKA", "AKE", "ALA", "ALB", "ALE", "ALF", "ALL", "ALP", "ALS", "ALT", "AMA", "AMI", "AMP", "AMU", "ANA", "AND", "ANE", "ANI", "ANN", "ANT", "ANY", "APE", "APO", "APP", "APT", "ARB", "ARC", "ARD", "ARE", 
 		"ARF", "ARK", "ARM", "ARS", "ART", "ARY", "ASH", "ASK", "ASP", "ASS", "ATE", "ATT", "AUA", "AUE", "AUF", "AUK", "AVA", "AVE", "AVO", "AWA", "AWE", "AWL", "AWN", "AXE", "AYE", "AYS", "AYU", "AZO", "BAA", "BAC", "BAD", "BAG", "BAH", "BAL", "BAM", "BAN", 
@@ -160,72 +160,72 @@ public class PasswordManager : MonoBehaviour {
 			// Ensures Levels are between 1 and 10
 			if ((tLvl1 >= 1 && tLvl1 <= 10) && (tLvl2 >= 1 && tLvl2 <= 10)) {
 				// Set Player 1 Lvl
-				Party.stats[0].LVL = tLvl1;
+				Party.S.stats[0].LVL = tLvl1;
 
 				// Set Player 1 Exp
 				switch (tLvl1) {
 				case 2:
-					Party.stats[0].EXP = 8;
+					Party.S.stats[0].EXP = 8;
 					break;
 				case 3:
-					Party.stats[0].EXP = 24;
+					Party.S.stats[0].EXP = 24;
 					break;
 				case 4:
-					Party.stats[0].EXP = 48;
+					Party.S.stats[0].EXP = 48;
 					break;
 				case 5:
-					Party.stats[0].EXP = 111;
+					Party.S.stats[0].EXP = 111;
 					break;
 				case 6:
-					Party.stats[0].EXP = 221;
+					Party.S.stats[0].EXP = 221;
 					break;
 				case 7:
-					Party.stats[0].EXP = 451;
+					Party.S.stats[0].EXP = 451;
 					break;
 				case 8:
-					Party.stats[0].EXP = 801;
+					Party.S.stats[0].EXP = 801;
 					break;
 				case 9:
-					Party.stats[0].EXP = 1300;
+					Party.S.stats[0].EXP = 1300;
 					break;
 				case 10:
-					Party.stats[0].EXP = 2001;
+					Party.S.stats[0].EXP = 2001;
 					break;
 				default:
 					break;
 				}
 
 				// Set Player 2 Lvl
-				Party.stats[1].LVL = tLvl2;
+				Party.S.stats[1].LVL = tLvl2;
 
 				// Set Player 2 Exp
 				switch (tLvl2) {
 				case 2:
-					Party.stats[1].EXP = 10;
+					Party.S.stats[1].EXP = 10;
 					break;
 				case 3:
-					Party.stats[1].EXP = 24;
+					Party.S.stats[1].EXP = 24;
 					break;
 				case 4:
-					Party.stats[1].EXP = 56;
+					Party.S.stats[1].EXP = 56;
 					break;
 				case 5:
-					Party.stats[1].EXP = 111;
+					Party.S.stats[1].EXP = 111;
 					break;
 				case 6:
-					Party.stats[1].EXP = 251;
+					Party.S.stats[1].EXP = 251;
 					break;
 				case 7:
-					Party.stats[1].EXP = 451;
+					Party.S.stats[1].EXP = 451;
 					break;
 				case 8:
-					Party.stats[1].EXP = 851;
+					Party.S.stats[1].EXP = 851;
 					break;
 				case 9:
-					Party.stats[1].EXP = 1301;
+					Party.S.stats[1].EXP = 1301;
 					break;
 				case 10:
-					Party.stats[1].EXP = 2101;
+					Party.S.stats[1].EXP = 2101;
 					break;
 				default:
 					break;
@@ -261,8 +261,8 @@ public class PasswordManager : MonoBehaviour {
 	void CheckLevelUp(){
 		// Level Up
 		Party.S.CheckForLevelUp ();
-		Party.stats[0].hasLeveledUp = false;
-		Party.stats[1].hasLeveledUp = false;
+		Party.S.stats[0].hasLeveledUp = false;
+		Party.S.stats[1].hasLeveledUp = false;
 
 		passwordText.text = "Password: ACCEPTED!";
 	}
