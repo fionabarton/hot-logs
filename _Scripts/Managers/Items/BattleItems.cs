@@ -58,7 +58,7 @@ public class BattleItems : MonoBehaviour {
     public void HPPotion(int ndx, Item item) {
         if (_.playerDead[ndx]) {
             // Display Text
-            BattleDialogue.S.DisplayText(Party.stats[ndx].name + " is dead...\n...and dead folk can't be healed, dummy!");
+            BattleDialogue.S.DisplayText(Party.S.stats[ndx].name + " is dead...\n...and dead folk can't be healed, dummy!");
 
 			// Audio: Deny
 			AudioManager.S.PlaySFX(eSoundName.deny);
@@ -72,10 +72,10 @@ public class BattleItems : MonoBehaviour {
         }
 
         // If HP is less than maxHP
-        if (Party.stats[ndx].HP < Party.stats[ndx].maxHP) {
+        if (Party.S.stats[ndx].HP < Party.S.stats[ndx].maxHP) {
             // Get amount and max amount to heal
             int amountToHeal = UnityEngine.Random.Range(item.statEffectMinValue, item.statEffectMaxValue);
-            int maxAmountToHeal = Party.stats[ndx].maxHP - Party.stats[ndx].HP;
+            int maxAmountToHeal = Party.S.stats[ndx].maxHP - Party.S.stats[ndx].HP;
 
             // Add 30-45 HP to TARGET Player's HP
             RPG.S.AddPlayerHP(ndx, amountToHeal);
@@ -85,12 +85,12 @@ public class BattleItems : MonoBehaviour {
 
             // Display Text
             if (amountToHeal >= maxAmountToHeal) {
-                BattleDialogue.S.DisplayText("Used " + item.name + "!\nHealed " + Party.stats[ndx].name + " back to Max HP!");
+                BattleDialogue.S.DisplayText("Used " + item.name + "!\nHealed " + Party.S.stats[ndx].name + " back to Max HP!");
 
                 // Prevents Floating Score being higher than the acutal amount healed
                 amountToHeal = maxAmountToHeal;
             } else {
-                BattleDialogue.S.DisplayText("Used " + item.name + "!\nHealed " + Party.stats[ndx].name + " for " + amountToHeal + " HP!");
+                BattleDialogue.S.DisplayText("Used " + item.name + "!\nHealed " + Party.S.stats[ndx].name + " for " + amountToHeal + " HP!");
             }
 
             // Get and position Poof game object
@@ -108,7 +108,7 @@ public class BattleItems : MonoBehaviour {
 
 			_.NextTurn();
         } else {
-            BattleDialogue.S.DisplayText(Party.stats[ndx].name + " already at full health...\n...no need to use this potion!");
+            BattleDialogue.S.DisplayText(Party.S.stats[ndx].name + " already at full health...\n...no need to use this potion!");
 
 			// Audio: Deny
 			AudioManager.S.PlaySFX(eSoundName.deny);
@@ -122,7 +122,7 @@ public class BattleItems : MonoBehaviour {
     public void MPPotion(int ndx, Item item) {
 		if (_.playerDead[ndx]) {
 			// Display Text
-			BattleDialogue.S.DisplayText(Party.stats[ndx].name + " is dead...\n...and dead folk can't be healed, dummy!");
+			BattleDialogue.S.DisplayText(Party.S.stats[ndx].name + " is dead...\n...and dead folk can't be healed, dummy!");
 			
 			// Audio: Deny
 			AudioManager.S.PlaySFX(eSoundName.deny);
@@ -136,11 +136,11 @@ public class BattleItems : MonoBehaviour {
 		}
 
 		// If MP is less than maxMP
-		if (Party.stats[ndx].MP < Party.stats[ndx].maxMP) {
+		if (Party.S.stats[ndx].MP < Party.S.stats[ndx].maxMP) {
 			// Get amount and max amount to heal
 			int amountToHeal = UnityEngine.Random.Range(item.statEffectMinValue, item.statEffectMaxValue);
 			//int maxAmountToHeal = Stats.S.maxMP[ndx] - Stats.S.MP[ndx];
-			int maxAmountToHeal = Party.stats[ndx].maxMP - Party.stats[ndx].MP;
+			int maxAmountToHeal = Party.S.stats[ndx].maxMP - Party.S.stats[ndx].MP;
 
 			// Add 12-20 MP to TARGET Player's MP
 			RPG.S.AddPlayerMP(ndx, amountToHeal);
@@ -150,12 +150,12 @@ public class BattleItems : MonoBehaviour {
 
 			// Display Text
 			if (amountToHeal >= maxAmountToHeal) {
-				BattleDialogue.S.DisplayText("Used " + item.name + "!\n" + Party.stats[ndx].name + " back to Max MP!");
+				BattleDialogue.S.DisplayText("Used " + item.name + "!\n" + Party.S.stats[ndx].name + " back to Max MP!");
 
 				// Prevents Floating Score being higher than the acutal amount healed
 				amountToHeal = maxAmountToHeal;
 			} else {
-				BattleDialogue.S.DisplayText("Used " + item.name + "!\n" + Party.stats[ndx].name + " gained " + amountToHeal + " MP!");
+				BattleDialogue.S.DisplayText("Used " + item.name + "!\n" + Party.S.stats[ndx].name + " gained " + amountToHeal + " MP!");
 			}
 
 			// Get and position Poof game object
@@ -173,7 +173,7 @@ public class BattleItems : MonoBehaviour {
 
 			_.NextTurn ();
 		} else {
-			BattleDialogue.S.DisplayText(Party.stats[ndx].name + " already at full magic...\n...no need to use this potion!");
+			BattleDialogue.S.DisplayText(Party.S.stats[ndx].name + " already at full magic...\n...no need to use this potion!");
 
 			// Audio: Deny
 			AudioManager.S.PlaySFX(eSoundName.deny);
@@ -187,17 +187,17 @@ public class BattleItems : MonoBehaviour {
 	public void HealAllPotion(int unusedIntBecauseOfAddFunctionToButtonParameter, Item item) {
 		int totalAmountToHeal = 0;
 
-		if (Party.stats[0].HP < Party.stats[0].maxHP ||
-			Party.stats[1].HP < Party.stats[1].maxHP ||
-			Party.stats[2].HP < Party.stats[2].maxHP) {
+		if (Party.S.stats[0].HP < Party.S.stats[0].maxHP ||
+			Party.S.stats[1].HP < Party.S.stats[1].maxHP ||
+			Party.S.stats[2].HP < Party.S.stats[2].maxHP) {
 			for (int i = 0; i < _.playerDead.Count; i++) {
 				if (!_.playerDead[i]) {
 
 					// Get amount and max amount to heal
 					int amountToHeal = UnityEngine.Random.Range(item.statEffectMinValue, item.statEffectMaxValue);
-					int maxAmountToHeal = Party.stats[i].maxHP - Party.stats[i].HP;
+					int maxAmountToHeal = Party.S.stats[i].maxHP - Party.S.stats[i].HP;
 					// Add Player's WIS to Heal Amount
-					amountToHeal += Party.stats[i].WIS;
+					amountToHeal += Party.S.stats[i].WIS;
 
 					// Add 12-20 HP to TARGET Player's HP
 					RPG.S.AddPlayerHP(i, amountToHeal);
@@ -256,12 +256,12 @@ public class BattleItems : MonoBehaviour {
 			_.partyQty += 1;
 
 			// Add Player to Turn Order
-			 _.turnOrder.Add(Party.stats[ndx].name); 
+			 _.turnOrder.Add(Party.S.stats[ndx].name); 
 
 			HPPotion(ndx, item);
 		} else {
 			// Display Text
-			BattleDialogue.S.DisplayText(Party.stats[ndx].name + " ain't dead...\n...and dead folk don't need to be revived, dummy!");
+			BattleDialogue.S.DisplayText(Party.S.stats[ndx].name + " ain't dead...\n...and dead folk don't need to be revived, dummy!");
 
 			// Audio: Deny
 			AudioManager.S.PlaySFX(eSoundName.deny);

@@ -19,29 +19,40 @@ public class Inventory : MonoBehaviour
 	}
 
 	void Start() {
-        // Add items to inventory
-        AddItemToInventory(ItemManager.S.items[24]);
-        AddItemToInventory(ItemManager.S.items[24]);
-        AddItemToInventory(ItemManager.S.items[24]);
-        AddItemToInventory(ItemManager.S.items[24]);
-        AddItemToInventory(ItemManager.S.items[22]);
-        AddItemToInventory(ItemManager.S.items[22]);
-        AddItemToInventory(ItemManager.S.items[22]);
-        AddItemToInventory(ItemManager.S.items[22]);
+        AddItemToInventory(ItemManager.S.items[0]);
+        AddItemToInventory(ItemManager.S.items[0]);
         AddItemToInventory(ItemManager.S.items[1]);
-        AddItemToInventory(ItemManager.S.items[23]);
-        AddItemToInventory(ItemManager.S.items[23]);
+
+        // Add items to inventory
         AddItemToInventory(ItemManager.S.items[23]);
         AddItemToInventory(ItemManager.S.items[23]);
         AddItemToInventory(ItemManager.S.items[2]);
+        AddItemToInventory(ItemManager.S.items[3]);
+        AddItemToInventory(ItemManager.S.items[4]);
         AddItemToInventory(ItemManager.S.items[5]);
         AddItemToInventory(ItemManager.S.items[6]);
+        AddItemToInventory(ItemManager.S.items[7]);
         AddItemToInventory(ItemManager.S.items[8]);
         AddItemToInventory(ItemManager.S.items[9]);
-        AddItemToInventory(ItemManager.S.items[15]);
-        AddItemToInventory(ItemManager.S.items[15]);
+
+        AddItemToInventory(ItemManager.S.items[10]);
         AddItemToInventory(ItemManager.S.items[0]);
-        AddItemToInventory(ItemManager.S.items[0]);
+        AddItemToInventory(ItemManager.S.items[11]);
+        AddItemToInventory(ItemManager.S.items[12]);
+        AddItemToInventory(ItemManager.S.items[13]);
+        AddItemToInventory(ItemManager.S.items[14]);
+        AddItemToInventory(ItemManager.S.items[15]);
+        AddItemToInventory(ItemManager.S.items[16]);
+        AddItemToInventory(ItemManager.S.items[17]);
+        AddItemToInventory(ItemManager.S.items[18]);
+        AddItemToInventory(ItemManager.S.items[19]);
+        AddItemToInventory(ItemManager.S.items[20]);
+
+        AddItemToInventory(ItemManager.S.items[22]);
+        AddItemToInventory(ItemManager.S.items[22]);
+        AddItemToInventory(ItemManager.S.items[24]);
+        AddItemToInventory(ItemManager.S.items[24]);
+        AddItemToInventory(ItemManager.S.items[24]);
     }
 
     public void AddItemToInventory(Item name) {
