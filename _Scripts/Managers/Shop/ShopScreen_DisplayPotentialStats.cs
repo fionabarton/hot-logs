@@ -49,6 +49,7 @@ public class ShopScreen_DisplayPotentialStats : MonoBehaviour {
 			if (tItem == EquipScreen.S.playerEquipment[i][(int)tItem.type]) {
 				statsNameText[i].text = "Already equipped!";
 				statsAmountText[i].text = "";
+				anim[i].CrossFade("Idle", 0);
 				continue;
 			}
 
@@ -119,4 +120,4 @@ public class ShopScreen_DisplayPotentialStats : MonoBehaviour {
 			}
 		}
 	}
-} // 137
+} 
