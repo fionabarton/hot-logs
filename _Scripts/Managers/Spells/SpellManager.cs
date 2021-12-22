@@ -18,27 +18,27 @@ public class SpellManager : MonoBehaviour {
 		// Heal
 		spells[0] = new Spell("Heal", 
 			eSpellType.healing, eSpellStatEffect.HP, eSpellUseableMode.any, 30, 45, 3,
-			"Replenishes at least 30 HP! What a heal spell!" + "\n Cost: 3 MP");
+			"Heals a single party member for at least 30 HP." + "\n Cost: 3 MP");
 
 		// Fireball
 		spells[1] = new Spell("Fireball",
 			eSpellType.offensive, eSpellStatEffect.HP, eSpellUseableMode.battle, 8, 12, 2,
-			"Blasts Enemy for at least 8 HP! What a damage spell!" + "\n Cost: 2 MP");
+			"Blasts a single enemy for at least 8 HP." + "\n Cost: 2 MP");
 
 		// Warp
 		spells[2] = new Spell("Warp",
 			eSpellType.world, eSpellStatEffect.none, eSpellUseableMode.world, 0, 0, 1,
-			"Warp to a previously visited land!" + "\n Cost: 1 MP");
+			"Instantaneously transports the party to a previously visited location." + "\n Cost: 1 MP");
 
 		// Fireblast
 		spells[3] = new Spell("Fireblast",
 			eSpellType.offensive, eSpellStatEffect.HP, eSpellUseableMode.battle, 12, 20, 3,
-			"Blasts ALL enemies for at least 12 HP! Hot damn!" + "\n Cost: 3 MP", true);
+			"Blasts ALL enemies for at least 12 HP." + "\n Cost: 3 MP", true);
 
 		// Heal All
 		spells[4] = new Spell("Heal All",
 			eSpellType.healing, eSpellStatEffect.HP, eSpellUseableMode.battle, 12, 20, 6,
-			"Heals ALL party members for at least 12 HP!" + "\n Cost: 6 MP", true);
+			"Heals ALL party members for at least 12 HP." + "\n Cost: 6 MP", true);
 
 		// Revive
 		spells[5] = new Spell("Revive",
@@ -73,7 +73,7 @@ public class SpellManager : MonoBehaviour {
 		AudioManager.S.PlaySFX(eSoundName.deny);
 
 		// if Battle
-		if (RPG.S.currentSceneName == "Battle") {
+		if (RPG.S.currentScene == "Battle") {
 			Utilities.S.RemoveListeners(SpellScreen.S.spellsButtons);
 
 			SpellScreen.S.canUpdate = true;

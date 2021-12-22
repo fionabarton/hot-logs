@@ -17,7 +17,7 @@ public class WorldSpells : MonoBehaviour {
 	}
 
     public void AddFunctionToButton(Action<int> functionToPass, string messageToDisplay, Spell spell) {
-		if (Party.stats[SpellScreen.S.playerNdx].MP >= spell.cost) {
+		if (Party.S.stats[SpellScreen.S.playerNdx].MP >= spell.cost) {
 			// Audio: Confirm
 			AudioManager.S.PlaySFX(eSoundName.confirm);
 
@@ -87,7 +87,7 @@ public class WorldSpells : MonoBehaviour {
 	/// Heal - Heal the selected party member 
 	//////////////////////////////////////////////////////////
 	public void HealSelectedPartyMember(int ndx) { 
-		if (Party.stats[ndx].HP < Party.stats[ndx].maxHP) {
+		if (Party.S.stats[ndx].HP < Party.S.stats[ndx].maxHP) {
 			// Set animation to success
 			PlayerButtons.S.anim[ndx].CrossFade("Success", 0);
 
@@ -99,17 +99,17 @@ public class WorldSpells : MonoBehaviour {
 			RPG.S.AddPlayerHP(ndx, randomValue);
 
 			// Display Text
-			if (Party.stats[ndx].HP >= Party.stats[ndx].maxHP) {
-				PauseMessage.S.DisplayText("Used Heal Spell!\nHealed " + Party.stats[ndx].name + " back to Max HP!");
+			if (Party.S.stats[ndx].HP >= Party.S.stats[ndx].maxHP) {
+				PauseMessage.S.DisplayText("Used Heal Spell!\nHealed " + Party.S.stats[ndx].name + " back to Max HP!");
 			} else {
-				PauseMessage.S.DisplayText("Used Heal Spell!\nHealed " + Party.stats[ndx].name + " for " + randomValue + " HP!");
+				PauseMessage.S.DisplayText("Used Heal Spell!\nHealed " + Party.S.stats[ndx].name + " for " + randomValue + " HP!");
 			}
 
 			// Audio: Buff 1
 			AudioManager.S.PlaySFX(eSoundName.buff1);
 		} else {
 			// Display Text
-			PauseMessage.S.DisplayText(Party.stats[ndx].name + " already at full health...\n...no need to cast this spell!");
+			PauseMessage.S.DisplayText(Party.S.stats[ndx].name + " already at full health...\n...no need to cast this spell!");
 
 			// Set animation to idle
 			PlayerButtons.S.anim[ndx].CrossFade("Idle", 0);
@@ -124,7 +124,7 @@ public class WorldSpells : MonoBehaviour {
 	/// Warp
 	//////////////////////////////////////////////////////////
 	public void WarpSpell() {
-		if (Party.stats[0].MP >= 1) {
+		if (Party.S.stats[0].MP >= 1) {
 			// Subtract Spell cost from CASTING Player's MP 
 			RPG.S.SubtractPlayerMP(SpellScreen.S.playerNdx, 1);
 
@@ -139,7 +139,7 @@ public class WorldSpells : MonoBehaviour {
 			// Use SpellScreen's buttons to select/display warp locations
 			WarpManager.S.DeactivateUnusedButtonSlots(SpellScreen.S.spellsButtons);
 			WarpManager.S.AssignButtonEffect(SpellScreen.S.spellsButtons);
-			WarpManager.S.AssignButtonNames(SpellScreen.S.spellsButtonNameTexts);
+			WarpManager.S.AssignButtonNames(SpellScreen.S.spellsButtonNameText);
 			WarpManager.S.SetButtonNavigation(SpellScreen.S.spellsButtons);
 
 			// Audio: Confirm
@@ -155,18 +155,18 @@ public class WorldSpells : MonoBehaviour {
 	public void HealAllPartyMembers(int unusedIntBecauseOfAddFunctionToButtonParameter = 0) {
 		int totalAmountToHeal = 0;
 
-		if (Party.stats[0].HP < Party.stats[0].maxHP ||
-			Party.stats[1].HP < Party.stats[1].maxHP ||
-			Party.stats[2].HP < Party.stats[2].maxHP) {
+		if (Party.S.stats[0].HP < Party.S.stats[0].maxHP ||
+			Party.S.stats[1].HP < Party.S.stats[1].maxHP ||
+			Party.S.stats[2].HP < Party.S.stats[2].maxHP) {
 			// Subtract Spell cost from Player's MP
 			RPG.S.SubtractPlayerMP(SpellScreen.S.playerNdx, 6);
 
-			for (int i = 0; i < Party.stats.Count; i++) {
+			for (int i = 0; i < Party.S.stats.Count; i++) {
 				// Get amount and max amount to heal
 				int amountToHeal = UnityEngine.Random.Range(12, 20);
-				int maxAmountToHeal = Party.stats[i].maxHP - Party.stats[i].HP;
+				int maxAmountToHeal = Party.S.stats[i].maxHP - Party.S.stats[i].HP;
 				// Add Player's WIS to Heal Amount
-				amountToHeal += Party.stats[i].WIS;
+				amountToHeal += Party.S.stats[i].WIS;
 
 				// Add 12-20 HP to TARGET Player's HP
 				RPG.S.AddPlayerHP(i, amountToHeal);
@@ -181,7 +181,7 @@ public class WorldSpells : MonoBehaviour {
 
 			// Display Text
 			PauseMessage.S.DisplayText("Used Heal All Spell!\nHealed ALL party members for an average of "
-				+ Utilities.S.CalculateAverage(totalAmountToHeal, Party.stats.Count) + " HP!");
+				+ Utilities.S.CalculateAverage(totalAmountToHeal, Party.S.stats.Count) + " HP!");
 
 			// Set animations to success
 			//PlayerButtons.S.anim[0].CrossFade("Success", 0);
