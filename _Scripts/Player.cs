@@ -93,26 +93,26 @@ public class Player : MonoBehaviour {
 				switch (mode) {
 				case eRPGMode.idle:
 					if (Input.GetAxisRaw ("Horizontal") > 0f) { // Walk/Run Right 
-						if (Input.GetAxisRaw ("SNES B Button") > 0) {
+						if (Input.GetAxisRaw ("SNES Y Button") > 0) {
 							SwitchMode (eRPGMode.runRight);
 						} else {
 							SwitchMode (eRPGMode.walkRight);
 						}
 					} else if (Input.GetAxisRaw ("Horizontal") < 0f) { // Walk/Run Left 
-							if (Input.GetAxisRaw ("SNES B Button") > 0) {
+							if (Input.GetAxisRaw ("SNES Y Button") > 0) {
 							SwitchMode (eRPGMode.runLeft);
 						} else {
 							SwitchMode (eRPGMode.walkLeft);
 						}
 					}
 					if (Input.GetAxisRaw ("Vertical") > 0f) { // Walk/Run Up
-						if (Input.GetAxisRaw ("SNES B Button") > 0) {
+						if (Input.GetAxisRaw ("SNES Y Button") > 0) {
 							SwitchMode (eRPGMode.runUp);
 						} else {
 							SwitchMode (eRPGMode.walkUp);
 						}
 					} else if (Input.GetAxisRaw ("Vertical") < 0f) { // Walk/Run Down
-						if (Input.GetAxisRaw ("SNES B Button") > 0) {
+						if (Input.GetAxisRaw ("SNES Y Button") > 0) {
 							SwitchMode (eRPGMode.runDown);
 						} else {
 							SwitchMode (eRPGMode.walkDown);
@@ -123,7 +123,7 @@ public class Player : MonoBehaviour {
 					if (Input.GetAxisRaw ("Horizontal") >= 0) { // Idle
 							SwitchMode (eRPGMode.idle);
 					} 
-					if (Input.GetAxisRaw ("SNES B Button") > 0) { // Run Left
+					if (Input.GetAxisRaw ("SNES Y Button") > 0) { // Run Left
 						SwitchMode (eRPGMode.runLeft);
 					}
 					if (Input.GetAxisRaw ("Vertical") > 0f) { // Walk Up Left
@@ -136,7 +136,7 @@ public class Player : MonoBehaviour {
 					if (Input.GetAxisRaw ("Horizontal") <= 0) { // Idle
 						SwitchMode (eRPGMode.idle);
 					}
-					if (Input.GetAxisRaw ("SNES B Button") > 0) { // Run Right 
+					if (Input.GetAxisRaw ("SNES Y Button") > 0) { // Run Right 
 						SwitchMode (eRPGMode.runRight);
 					}
 					if (Input.GetAxisRaw ("Vertical") > 0f) { // Walk Up Right
@@ -149,7 +149,7 @@ public class Player : MonoBehaviour {
 					if (Input.GetAxisRaw ("Vertical") <= 0) { // Idle
 							SwitchMode (eRPGMode.idle);
 					}
-					if (Input.GetAxisRaw ("SNES B Button") > 0) { // Run Up
+					if (Input.GetAxisRaw ("SNES Y Button") > 0) { // Run Up
 						SwitchMode (eRPGMode.runUp);
 					}
 					if (Input.GetAxisRaw ("Horizontal") < 0) { // Walk Up Left
@@ -162,7 +162,7 @@ public class Player : MonoBehaviour {
 					if (Input.GetAxisRaw ("Vertical") >= 0) { // Idle
 							SwitchMode (eRPGMode.idle);
 					}
-					if (Input.GetAxisRaw ("SNES B Button") > 0) { // Run Down
+					if (Input.GetAxisRaw ("SNES Y Button") > 0) { // Run Down
 						SwitchMode (eRPGMode.runDown);
 					}
 					if (Input.GetAxisRaw ("Horizontal") < 0) { // Walk Down Left
@@ -175,7 +175,7 @@ public class Player : MonoBehaviour {
 					if (Input.GetAxisRaw ("Horizontal") >= 0) { // Idle 
 						SwitchMode (eRPGMode.idle);
 					}
-					if (Input.GetAxisRaw ("SNES B Button") <= 0) { // Walk Left
+					if (Input.GetAxisRaw ("SNES Y Button") <= 0) { // Walk Left
 						SwitchMode (eRPGMode.walkLeft);
 					}
 					if (Input.GetAxisRaw ("Vertical") > 0f) { // Walk Up Left
@@ -188,7 +188,7 @@ public class Player : MonoBehaviour {
 					if (Input.GetAxisRaw ("Horizontal") <= 0) { // Idle
 							SwitchMode (eRPGMode.idle); 
 					}
-					if (Input.GetAxisRaw ("SNES B Button") <= 0) { // Walk Right
+					if (Input.GetAxisRaw ("SNES Y Button") <= 0) { // Walk Right
 						SwitchMode (eRPGMode.walkRight);
 					}
 					if (Input.GetAxisRaw ("Vertical") > 0f) { // Up Right 
@@ -201,7 +201,7 @@ public class Player : MonoBehaviour {
 					if (Input.GetAxisRaw ("Vertical") <= 0) { // Idle
 						SwitchMode (eRPGMode.idle);
 					}
-					if (Input.GetAxisRaw ("SNES B Button") <= 0) { // Walk Up
+					if (Input.GetAxisRaw ("SNES Y Button") <= 0) { // Walk Up
 						SwitchMode (eRPGMode.walkUp);
 					}
 					if (Input.GetAxisRaw ("Horizontal") < 0) { // Up Left
@@ -214,7 +214,7 @@ public class Player : MonoBehaviour {
 					if (Input.GetAxisRaw ("Vertical") >= 0) { // Idle
 						SwitchMode (eRPGMode.idle);
 					}
-					if (Input.GetAxisRaw ("SNES B Button") <= 0) { // Walk Down
+					if (Input.GetAxisRaw ("SNES Y Button") <= 0) { // Walk Down
 						SwitchMode (eRPGMode.walkDown);
 					}
 					if (Input.GetAxisRaw ("Horizontal") < 0) { // Walk Down Left
@@ -231,7 +231,7 @@ public class Player : MonoBehaviour {
 					if (Input.GetAxisRaw ("Vertical") > 0 && Input.GetAxisRaw ("Horizontal") == 0f) { // Walk Up
 						SwitchMode (eRPGMode.walkUp);
 					}
-					if (Input.GetAxisRaw ("SNES B Button") > 0) { // Run Up Left
+					if (Input.GetAxisRaw ("SNES Y Button") > 0) { // Run Up Left
 						SwitchMode (eRPGMode.runUpLeft);
 					}
 					break;
@@ -243,7 +243,7 @@ public class Player : MonoBehaviour {
 					if (Input.GetAxisRaw ("Vertical") < 0 && Input.GetAxisRaw ("Horizontal") == 0f) { // Walk Down
 						SwitchMode (eRPGMode.walkDown);
 					}
-					if (Input.GetAxisRaw ("SNES B Button") > 0) { // Run Down Left
+					if (Input.GetAxisRaw ("SNES Y Button") > 0) { // Run Down Left
 						SwitchMode (eRPGMode.runDownLeft);
 					}
 					break;
@@ -255,7 +255,7 @@ public class Player : MonoBehaviour {
 					if (Input.GetAxisRaw ("Vertical") > 0 && Input.GetAxisRaw ("Horizontal") == 0f) { // Walk Up
 						SwitchMode (eRPGMode.walkUp);
 					}
-					if (Input.GetAxisRaw ("SNES B Button") <= 0) { // Walk Up Left
+					if (Input.GetAxisRaw ("SNES Y Button") <= 0) { // Walk Up Left
 						SwitchMode (eRPGMode.walkUpLeft);
 					}
 					break;
@@ -267,7 +267,7 @@ public class Player : MonoBehaviour {
 					if (Input.GetAxisRaw ("Vertical") < 0 && Input.GetAxisRaw ("Horizontal") == 0f) { // Walk Down
 						SwitchMode (eRPGMode.walkDown);
 					}
-					if (Input.GetAxisRaw ("SNES B Button") <= 0) { // Walk Up Left
+					if (Input.GetAxisRaw ("SNES Y Button") <= 0) { // Walk Up Left
 						SwitchMode (eRPGMode.walkUpLeft);
 					}
 					break;
