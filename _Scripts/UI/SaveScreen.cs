@@ -152,7 +152,7 @@ public class SaveScreen : MonoBehaviour {
 					Utilities.S.PlayButtonSelectedSFX(ref previousSelectedActionButton);
 				}
 
-				if (Input.GetButtonDown("SNES B Button")) {
+				if (Input.GetButtonDown("SNES Y Button")) {
 					Deactivate(true);
 				}
 				break;
@@ -167,7 +167,7 @@ public class SaveScreen : MonoBehaviour {
 					Utilities.S.PlayButtonSelectedSFX(ref previousSelectedSlotButton);
 				}
 
-				if (Input.GetButtonDown("SNES B Button")) {
+				if (Input.GetButtonDown("SNES Y Button")) {
 					// Audio: Deny
 					AudioManager.S.PlaySFX(eSoundName.deny);
 	
@@ -175,7 +175,7 @@ public class SaveScreen : MonoBehaviour {
 				}
 				break;
 			case eSaveScreenMode.subMenu:
-				if (Input.GetButtonDown("SNES B Button")) {
+				if (Input.GetButtonDown("SNES Y Button")) {
 					// Audio: Deny
 					AudioManager.S.PlaySFX(eSoundName.deny);
 					RPG.S.pauseSubMenu.ResetSettings();
@@ -188,7 +188,7 @@ public class SaveScreen : MonoBehaviour {
 				break;
 			case eSaveScreenMode.cannotPeformAction:
 				if (PauseMessage.S.dialogueFinished) {
-					if (Input.GetButtonDown("SNES A Button") || Input.GetButtonDown("SNES B Button")) {
+					if (Input.GetButtonDown("SNES B Button") || Input.GetButtonDown("SNES Y Button")) {
 						// Audio: Deny
 						AudioManager.S.PlaySFX(eSoundName.deny);
 
@@ -198,7 +198,7 @@ public class SaveScreen : MonoBehaviour {
                 break;
 			case eSaveScreenMode.pickedFile:
 				if (PauseMessage.S.dialogueFinished) {
-					if (Input.GetButtonDown("SNES A Button") || Input.GetButtonDown("SNES B Button")) {
+					if (Input.GetButtonDown("SNES B Button") || Input.GetButtonDown("SNES Y Button")) {
 						// Audio: Confirm
 						AudioManager.S.PlaySFX(eSoundName.confirm);
 

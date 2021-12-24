@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class DialogueManager : MonoBehaviour {
 	[Header("Set in Inspector")]
-	public GameObject	TextBoxSpriteGO;
+	public GameObject	textBoxSpriteGO;
 	public GameObject 	cursorGO;
 
 	[Header ("Set Dynamically")]
@@ -42,7 +42,7 @@ public class DialogueManager : MonoBehaviour {
 	}
 
 	public void ThisLoop() {
-		if (Input.GetButtonDown("SNES A Button")) {
+		if (Input.GetButtonDown("SNES B Button")) {
 			if (!RPG.S.paused) {
 				// Deactivate Text Box (On Button Press)
 				if (dialogueFinished && ndx <= 0) {
@@ -88,7 +88,7 @@ public class DialogueManager : MonoBehaviour {
 
 		// Activate Text Box
 		dialogueTextGO.SetActive (true);
-		TextBoxSpriteGO.SetActive(true);
+		textBoxSpriteGO.SetActive(true);
 
 		// Position Text Box
 		if (moveDown) {
@@ -167,7 +167,7 @@ public class DialogueManager : MonoBehaviour {
 
 		// Deactivate Text Box & Cursor
 		dialogueTextGO.SetActive(false);
-		TextBoxSpriteGO.SetActive(false);
+		textBoxSpriteGO.SetActive(false);
 		cursorGO.SetActive(false);
 		
 		// Reset Dialogue
