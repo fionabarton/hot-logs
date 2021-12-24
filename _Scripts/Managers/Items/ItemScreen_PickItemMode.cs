@@ -121,7 +121,7 @@ public class ItemScreen_PickItemMode : MonoBehaviour {
 		}
 
 		if (RPG.S.currentScene != "Battle") {
-			if (Input.GetButtonDown("SNES B Button")) {
+			if (Input.GetButtonDown("SNES Y Button")) {
 				itemScreen.Deactivate(true);
 			}
 		}

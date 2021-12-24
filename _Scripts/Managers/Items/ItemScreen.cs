@@ -110,7 +110,7 @@ public class ItemScreen : MonoBehaviour {
 		
 		// Deactivate ItemScreen during Battle
 		if (RPG.S.currentScene == "Battle") {
-			if (Input.GetButtonDown ("SNES B Button")) {
+			if (Input.GetButtonDown ("SNES Y Button")) {
 				PauseMessage.S.gameObject.SetActive(false);
 				Deactivate(true);
 				Battle.S.PlayerTurn();
@@ -130,7 +130,7 @@ public class ItemScreen : MonoBehaviour {
 				ItemScreen_PickPartyMemberMode.S.Loop(S);
 			break;
 			case eItemScreenMode.pickAllPartyMembers:
-				if (Input.GetButtonDown("SNES B Button")) {
+				if (Input.GetButtonDown("SNES Y Button")) {
 					GoBackToPickItemMode();
 				}
 			break;
@@ -139,7 +139,7 @@ public class ItemScreen : MonoBehaviour {
 					WarpManager.S.DisplayButtonDescriptions(itemButtons, -170);
 				}
 
-				if (Input.GetButtonDown("SNES B Button")) {
+				if (Input.GetButtonDown("SNES Y Button")) {
 					GoBackToPickItemMode();
 				}
 				break;

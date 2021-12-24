@@ -18,7 +18,7 @@ public class ItemScreen_UsedItemMode : MonoBehaviour {
 
 	public void Loop(ItemScreen itemScreen) {
 		if (PauseMessage.S.dialogueFinished) {
-			if (Input.GetButtonDown("SNES A Button")) {
+			if (Input.GetButtonDown("SNES B Button")) {
 				// Set animation to idle
 				PlayerButtons.S.SetSelectedAnim("Idle");
 
