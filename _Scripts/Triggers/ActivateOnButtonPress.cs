@@ -73,7 +73,7 @@ public class ActivateOnButtonPress : MonoBehaviour {
                 // If there hasn't been any input yet...
                 if (!firstButtonPressed) {
                     // ...Activate on button press
-                    if (Input.GetButtonDown("SNES A Button")) {
+                    if (Input.GetButtonDown("SNES B Button")) {
                         Action();
                         firstButtonPressed = true;
                         InteractableCursor.S.Deactivate();
@@ -83,7 +83,7 @@ public class ActivateOnButtonPress : MonoBehaviour {
                 // Reset trigger
                 if (canBeReset) {
                     if (DialogueManager.S.dialogueFinished && DialogueManager.S.ndx <= 0) {
-                        if (Input.GetButtonDown("SNES A Button")) {
+                        if (Input.GetButtonDown("SNES B Button")) {
                             ResetTrigger();
                         }
                     }

@@ -94,7 +94,7 @@ public class DialogueTrigger : ActivateOnButtonPress {
             UpdateManager.updateDelegate -= ThisLoop;
         }
 
-        if (Input.GetButtonDown("SNES A Button")) {
+        if (Input.GetButtonDown("SNES B Button")) {
 			if (firstButtonPressed) {
 				if (!RPG.S.paused) {
 					// If the list of dialogue has multiple elements/lines...
