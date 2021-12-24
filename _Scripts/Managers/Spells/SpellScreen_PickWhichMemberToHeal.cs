@@ -33,7 +33,7 @@ public class SpellScreen_PickWhichMemberToHeal : MonoBehaviour {
 		}
 
 		if (PauseMessage.S.dialogueFinished) {
-			if (Input.GetButtonDown("SNES B Button")) {
+			if (Input.GetButtonDown("SNES Y Button")) {
 				// Set animation to idle
 				PlayerButtons.S.SetSelectedAnim("Idle");
 

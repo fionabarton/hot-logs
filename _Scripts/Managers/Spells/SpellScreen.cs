@@ -123,12 +123,12 @@ public class SpellScreen : MonoBehaviour {
 		// Deactivate SpellScreen
 		if (RPG.S.currentScene != "Battle") {
 			if (mode == eSpellScreenMode.pickWhichSpellsToDisplay) {
-				if (Input.GetButtonDown ("SNES B Button")) {
+				if (Input.GetButtonDown ("SNES Y Button")) {
 					Deactivate(true);
 				}
 			}
 		} else {
-			if (Input.GetButtonDown ("SNES B Button")) {
+			if (Input.GetButtonDown ("SNES Y Button")) {
 				// Audio: Deny
 				AudioManager.S.PlaySFX(eSoundName.deny);
 				ScreenOffPlayerTurn();
@@ -149,7 +149,7 @@ public class SpellScreen : MonoBehaviour {
 			SpellScreen_PickWhichMemberToHeal.S.Loop(S);
 		break;
 		case eSpellScreenMode.pickAllMembersToHeal:
-			if (Input.GetButtonDown("SNES B Button")) {
+			if (Input.GetButtonDown("SNES Y Button")) {
 				GoBackToPickSpellMode();
 			}
 		break;
@@ -158,7 +158,7 @@ public class SpellScreen : MonoBehaviour {
 				WarpManager.S.DisplayButtonDescriptions(spellsButtons, -160);
 			}
 
-			if (Input.GetButtonDown("SNES B Button")) {
+			if (Input.GetButtonDown("SNES Y Button")) {
 				GoBackToPickSpellMode();
 
 				// Activate MP Cost header

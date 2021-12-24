@@ -23,7 +23,7 @@ public class SpellScreen_PickSpell : MonoBehaviour {
 		}
 
 		if (PauseMessage.S.dialogueFinished) {
-			if (Input.GetButtonDown("SNES B Button")) {
+			if (Input.GetButtonDown("SNES Y Button")) {
 				// Go Back
 				SpellScreen_PickWhichSpellsToDisplay.S.Setup(spellScreen);
 

@@ -18,7 +18,7 @@ public class SpellScreen_DoesntKnowSpells : MonoBehaviour {
 
 	public void Loop(SpellScreen spellScreen) {
 		if (PauseMessage.S.dialogueFinished) {
-			if (Input.GetButtonDown("SNES A Button")) {
+			if (Input.GetButtonDown("SNES B Button")) {
 				SpellScreen_PickWhichSpellsToDisplay.S.Setup(spellScreen);
 			}
 		}
