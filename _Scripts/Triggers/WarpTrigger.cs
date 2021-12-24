@@ -32,7 +32,7 @@ public class WarpTrigger : MonoBehaviour {
 		if (coll.gameObject.CompareTag("Player")) {
 			Player.S.rigid.sleepMode = RigidbodySleepMode2D.NeverSleep;
 
-			if (Input.GetButtonDown ("SNES A Button")) {
+			if (Input.GetButtonDown ("SNES B Button")) {
 				StartCoroutine (WarpManager.S.Warp (playerWarpPos, warpToNewScene, sceneName, 99, camFollows, camWarpPos));
 			}
 		}
