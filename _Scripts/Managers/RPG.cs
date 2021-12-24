@@ -85,7 +85,7 @@ public class RPG : MonoBehaviour {
 						PauseScreen.S.Pause();
 					}
 				} else {
-					if (Input.GetButtonDown("Pause") || Input.GetButtonDown("SNES B Button")) {
+					if (Input.GetButtonDown("Pause") || Input.GetButtonDown("SNES Y Button")) {
 						PauseScreen.S.UnPause(true);
 					}
 				}

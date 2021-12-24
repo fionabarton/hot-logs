@@ -134,7 +134,7 @@ public class OptionsScreen : MonoBehaviour {
 		}
 
 		if (RPG.S.currentScene != "Battle") {
-			if (Input.GetButtonDown("SNES B Button")) {
+			if (Input.GetButtonDown("SNES Y Button")) {
 				Deactivate(true);
 			}
 		}
