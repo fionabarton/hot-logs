@@ -162,8 +162,8 @@ public class EquipScreen : MonoBehaviour {
 		case eEquipScreenMode.noInventory:
 		case eEquipScreenMode.equippedItem:
 			// Go back to pickTypeToEquip mode 
-			GoBackToPickTypeToEquipMode("SNES A Button", 99);
 			GoBackToPickTypeToEquipMode("SNES B Button", 99);
+			GoBackToPickTypeToEquipMode("SNES Y Button", 99);
 			break;
 		}
 	}

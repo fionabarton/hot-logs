@@ -87,7 +87,7 @@ public class EquipScreen_PickTypeToEquipMode : MonoBehaviour {
 
 		// Go back to pickPartyMember mode
 		if (PauseMessage.S.dialogueFinished) {
-			if (Input.GetButtonDown("SNES B Button")) {
+			if (Input.GetButtonDown("SNES Y Button")) {
 				EquipScreen_PickPartyMemberMode.S.SetUp(equipScreen);
 
 				// Reset equippedButtons text color

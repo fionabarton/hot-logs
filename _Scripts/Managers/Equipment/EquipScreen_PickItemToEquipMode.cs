@@ -92,7 +92,7 @@ public class EquipScreen_PickItemToEquipMode : MonoBehaviour {
 		}
 
 		// Go back to pickTypeToEquip
-		equipScreen.GoBackToPickTypeToEquipMode("SNES B Button", 7);
+		equipScreen.GoBackToPickTypeToEquipMode("SNES Y Button", 7);
 
 	}
 

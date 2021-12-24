@@ -84,7 +84,7 @@ public class EquipScreen_PickPartyMemberMode : MonoBehaviour {
 		}
 
 		// Deactivate EquipScreen
-		if (Input.GetButtonDown("SNES B Button")) {
+		if (Input.GetButtonDown("SNES Y Button")) {
 			equipScreen.Deactivate(true);
 		}
 	}
