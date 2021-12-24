@@ -28,12 +28,12 @@ public class BattleDialogue : MonoBehaviour{
 
 	public void Loop() {
 		if (dialogueNdx <= 0) {
-			if (Input.GetButtonDown("SNES A Button") || Input.GetButtonDown("SNES B Button")) {
+			if (Input.GetButtonDown("SNES B Button") || Input.GetButtonDown("SNES Y Button")) {
 				dialogueFinished = true;
 				dialogueNdx = 0;
 			}
 		} else if (dialogueNdx > 0) { // For Multiple Lines
-			if (Input.GetButtonDown("SNES A Button")) {
+			if (Input.GetButtonDown("SNES B Button")) {
 				if (message.Count > 0) {
 					List<string> tMessage;
 

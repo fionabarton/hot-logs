@@ -121,24 +121,24 @@ public class Battle : MonoBehaviour {
 					case eBattleMode.actionButtons:
 						break;
 					case eBattleMode.canGoBackToFightButton:
-						if (Input.GetButtonDown("SNES B Button")) {
+						if (Input.GetButtonDown("SNES Y Button")) {
 							BattlePlayerActions.S.GoBackToFightButton();
 						}
 						break;
 					case eBattleMode.canGoBackToFightButtonMultipleTargets:
-						if (Input.GetButtonDown("SNES B Button")) {
+						if (Input.GetButtonDown("SNES Y Button")) {
 							BattlePlayerActions.S.GoBackToFightButton();
 						}
 						break;
 					case eBattleMode.playerTurn:
-						if (Input.GetButtonDown("SNES A Button")) {
+						if (Input.GetButtonDown("SNES B Button")) {
 							PlayerTurn();
 						}
 						break;
 					case eBattleMode.qteInitialize:
 						BattleQTE.S.Loop();
 
-						if (Input.GetButtonDown("SNES B Button")) {
+						if (Input.GetButtonDown("SNES Y Button")) {
 							playerAnimator[animNdx].CrossFade("Idle", 0);
 
 							// Audio: Deny
@@ -152,17 +152,17 @@ public class Battle : MonoBehaviour {
 						BattleQTE.S.Loop();
 						break;
 					case eBattleMode.triedToRunFromBoss:
-						if (Input.GetButtonDown("SNES A Button")) {
+						if (Input.GetButtonDown("SNES B Button")) {
 							PlayerTurn();
 						}
 						break;
 					case eBattleMode.enemyTurn:
-						if (Input.GetButtonDown("SNES A Button")) {
+						if (Input.GetButtonDown("SNES B Button")) {
 							EnemyTurn();
 						}
 						break;
 					case eBattleMode.enemyAction:
-						if (Input.GetButtonDown("SNES A Button")) {
+						if (Input.GetButtonDown("SNES B Button")) {
 							// If the enemy announced what move it would perform during its previous turn...
 							if (nextTurnMoveNdx[EnemyNdx()] != 999) {
 								// Cache move index
@@ -181,37 +181,37 @@ public class Battle : MonoBehaviour {
 						}
 						break;
 					case eBattleMode.partyDeath:
-						if (Input.GetButtonDown("SNES A Button")) {
+						if (Input.GetButtonDown("SNES B Button")) {
 							BattleEnd.S.PartyDeath();
 						}
 						break;
 					case eBattleMode.dropItem:
-						if (Input.GetButtonDown("SNES A Button")) {
+						if (Input.GetButtonDown("SNES B Button")) {
 							BattleEnd.S.DropItem();
 						}
 						break;
 					case eBattleMode.addExpAndGold:
-						if (Input.GetButtonDown("SNES A Button")) {
+						if (Input.GetButtonDown("SNES B Button")) {
 							BattleEnd.S.AddExpAndGold(false);
 						}
 						break;
 					case eBattleMode.addExpAndGoldNoDrops:
-						if (Input.GetButtonDown("SNES A Button")) {
+						if (Input.GetButtonDown("SNES B Button")) {
 							BattleEnd.S.AddExpAndGold(true);
 						}
 						break;
 					case eBattleMode.levelUp:
-						if (Input.GetButtonDown("SNES A Button")) {
+						if (Input.GetButtonDown("SNES B Button")) {
 							BattleEnd.S.LevelUp();
 						}
 						break;
 					case eBattleMode.multiLvlUp:
-						if (Input.GetButtonDown("SNES A Button")) {
+						if (Input.GetButtonDown("SNES B Button")) {
 							BattleEnd.S.MultiLvlUp(BattleEnd.S.membersToLevelUp[0]);
 						}
 						break;
 					case eBattleMode.returnToWorld:
-						if (Input.GetButtonDown("SNES A Button")) {
+						if (Input.GetButtonDown("SNES B Button")) {
 							BattleEnd.S.ReturnToWorld();
 						}
 						break;

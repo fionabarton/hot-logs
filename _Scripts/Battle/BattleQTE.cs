@@ -212,7 +212,7 @@ public class BattleQTE : MonoBehaviour {
 	public void Loop() {
         switch (_.battleMode) {
 			case eBattleMode.qteInitialize:
-				if (Input.GetButtonDown("SNES A Button")) {
+				if (Input.GetButtonDown("SNES B Button")) {
 					Initialize();
 
 					// Animation: QTE CHARGE
@@ -225,7 +225,7 @@ public class BattleQTE : MonoBehaviour {
 				switch (qteType) {
 					case 0: /////////// MASH ///////////
 						// Increase bar while held down
-						if (Input.GetButtonDown("SNES A Button")) {
+						if (Input.GetButtonDown("SNES B Button")) {
 							val += (playerForce * Time.fixedDeltaTime);
 
 							// Audio:
@@ -237,12 +237,12 @@ public class BattleQTE : MonoBehaviour {
 					case 1: /////////// HOLD ///////////	
 						if (!buttonDown) {
 							// Start holding button down
-							if (Input.GetButton("SNES A Button")) {
+							if (Input.GetButton("SNES B Button")) {
 								buttonDown = true;
 							}
 						} else {
 							// If user released button, check result
-							if (Input.GetButtonUp("SNES A Button")) {
+							if (Input.GetButtonUp("SNES B Button")) {
 								if (val >= 50) {
 									Result(true);
 								} else {
@@ -256,7 +256,7 @@ public class BattleQTE : MonoBehaviour {
 						break;
 					case 3: /////////// STOP ///////////
 						// Stop cursor
-						if (Input.GetButtonDown("SNES A Button")) {
+						if (Input.GetButtonDown("SNES B Button")) {
 							if (val >= 50) {
 								Result(true);
 							} else {
