@@ -18,7 +18,7 @@ public class ShopScreen_ItemPurchasedOrSoldMode : MonoBehaviour {
 
 	public void Loop(ShopScreen shopScreen) {
 		if (PauseMessage.S.dialogueFinished) {
-			if (Input.GetButtonDown("SNES A Button")) {
+			if (Input.GetButtonDown("SNES B Button")) {
 				ShopScreen_PickItemMode.S.Setup(shopScreen);
 			}
 		}

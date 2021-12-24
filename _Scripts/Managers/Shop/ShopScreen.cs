@@ -87,7 +87,7 @@ public class ShopScreen : MonoBehaviour {
 		}
 
 		// Deactivate ShopScreen
-		if(Input.GetButtonDown ("SNES B Button")) {
+		if(Input.GetButtonDown ("SNES Y Button")) {
 			// Audio: Deny
 			AudioManager.S.PlaySFX(eSoundName.deny);
 			Deactivate();
