@@ -228,7 +228,7 @@ public class CutsceneManager : MonoBehaviour
 
     // Handle multiple lines of dialogue
     private void Loop() {
-        if (Input.GetButtonDown("SNES A Button")) {
+        if (Input.GetButtonDown("SNES B Button")) {
             if (!RPG.S.paused) {
                 // For Multiple Lines
                 if (DialogueManager.S.dialogueFinished && DialogueManager.S.ndx > 0) {
