@@ -34,7 +34,7 @@ public class SubMenu : MonoBehaviour {
 	}
 
 	public void Loop() {
-		if ((!RPG.S.paused && !isPauseSubMenu) || (RPG.S.paused && isPauseSubMenu)) {
+		if ((!RPG.S.paused && !isPauseSubMenu) || (RPG.S.paused && isPauseSubMenu) || RPG.S.currentScene == "Title_Screen") {
 			// Reset canUpdate
 			if (Input.GetAxisRaw("Horizontal") != 0f || Input.GetAxisRaw("Vertical") != 0f) {
 				canUpdate = true;

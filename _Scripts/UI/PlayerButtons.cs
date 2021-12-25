@@ -32,7 +32,7 @@ public class PlayerButtons : MonoBehaviour {
 
 			// Set position 
 			if (RPG.S.paused) {
-				rectTrans.anchoredPosition = new Vector2(0, 0);
+				rectTrans.anchoredPosition = new Vector2(0, -25);
 			} else {
 				rectTrans.anchoredPosition = new Vector2(0, 650);
 			}
@@ -71,13 +71,13 @@ public class PlayerButtons : MonoBehaviour {
 		// Weapon: STR, Armor: DEF
 
 		try {
-            if (Party.stats.Count > 0) {
+            if (Party.S.stats.Count > 0) {
 				for (int i = 0; i <= Party.S.partyNdx; i++) {
 					statValue[i].text =
-						Party.stats[i].HP + "/" +
-						Party.stats[i].maxHP + "\n" +
-						Party.stats[i].MP + "/" +
-						Party.stats[i].maxMP;
+						Party.S.stats[i].HP + "/" +
+						Party.S.stats[i].maxHP + "\n" +
+						Party.S.stats[i].MP + "/" +
+						Party.S.stats[i].maxMP;
 				}
 			}
 

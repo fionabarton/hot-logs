@@ -228,13 +228,13 @@ public class PauseScreen : MonoBehaviour {
 
 	// Display Party Stats (Level, HP, MP, EXP)
 	public void UpdateGUI () {
-		for(int i = 0; i < Party.stats.Count; i++) {
-			playerNameText[i].text = Party.stats[i].name;
+		for(int i = 0; i < Party.S.stats.Count; i++) {
+			playerNameText[i].text = Party.S.stats[i].name;
 
-			statsNumText[i].text = Party.stats[i].LVL + "\n" +
-				Party.stats[i].HP + "/" + Party.stats[i].maxHP + "\n" +
-				Party.stats[i].MP + "/" + Party.stats[i].maxMP + "\n" +
-				Party.stats[i].EXP + "\n" +
+			statsNumText[i].text = Party.S.stats[i].LVL + "\n" +
+				Party.S.stats[i].HP + "/" + Party.S.stats[i].maxHP + "\n" +
+				Party.S.stats[i].MP + "/" + Party.S.stats[i].maxMP + "\n" +
+				Party.S.stats[i].EXP + "\n" +
 				Party.S.GetExpToNextLevel(i);
 		}
 	}
