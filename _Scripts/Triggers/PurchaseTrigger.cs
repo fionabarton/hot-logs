@@ -15,7 +15,7 @@ public class PurchaseTrigger : ActivateOnButtonPress {
                                          " gold?");
 
         // Set SubMenu Text
-        SubMenu.S.SetText("Yes", "No");
+        RPG.S.gameSubMenu.SetText("Yes", "No");
 
         // Activate Sub Menu after Dialogue 
         DialogueManager.S.activateSubMenu = true;
@@ -25,17 +25,17 @@ public class PurchaseTrigger : ActivateOnButtonPress {
         DialogueManager.S.grayOutTextBox = true;
 
         // Set OnClick Methods
-        Utilities.S.RemoveListeners(SubMenu.S.buttonCS);
-        SubMenu.S.buttonCS[0].onClick.AddListener(Yes);
-        SubMenu.S.buttonCS[1].onClick.AddListener(No);
+        Utilities.S.RemoveListeners(RPG.S.gameSubMenu.buttonCS);
+        RPG.S.gameSubMenu.buttonCS[0].onClick.AddListener(Yes);
+        RPG.S.gameSubMenu.buttonCS[1].onClick.AddListener(No);
 
         // Set button navigation
-        Utilities.S.SetButtonNavigation(SubMenu.S.buttonCS[0], SubMenu.S.buttonCS[1], SubMenu.S.buttonCS[1]);
-        Utilities.S.SetButtonNavigation(SubMenu.S.buttonCS[1], SubMenu.S.buttonCS[0], SubMenu.S.buttonCS[0]);
+        Utilities.S.SetVerticalButtonNavigation(RPG.S.gameSubMenu.buttonCS[0], RPG.S.gameSubMenu.buttonCS[1], RPG.S.gameSubMenu.buttonCS[1]);
+        Utilities.S.SetVerticalButtonNavigation(RPG.S.gameSubMenu.buttonCS[1], RPG.S.gameSubMenu.buttonCS[0], RPG.S.gameSubMenu.buttonCS[0]);
     }
 
     void Yes() {
-        DialogueManager.S.ResetSubMenuSettings();
+        DialogueManager.S.ResetSettings();
 
         Item tItem = ItemManager.S.items[(int)item];
 
@@ -62,7 +62,7 @@ public class PurchaseTrigger : ActivateOnButtonPress {
         // Audio: Deny
         AudioManager.S.PlaySFX(eSoundName.deny);
 
-        DialogueManager.S.ResetSubMenuSettings();
+        DialogueManager.S.ResetSettings();
         DialogueManager.S.DisplayText("That's cool. Later, bro.");
     }
 }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum eShopkeeperMode { no, buy, sell };
+public enum eShopkeeperMode { pickBuyOrSell, pickedBuy, pickedSell };
 
 /// <summary>
 /// If there is a child gameObject that also has a collider (ex. Solid Collider):
@@ -14,7 +14,7 @@ public class ShopkeeperTrigger : ActivateOnButtonPress {
 	// Shop Inventory
 	public List<eItem>       itemsToPopulateInventory;
 
-    public eShopkeeperMode   mode = eShopkeeperMode.no; // 0: Nothing, 1: Buy, 2: Sell
+    public eShopkeeperMode   mode = eShopkeeperMode.pickBuyOrSell; // 0: Nothing, 1: Buy, 2: Sell
 
     [Header("Set Dynamically")]
     public List<Item>        inventory = new List<Item>();
@@ -28,6 +28,8 @@ public class ShopkeeperTrigger : ActivateOnButtonPress {
     }
 
     protected override void Action() {
+        mode = eShopkeeperMode.pickBuyOrSell;
+
         // Set Camera to Shopkeeper gameObject
         CamManager.S.ChangeTarget(gameObject, true);
 
@@ -61,7 +63,7 @@ public class ShopkeeperTrigger : ActivateOnButtonPress {
 
         DialogueManager.S.ResetSettings();
         DialogueManager.S.DisplayText("Fantastic! What would you like to buy? Hmmm?");
-        mode = eShopkeeperMode.buy;
+        mode = eShopkeeperMode.pickedBuy;
     }
 
 	void Sell() {
@@ -70,7 +72,7 @@ public class ShopkeeperTrigger : ActivateOnButtonPress {
 
         DialogueManager.S.ResetSettings();
         DialogueManager.S.DisplayText("How grand! What would you like to sell? Hmmm?");
-        mode = eShopkeeperMode.sell;
+        mode = eShopkeeperMode.pickedSell;
     }
 
 	void No() {
@@ -92,12 +94,12 @@ public class ShopkeeperTrigger : ActivateOnButtonPress {
         if (Input.GetButtonDown("SNES A Button")) {
             // Activate Shop Screen
             if (DialogueManager.S.dialogueFinished) {
-                if (mode != eShopkeeperMode.no) {
-                    if (mode == eShopkeeperMode.buy) {
+                if (mode != eShopkeeperMode.pickBuyOrSell) {
+                    if (mode == eShopkeeperMode.pickedBuy) {
                         // Import shopkeeper inventory
                         ShopScreen.S.ImportInventory(inventory);
                         ShopScreen.S.buyOrSellMode = true;
-                    } else if (mode == eShopkeeperMode.sell) {
+                    } else if (mode == eShopkeeperMode.pickedSell) {
                         // Import party inventory
                         ShopScreen.S.ImportInventory(Inventory.S.GetItemList());
                         ShopScreen.S.buyOrSellMode = false;
@@ -112,11 +114,11 @@ public class ShopkeeperTrigger : ActivateOnButtonPress {
                     EventManager.OnShopScreenDeactivated += ResetTrigger;
 
                     // Reset ability to input
-                    mode = 0;
+                    mode = eShopkeeperMode.pickBuyOrSell;
                 }
             }
-        }   
-	}
+        }
+    }
 
 	protected override void OnTriggerEnter2D(Collider2D coll) {
         if (coll.gameObject.CompareTag("PlayerTrigger")) {
