@@ -123,6 +123,9 @@ public class ColorScreen : MonoBehaviour{
             case 2: // Enemy: Attack All Spell
                 BattleEnemyActions.S.AttackAll();
                 break;
+            case 3: // Enemy: Attack Single Spell
+                BattleEnemyActions.S.AttackSingle();
+                break;
         }
 
         // Remove all animation events
