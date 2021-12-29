@@ -19,23 +19,8 @@ public class BattleEnemyActions : MonoBehaviour {
 		_ = Battle.S;
 	}
 
-	// Index = 0
-	// Attack ONE Party Member
-	public void Attack() {
-		// Attempt to run if the enemy's attack won't do any damage to the player
-		if (Random.value < _.enemyStats[_.EnemyNdx()].chanceToCallMove) {
-			// Calculate Max Damage ((Lvl * 4) + Str - Def)
-			int maxAttackerDamage = (_.enemyStats[_.EnemyNdx()].LVL * 4) + _.enemyStats[_.EnemyNdx()].STR - Party.S.stats[0].DEF;
-
-			// If attack doesn't do any damage...
-			if (maxAttackerDamage <= 0) {
-				// ...RUN!
-				_.enemyStats[_.EnemyNdx()].AI = eEnemyAI.RunAway;
-				return;
-			}
-		}
-
-		// Randomly select party member to attack
+	// Randomly select party member to attack
+	int GetRandomPlayerToAttack() {
 		int playerToAttack = 0;
 		float randomValue = Random.value;
 		if (_.partyQty == 0) {
@@ -70,7 +55,11 @@ public class BattleEnemyActions : MonoBehaviour {
 				playerToAttack = 2;
 			}
 		}
+		return playerToAttack;
+	}
 
+	// Play attack animations, SFX, and spawn objects
+	public void PlaySingleAttackAnimsAndSFX(int playerToAttack) {
 		// Animation: Enemy ATTACK in center
 		_.enemyAnimator[_.animNdx].CrossFade("Attack", 0);
 
@@ -82,7 +71,34 @@ public class BattleEnemyActions : MonoBehaviour {
 		AudioManager.S.PlaySFX(randomInt);
 
 		// Animation: Shake Screen
-		Battle.S.battleUIAnim.CrossFade ("BattleUI_Shake", 0); 
+		Battle.S.battleUIAnim.CrossFade("BattleUI_Shake", 0);
+
+		// Get and position Explosion game object
+		GameObject explosion = ObjectPool.S.GetPooledObject("Explosion");
+		ObjectPool.S.PosAndEnableObj(explosion, _.playerSprite[playerToAttack]);
+
+		// Display Floating Score
+		RPG.S.InstantiateFloatingScore(_.playerSprite[playerToAttack], _.attackDamage, Color.red);
+	}
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// Index = 0
+	// Attack ONE Party Member
+	public void Attack() {
+		// Attempt to run if the enemy's attack won't do any damage to the player
+		if (Random.value < _.enemyStats[_.EnemyNdx()].chanceToCallMove) {
+			// Calculate Max Damage ((Lvl * 4) + Str - Def)
+			int maxAttackerDamage = (_.enemyStats[_.EnemyNdx()].LVL * 4) + _.enemyStats[_.EnemyNdx()].STR - Party.S.stats[0].DEF;
+
+			// If attack doesn't do any damage...
+			if (maxAttackerDamage <= 0) {
+				// ...RUN!
+				_.enemyStats[_.EnemyNdx()].AI = eEnemyAI.RunAway;
+				return;
+			}
+		}
+
+		// Randomly select party member to attack
+		int playerToAttack = GetRandomPlayerToAttack();
 
 		// Calculate Attack Damage
 		Battle.S.CalculateAttackDamage(_.enemyStats[_.EnemyNdx()].LVL,
@@ -94,22 +110,8 @@ public class BattleEnemyActions : MonoBehaviour {
 		// Subtract Player Health
 		RPG.S.SubtractPlayerHP (playerToAttack, _.attackDamage);
 
-		// Get and position Explosion game object
-		GameObject explosion = ObjectPool.S.GetPooledObject("Explosion");
-		switch (playerToAttack) {
-		case 0:
-			ObjectPool.S.PosAndEnableObj(explosion, _.playerSprite[0]);
-			break;
-		case 1:
-			ObjectPool.S.PosAndEnableObj(explosion, _.playerSprite[1]);
-			break;
-		case 2:
-			ObjectPool.S.PosAndEnableObj(explosion, _.playerSprite[2]);
-			break;
-		}
-
-		// Display Floating Score
-		RPG.S.InstantiateFloatingScore(_.playerSprite[playerToAttack], _.attackDamage, Color.red);
+		// Play attack animations, SFX, and spawn objects
+		PlaySingleAttackAnimsAndSFX(playerToAttack);
 
 		// Player Death or Next Turn
 		if (Party.S.stats[playerToAttack].HP < 1) {
@@ -130,7 +132,7 @@ public class BattleEnemyActions : MonoBehaviour {
 			_.battleMode = eBattleMode.qte;
 		}	
 	}
-
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Index = 1
 	// Defend
 	public void Defend (){
@@ -146,13 +148,13 @@ public class BattleEnemyActions : MonoBehaviour {
 
 		_.NextTurn ();
 	}
-
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Index = 2
 	// Run
 	public void Run (){
 		BattleEnd.S.EnemyRun(_.EnemyNdx());
 	}
-
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Index = 3
 	// Stunned
 	public void Stunned (){
@@ -162,7 +164,7 @@ public class BattleEnemyActions : MonoBehaviour {
 		BattleDialogue.S.DisplayText (_.enemyStats [_.EnemyNdx()].name + " is stunned and doesn't move!\nWhat a rube!");
 		_.NextTurn ();
 	}
-
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Index = 4
 	// Heal Spell
 	public void AttemptHealSpell (){
@@ -244,7 +246,54 @@ public class BattleEnemyActions : MonoBehaviour {
 
 		_.NextTurn();
 	}
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////
+	public void AttemptAttackSingle() {
+		// Enough MP
+		if (_.enemyStats[_.EnemyNdx()].MP >= 1) {
+			ColorScreen.S.PlayClip("Flicker", 3);
+		} else {
+			// Not enough MP
+			BattleDialogue.S.DisplayText(_.enemyStats[_.EnemyNdx()].name + " attempts to cast Fireball...\n...But doesn't have enough MP to do so!");
 
+			// Audio: Deny
+			AudioManager.S.PlaySFX(eSoundName.deny);
+
+			// Animation: Enemy ATTACK in center
+			_.enemyAnimator[_.animNdx].CrossFade("Attack", 0);
+
+			_.NextTurn();
+		}
+	}
+
+	public void AttackSingle() {
+		// Subtract Enemy MP
+		_.enemyStats[_.EnemyNdx()].MP -= 1;
+
+		// Randomly select party member to attack
+		int playerToAttack = GetRandomPlayerToAttack();
+
+		// Subtract 8-12 HP
+		_.attackDamage = Random.Range(8, 12);
+
+		// Subtract Player Health
+		RPG.S.SubtractPlayerHP(playerToAttack, _.attackDamage);
+
+		// Play attack animations, SFX, and spawn objects
+		PlaySingleAttackAnimsAndSFX(playerToAttack);
+
+		// Player Death or Next Turn
+		if (Party.S.stats[playerToAttack].HP < 1) {
+			BattleEnd.S.PlayerDeath(playerToAttack);
+		} else {
+			BattleDialogue.S.DisplayText("Used Fireball Spell!\nHit " + Party.S.stats[playerToAttack].name + " for " + _.attackDamage + " HP!");
+
+			// Audio: Fireblast
+			AudioManager.S.PlaySFX(eSoundName.fireball);
+
+			_.NextTurn();
+		}
+	}
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Index = 5
 	// Attack All
 	public void AttemptAttackAll() {
@@ -364,7 +413,7 @@ public class BattleEnemyActions : MonoBehaviour {
 			}
 		}
 	}
-
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Index = 7
 	// Call for backup next turn
 	public void CallForBackupNextTurn() {
@@ -434,7 +483,7 @@ public class BattleEnemyActions : MonoBehaviour {
 		// Display Text
 		BattleDialogue.S.DisplayText(_.enemyStats[_.EnemyNdx()].name + " called for backup...\n...and someone came!");
 	}
-
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////
 	public void PlayersDeath (int qtyKilled, int totalAttackDamage, bool player1 = false, bool player2 = false, bool player3 = false) {
 		// Subtract from PartyQty 
 		_.partyQty -= qtyKilled;
