@@ -176,7 +176,7 @@ public class Battle : MonoBehaviour {
 							// If the enemy didn't announce what move it would perform during its previous turn...
 							} else {
 								// ...let its AI dictate what move to perform
-								BattleEnemyAI.S.EnemyAI(enemyStats[EnemyNdx()].AI);
+								BattleEnemyAI.S.EnemyAI(enemyStats[EnemyNdx()].id);
 							}
 						}
 						break;
