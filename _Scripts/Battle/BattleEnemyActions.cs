@@ -19,45 +19,6 @@ public class BattleEnemyActions : MonoBehaviour {
 		_ = Battle.S;
 	}
 
-	// Randomly select party member to attack
-	int GetRandomPlayerToAttack() {
-		int playerToAttack = 0;
-		float randomValue = Random.value;
-		if (_.partyQty == 0) {
-			for (int i = 0; i < _.playerDead.Count; i++) {
-				if (!_.playerDead[i]) {
-					playerToAttack = i;
-					break;
-				}
-			}
-		} else if (_.partyQty == 1) {
-			if (randomValue > 0.5f) {
-				for (int i = 0; i < _.playerDead.Count; i++) {
-					if (!_.playerDead[i]) {
-						playerToAttack = i;
-						break;
-					}
-				}
-			} else {
-				for (int i = _.playerDead.Count - 1; i >= 0; i--) {
-					if (!_.playerDead[i]) {
-						playerToAttack = i;
-						break;
-					}
-				}
-			}
-		} else if (_.partyQty == 2) {
-			if (randomValue >= 0 && randomValue <= 0.33f) {
-				playerToAttack = 0;
-			} else if (randomValue > 0.33f && randomValue <= 0.66f) {
-				playerToAttack = 1;
-			} else if (randomValue > 0.66f && randomValue <= 1.0f) {
-				playerToAttack = 2;
-			}
-		}
-		return playerToAttack;
-	}
-
 	// Play attack animations, SFX, and spawn objects
 	public void PlaySingleAttackAnimsAndSFX(int playerToAttack) {
 		// Animation: Enemy ATTACK in center
@@ -98,7 +59,7 @@ public class BattleEnemyActions : MonoBehaviour {
 		}
 
 		// Randomly select party member to attack
-		int playerToAttack = GetRandomPlayerToAttack();
+		int playerToAttack = BattleStats.S.GetRandomPlayerNdx();
 
 		// Calculate Attack Damage
 		Battle.S.CalculateAttackDamage(_.enemyStats[_.EnemyNdx()].LVL,
@@ -172,7 +133,7 @@ public class BattleEnemyActions : MonoBehaviour {
 		if (_.enemyStats [_.EnemyNdx()].MP >= 3) {
 
 			// Get index of enemy with the lowest HP
-			int enemyNdx = BattleEnemyAI.S.GetEnemyWithLowestHP();
+			int enemyNdx = BattleStats.S.GetEnemyWithLowestHP();
 
 			// Not at Full HP
 			if (enemyNdx != -1) {
@@ -270,7 +231,7 @@ public class BattleEnemyActions : MonoBehaviour {
 		_.enemyStats[_.EnemyNdx()].MP -= 1;
 
 		// Randomly select party member to attack
-		int playerToAttack = GetRandomPlayerToAttack();
+		int playerToAttack = BattleStats.S.GetRandomPlayerNdx();
 
 		// Subtract 8-12 HP
 		_.attackDamage = Random.Range(8, 12);
