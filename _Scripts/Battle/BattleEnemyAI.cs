@@ -19,10 +19,40 @@ public class BattleEnemyAI : MonoBehaviour {
 	}
 
 	// More Spells, Use Items, Call for Backup
-	public void EnemyAI(eEnemyAI enemyAI) {
+	public void EnemyAI(int enemyId) {
 		BattlePlayerActions.S.ButtonsDisableAll();
 
-        switch (enemyAI) {
+        switch (enemyId) {
+            case 0:
+
+                break;
+            case 1:
+
+                break;
+            case 2:
+
+                break;
+            case 3:
+
+                break;
+            case 4:
+
+                break;
+            case 5:
+
+                break;
+            case 6:
+
+                break;
+            case 7:
+
+                break;
+            case 8:
+
+                break;
+        }
+
+        switch (_.enemyStats[_.EnemyNdx()].AI) {
             case eEnemyAI.FightWisely:
                 // If HP is less than 10%...
                 if (Utilities.S.GetPercentage(_.enemyStats[_.EnemyNdx()].HP, _.enemyStats[_.EnemyNdx()].maxHP) < 0.1f) {
@@ -32,7 +62,7 @@ public class BattleEnemyAI : MonoBehaviour {
                         ChanceToCallMove(2, 1);
                     } else {
                         // Heal Spell OR Defend
-                        ChanceToCallMove(5, 1);
+                        ChanceToCallMove(4, 1);
                     }
                 } else {
                     // If MP is less than 10%...
@@ -60,8 +90,20 @@ public class BattleEnemyAI : MonoBehaviour {
                 ChanceToCallMove(1, 2);
                 break;
             case eEnemyAI.FocusOnHeal:
-                // Heal Spell or Defend
-                ChanceToCallMove(4, 1);
+                // If any enemy's HP is less than 25%...
+                if (BattleStats.S.EnemiesNeedsHeal()) {
+                    // If MP is less than 10%...
+                    if (Utilities.S.GetPercentage(_.enemyStats[_.EnemyNdx()].MP, _.enemyStats[_.EnemyNdx()].maxMP) < 0.1f) {
+                        // Defend OR Run 
+                        ChanceToCallMove(1, 2);
+                    } else {
+                        // Heal Spell OR Defend
+                        ChanceToCallMove(4, 1);
+                    }
+                } else {
+                    // Attack OR Defend
+                    ChanceToCallMove(0, 1);
+                }
                 break;
             case eEnemyAI.Random:
                 // Select Random Move
@@ -85,42 +127,6 @@ public class BattleEnemyAI : MonoBehaviour {
                 break;
         }
     }
-
-	// Return the index of the party member with the lowest HP
-	public int GetPlayerWithLowestHP() {
-		int ndx = 0;
-		int lowestHP = -1;
-
-		for (int i = 0; i <= Party.S.partyNdx; i++) {
-            if (!_.playerDead[i]) {
-				if(Party.S.stats[i].HP < lowestHP) {
-					lowestHP = Party.S.stats[i].HP;
-					ndx = i;
-				}
-            }
-		}
-
-		return ndx;
-	}
-
-	// Return the index of the enemy with the lowest HP
-	public int GetEnemyWithLowestHP() {
-		int ndx = -1;
-		int lowestHP = -1;
-
-		for (int i = 0; i < _.enemyStats.Count; i++) {
-            if (!_.enemyStats[i].isDead) {
-				if (_.enemyStats[i].HP < _.enemyStats[i].maxHP) {
-					if (_.enemyStats[i].HP < lowestHP) {
-						lowestHP = _.enemyStats[i].HP;
-						ndx = i;
-					}
-				}
-            }
-		}
-
-		return ndx;
-	}
 
 	// If Enemy is lucky, check if it has desired move
 	void ChanceToCallMove(int firstChoiceNdx, int secondChoiceNdx = 999) {
