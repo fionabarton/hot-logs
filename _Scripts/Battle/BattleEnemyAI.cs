@@ -81,8 +81,13 @@ public class BattleEnemyAI : MonoBehaviour {
                     // Attack
                     ChanceToCallMove(0);
                 } else {
-                    // Attack All Spell
-                    ChanceToCallMove(5);
+                    if (_.partyQty == 0) {
+                        // Attack Single or Attack
+                        ChanceToCallMove(8, 0);
+                    } else {
+                        // Attack All OR Attack Single 
+                        ChanceToCallMove(5, 8);
+                    }
                 }
                 break;
             case eEnemyAI.FocusOnDefend:
