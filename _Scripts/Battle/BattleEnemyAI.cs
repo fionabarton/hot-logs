@@ -127,6 +127,19 @@ public class BattleEnemyAI : MonoBehaviour {
                     ChanceToCallMove(0, 1);
                 }
                 break;
+            case eEnemyAI.Charge:
+                if(_.roundNdx % 3 == 0) { // Every third round...
+                    if (_.partyQty == 0) {
+                        // Attack Single or Attack
+                        ChanceToCallMove(8, 0);
+                    } else {
+                        // Attack All OR Attack Single 
+                        ChanceToCallMove(5, 8);
+                    }
+                } else {
+                    BattleEnemyActions.S.Charge();
+                }
+                break;
             case eEnemyAI.DontUseMP:
             default:
                 break;
@@ -176,7 +189,8 @@ public class BattleEnemyAI : MonoBehaviour {
 			case 6: BattleEnemyActions.S.CallForBackup(); break;
 			case 7: BattleEnemyActions.S.CallForBackupNextTurn(); break;
 			case 8: BattleEnemyActions.S.AttemptAttackSingle(); break;
-			default:BattleEnemyActions.S.Attack(); break;
+            case 9: BattleEnemyActions.S.Charge(); break;
+            default:BattleEnemyActions.S.Attack(); break;
 		}
 	}
 }
