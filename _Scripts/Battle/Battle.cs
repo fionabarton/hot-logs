@@ -61,6 +61,9 @@ public class Battle : MonoBehaviour {
 	// The index of which character's turn it currently is
 	public int				turnNdx;
 
+	// Incremented each time all combatants have taken their turn
+	public int				roundNdx;
+
 	public List<EnemyStats> enemyStats = new List<EnemyStats>();
 	public List<GameObject> enemyGameObjectHolders = new List<GameObject>();
 
@@ -378,6 +381,9 @@ public class Battle : MonoBehaviour {
 		// Reset Chance to Run
 		chanceToRun = 0.5f;
 
+		// Reset roundNdx
+		roundNdx = 1;
+
 		BattleInitiative.S.Initiative();
 
 		// Switch mode (playerTurn or enemyTurn) based off of turnNdx
@@ -394,7 +400,11 @@ public class Battle : MonoBehaviour {
 	public void NextTurn() {
 		// Change turnNdx
 		if (turnNdx <= ((enemyAmount - 1) + (partyQty))) {
-			turnNdx += 1; } else { turnNdx = 0; }
+			turnNdx += 1; 
+		} else { 
+			turnNdx = 0;
+			roundNdx += 1;
+		}
 
 		// Deactivate cursors
 		Utilities.S.SetActiveList(BattleUI.S.targetCursors, false);
