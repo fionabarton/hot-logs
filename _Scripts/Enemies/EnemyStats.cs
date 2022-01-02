@@ -11,6 +11,7 @@ using UnityEngine;
 // 5: eEnemyAI.FocusOnHeal;
 // 6: eEnemyAI.Random;
 // 7: eEnemyAI.RunAway;
+// 7: eEnemyAI.Charge;
 
 ///////////////////// MOVES /////////////////////
 //	0: Attack
