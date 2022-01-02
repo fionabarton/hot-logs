@@ -62,7 +62,7 @@ public class BattleEnemyActions : MonoBehaviour {
 		int playerToAttack = BattleStats.S.GetRandomPlayerNdx();
 
 		// Calculate Attack Damage
-		Battle.S.CalculateAttackDamage(_.enemyStats[_.EnemyNdx()].LVL,
+		BattleStats.S.GetAttackDamage(_.enemyStats[_.EnemyNdx()].LVL,
 									   _.enemyStats[_.EnemyNdx()].STR, _.enemyStats[_.EnemyNdx()].AGI,
 									   Party.S.stats[playerToAttack].DEF, Party.S.stats[playerToAttack].AGI,
 									   _.enemyStats[_.EnemyNdx()].name, Party.S.stats[playerToAttack].name,
@@ -73,6 +73,7 @@ public class BattleEnemyActions : MonoBehaviour {
 
 		// Play attack animations, SFX, and spawn objects
 		PlaySingleAttackAnimsAndSFX(playerToAttack);
+		//StartCoroutine("MultiAttack");
 
 		// Player Death or Next Turn
 		if (Party.S.stats[playerToAttack].HP < 1) {
@@ -93,6 +94,18 @@ public class BattleEnemyActions : MonoBehaviour {
 			_.battleMode = eBattleMode.qte;
 		}	
 	}
+
+	public IEnumerator MultiAttack() {
+		PlaySingleAttackAnimsAndSFX(0);
+		yield return new WaitForSeconds(0.1f);
+		PlaySingleAttackAnimsAndSFX(1);
+		yield return new WaitForSeconds(0.1f);
+		PlaySingleAttackAnimsAndSFX(0);
+		yield return new WaitForSeconds(0.1f);
+		PlaySingleAttackAnimsAndSFX(1);
+		yield return new WaitForSeconds(0.1f);
+	}
+
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Index = 1
 	// Defend
@@ -325,7 +338,7 @@ public class BattleEnemyActions : MonoBehaviour {
 				_.attackDamage -= Party.S.stats[i].DEF;
 
 				// If DEFENDING, cut AttackDamage in HALF
-				_.CheckIfDefending(Party.S.stats[i].name);
+				BattleStats.S.CheckIfDefending(Party.S.stats[i].name);
 
 				if (_.attackDamage < 0) {
 					_.attackDamage = 0;

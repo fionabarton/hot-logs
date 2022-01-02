@@ -91,7 +91,7 @@ public class BattlePlayerActions : MonoBehaviour {
 
 	public void AttackEnemy(int ndx) {
 		// Calculate Attack Damage
-		_.CalculateAttackDamage(Party.S.stats[_.PlayerNdx()].LVL,
+		BattleStats.S.GetAttackDamage(Party.S.stats[_.PlayerNdx()].LVL,
 								Party.S.stats[_.PlayerNdx()].STR, Party.S.stats[_.PlayerNdx()].AGI,
 								_.enemyStats[ndx].DEF, _.enemyStats[ndx].AGI,
 								Party.S.stats[_.PlayerNdx()].name, _.enemyStats[ndx].name,

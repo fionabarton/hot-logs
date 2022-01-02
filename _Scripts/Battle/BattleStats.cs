@@ -101,4 +101,83 @@ public class BattleStats : MonoBehaviour {
 		}
 		return randomNdx;
 	}
+
+	// Get basic physical attack damage
+	public void GetAttackDamage(int attackerLVL,int attackerSTR, int attackerAGI, int defenderDEF, int defenderAGI, string attackerName, string defenderName, int defenderHP) {
+		// Get Level
+		int tLevel = attackerLVL;
+
+		// Reset Attack Damage
+		_.attackDamage = 0;
+
+		// 5% chance to Miss/Dodge...
+		// ...AND 25% chance to Miss/Dodge if Defender AGI is more than Attacker's 
+		if (Random.value <= 0.05f || (defenderAGI > attackerAGI && Random.value < 0.25f)) {
+			if (_.bonusDamage > 0) {
+				// Add QTE Bonus Damage
+				_.attackDamage = _.bonusDamage;
+
+				if (defenderHP > _.bonusDamage) {
+					if (Random.value <= 0.5f) {
+						BattleDialogue.S.DisplayText(attackerName + "'s attack attempt nearly failed, but scraped " + defenderName + " for " + _.attackDamage + " points!");
+					} else {
+						BattleDialogue.S.DisplayText(attackerName + " nearly missed the mark, but knicked " + defenderName + " for " + _.attackDamage + " points!");
+					}
+				}
+			} else {
+				if (Random.value <= 0.5f) {
+					BattleDialogue.S.DisplayText(attackerName + " attempted to attack " + defenderName + "... but missed!");
+				} else {
+					BattleDialogue.S.DisplayText(attackerName + " missed the mark! " + defenderName + " dodged out of the way!");
+				}
+			}
+		} else {
+			// Critical Hit
+			bool isCriticalHit = false;
+			if (Random.value < 0.05f) {
+				tLevel *= 2;
+				isCriticalHit = true;
+			}
+
+			// Roll Lvl Dice
+			for (int i = 0; i < tLevel; i++) {
+				int tRandom = Random.Range(1, 4);
+				_.attackDamage += tRandom;
+			}
+
+			// Add Modifier (Strength)
+			_.attackDamage += attackerSTR;
+
+			// Subtract Modifier (Defense)
+			_.attackDamage -= defenderDEF;
+
+			if (_.attackDamage < 0) {
+				_.attackDamage = 0;
+			}
+
+			// Add QTE Bonus Damage
+			_.attackDamage += _.bonusDamage;
+
+			// If DEFENDING, cut AttackDamage in HALF
+			CheckIfDefending(defenderName);
+
+			if (defenderHP > _.attackDamage) {
+				// Display Text
+				if (isCriticalHit) {
+					BattleDialogue.S.DisplayText("Critical hit!\n" + attackerName + " struck " + defenderName + " for " + _.attackDamage + " points!");
+				} else {
+					BattleDialogue.S.DisplayText(attackerName + " struck " + defenderName + " for " + _.attackDamage + " points!");
+				}
+			}
+		}
+		// Reset QTE Bonus Damage
+		_.bonusDamage = 0;
+	}
+
+	// If defending, cut attackDamage in half
+	public void CheckIfDefending(string defender) {
+		if (_.defenders.Contains(defender)) {
+			_.attackDamage /= 2;
+		}
+	}
 }
