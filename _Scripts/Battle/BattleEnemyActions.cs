@@ -208,6 +208,8 @@ public class BattleEnemyActions : MonoBehaviour {
 		_.NextTurn();
 	}
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// Index = 8
+	// Single Attack
 	public void AttemptAttackSingle() {
 		// Enough MP
 		if (_.enemyStats[_.EnemyNdx()].MP >= 1) {
@@ -443,6 +445,16 @@ public class BattleEnemyActions : MonoBehaviour {
 
 		// Display Text
 		BattleDialogue.S.DisplayText(_.enemyStats[_.EnemyNdx()].name + " called for backup...\n...and someone came!");
+	}
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// Index = 9
+	// Charge
+	public void Charge() {
+		// Audio: Buff
+		AudioManager.S.PlaySFX(eSoundName.buff2);
+
+		BattleDialogue.S.DisplayText(_.enemyStats[_.EnemyNdx()].name + " is getting ready to do something cool...\n...what could it be?!");
+		_.NextTurn();
 	}
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////
 	public void PlayersDeath (int qtyKilled, int totalAttackDamage, bool player1 = false, bool player2 = false, bool player3 = false) {
