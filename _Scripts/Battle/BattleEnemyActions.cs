@@ -45,19 +45,6 @@ public class BattleEnemyActions : MonoBehaviour {
 	// Index = 0
 	// Attack ONE Party Member
 	public void Attack() {
-		// Attempt to run if the enemy's attack won't do any damage to the player
-		if (Random.value < _.enemyStats[_.EnemyNdx()].chanceToCallMove) {
-			// Calculate Max Damage ((Lvl * 4) + Str - Def)
-			int maxAttackerDamage = (_.enemyStats[_.EnemyNdx()].LVL * 4) + _.enemyStats[_.EnemyNdx()].STR - Party.S.stats[0].DEF;
-
-			// If attack doesn't do any damage...
-			if (maxAttackerDamage <= 0) {
-				// ...RUN!
-				_.enemyStats[_.EnemyNdx()].AI = eEnemyAI.RunAway;
-				return;
-			}
-		}
-
 		// Randomly select party member to attack
 		int playerToAttack = BattleStats.S.GetRandomPlayerNdx();
 

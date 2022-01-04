@@ -63,6 +63,21 @@ public class BattleStats : MonoBehaviour {
 		return false;
 	}
 
+	// The enemy attempts to run away if their attack won't damage the player
+	public void RunIfAttackUseless() {
+		if (Random.value < _.enemyStats[_.EnemyNdx()].chanceToCallMove) {
+			// Calculate attack damage to player ((Lvl * 4) + Str - Def)
+			int attackDamage = ((_.enemyStats[_.EnemyNdx()].LVL * 4) + _.enemyStats[_.EnemyNdx()].STR) - Party.S.stats[0].DEF;
+
+			// If attack doesn't do any damage...
+			if (attackDamage <= 0) {
+				// ...the enemy focuses on running away
+				_.enemyStats[_.EnemyNdx()].AI = eEnemyAI.RunAway;
+				return;
+			}
+		}
+	}
+
 	// Returns a random party member index
 	public int GetRandomPlayerNdx() {
 		int randomNdx = 0;
