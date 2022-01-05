@@ -126,8 +126,6 @@ public class BattleSpells : MonoBehaviour {
 	}
 
     public void HealSelectedPartyMember(int ndx, Spell spell) {
-		//Debug.Log("Party Heal");
-
 		// Subtract Spell cost from Player's MP
 		RPG.S.SubtractPlayerMP(_.PlayerNdx(), spell.cost);
 			
@@ -180,10 +178,9 @@ public class BattleSpells : MonoBehaviour {
 		// Subtract Spell cost from Player's MP
 		RPG.S.SubtractPlayerMP (_.PlayerNdx(), spell.cost);
 
-		// Miss/Dodge
 		// 5% chance to Miss/Dodge...
-		// ...but 25% chance if Defender WIS is more than Attacker's 
-		if (UnityEngine.Random.value <= 0.05f || (_.enemyStats [ndx].WIS > Party.S.stats[_.PlayerNdx()].WIS && UnityEngine.Random.value < 0.25f)) {
+		// ...but 10% chance if Defender WIS is more than Attacker's 
+		if (UnityEngine.Random.value <= 0.05f || (_.enemyStats [ndx].WIS > Party.S.stats[_.PlayerNdx()].WIS && UnityEngine.Random.value < 0.10f)) {
 			// Set anim
 			_.playerAnimator[_.PlayerNdx()].CrossFade("Fail_Spell", 0);
 
@@ -257,12 +254,9 @@ public class BattleSpells : MonoBehaviour {
 		// Subtract Spell cost from Player's MP
 		RPG.S.SubtractPlayerMP (_.PlayerNdx(), spell.cost);
 
-		// *** TBR: Reference the Defender (still living) with the highest WIS ***
-
-		// Miss/Dodge
 		// 5% chance to Miss/Dodge...
 		// ...but 25% chance if Defender WIS is more than Attacker's 
-		if (UnityEngine.Random.value <= 0.05f || (_.enemyStats[0].WIS > Party.S.stats[_.PlayerNdx()].WIS && UnityEngine.Random.value < 0.25f)) {
+		if (UnityEngine.Random.value <= 0.10f || (_.enemyStats[0].WIS > Party.S.stats[_.PlayerNdx()].WIS && UnityEngine.Random.value < 0.10f)) {
 			// Set anim
 			_.playerAnimator[_.PlayerNdx()].CrossFade("Fail_Spell", 0);
 
