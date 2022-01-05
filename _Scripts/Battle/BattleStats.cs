@@ -119,20 +119,19 @@ public class BattleStats : MonoBehaviour {
 
 	// Get basic physical attack damage
 	public void GetAttackDamage(int attackerLVL,int attackerSTR, int attackerAGI, int defenderDEF, int defenderAGI, string attackerName, string defenderName, int defenderHP) {
-		// Get Level
-		int tLevel = attackerLVL;
-
 		// Reset Attack Damage
 		_.attackDamage = 0;
 
 		// 5% chance to Miss/Dodge...
-		// ...AND 25% chance to Miss/Dodge if Defender AGI is more than Attacker's 
-		if (Random.value <= 0.05f || (defenderAGI > attackerAGI && Random.value < 0.25f)) {
-			if (_.bonusDamage > 0) {
+		// ...AND 10% chance to Miss/Dodge if Defender AGI is more than Attacker's 
+		if (Random.value <= 0.05f || (defenderAGI > attackerAGI && Random.value < 0.10f)) {
+			// If there's any QTE bonus damage...
+			if (_.qteBonusDamage > 0) {
 				// Add QTE Bonus Damage
-				_.attackDamage = _.bonusDamage;
+				_.attackDamage = _.qteBonusDamage;
 
-				if (defenderHP > _.bonusDamage) {
+				// If the bonus damage doesn't kill the defender...
+				if (defenderHP > _.qteBonusDamage) {
 					if (Random.value <= 0.5f) {
 						BattleDialogue.S.DisplayText(attackerName + "'s attack attempt nearly failed, but scraped " + defenderName + " for " + _.attackDamage + " points!");
 					} else {
@@ -147,23 +146,21 @@ public class BattleStats : MonoBehaviour {
 				}
 			}
 		} else {
-			// Critical Hit
+			// 5% chance for Critical Hit
+			// Doubles the amount of damage dice to be rolled
 			bool isCriticalHit = false;
 			if (Random.value < 0.05f) {
-				tLevel *= 2;
+				attackerLVL *= 2;
 				isCriticalHit = true;
 			}
 
-			// Roll Lvl Dice
-			for (int i = 0; i < tLevel; i++) {
-				int tRandom = Random.Range(1, 4);
-				_.attackDamage += tRandom;
+			// For each level, roll one die & add its value to attackDamage
+			for (int i = 0; i < attackerLVL; i++) {
+				_.attackDamage += Random.Range(1, 4);
 			}
 
-			// Add Modifier (Strength)
+			// Apply modifiers (attacker's STR & defenders DEF)
 			_.attackDamage += attackerSTR;
-
-			// Subtract Modifier (Defense)
 			_.attackDamage -= defenderDEF;
 
 			if (_.attackDamage < 0) {
@@ -171,13 +168,13 @@ public class BattleStats : MonoBehaviour {
 			}
 
 			// Add QTE Bonus Damage
-			_.attackDamage += _.bonusDamage;
+			_.attackDamage += _.qteBonusDamage;
 
 			// If DEFENDING, cut AttackDamage in HALF
 			CheckIfDefending(defenderName);
 
+			// Display Text
 			if (defenderHP > _.attackDamage) {
-				// Display Text
 				if (isCriticalHit) {
 					BattleDialogue.S.DisplayText("Critical hit!\n" + attackerName + " struck " + defenderName + " for " + _.attackDamage + " points!");
 				} else {
@@ -185,8 +182,6 @@ public class BattleStats : MonoBehaviour {
 				}
 			}
 		}
-		// Reset QTE Bonus Damage
-		_.bonusDamage = 0;
 	}
 
 	// If defending, cut attackDamage in half
