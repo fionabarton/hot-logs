@@ -5,7 +5,6 @@ using UnityEngine.UI;
 
 public class BattleEnemyActions : MonoBehaviour {
 	[Header ("Set Dynamically")]
-	// Singleton
 	private static BattleEnemyActions _S;
 	public static BattleEnemyActions S { get { return _S; } set { _S = value; } }
 
@@ -107,28 +106,28 @@ public class BattleEnemyActions : MonoBehaviour {
 		// Audio: Buff 2
 		AudioManager.S.PlaySFX(eSoundName.buff2);
 
-		_.NextTurn ();
+		_.NextTurn();
 	}
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Index = 2
 	// Run
-	public void Run (){
+	public void Run(){
 		BattleEnd.S.EnemyRun(_.EnemyNdx());
 	}
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Index = 3
 	// Stunned
-	public void Stunned (){
+	public void Stunned(){
 		// Audio: Deny
 		AudioManager.S.PlaySFX(eSoundName.deny);
 
 		BattleDialogue.S.DisplayText (_.enemyStats [_.EnemyNdx()].name + " is stunned and doesn't move!\nWhat a rube!");
-		_.NextTurn ();
+		_.NextTurn();
 	}
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Index = 4
 	// Heal Spell
-	public void AttemptHealSpell (){
+	public void AttemptHealSpell(){
 		// Enough MP
 		if (_.enemyStats [_.EnemyNdx()].MP >= 3) {
 
@@ -150,17 +149,13 @@ public class BattleEnemyActions : MonoBehaviour {
 			}
 		} else {
 			// Not enough MP
-			BattleDialogue.S.DisplayText (_.enemyStats[_.EnemyNdx()].name + " attempts to cast a Heal Spell...\n...But doesn't have enough MP to do so!");
+			BattleDialogue.S.DisplayText(_.enemyStats[_.EnemyNdx()].name + " attempts to cast a Heal Spell...\n...But doesn't have enough MP to do so!");
 
 			// Audio: Deny
 			AudioManager.S.PlaySFX(eSoundName.deny);
 
-			_.NextTurn (); 
+			_.NextTurn(); 
 		}
-
-		// Otherwise...
-		// TBR
-		// Animation: Enemy STUNNED
 	}
 
 	// Called after BattleBlackScreen "Swell" animation
@@ -232,28 +227,46 @@ public class BattleEnemyActions : MonoBehaviour {
 		// Subtract Enemy MP
 		_.enemyStats[_.EnemyNdx()].MP -= 1;
 
-		// Randomly select party member to attack
-		int playerToAttack = BattleStats.S.GetRandomPlayerNdx();
+		// 5% chance to Miss/Dodge...
+		// ...but 10% chance if Defender WIS is more than Attacker's 
+		if (Random.value <= 0.05f || (_.enemyStats[_.EnemyNdx()].WIS > Party.S.stats[0].WIS && Random.value < 0.10f)) {
+			if (Random.value <= 0.5f) {
+				BattleDialogue.S.DisplayText(_.enemyStats[_.EnemyNdx()].name + " attempted to cast Fireball... but missed the party completely!");
+			} else {
+				BattleDialogue.S.DisplayText(_.enemyStats[_.EnemyNdx()].name + " cast Fireball, but the party deftly dodged out of the way!");
+			}
 
-		// Subtract 8-12 HP
-		_.attackDamage = Random.Range(8, 12);
+			// Animation: Enemy ATTACK in center
+			_.enemyAnimator[_.animNdx].CrossFade("Attack", 0);
 
-		// Subtract Player Health
-		RPG.S.SubtractPlayerHP(playerToAttack, _.attackDamage);
-
-		// Play attack animations, SFX, and spawn objects
-		PlaySingleAttackAnimsAndSFX(playerToAttack);
-
-		// Player Death or Next Turn
-		if (Party.S.stats[playerToAttack].HP < 1) {
-			BattleEnd.S.PlayerDeath(playerToAttack);
-		} else {
-			BattleDialogue.S.DisplayText("Used Fireball Spell!\nHit " + Party.S.stats[playerToAttack].name + " for " + _.attackDamage + " HP!");
-
-			// Audio: Fireblast
-			AudioManager.S.PlaySFX(eSoundName.fireball);
+			// Audio: Deny
+			AudioManager.S.PlaySFX(eSoundName.deny);
 
 			_.NextTurn();
+		} else {
+			// Randomly select party member to attack
+			int playerToAttack = BattleStats.S.GetRandomPlayerNdx();
+
+			// Subtract 8-12 HP
+			_.attackDamage = Random.Range(8, 12);
+
+			// Subtract Player Health
+			RPG.S.SubtractPlayerHP(playerToAttack, _.attackDamage);
+
+			// Play attack animations, SFX, and spawn objects
+			PlaySingleAttackAnimsAndSFX(playerToAttack);
+
+			// Player Death or Next Turn
+			if (Party.S.stats[playerToAttack].HP < 1) {
+				BattleEnd.S.PlayerDeath(playerToAttack);
+			} else {
+				BattleDialogue.S.DisplayText("Used Fireball Spell!\nHit " + Party.S.stats[playerToAttack].name + " for " + _.attackDamage + " HP!");
+
+				// Audio: Fireblast
+				AudioManager.S.PlaySFX(eSoundName.fireball);
+
+				_.NextTurn();
+			}
 		}
 	}
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -284,12 +297,9 @@ public class BattleEnemyActions : MonoBehaviour {
 		// Animation: Enemy ATTACK in center
 		_.enemyAnimator[_.animNdx].CrossFade("Attack", 0);
 
-		// *** TBR: Reference the Defender (still living) with the highest WIS ***
-		// 
-		// Miss/Dodge
 		// 5% chance to Miss/Dodge...
-		// ...but 25% chance if Defender WIS is more than Attacker's 
-		if (Random.value <= 0.05f || (_.enemyStats[_.EnemyNdx()].WIS > Party.S.stats[0].WIS && Random.value < 0.25f)) {
+		// ...but 10% chance if Defender WIS is more than Attacker's 
+		if (Random.value <= 0.05f || (_.enemyStats[_.EnemyNdx()].WIS > Party.S.stats[0].WIS && Random.value < 0.10f)) {
 			if (Random.value <= 0.5f) {
 				BattleDialogue.S.DisplayText (_.enemyStats [_.EnemyNdx()].name + " attempted to cast Fireblast... but missed the party completely!");
 			} else {
