@@ -171,7 +171,7 @@ public class BattleStats : MonoBehaviour {
 			_.attackDamage += _.qteBonusDamage;
 
 			// If DEFENDING, cut AttackDamage in HALF
-			CheckIfDefending(defenderName);
+			BattleStatusEffects.S.CheckIfDefending(defenderName);
 
 			// Display Text
 			if (defenderHP > _.attackDamage) {
@@ -181,13 +181,6 @@ public class BattleStats : MonoBehaviour {
 					BattleDialogue.S.DisplayText(attackerName + " struck " + defenderName + " for " + _.attackDamage + " points!");
 				}
 			}
-		}
-	}
-
-	// If defending, cut attackDamage in half
-	public void CheckIfDefending(string defender) {
-		if (_.defenders.Contains(defender)) {
-			_.attackDamage /= 2;
 		}
 	}
 }

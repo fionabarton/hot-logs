@@ -28,7 +28,6 @@ public class BattlePlayerActions : MonoBehaviour {
 	public List<Button>		enemyButtonCS;
 
 	[Header("Set Dynamically")]
-	// Singleton
 	private static BattlePlayerActions _S;
 	public static BattlePlayerActions S { get { return _S; } set { _S = value; } }
 
@@ -144,6 +143,7 @@ public class BattlePlayerActions : MonoBehaviour {
 	}
 
 	// Run Button
+	// 50% chance to run from battle. For each failed attempt, chance increases by 12.5%
 	public void RunButton() {
 		ButtonsDisableAll();
 
@@ -201,11 +201,13 @@ public class BattlePlayerActions : MonoBehaviour {
 			AudioManager.S.PlaySFX(eSoundName.deny);
 		}
 	}
+	// Defend Button
+	// Reduces attack damage by 50%
 	public void DefendButton() {
 		ButtonsDisableAll();
 
 		// Defend until next turn
-		_.AddDefender(Party.S.stats[_.PlayerNdx()].name);
+		BattleStatusEffects.S.AddDefender(Party.S.stats[_.PlayerNdx()].name);
 
 		// TBR
 		// Animation: Player DEFEND

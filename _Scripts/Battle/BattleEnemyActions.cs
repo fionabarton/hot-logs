@@ -96,7 +96,7 @@ public class BattleEnemyActions : MonoBehaviour {
 	// Index = 1
 	// Defend
 	public void Defend (){
-		_.AddDefender(_.enemyStats [_.EnemyNdx()].name);
+		BattleStatusEffects.S.AddDefender(_.enemyStats [_.EnemyNdx()].name);
 
 		// Activate Enemy Shield
 		_.enemyShields[_.EnemyNdx()].SetActive(true);
@@ -335,7 +335,7 @@ public class BattleEnemyActions : MonoBehaviour {
 				_.attackDamage -= Party.S.stats[i].DEF;
 
 				// If DEFENDING, cut AttackDamage in HALF
-				BattleStats.S.CheckIfDefending(Party.S.stats[i].name);
+				BattleStatusEffects.S.CheckIfDefending(Party.S.stats[i].name);
 
 				if (_.attackDamage < 0) {
 					_.attackDamage = 0;

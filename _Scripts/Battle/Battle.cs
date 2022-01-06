@@ -51,7 +51,7 @@ public class Battle : MonoBehaviour {
 	public eBattleMode		battleMode;
 
 	// Attack Damage, Random Factor
-	public int				attackDamage, randomFactor, bonusDamage;
+	public int				attackDamage, randomFactor, qteBonusDamage;
 
 	public int				enemyAmount, partyQty;
 
@@ -73,9 +73,6 @@ public class Battle : MonoBehaviour {
 
 	// Dropped Items
 	public List<Item>		droppedItems = new List<Item>();
-
-	// Defend: Players & Enemies
-	public List<string>		defenders = new List<string>();
 
 	// cache index of enemy that is currently being targeted!
 	public int				targetNdx;
@@ -342,7 +339,7 @@ public class Battle : MonoBehaviour {
 		BattleDialogue.S.displayMessageTextTop.gameObject.transform.parent.gameObject.SetActive(false);
 
 		// Clear Defend: Players & enemyStats
-		defenders.Clear();
+		BattleStatusEffects.S.defenders.Clear();
 
 		// Clear Dropped Items
 		droppedItems.Clear();
@@ -459,7 +456,7 @@ public class Battle : MonoBehaviour {
 		}
 
 		// If Defended previous turn, remove from Defenders list
-		RemoveDefender(Party.S.stats[PlayerNdx()].name);
+		BattleStatusEffects.S.RemoveDefender(Party.S.stats[PlayerNdx()].name);
 		playerShields[PlayerNdx()].SetActive(false);
 
 		// Deactivate '...' Word Bubble
@@ -502,7 +499,7 @@ public class Battle : MonoBehaviour {
 		BattleUI.S.DisplayTurnOrder();
 
 		// If Defended previous turn, remove from Defenders list
-		RemoveDefender(enemyStats[EnemyNdx()].name);
+		BattleStatusEffects.S.RemoveDefender(enemyStats[EnemyNdx()].name);
 		enemyShields[EnemyNdx()].SetActive(false);
 
 		// Deactivate '...' Word Bubble
@@ -518,15 +515,5 @@ public class Battle : MonoBehaviour {
 		animNdx = EnemyNdx();
 		enemyAnimator[animNdx].CrossFade("RunToCenter", 0);
 		BattleUI.S.turnCursor.SetActive(false);
-	}
-
-	///////////////////////////////// DEFEND /////////////////////////////////
-	public void AddDefender(string defender){
-		defenders.Add (defender);
-	}
-	void RemoveDefender(string defender){
-		if (defenders.Contains (defender)) {
-			defenders.Remove (defender);
-		}
 	}
 }
