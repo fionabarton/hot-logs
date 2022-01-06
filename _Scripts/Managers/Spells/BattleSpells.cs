@@ -207,7 +207,7 @@ public class BattleSpells : MonoBehaviour {
 			_.attackDamage -= _.enemyStats[ndx].DEF;
 
 			// If DEFENDING, cut AttackDamage in HALF
-			BattleStats.S.CheckIfDefending (Battle.S.enemyStats [ndx].name);
+			BattleStatusEffects.S.CheckIfDefending (Battle.S.enemyStats [ndx].name);
 
 			if (_.attackDamage < 0) {
 				_.attackDamage = 0;
@@ -293,7 +293,7 @@ public class BattleSpells : MonoBehaviour {
 				_.attackDamage -= Battle.S.enemyStats[i].DEF;
 
 				// If DEFENDING, cut AttackDamage in HALF
-				BattleStats.S.CheckIfDefending (Battle.S.enemyStats[i].name);
+				BattleStatusEffects.S.CheckIfDefending (Battle.S.enemyStats[i].name);
 
 				if (_.attackDamage < 0) {
 					_.attackDamage = 0;
