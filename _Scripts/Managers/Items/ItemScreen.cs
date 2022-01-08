@@ -4,8 +4,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using System;
 
-public enum eItemScreenMode { pickItem, pickPartyMember, pickAllPartyMembers, usedItem, pickWhereToWarp }; 
-
 public class ItemScreen : MonoBehaviour { 
 	[Header("Set in Inspector")]
 	// Item "Buttons"
