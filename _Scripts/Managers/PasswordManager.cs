@@ -7,7 +7,6 @@ using System.Linq;
 /// <summary>
 /// Loops in RPGUpdateManager.cs
 /// </summary>
-public enum ePasswordMode {inactive, inputPassword, checkPassword};
 
 public class Password {
 	public int 				exp1;

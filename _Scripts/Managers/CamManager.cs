@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum eCamMode { freezeCam, followAll, followUp, followDown, followLR, noTarget };
-
 public class CamManager : MonoBehaviour {
 	[Header("Set in Inspector")]
 	public Transform		targetTrans;

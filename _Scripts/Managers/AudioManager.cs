@@ -2,10 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum eSongName { nineteenForty, never, ninja, soap, things, startBattle, win, lose, selection, gMinor, zelda };
-public enum eSoundName { dialogue, selection, damage1, damage2, damage3, death, confirm, deny, 
-	run, fireball, fireblast, buff1, buff2, highBeep1, highBeep2, swell, flicker};
-
 public class AudioManager : MonoBehaviour {
 	[Header ("Set in Inspector")]
 	public AudioSource			masterVolSelection;
