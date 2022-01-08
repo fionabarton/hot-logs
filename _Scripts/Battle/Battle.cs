@@ -4,12 +4,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Linq;
 
-public enum eBattleMode {
-actionButtons, playerTurn, canGoBackToFightButton, canGoBackToFightButtonMultipleTargets,
-qteInitialize, qte, itemOrSpellMenu, triedToRunFromBoss, 
-enemyTurn, enemyAction, 
-dropItem, addExpAndGold, addExpAndGoldNoDrops, partyDeath, levelUp, multiLvlUp, returnToWorld, noInputPermitted };
-
 public class Battle : MonoBehaviour {
 	[Header("Set in Inspector")]
 	///////////////////////////////// SPRITES /////////////////////////////////
@@ -177,6 +171,29 @@ public class Battle : MonoBehaviour {
 							} else {
 								// ...let its AI dictate what move to perform
 								BattleEnemyAI.S.EnemyAI(enemyStats[EnemyNdx()].id);
+							}
+						}
+						break;
+					case eBattleMode.statusAilment:
+						if (Input.GetButtonDown("SNES B Button")) {
+							// If this turn is a player's turn...
+							if (PlayerNdx() != -1) {
+								// If paralyzed or sleeping...
+								if (BattleStatusEffects.S.CheckIfParalyzed(Party.S.stats[PlayerNdx()].name)) {
+									// Skip turn
+									NextTurn();
+
+									// If next turn is a player's turn...
+									if (PlayerNdx() != -1) {
+										PlayerTurn();
+									} else {
+										EnemyTurn();
+									}
+								} else {
+									PlayerTurn();
+								}
+							} else {
+								EnemyTurn();
 							}
 						}
 						break;
@@ -352,7 +369,7 @@ public class Battle : MonoBehaviour {
 		// Reset BattlePlayerActions.S.buttonsCS text color
 		Utilities.S.SetTextColor(BattlePlayerActions.S.buttonsCS, new Color32(39, 201, 255, 255));
 
-		// Switch Mode
+		// Set Mode
 		battleMode = eBattleMode.actionButtons;
 
 		// Deactivate Cursors
@@ -410,28 +427,42 @@ public class Battle : MonoBehaviour {
 		previousSelectedGameObject = BattlePlayerActions.S.buttonsGO[0];
 
 		// Switch mode (playerTurn or enemyTurn) based off of turnNdx
-		if (turnNdx == turnOrder.IndexOf(Party.S.stats[0].name) || turnNdx == turnOrder.IndexOf(Party.S.stats[1].name) || turnNdx == turnOrder.IndexOf(Party.S.stats[2].name)) {
+		if(PlayerNdx() != -1) {
 			battleMode = eBattleMode.playerTurn;
-		} else if (turnNdx == turnOrder.IndexOf(enemyStats[0].name) || turnNdx == turnOrder.IndexOf(enemyStats[1].name) || turnNdx == turnOrder.IndexOf(enemyStats[2].name)) {
+        } else {
 			battleMode = eBattleMode.enemyTurn;
 		}
 	}
 
-	// return current player turn index
+	// Return current player turn index, otherwise return -1	
 	public int PlayerNdx() {
-		if (turnNdx == turnOrder.IndexOf(Party.S.stats[0].name)) { return 0; } else if (turnNdx == turnOrder.IndexOf(Party.S.stats[1].name)) { return 1; } else { return 2; } 
+		for (int i = 0; i < Party.S.stats.Count; i++) {
+			if (turnNdx == turnOrder.IndexOf(Party.S.stats[i].name)) {
+				return i;
+			}
+		}
+		return -1;
 	}
 
-	// return current enemy turn index																																						
+	// Return current enemy turn index, otherwise return -1																																						
 	public int EnemyNdx() {
-		if (turnNdx == turnOrder.IndexOf(enemyStats[0].name)) { return 0; } else if (turnNdx == turnOrder.IndexOf(enemyStats[1].name)) { return 1; } else { return 2; }
+		for (int i = 0; i < enemyStats.Count; i++) {
+			if (turnNdx == turnOrder.IndexOf(enemyStats[i].name)) {
+				return i;
+			}
+		}
+		return -1;
 	}
 
 	public void PlayerTurn(bool setPreviousSelected = true) { // if (Input.GetButtonDown ("Submit"))
+															  // Check for status ailment
 		// Reset Animation: Player Idle
 		for (int i = 0; i <= Party.S.partyNdx; i++) {
 			if (!playerDead[i]) {
 				playerAnimator[i].CrossFade("Idle", 0);
+
+				// If paralyzed...
+
 			} else {
 				playerAnimator[i].CrossFade("Death", 0);
 			}
@@ -444,6 +475,22 @@ public class Battle : MonoBehaviour {
 		}
 
 		BattleUI.S.DisplayTurnOrder();
+
+		// Deactivate '...' Word Bubble
+		dotDotDotWordBubble.SetActive(false);
+
+		// If paralyzed...
+		if (BattleStatusEffects.S.CheckIfParalyzed(Party.S.stats[PlayerNdx()].name)) {
+			BattleStatusEffects.S.Paralyzed(Party.S.stats[PlayerNdx()].name);
+			battleMode = eBattleMode.statusAilment;
+			return;
+		}
+
+		// If sleeping...
+
+
+		// If poisoned...
+
 
 		BattlePlayerActions.S.ButtonsInitialInteractable();
 
@@ -458,9 +505,6 @@ public class Battle : MonoBehaviour {
 		// If Defended previous turn, remove from Defenders list
 		BattleStatusEffects.S.RemoveDefender(Party.S.stats[PlayerNdx()].name);
 		playerShields[PlayerNdx()].SetActive(false);
-
-		// Deactivate '...' Word Bubble
-		dotDotDotWordBubble.SetActive(false);
 
 		BattleDialogue.S.DisplayText("What will you do, " + Party.S.stats[PlayerNdx()].name + "?");
 
