@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum eMovement { randomWalk, patrol, pursueWalk, pursueRun, flee, idle, reverse, auto };
-
 /// <summary>
 /// Movement AI for NPCs 
 /// </summary>

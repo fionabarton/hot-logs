@@ -10,8 +10,6 @@ using UnityEngine;
 /// </summary>
 ///
 
-public enum eQuestAction { deactivateGo, activateGo, changeSprite, changeAnim, changePosition, changeDialogue };
-
 public class QuestManager : MonoBehaviour {
 	[Header("Set Dynamically")]
 	// Singleton

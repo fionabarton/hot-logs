@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum eParallax { autoScroll, scrollWithPlayer, childedToPlayer };
-
 public class Parallax : MonoBehaviour {
 	[Header("Set in Inspector")]
 	public eParallax	mode;
@@ -53,24 +51,24 @@ public class Parallax : MonoBehaviour {
 					tPosMax = playerPos.x += 0.01f;
 
 					switch (Player.S.mode) {
-					case eRPGMode.walkLeft:
-					case eRPGMode.walkDownLeft:
-					case eRPGMode.walkUpLeft:
+					case ePlayerMode.walkLeft:
+					case ePlayerMode.walkDownLeft:
+					case ePlayerMode.walkUpLeft:
 						pos.x += speedModifier * Time.fixedDeltaTime;
 						break;
-					case eRPGMode.runLeft:
-					case eRPGMode.runDownLeft:
-					case eRPGMode.runUpLeft:
+					case ePlayerMode.runLeft:
+					case ePlayerMode.runDownLeft:
+					case ePlayerMode.runUpLeft:
 						pos.x += speedModifier * Time.fixedDeltaTime * 2;
 						break;
-					case eRPGMode.walkRight:
-					case eRPGMode.walkDownRight:
-					case eRPGMode.walkUpRight:
+					case ePlayerMode.walkRight:
+					case ePlayerMode.walkDownRight:
+					case ePlayerMode.walkUpRight:
 						pos.x -= speedModifier * Time.fixedDeltaTime;
 						break;
-					case eRPGMode.runRight:
-					case eRPGMode.runDownRight:
-					case eRPGMode.runUpRight:
+					case ePlayerMode.runRight:
+					case ePlayerMode.runDownRight:
+					case ePlayerMode.runUpRight:
 						pos.x -= speedModifier * Time.fixedDeltaTime * 2;
 						break;
 					}
@@ -81,16 +79,16 @@ public class Parallax : MonoBehaviour {
 
 				// Scroll Vertically
 				switch (Player.S.mode) {
-				case eRPGMode.walkUp:
+				case ePlayerMode.walkUp:
 					pos.y -= 0.2f * Time.fixedDeltaTime;
 					break;
-				case eRPGMode.runUp:
+				case ePlayerMode.runUp:
 					pos.y -= 0.2f * Time.fixedDeltaTime * 2;
 					break;
-				case eRPGMode.walkDown:
+				case ePlayerMode.walkDown:
 					pos.y += 0.2f * Time.fixedDeltaTime;
 					break;
-				case eRPGMode.runDown:
+				case ePlayerMode.runDown:
 					pos.y += 0.2f * Time.fixedDeltaTime * 2;
 					break;
 				}

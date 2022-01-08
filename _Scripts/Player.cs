@@ -2,10 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum eRPGMode { idle, walkLeft, walkRight, walkUp, walkDown, runLeft, runRight, runUp, runDown, 
-						walkUpLeft, walkUpRight, walkDownLeft, walkDownRight, runUpLeft, runUpRight, runDownLeft, runDownRight,
-						jumpFull, jumpHalf, attack, knockback };
-
 /// <summary>
 /// Player Input, Player Sprite/Animation, & Steps Count
 /// </summary>
@@ -28,7 +24,7 @@ public class Player : MonoBehaviour {
 
 	private float 				speed = 4f;
 
-	public eRPGMode				mode = eRPGMode.idle;
+	public ePlayerMode				mode = ePlayerMode.idle;
 
 	// Respawn
 	public Vector3				respawnPos;
@@ -91,184 +87,184 @@ public class Player : MonoBehaviour {
 			if (canMove) {
 				// ************ INPUT ************ \\
 				switch (mode) {
-				case eRPGMode.idle:
+				case ePlayerMode.idle:
 					if (Input.GetAxisRaw ("Horizontal") > 0f) { // Walk/Run Right 
 						if (Input.GetAxisRaw ("SNES Y Button") > 0) {
-							SwitchMode (eRPGMode.runRight);
+							SwitchMode (ePlayerMode.runRight);
 						} else {
-							SwitchMode (eRPGMode.walkRight);
+							SwitchMode (ePlayerMode.walkRight);
 						}
 					} else if (Input.GetAxisRaw ("Horizontal") < 0f) { // Walk/Run Left 
 							if (Input.GetAxisRaw ("SNES Y Button") > 0) {
-							SwitchMode (eRPGMode.runLeft);
+							SwitchMode (ePlayerMode.runLeft);
 						} else {
-							SwitchMode (eRPGMode.walkLeft);
+							SwitchMode (ePlayerMode.walkLeft);
 						}
 					}
 					if (Input.GetAxisRaw ("Vertical") > 0f) { // Walk/Run Up
 						if (Input.GetAxisRaw ("SNES Y Button") > 0) {
-							SwitchMode (eRPGMode.runUp);
+							SwitchMode (ePlayerMode.runUp);
 						} else {
-							SwitchMode (eRPGMode.walkUp);
+							SwitchMode (ePlayerMode.walkUp);
 						}
 					} else if (Input.GetAxisRaw ("Vertical") < 0f) { // Walk/Run Down
 						if (Input.GetAxisRaw ("SNES Y Button") > 0) {
-							SwitchMode (eRPGMode.runDown);
+							SwitchMode (ePlayerMode.runDown);
 						} else {
-							SwitchMode (eRPGMode.walkDown);
+							SwitchMode (ePlayerMode.walkDown);
 						}
 					}
 					break;
-				case eRPGMode.walkLeft:
+				case ePlayerMode.walkLeft:
 					if (Input.GetAxisRaw ("Horizontal") >= 0) { // Idle
-							SwitchMode (eRPGMode.idle);
+							SwitchMode (ePlayerMode.idle);
 					} 
 					if (Input.GetAxisRaw ("SNES Y Button") > 0) { // Run Left
-						SwitchMode (eRPGMode.runLeft);
+						SwitchMode (ePlayerMode.runLeft);
 					}
 					if (Input.GetAxisRaw ("Vertical") > 0f) { // Walk Up Left
-						SwitchMode (eRPGMode.walkUpLeft);
+						SwitchMode (ePlayerMode.walkUpLeft);
 					} else if (Input.GetAxisRaw ("Vertical") < 0f) { // Walk Down Left
-						SwitchMode (eRPGMode.walkDownLeft);
+						SwitchMode (ePlayerMode.walkDownLeft);
 					}
 					break;
-				case eRPGMode.walkRight:
+				case ePlayerMode.walkRight:
 					if (Input.GetAxisRaw ("Horizontal") <= 0) { // Idle
-						SwitchMode (eRPGMode.idle);
+						SwitchMode (ePlayerMode.idle);
 					}
 					if (Input.GetAxisRaw ("SNES Y Button") > 0) { // Run Right 
-						SwitchMode (eRPGMode.runRight);
+						SwitchMode (ePlayerMode.runRight);
 					}
 					if (Input.GetAxisRaw ("Vertical") > 0f) { // Walk Up Right
-						SwitchMode (eRPGMode.walkUpRight);
+						SwitchMode (ePlayerMode.walkUpRight);
 					} else if (Input.GetAxisRaw ("Vertical") < 0f) { // Walk Down Right
-						SwitchMode (eRPGMode.walkDownRight);
+						SwitchMode (ePlayerMode.walkDownRight);
 					}
 					break;
-				case eRPGMode.walkUp:
+				case ePlayerMode.walkUp:
 					if (Input.GetAxisRaw ("Vertical") <= 0) { // Idle
-							SwitchMode (eRPGMode.idle);
+							SwitchMode (ePlayerMode.idle);
 					}
 					if (Input.GetAxisRaw ("SNES Y Button") > 0) { // Run Up
-						SwitchMode (eRPGMode.runUp);
+						SwitchMode (ePlayerMode.runUp);
 					}
 					if (Input.GetAxisRaw ("Horizontal") < 0) { // Walk Up Left
-						SwitchMode (eRPGMode.walkUpLeft);
+						SwitchMode (ePlayerMode.walkUpLeft);
 					} else if (Input.GetAxisRaw ("Horizontal") > 0f) { // Walk Up Right
-						SwitchMode (eRPGMode.walkUpRight);
+						SwitchMode (ePlayerMode.walkUpRight);
 					}
 					break;
-				case eRPGMode.walkDown:		
+				case ePlayerMode.walkDown:		
 					if (Input.GetAxisRaw ("Vertical") >= 0) { // Idle
-							SwitchMode (eRPGMode.idle);
+							SwitchMode (ePlayerMode.idle);
 					}
 					if (Input.GetAxisRaw ("SNES Y Button") > 0) { // Run Down
-						SwitchMode (eRPGMode.runDown);
+						SwitchMode (ePlayerMode.runDown);
 					}
 					if (Input.GetAxisRaw ("Horizontal") < 0) { // Walk Down Left
-						SwitchMode (eRPGMode.walkDownLeft);
+						SwitchMode (ePlayerMode.walkDownLeft);
 					} else if (Input.GetAxisRaw ("Horizontal") > 0f) { // Walk Down Right
-						SwitchMode (eRPGMode.walkDownRight);
+						SwitchMode (ePlayerMode.walkDownRight);
 					}
 					break;
-				case eRPGMode.runLeft:
+				case ePlayerMode.runLeft:
 					if (Input.GetAxisRaw ("Horizontal") >= 0) { // Idle 
-						SwitchMode (eRPGMode.idle);
+						SwitchMode (ePlayerMode.idle);
 					}
 					if (Input.GetAxisRaw ("SNES Y Button") <= 0) { // Walk Left
-						SwitchMode (eRPGMode.walkLeft);
+						SwitchMode (ePlayerMode.walkLeft);
 					}
 					if (Input.GetAxisRaw ("Vertical") > 0f) { // Walk Up Left
-						SwitchMode (eRPGMode.walkUpLeft);
+						SwitchMode (ePlayerMode.walkUpLeft);
 					} else if (Input.GetAxisRaw ("Vertical") < 0f) { // Walk Down Left
-						SwitchMode (eRPGMode.walkDownLeft);
+						SwitchMode (ePlayerMode.walkDownLeft);
 					}
 					break;
-				case eRPGMode.runRight:
+				case ePlayerMode.runRight:
 					if (Input.GetAxisRaw ("Horizontal") <= 0) { // Idle
-							SwitchMode (eRPGMode.idle); 
+							SwitchMode (ePlayerMode.idle); 
 					}
 					if (Input.GetAxisRaw ("SNES Y Button") <= 0) { // Walk Right
-						SwitchMode (eRPGMode.walkRight);
+						SwitchMode (ePlayerMode.walkRight);
 					}
 					if (Input.GetAxisRaw ("Vertical") > 0f) { // Up Right 
-						SwitchMode (eRPGMode.walkUpRight);
+						SwitchMode (ePlayerMode.walkUpRight);
 					} else if (Input.GetAxisRaw ("Vertical") < 0f) { // Down Right
-						SwitchMode (eRPGMode.walkDownRight);
+						SwitchMode (ePlayerMode.walkDownRight);
 					}
 					break;
-				case eRPGMode.runUp:
+				case ePlayerMode.runUp:
 					if (Input.GetAxisRaw ("Vertical") <= 0) { // Idle
-						SwitchMode (eRPGMode.idle);
+						SwitchMode (ePlayerMode.idle);
 					}
 					if (Input.GetAxisRaw ("SNES Y Button") <= 0) { // Walk Up
-						SwitchMode (eRPGMode.walkUp);
+						SwitchMode (ePlayerMode.walkUp);
 					}
 					if (Input.GetAxisRaw ("Horizontal") < 0) { // Up Left
-						SwitchMode (eRPGMode.walkUpLeft);
+						SwitchMode (ePlayerMode.walkUpLeft);
 					} else if (Input.GetAxisRaw ("Horizontal") > 0f) { // Up Right
-						SwitchMode (eRPGMode.walkUpRight);
+						SwitchMode (ePlayerMode.walkUpRight);
 					}
 					break;
-				case eRPGMode.runDown:
+				case ePlayerMode.runDown:
 					if (Input.GetAxisRaw ("Vertical") >= 0) { // Idle
-						SwitchMode (eRPGMode.idle);
+						SwitchMode (ePlayerMode.idle);
 					}
 					if (Input.GetAxisRaw ("SNES Y Button") <= 0) { // Walk Down
-						SwitchMode (eRPGMode.walkDown);
+						SwitchMode (ePlayerMode.walkDown);
 					}
 					if (Input.GetAxisRaw ("Horizontal") < 0) { // Walk Down Left
-						SwitchMode (eRPGMode.walkDownLeft);
+						SwitchMode (ePlayerMode.walkDownLeft);
 					} else if (Input.GetAxisRaw ("Horizontal") > 0f) { // Walk Down Right
-						SwitchMode (eRPGMode.walkDownRight);
+						SwitchMode (ePlayerMode.walkDownRight);
 					}
 					break;
-				case eRPGMode.walkUpLeft:
-				case eRPGMode.walkUpRight:
+				case ePlayerMode.walkUpLeft:
+				case ePlayerMode.walkUpRight:
 					if (Input.GetAxisRaw ("Vertical") <= 0) { // Idle
-						SwitchMode (eRPGMode.idle);
+						SwitchMode (ePlayerMode.idle);
 					}
 					if (Input.GetAxisRaw ("Vertical") > 0 && Input.GetAxisRaw ("Horizontal") == 0f) { // Walk Up
-						SwitchMode (eRPGMode.walkUp);
+						SwitchMode (ePlayerMode.walkUp);
 					}
 					if (Input.GetAxisRaw ("SNES Y Button") > 0) { // Run Up Left
-						SwitchMode (eRPGMode.runUpLeft);
+						SwitchMode (ePlayerMode.runUpLeft);
 					}
 					break;
-				case eRPGMode.walkDownLeft:
-				case eRPGMode.walkDownRight:
+				case ePlayerMode.walkDownLeft:
+				case ePlayerMode.walkDownRight:
 					if (Input.GetAxisRaw ("Vertical") >= 0) { // Idle
-						SwitchMode (eRPGMode.idle);
+						SwitchMode (ePlayerMode.idle);
 					}
 					if (Input.GetAxisRaw ("Vertical") < 0 && Input.GetAxisRaw ("Horizontal") == 0f) { // Walk Down
-						SwitchMode (eRPGMode.walkDown);
+						SwitchMode (ePlayerMode.walkDown);
 					}
 					if (Input.GetAxisRaw ("SNES Y Button") > 0) { // Run Down Left
-						SwitchMode (eRPGMode.runDownLeft);
+						SwitchMode (ePlayerMode.runDownLeft);
 					}
 					break;
-				case eRPGMode.runUpLeft:
-				case eRPGMode.runUpRight:
+				case ePlayerMode.runUpLeft:
+				case ePlayerMode.runUpRight:
 					if (Input.GetAxisRaw ("Vertical") <= 0) { // Idle
-						SwitchMode (eRPGMode.idle);
+						SwitchMode (ePlayerMode.idle);
 					}
 					if (Input.GetAxisRaw ("Vertical") > 0 && Input.GetAxisRaw ("Horizontal") == 0f) { // Walk Up
-						SwitchMode (eRPGMode.walkUp);
+						SwitchMode (ePlayerMode.walkUp);
 					}
 					if (Input.GetAxisRaw ("SNES Y Button") <= 0) { // Walk Up Left
-						SwitchMode (eRPGMode.walkUpLeft);
+						SwitchMode (ePlayerMode.walkUpLeft);
 					}
 					break;
-				case eRPGMode.runDownLeft:
-				case eRPGMode.runDownRight:
+				case ePlayerMode.runDownLeft:
+				case ePlayerMode.runDownRight:
 					if (Input.GetAxisRaw ("Vertical") >= 0) { // Idle
-						SwitchMode (eRPGMode.idle);
+						SwitchMode (ePlayerMode.idle);
 					}
 					if (Input.GetAxisRaw ("Vertical") < 0 && Input.GetAxisRaw ("Horizontal") == 0f) { // Walk Down
-						SwitchMode (eRPGMode.walkDown);
+						SwitchMode (ePlayerMode.walkDown);
 					}
 					if (Input.GetAxisRaw ("SNES Y Button") <= 0) { // Walk Up Left
-						SwitchMode (eRPGMode.walkUpLeft);
+						SwitchMode (ePlayerMode.walkUpLeft);
 					}
 					break;
 				}
@@ -277,14 +273,14 @@ public class Player : MonoBehaviour {
 	}
     #endregion
 
-    public void SwitchMode(eRPGMode tMode){
+    public void SwitchMode(ePlayerMode tMode){
 		// Set Mode
 		mode = tMode;
 
 		// Overworld Player Stats UI
 		if (!RPG.S.paused && !DialogueManager.S.textBoxSpriteGO.activeInHierarchy) {
 			if (RPG.S.currentScene != "Battle"){
-				if (mode == eRPGMode.idle) {
+				if (mode == ePlayerMode.idle) {
 					// Set amount of time for Player Stats to stay onscreen
 					playerUITimer = Time.time + 1.5f;
                 } else {
@@ -333,7 +329,7 @@ public class Player : MonoBehaviour {
 
 					// Overworld Player Stats UI
 					switch (mode) {
-						case eRPGMode.idle:
+						case ePlayerMode.idle:
 							if (!RPG.S.paused && !DialogueManager.S.textBoxSpriteGO.activeInHierarchy) {
 								if (RPG.S.currentScene != "Battle") {
 									if (!PlayerButtons.S.gameObject.activeInHierarchy) {
@@ -350,7 +346,7 @@ public class Player : MonoBehaviour {
 		}
 		// ************ MODES ************ \\ 
 		switch (mode) {
-			case eRPGMode.idle:
+			case ePlayerMode.idle:
 				// Prevents NPC from launching Player upon collision
 				rigid.velocity = Vector2.zero;
 
@@ -375,67 +371,67 @@ public class Player : MonoBehaviour {
 						break;
 				}
 				break;
-			case eRPGMode.walkLeft:
+			case ePlayerMode.walkLeft:
 				rigid.velocity = new Vector2(Input.GetAxisRaw("Horizontal") * speed, 0);
 				ModeSettings(0.375f, 0, 1, "RPG_Walk_Side", 2);
 				break;
-			case eRPGMode.walkRight:
+			case ePlayerMode.walkRight:
 				rigid.velocity = new Vector2(Input.GetAxisRaw("Horizontal") * speed, 0);
 				ModeSettings(0.375f, 0, 1, "RPG_Walk_Side", 0);
 				break;
-			case eRPGMode.walkUp:
+			case ePlayerMode.walkUp:
 				rigid.velocity = new Vector2(0, Input.GetAxisRaw("Vertical") * speed);
 				ModeSettings(0, 0.375f, 1, "RPG_Walk_Up", 1);
 				break;
-			case eRPGMode.walkDown:
+			case ePlayerMode.walkDown:
 				rigid.velocity = new Vector2(0, Input.GetAxisRaw("Vertical") * speed);
 				ModeSettings(0, -0.375f, 1, "RPG_Walk_Down", 3);
 				break;
-			case eRPGMode.runLeft:
+			case ePlayerMode.runLeft:
 				rigid.velocity = new Vector2(Input.GetAxisRaw("Horizontal") * (speed * 2), 0);
 				ModeSettings(0.375f, 0, 2, "RPG_Walk_Side", 2);
 				break;
-			case eRPGMode.runRight:
+			case ePlayerMode.runRight:
 				rigid.velocity = new Vector2(Input.GetAxisRaw("Horizontal") * (speed * 2), 0);
 				ModeSettings(0.375f, 0, 2, "RPG_Walk_Side", 0);
 				break;
-			case eRPGMode.runUp:
+			case ePlayerMode.runUp:
 				rigid.velocity = new Vector2(0, Input.GetAxisRaw("Vertical") * (speed * 2));
 				ModeSettings(0, 0.375f, 2, "RPG_Walk_Up", 1);
 				break;
-			case eRPGMode.runDown:
+			case ePlayerMode.runDown:
 				rigid.velocity = new Vector2(0, Input.GetAxisRaw("Vertical") * (speed * 2));
 				ModeSettings(0, -0.375f, 2, "RPG_Walk_Down", 3);
 				break;
-			case eRPGMode.walkUpLeft:
+			case ePlayerMode.walkUpLeft:
 				rigid.velocity = new Vector2(Input.GetAxisRaw("Horizontal") * speed * .75f, Input.GetAxisRaw("Vertical") * speed * .75f);
 				ModeSettings(0.25f, 0.25f, 1, "RPG_Walk_Up_Diagonal", 6);
 				break;
-			case eRPGMode.walkUpRight:
+			case ePlayerMode.walkUpRight:
 				rigid.velocity = new Vector2(Input.GetAxisRaw("Horizontal") * speed * .75f, Input.GetAxisRaw("Vertical") * speed * .75f);
 				ModeSettings(0.25f, 0.25f, 1, "RPG_Walk_Up_Diagonal", 5);
 				break;
-			case eRPGMode.walkDownLeft:
+			case ePlayerMode.walkDownLeft:
 				rigid.velocity = new Vector2(Input.GetAxisRaw("Horizontal") * speed * .75f, Input.GetAxisRaw("Vertical") * speed * .75f);
 				ModeSettings(0.25f, -0.25f, 1, "RPG_Walk_Down_Diagonal", 7);
 				break;
-			case eRPGMode.walkDownRight:
+			case ePlayerMode.walkDownRight:
 				rigid.velocity = new Vector2(Input.GetAxisRaw("Horizontal") * speed * .75f, Input.GetAxisRaw("Vertical") * speed * .75f);
 				ModeSettings(0.25f, -0.25f, 1, "RPG_Walk_Down_Diagonal", 4);
 				break;
-			case eRPGMode.runUpLeft:
+			case ePlayerMode.runUpLeft:
 				rigid.velocity = new Vector2(Input.GetAxisRaw("Horizontal") * (speed * 2) * .75f, Input.GetAxisRaw("Vertical") * (speed * 2) * .75f);
 				ModeSettings(0.25f, 0.25f, 2, "RPG_Walk_Up_Diagonal", 6);
 				break;
-			case eRPGMode.runUpRight:
+			case ePlayerMode.runUpRight:
 				rigid.velocity = new Vector2(Input.GetAxisRaw("Horizontal") * (speed * 2) * .75f, Input.GetAxisRaw("Vertical") * (speed * 2) * .75f);
 				ModeSettings(0.25f, 0.25f, 2, "RPG_Walk_Up_Diagonal", 5);
 				break;
-			case eRPGMode.runDownLeft:
+			case ePlayerMode.runDownLeft:
 				rigid.velocity = new Vector2(Input.GetAxisRaw("Horizontal") * (speed * 2) * .75f, Input.GetAxisRaw("Vertical") * (speed * 2) * .75f);
 				ModeSettings(0.25f, -0.25f, 2, "RPG_Walk_Down_Diagonal", 7);
 				break;
-			case eRPGMode.runDownRight:
+			case ePlayerMode.runDownRight:
 				rigid.velocity = new Vector2(Input.GetAxisRaw("Horizontal") * (speed * 2) * .75f, Input.GetAxisRaw("Vertical") * (speed * 2) * .75f);
 				ModeSettings(0.25f, -0.25f, 2, "RPG_Walk_Down_Diagonal", 4);
 				break;
