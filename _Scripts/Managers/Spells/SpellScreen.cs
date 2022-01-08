@@ -4,9 +4,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using System;
 
-public enum eSpellScreenMode { pickWhichSpellsToDisplay, pickSpell, doesntKnowSpells, 
-	pickWhichMemberToHeal, pickAllMembersToHeal, usedSpell, cantUseSpell, pickWhereToWarp };
-
 public class SpellScreen : MonoBehaviour {
 	// Overworld & Battle Spells: Antidote, Revive (50 & 100% success rate), Full Heal, Full Party Heal
 	// Overworld Spells: Evac, Warp
