@@ -4,8 +4,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using System;
 
-public enum eShopScreenMode { pickItem, itemPurchasedOrSold };
-
 public class ShopScreen : MonoBehaviour {
 	[Header("Set in Inspector")]
 	// Inventory Buttons
