@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum eDoorMode { open, closed, locked };
-
 public class DoorTrigger : ActivateOnButtonPress {
 	[Header("Set in Inspector")]
 	public eDoorMode 		doorMode;

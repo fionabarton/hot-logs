@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum eShopkeeperMode { pickBuyOrSell, pickedBuy, pickedSell };
-
 /// <summary>
 /// If there is a child gameObject that also has a collider (ex. Solid Collider):
 /// Make sure that the collider has a RigidBody set to Kinematic to prevent it from

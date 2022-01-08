@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum eGroundType { desert, dirt, grass, sand, snow };
-
 public class Dig_Bury_Ground : ActivateOnButtonPress {
     [Header("Set in Inspector")]
     public eGroundType      groundType = eGroundType.dirt;
