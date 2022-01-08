@@ -7,8 +7,6 @@ using System;
 TO BE IMPLEMENTED:
 Current HP/MP, Steps, Party Members, Inventory, Equipment, Doors/Chests/KeyItems, Quests Completed/Activated
  */
-public enum eSaveScreenMode { pickAction, pickFile, subMenu, cannotPeformAction, pickedFile };
-
 public class SaveScreen : MonoBehaviour {
 	[Header ("Set in Inspector")]
 	public List<Button>			slotButtons;
@@ -59,7 +57,7 @@ public class SaveScreen : MonoBehaviour {
 			if (RPG.S.currentScene != "Title_Screen") {
 				RPG.S.paused = true;
 			}
-			Player.S.mode = eRPGMode.idle;
+			Player.S.mode = ePlayerMode.idle;
 
 			// Switch ScreenMode 
 			saveScreenMode = eSaveScreenMode.pickAction;
