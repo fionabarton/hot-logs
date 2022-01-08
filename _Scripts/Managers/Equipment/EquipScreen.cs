@@ -4,8 +4,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using System;
 
-public enum eEquipScreenMode { pickPartyMember, pickTypeToEquip, noInventory, pickItemToEquip, equippedItem };
-
 public class EquipScreen : MonoBehaviour {
 	[Header("Set in Inspector")]
 	public Text				playerName;
