@@ -23,8 +23,11 @@ public class BattleEnemyActions : MonoBehaviour {
 		// Animation: Enemy ATTACK in center
 		_.enemyAnimator[_.animNdx].CrossFade("Attack", 0);
 
-		// Animation: Player Damage
-		_.playerAnimator[playerToAttack].CrossFade("Damage", 0);
+        // If player doesn't have a status ailment...
+        if (!BattleStatusEffects.S.HasStatusAilment(Party.S.stats[playerToAttack].name)) {
+			// Animation: Player Damage
+			_.playerAnimator[playerToAttack].CrossFade("Damage", 0);
+		}
 
 		// Audio: Damage
 		int randomInt = Random.Range(2, 4);
@@ -95,7 +98,7 @@ public class BattleEnemyActions : MonoBehaviour {
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Index = 1
 	// Defend
-	public void Defend (){
+	public void Defend(){
 		BattleStatusEffects.S.AddDefender(_.enemyStats [_.EnemyNdx()].name);
 
 		// Activate Enemy Shield
@@ -349,8 +352,11 @@ public class BattleEnemyActions : MonoBehaviour {
 
 				// Shake Enemy 1, 2, & 3's Anim
 				if (!_.playerDead[i]) {
-					// Animation: Player Damage
-					_.playerAnimator[i].CrossFade("Damage", 0);
+					// If player doesn't have a status ailment...
+					if (!BattleStatusEffects.S.HasStatusAilment(Party.S.stats[i].name)) {
+						// Animation: Player Damage
+						_.playerAnimator[i].CrossFade("Damage", 0);
+					}
 
 					// Get and position Explosion game object
 					GameObject explosion = ObjectPool.S.GetPooledObject("Explosion");
@@ -464,6 +470,50 @@ public class BattleEnemyActions : MonoBehaviour {
 		AudioManager.S.PlaySFX(eSoundName.buff2);
 
 		BattleDialogue.S.DisplayText(_.enemyStats[_.EnemyNdx()].name + " is getting ready to do something cool...\n...what could it be?!");
+		_.NextTurn();
+	}
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// Index = 10
+	// Paralyze
+	public void Paralyze(int ndx) {
+		// Paralyze party member
+		BattleStatusEffects.S.AddParalyzed(Party.S.stats[ndx].name);
+
+		// Play attack animations, SFX, and spawn objects
+		PlaySingleAttackAnimsAndSFX(ndx);
+
+		// Activate paralyzed icon
+		BattleStatusEffects.S.playerParalyzedIcons[ndx].SetActive(true);
+
+		// Anim
+		_.playerAnimator[ndx].CrossFade("Paralyzed", 0);
+
+		// Audio: Buff 2
+		AudioManager.S.PlaySFX(eSoundName.buff2);
+
+        BattleDialogue.S.DisplayText(_.enemyStats[_.EnemyNdx()].name + " has temporarily paralyzed " + Party.S.stats[ndx].name + "...\n...not nice!");
+        _.NextTurn();
+    }
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// Index = 11
+	// Sleep
+	public void Sleep(int ndx) {
+		// Put party member to sleep
+		BattleStatusEffects.S.AddSleeping(Party.S.stats[ndx].name);
+
+		// Play attack animations, SFX, and spawn objects
+		PlaySingleAttackAnimsAndSFX(ndx);
+
+		// Activate sleeping icon
+		BattleStatusEffects.S.playerSleepingIcons[ndx].SetActive(true);
+
+		// Anim
+		_.playerAnimator[ndx].CrossFade("Sleeping", 0);
+
+		// Audio: Buff 2
+		AudioManager.S.PlaySFX(eSoundName.buff2);
+
+		BattleDialogue.S.DisplayText(_.enemyStats[_.EnemyNdx()].name + " has temporarily put " + Party.S.stats[ndx].name + " to sleep...\n...not nice!");
 		_.NextTurn();
 	}
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////

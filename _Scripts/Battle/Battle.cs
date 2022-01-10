@@ -179,7 +179,8 @@ public class Battle : MonoBehaviour {
 							// If this turn is a player's turn...
 							if (PlayerNdx() != -1) {
 								// If paralyzed or sleeping...
-								if (BattleStatusEffects.S.CheckIfParalyzed(Party.S.stats[PlayerNdx()].name)) {
+								if (BattleStatusEffects.S.CheckIfParalyzed(Party.S.stats[PlayerNdx()].name)||
+									BattleStatusEffects.S.CheckIfSleeping(Party.S.stats[PlayerNdx()].name)) {
 									// Skip turn
 									NextTurn();
 
@@ -190,6 +191,10 @@ public class Battle : MonoBehaviour {
 										EnemyTurn();
 									}
 								} else {
+									// Deactivate status ailment icons
+									BattleStatusEffects.S.playerParalyzedIcons[PlayerNdx()].SetActive(false);
+									BattleStatusEffects.S.playerSleepingIcons[PlayerNdx()].SetActive(false);
+
 									PlayerTurn();
 								}
 							} else {
@@ -388,6 +393,11 @@ public class Battle : MonoBehaviour {
 		// Deactivate '...' Word Bubble
 		dotDotDotWordBubble.SetActive(false);
 
+		// Deactivate Status Ailment Icons (Paralyzed, Poisoned, Sleeping)
+		Utilities.S.SetActiveList(BattleStatusEffects.S.playerParalyzedIcons, false);
+		Utilities.S.SetActiveList(BattleStatusEffects.S.playerPoisonedIcons, false);
+		Utilities.S.SetActiveList(BattleStatusEffects.S.playerSleepingIcons, false);
+
 		// Reset Exp/Gold to add
 		expToAdd = 0;
 		goldToAdd = 0;
@@ -455,14 +465,13 @@ public class Battle : MonoBehaviour {
 	}
 
 	public void PlayerTurn(bool setPreviousSelected = true) { // if (Input.GetButtonDown ("Submit"))
-															  // Check for status ailment
 		// Reset Animation: Player Idle
 		for (int i = 0; i <= Party.S.partyNdx; i++) {
 			if (!playerDead[i]) {
-				playerAnimator[i].CrossFade("Idle", 0);
-
-				// If paralyzed...
-
+				// If doesn't have a status ailment...
+                if (!BattleStatusEffects.S.HasStatusAilment(Party.S.stats[i].name)) {
+					playerAnimator[i].CrossFade("Idle", 0);
+				}
 			} else {
 				playerAnimator[i].CrossFade("Death", 0);
 			}
@@ -479,15 +488,21 @@ public class Battle : MonoBehaviour {
 		// Deactivate '...' Word Bubble
 		dotDotDotWordBubble.SetActive(false);
 
+		// If Defended previous turn, remove from Defenders list
+		BattleStatusEffects.S.RemoveDefender(Party.S.stats[PlayerNdx()].name);
+		playerShields[PlayerNdx()].SetActive(false);
+
 		// If paralyzed...
 		if (BattleStatusEffects.S.CheckIfParalyzed(Party.S.stats[PlayerNdx()].name)) {
 			BattleStatusEffects.S.Paralyzed(Party.S.stats[PlayerNdx()].name);
-			battleMode = eBattleMode.statusAilment;
 			return;
 		}
 
 		// If sleeping...
-
+		if (BattleStatusEffects.S.CheckIfSleeping(Party.S.stats[PlayerNdx()].name)) {
+			BattleStatusEffects.S.Sleeping(Party.S.stats[PlayerNdx()].name);
+			return;
+		}
 
 		// If poisoned...
 
@@ -501,10 +516,6 @@ public class Battle : MonoBehaviour {
         if (setPreviousSelected) {
 			previousSelectedForAudio = previousSelectedGameObject;
 		}
-
-		// If Defended previous turn, remove from Defenders list
-		BattleStatusEffects.S.RemoveDefender(Party.S.stats[PlayerNdx()].name);
-		playerShields[PlayerNdx()].SetActive(false);
 
 		BattleDialogue.S.DisplayText("What will you do, " + Party.S.stats[PlayerNdx()].name + "?");
 
@@ -520,7 +531,10 @@ public class Battle : MonoBehaviour {
 		// Reset Animation: Player Idle
 		for (int i = 0; i <= Party.S.partyNdx; i++) {
 			if (!playerDead[i]) {
-				playerAnimator[i].CrossFade("Idle", 0);
+				// If doesn't have a status ailment...
+				if (!BattleStatusEffects.S.HasStatusAilment(Party.S.stats[i].name)) {
+					playerAnimator[i].CrossFade("Idle", 0);
+				}
 			} else {
 				playerAnimator[i].CrossFade("Death", 0);
 			}
