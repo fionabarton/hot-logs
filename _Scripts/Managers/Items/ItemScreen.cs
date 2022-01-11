@@ -111,7 +111,7 @@ public class ItemScreen : MonoBehaviour {
 			if (Input.GetButtonDown ("SNES Y Button")) {
 				PauseMessage.S.gameObject.SetActive(false);
 				Deactivate(true);
-				Battle.S.PlayerTurn();
+				Battle.S.PlayerTurn(true, false);
 			}
 		}
 
