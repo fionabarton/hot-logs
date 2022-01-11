@@ -88,7 +88,7 @@ public class SpellScreen : MonoBehaviour {
 			// If Player didn't use a Spell, go back to Player Turn
 			if (mode != eSpellScreenMode.pickSpell) {
 				if (Battle.S.battleMode == eBattleMode.itemOrSpellMenu) {
-					Battle.S.PlayerTurn(false);
+					Battle.S.PlayerTurn(false, false);
 				}
 			}
 
@@ -349,7 +349,7 @@ public class SpellScreen : MonoBehaviour {
 		Deactivate(true);
 
 		if (Battle.S.battleMode == eBattleMode.itemOrSpellMenu) {
-			Battle.S.PlayerTurn(false);
+			Battle.S.PlayerTurn(false, false);
 		}
 	}
 
