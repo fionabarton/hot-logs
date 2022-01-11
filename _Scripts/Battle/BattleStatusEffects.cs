@@ -28,15 +28,16 @@ public class BattleStatusEffects : MonoBehaviour {
 	public List<string>		defenders = new List<string>();
 
 	// Party members & enemies afflicted by status effects:
-	// Poison, Paralysis, Sleep
-	public List<string>		thePoisoned = new List<string>();
+	// Paralysis, Sleep, Poison
 	public List<string>		theParalyzed = new List<string>();
 	public List<string>		theSleeping = new List<string>();
+	public List<string>		thePoisoned = new List<string>();
 
 	// Amount of time left for a status ailment to subside:
-	// Paralysis, Sleep
-	public List<int>		paralysisCount = new List<int>();
-	public List<int>		sleepCount = new List<int>();
+	// Paralysis, Sleep, Poison
+	public List<int>		paralyzedCount = new List<int>();
+	public List<int>		sleepingCount = new List<int>();
+	public List<int>		poisonedCount = new List<int>();
 
 	private Battle _;
 	void Awake() {
@@ -46,6 +47,29 @@ public class BattleStatusEffects : MonoBehaviour {
 	void Start() {
 		_ = Battle.S;
 	}
+
+	// Called at start of a battle
+	public void Initialize() {
+		// Clear defenders
+		defenders.Clear();
+
+		// Deactivate defense shields
+		Utilities.S.SetActiveList(playerShields, false);
+		Utilities.S.SetActiveList(enemyShields, false);
+
+		// Deactivate Status Ailment Icons (Paralyzed, Poisoned, Sleeping)
+		Utilities.S.SetActiveList(playerParalyzedIcons, false);
+		Utilities.S.SetActiveList(playerPoisonedIcons, false);
+		Utilities.S.SetActiveList(playerSleepingIcons, false);
+
+		// Clear status ailment lists
+		thePoisoned.Clear();
+		theParalyzed.Clear();
+		theSleeping.Clear();
+		poisonedCount.Clear();
+		paralyzedCount.Clear();
+		sleepingCount.Clear();
+}
 
 	// Defending /////////////////////////////////////////////////////////////
 	public void AddDefender(string defender) {
@@ -62,34 +86,16 @@ public class BattleStatusEffects : MonoBehaviour {
 			_.attackDamage /= 2;
 		}
 	}
-
-	// Poisoned /////////////////////////////////////////////////////////////
-	public void AddPoisoned(string poisoned) {
-		if (!thePoisoned.Contains(poisoned)) {
-			thePoisoned.Add(poisoned);
-		}
-	}
-	void RemovePoisoned(string poisoned) {
-		if (thePoisoned.Contains(poisoned)) {
-			thePoisoned.Remove(poisoned);
-		}
-	}
-	public bool CheckIfPoisoned(string poisoned) {
-		if (thePoisoned.Contains(poisoned)) {
-			return true;
-		}
-		return false;
-	}
 	// Paralyzed /////////////////////////////////////////////////////////////
 	public void AddParalyzed(string paralyzed) {
 		if (!theParalyzed.Contains(paralyzed)) {
 			theParalyzed.Add(paralyzed);
-			paralysisCount.Add(Random.Range(2, 4));
+			paralyzedCount.Add(Random.Range(2, 4));
 		}
 	}
 	void RemoveParalyzed(string paralyzed) {
 		if (theParalyzed.Contains(paralyzed)) {
-			paralysisCount.RemoveAt(theParalyzed.IndexOf(paralyzed));
+			paralyzedCount.RemoveAt(theParalyzed.IndexOf(paralyzed));
 			theParalyzed.Remove(paralyzed);
 		}
 	}
@@ -102,10 +108,10 @@ public class BattleStatusEffects : MonoBehaviour {
 
 	public void Paralyzed(string paralyzed) {
 		// Decrement counter
-		paralysisCount[theParalyzed.IndexOf(paralyzed)] -= 1;
+		paralyzedCount[theParalyzed.IndexOf(paralyzed)] -= 1;
 
 		// If counter depleted...
-		if (paralysisCount[theParalyzed.IndexOf(paralyzed)] <= 0) {
+		if (paralyzedCount[theParalyzed.IndexOf(paralyzed)] <= 0) {
 			// ...no longer paralyzed
 			RemoveParalyzed(paralyzed);
 
@@ -127,12 +133,12 @@ public class BattleStatusEffects : MonoBehaviour {
 	public void AddSleeping(string sleeping) {
 		if (!theSleeping.Contains(sleeping)) {
 			theSleeping.Add(sleeping);
-			sleepCount.Add(Random.Range(2, 4));
+			sleepingCount.Add(Random.Range(2, 4));
 		}
 	}
 	void RemoveSleeping(string sleeping) {
 		if (theSleeping.Contains(sleeping)) {
-			sleepCount.RemoveAt(theSleeping.IndexOf(sleeping));
+			sleepingCount.RemoveAt(theSleeping.IndexOf(sleeping));
 			theSleeping.Remove(sleeping);
 		}
 	}
@@ -145,10 +151,10 @@ public class BattleStatusEffects : MonoBehaviour {
 
 	public void Sleeping(string sleeping) {
 		// Decrement counter
-		sleepCount[theSleeping.IndexOf(sleeping)] -= 1;
+		sleepingCount[theSleeping.IndexOf(sleeping)] -= 1;
 
 		// If counter depleted...
-		if (sleepCount[theSleeping.IndexOf(sleeping)] <= 0) {
+		if (sleepingCount[theSleeping.IndexOf(sleeping)] <= 0) {
 			// ...no longer sleeping
 			RemoveSleeping(sleeping);
 
@@ -166,8 +172,68 @@ public class BattleStatusEffects : MonoBehaviour {
 		}
 		_.battleMode = eBattleMode.statusAilment;
 	}
+	// Poisoned /////////////////////////////////////////////////////////////
+	public void AddPoisoned(string poisoned) {
+		if (!thePoisoned.Contains(poisoned)) {
+			thePoisoned.Add(poisoned);
+			poisonedCount.Add(Random.Range(2, 4));
+		}
+	}
+	void RemovePoisoned(string poisoned) {
+		if (thePoisoned.Contains(poisoned)) {
+			poisonedCount.RemoveAt(thePoisoned.IndexOf(poisoned));
+			thePoisoned.Remove(poisoned);
+		}
+	}
+	public bool CheckIfPoisoned(string poisoned) {
+		if (thePoisoned.Contains(poisoned)) {
+			return true;
+		}
+		return false;
+	}
 
-	// Returns true if the combatant has a status ailment
+	public void Poisoned(string poisoned, int ndx) {
+		// Decrement counter
+		poisonedCount[thePoisoned.IndexOf(poisoned)] -= 1;
+
+		// If counter depleted...
+		if (poisonedCount[thePoisoned.IndexOf(poisoned)] <= 0) {
+			// ...no longer poisoned
+			RemovePoisoned(poisoned);
+
+			// Display text
+			BattleDialogue.S.DisplayText(poisoned + " is no longer poisoned!");
+
+			// Audio: Buff 2
+			AudioManager.S.PlaySFX(eSoundName.buff2);
+		} else {
+			// If player turn...
+			// Get 6-10% of max HP
+			float lowEnd = Party.S.stats[ndx].HP * 0.06f;
+			float highEnd = Party.S.stats[ndx].HP * 0.10f;
+			_.attackDamage = (int)Random.Range(lowEnd, highEnd);
+
+			// Play attack animations, SFX, and spawn objects
+			BattleEnemyActions.S.PlaySingleAttackAnimsAndSFX(ndx, false);
+
+			// Decrement HP
+			RPG.S.SubtractPlayerHP(ndx, _.attackDamage);
+
+			// Audio: Deny
+			AudioManager.S.PlaySFX(eSoundName.deny);
+
+			// Display text
+			BattleDialogue.S.DisplayText(poisoned + " is poisoned and lost " + _.attackDamage + " HP!");
+
+			// Check if dead
+			if (Party.S.stats[ndx].HP < 1) {
+				BattleEnd.S.PlayerDeath(ndx);
+				return;
+			}
+		}
+		_.battleMode = eBattleMode.statusAilment;
+	}
+	// Returns true if the combatant has a status ailment ////////////////////
 	public bool HasStatusAilment(string name) {
 		if(CheckIfParalyzed(name) || CheckIfPoisoned(name) || CheckIfSleeping(name)) {
 			return true;

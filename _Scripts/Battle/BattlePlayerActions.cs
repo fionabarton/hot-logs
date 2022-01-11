@@ -136,7 +136,7 @@ public class BattlePlayerActions : MonoBehaviour {
 		// Deactivate target cursors
 		Utilities.S.SetActiveList(BattleUI.S.targetCursors, false);
 
-		_.PlayerTurn();
+		_.PlayerTurn(true, false);
 
 		// Audio: Deny
 		AudioManager.S.PlaySFX(eSoundName.deny);

@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class BattleEnemyAI : MonoBehaviour {
 	[Header("Set Dynamically")]
-	// Singleton
 	private static BattleEnemyAI _S;
 	public static BattleEnemyAI S { get { return _S; } set { _S = value; } }
 
@@ -52,128 +51,146 @@ public class BattleEnemyAI : MonoBehaviour {
                 break;
         }
 
-        // Sleep
-        int playerToSleep = BattleStats.S.GetRandomPlayerNdx();
-        if (BattleStatusEffects.S.CheckIfSleeping(Party.S.stats[playerToSleep].name)) {
+        // Poison
+        int playerToPoison = BattleStats.S.GetRandomPlayerNdx();
+        if (BattleStatusEffects.S.CheckIfPoisoned(Party.S.stats[playerToPoison].name)) {
             // Attack OR Defend
             ChanceToCallMove(0, 1);
         } else {
-            if (Random.value < 0.5f) {
-                BattleEnemyActions.S.Sleep(playerToSleep);
-            } else {
-                // Attack OR Defend
-                ChanceToCallMove(0, 1);
-            }
+            //if (Random.value < 0.5f) {
+            //    BattleEnemyActions.S.Poison(playerToPoison);
+            //} else {
+            //    // Attack OR Defend
+            //    ChanceToCallMove(0, 1);
+            //}
+            BattleEnemyActions.S.Poison(playerToPoison);
         }
         return;
 
-        // Paralyze
-        int playerToParalyze = BattleStats.S.GetRandomPlayerNdx();
-        if (BattleStatusEffects.S.CheckIfParalyzed(Party.S.stats[playerToParalyze].name)) {
-            // Attack OR Defend
-            ChanceToCallMove(0, 1);
-        } else {
-            if (Random.value < 0.5f) {
-                BattleEnemyActions.S.Paralyze(playerToParalyze);
-            } else {
-                // Attack OR Defend
-                ChanceToCallMove(0, 1);
-            }
-        }
-        return;
+        //// Sleep
+        //int playerToSleep = BattleStats.S.GetRandomPlayerNdx();
+        //if (BattleStatusEffects.S.CheckIfSleeping(Party.S.stats[playerToSleep].name)) {
+        //    // Attack OR Defend
+        //    ChanceToCallMove(0, 1);
+        //} else {
+        //    //if (Random.value < 0.5f) {
+        //    //    BattleEnemyActions.S.Sleep(playerToSleep);
+        //    //} else {
+        //    //    // Attack OR Defend
+        //    //    ChanceToCallMove(0, 1);
+        //    //}
+        //    BattleEnemyActions.S.Sleep(playerToSleep);
+        //}
+        //return;
 
-        switch (_.enemyStats[_.EnemyNdx()].AI) {
-        case eEnemyAI.FightWisely:
-            // If HP is less than 10%...
-            if (Utilities.S.GetPercentage(_.enemyStats[_.EnemyNdx()].HP, _.enemyStats[_.EnemyNdx()].maxHP) < 0.1f) {
-                // If MP is less than 10%...
-                if (Utilities.S.GetPercentage(_.enemyStats[_.EnemyNdx()].MP, _.enemyStats[_.EnemyNdx()].maxMP) < 0.1f) {
-                    // Run OR Defend
-                    ChanceToCallMove(2, 1);
-                } else {
-                    // Heal Spell OR Defend
-                    ChanceToCallMove(4, 1);
-                }
-            } else {
-                // If MP is less than 10%...
-                if (Utilities.S.GetPercentage(_.enemyStats[_.EnemyNdx()].MP, _.enemyStats[_.EnemyNdx()].maxMP) < 0.1f) {
-                    // Attack OR Defend
-                    ChanceToCallMove(0, 1);
-                } else {
-                    // Attack All Spell OR Attack
-                    ChanceToCallMove(5, 0);
-                }
-            }
-            break;
-        case eEnemyAI.FocusOnAttack:
-            // If MP is less than 10%...
-            if (Utilities.S.GetPercentage(_.enemyStats[_.EnemyNdx()].MP, _.enemyStats[_.EnemyNdx()].maxMP) < 0.1f) {
-                // Attack
-                ChanceToCallMove(0);
-            } else {
-                if (_.partyQty == 0) {
-                    // Attack Single or Attack
-                    ChanceToCallMove(8, 0);
-                } else {
-                    // Attack All OR Attack Single 
-                    ChanceToCallMove(5, 8);
-                }
-            }
-            break;
-        case eEnemyAI.FocusOnDefend:
-            // Defend or Run
-            ChanceToCallMove(1, 2);
-            break;
-        case eEnemyAI.FocusOnHeal:
-            // If any enemy's HP is less than 25%...
-            if (BattleStats.S.EnemiesNeedsHeal()) {
-                // If MP is less than 10%...
-                if (Utilities.S.GetPercentage(_.enemyStats[_.EnemyNdx()].MP, _.enemyStats[_.EnemyNdx()].maxMP) < 0.1f) {
-                    // Defend OR Run 
-                    ChanceToCallMove(1, 2);
-                } else {
-                    // Heal Spell OR Defend
-                    ChanceToCallMove(4, 1);
-                }
-            } else {
-                // Attack OR Defend
-                ChanceToCallMove(0, 1);
-            }
-            break;
-        case eEnemyAI.Random:
-            // Select Random Move
-            CallRandomMove();
-            break;
-        case eEnemyAI.RunAway:
-            // Run or Defend
-            ChanceToCallMove(2, 1);
-            break;
-        case eEnemyAI.CallForBackup:
-            // Call for backup next turn
-            if (Random.value < _.enemyStats[_.EnemyNdx()].chanceToCallMove / 3) {
-                ChanceToCallMove(7);
-            } else {
-                // Attack or Defend 
-                ChanceToCallMove(0, 1);
-            }
-            break;
-        case eEnemyAI.Charge:
-            if(_.roundNdx % 3 == 0) { // Every third round...
-                if (_.partyQty == 0) {
-                    // Attack Single or Attack
-                    ChanceToCallMove(8, 0);
-                } else {
-                    // Attack All OR Attack Single 
-                    ChanceToCallMove(5, 8);
-                }
-            } else {
-                BattleEnemyActions.S.Charge();
-            }
-            break;
-        case eEnemyAI.DontUseMP:
-        default:
-            break;
-        }
+        //// Paralyze
+        //int playerToParalyze = BattleStats.S.GetRandomPlayerNdx();
+        //if (BattleStatusEffects.S.CheckIfParalyzed(Party.S.stats[playerToParalyze].name)) {
+        //    // Attack OR Defend
+        //    ChanceToCallMove(0, 1);
+        //} else {
+        //    //if (Random.value < 0.5f) {
+        //    //    BattleEnemyActions.S.Paralyze(playerToParalyze);
+        //    //} else {
+        //    //    // Attack OR Defend
+        //    //    ChanceToCallMove(0, 1);
+        //    //}
+        //    BattleEnemyActions.S.Paralyze(playerToParalyze);
+        //}
+        //return;
+
+        //switch (_.enemyStats[_.EnemyNdx()].AI) {
+        //case eEnemyAI.FightWisely:
+        //    // If HP is less than 10%...
+        //    if (Utilities.S.GetPercentage(_.enemyStats[_.EnemyNdx()].HP, _.enemyStats[_.EnemyNdx()].maxHP) < 0.1f) {
+        //        // If MP is less than 10%...
+        //        if (Utilities.S.GetPercentage(_.enemyStats[_.EnemyNdx()].MP, _.enemyStats[_.EnemyNdx()].maxMP) < 0.1f) {
+        //            // Run OR Defend
+        //            ChanceToCallMove(2, 1);
+        //        } else {
+        //            // Heal Spell OR Defend
+        //            ChanceToCallMove(4, 1);
+        //        }
+        //    } else {
+        //        // If MP is less than 10%...
+        //        if (Utilities.S.GetPercentage(_.enemyStats[_.EnemyNdx()].MP, _.enemyStats[_.EnemyNdx()].maxMP) < 0.1f) {
+        //            // Attack OR Defend
+        //            ChanceToCallMove(0, 1);
+        //        } else {
+        //            // Attack All Spell OR Attack
+        //            ChanceToCallMove(5, 0);
+        //        }
+        //    }
+        //    break;
+        //case eEnemyAI.FocusOnAttack:
+        //    // If MP is less than 10%...
+        //    if (Utilities.S.GetPercentage(_.enemyStats[_.EnemyNdx()].MP, _.enemyStats[_.EnemyNdx()].maxMP) < 0.1f) {
+        //        // Attack
+        //        ChanceToCallMove(0);
+        //    } else {
+        //        if (_.partyQty == 0) {
+        //            // Attack Single or Attack
+        //            ChanceToCallMove(8, 0);
+        //        } else {
+        //            // Attack All OR Attack Single 
+        //            ChanceToCallMove(5, 8);
+        //        }
+        //    }
+        //    break;
+        //case eEnemyAI.FocusOnDefend:
+        //    // Defend or Run
+        //    ChanceToCallMove(1, 2);
+        //    break;
+        //case eEnemyAI.FocusOnHeal:
+        //    // If any enemy's HP is less than 25%...
+        //    if (BattleStats.S.EnemiesNeedsHeal()) {
+        //        // If MP is less than 10%...
+        //        if (Utilities.S.GetPercentage(_.enemyStats[_.EnemyNdx()].MP, _.enemyStats[_.EnemyNdx()].maxMP) < 0.1f) {
+        //            // Defend OR Run 
+        //            ChanceToCallMove(1, 2);
+        //        } else {
+        //            // Heal Spell OR Defend
+        //            ChanceToCallMove(4, 1);
+        //        }
+        //    } else {
+        //        // Attack OR Defend
+        //        ChanceToCallMove(0, 1);
+        //    }
+        //    break;
+        //case eEnemyAI.Random:
+        //    // Select Random Move
+        //    CallRandomMove();
+        //    break;
+        //case eEnemyAI.RunAway:
+        //    // Run or Defend
+        //    ChanceToCallMove(2, 1);
+        //    break;
+        //case eEnemyAI.CallForBackup:
+        //    // Call for backup next turn
+        //    if (Random.value < _.enemyStats[_.EnemyNdx()].chanceToCallMove / 3) {
+        //        ChanceToCallMove(7);
+        //    } else {
+        //        // Attack or Defend 
+        //        ChanceToCallMove(0, 1);
+        //    }
+        //    break;
+        //case eEnemyAI.Charge:
+        //    if(_.roundNdx % 3 == 0) { // Every third round...
+        //        if (_.partyQty == 0) {
+        //            // Attack Single or Attack
+        //            ChanceToCallMove(8, 0);
+        //        } else {
+        //            // Attack All OR Attack Single 
+        //            ChanceToCallMove(5, 8);
+        //        }
+        //    } else {
+        //        BattleEnemyActions.S.Charge();
+        //    }
+        //    break;
+        //case eEnemyAI.DontUseMP:
+        //default:
+        //    break;
+        //}
     }
 
 	// If Enemy is lucky, check if it has desired move
@@ -221,7 +238,9 @@ public class BattleEnemyAI : MonoBehaviour {
 			case 8: BattleEnemyActions.S.AttemptAttackSingle(); break;
             case 9: BattleEnemyActions.S.Charge(); break;
             //case 10: BattleEnemyActions.S.Paralyze(); break;
-            default:BattleEnemyActions.S.Attack(); break;
+            //case 11: BattleEnemyActions.S.Sleep(); break;
+            //case 12: BattleEnemyActions.S.Poison(); break;
+            default: BattleEnemyActions.S.Attack(); break;
 		}
 	}
 }

@@ -19,9 +19,11 @@ public class BattleEnemyActions : MonoBehaviour {
 	}
 
 	// Play attack animations, SFX, and spawn objects
-	public void PlaySingleAttackAnimsAndSFX(int playerToAttack) {
-		// Animation: Enemy ATTACK in center
-		_.enemyAnimator[_.animNdx].CrossFade("Attack", 0);
+	public void PlaySingleAttackAnimsAndSFX(int playerToAttack, bool playEnemyAnim = true) {
+        if (playEnemyAnim) {
+			// Animation: Enemy ATTACK in center
+			_.enemyAnimator[_.animNdx].CrossFade("Attack", 0);
+		}
 
         // If player doesn't have a status ailment...
         if (!BattleStatusEffects.S.HasStatusAilment(Party.S.stats[playerToAttack].name)) {
@@ -514,6 +516,28 @@ public class BattleEnemyActions : MonoBehaviour {
 		AudioManager.S.PlaySFX(eSoundName.buff2);
 
 		BattleDialogue.S.DisplayText(_.enemyStats[_.EnemyNdx()].name + " has temporarily put " + Party.S.stats[ndx].name + " to sleep...\n...not nice!");
+		_.NextTurn();
+	}
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// Index = 12
+	// Poison
+	public void Poison(int ndx) {
+		// Poison party member
+		BattleStatusEffects.S.AddPoisoned(Party.S.stats[ndx].name);
+
+		// Play attack animations, SFX, and spawn objects
+		PlaySingleAttackAnimsAndSFX(ndx);
+
+		// Activate poisoned icon
+		BattleStatusEffects.S.playerPoisonedIcons[ndx].SetActive(true);
+
+		// Anim
+		_.playerAnimator[ndx].CrossFade("Poisoned", 0);
+
+		// Audio: Buff 2
+		AudioManager.S.PlaySFX(eSoundName.buff2);
+
+		BattleDialogue.S.DisplayText(_.enemyStats[_.EnemyNdx()].name + " has temporarily poisoned " + Party.S.stats[ndx].name + " ...\n...not nice!");
 		_.NextTurn();
 	}
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////
