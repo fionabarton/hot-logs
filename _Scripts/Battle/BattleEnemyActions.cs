@@ -19,9 +19,9 @@ public class BattleEnemyActions : MonoBehaviour {
 	}
 
 	// Play attack animations, SFX, and spawn objects
-	public void PlaySingleAttackAnimsAndSFX(int playerToAttack, bool playEnemyAnim = true) {
-        if (playEnemyAnim) {
-			// Animation: Enemy ATTACK in center
+	public void PlaySingleAttackAnimsAndSFX(int playerToAttack, bool playEnemyAnim = true, bool displayFloatingScore = true) {
+		// Animation: Enemy ATTACK in center
+		if (playEnemyAnim) {
 			_.enemyAnimator[_.animNdx].CrossFade("Attack", 0);
 		}
 
@@ -42,8 +42,10 @@ public class BattleEnemyActions : MonoBehaviour {
 		GameObject explosion = ObjectPool.S.GetPooledObject("Explosion");
 		ObjectPool.S.PosAndEnableObj(explosion, _.playerSprite[playerToAttack]);
 
-		// Display Floating Score
-		RPG.S.InstantiateFloatingScore(_.playerSprite[playerToAttack], _.attackDamage, Color.red);
+        // Display Floating Score
+        if (displayFloatingScore) {
+			RPG.S.InstantiateFloatingScore(_.playerSprite[playerToAttack], _.attackDamage, Color.red);
+		}
 	}
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Index = 0
@@ -101,10 +103,7 @@ public class BattleEnemyActions : MonoBehaviour {
 	// Index = 1
 	// Defend
 	public void Defend(){
-		BattleStatusEffects.S.AddDefender(_.enemyStats [_.EnemyNdx()].name);
-
-		// Activate Enemy Shield
-		_.enemyShields[_.EnemyNdx()].SetActive(true);
+		BattleStatusEffects.S.AddDefender(_.enemyStats [_.EnemyNdx()].name, false);
 
 		BattleDialogue.S.DisplayText (_.enemyStats [_.EnemyNdx()].name + " defends themself until their next turn!");
 
@@ -482,7 +481,7 @@ public class BattleEnemyActions : MonoBehaviour {
 		BattleStatusEffects.S.AddParalyzed(Party.S.stats[ndx].name);
 
 		// Play attack animations, SFX, and spawn objects
-		PlaySingleAttackAnimsAndSFX(ndx);
+		PlaySingleAttackAnimsAndSFX(ndx, true, false);
 
 		// Activate paralyzed icon
 		BattleStatusEffects.S.playerParalyzedIcons[ndx].SetActive(true);
@@ -504,7 +503,7 @@ public class BattleEnemyActions : MonoBehaviour {
 		BattleStatusEffects.S.AddSleeping(Party.S.stats[ndx].name);
 
 		// Play attack animations, SFX, and spawn objects
-		PlaySingleAttackAnimsAndSFX(ndx);
+		PlaySingleAttackAnimsAndSFX(ndx, true, false);
 
 		// Activate sleeping icon
 		BattleStatusEffects.S.playerSleepingIcons[ndx].SetActive(true);
@@ -526,7 +525,7 @@ public class BattleEnemyActions : MonoBehaviour {
 		BattleStatusEffects.S.AddPoisoned(Party.S.stats[ndx].name);
 
 		// Play attack animations, SFX, and spawn objects
-		PlaySingleAttackAnimsAndSFX(ndx);
+		PlaySingleAttackAnimsAndSFX(ndx, true, false);
 
 		// Activate poisoned icon
 		BattleStatusEffects.S.playerPoisonedIcons[ndx].SetActive(true);
@@ -563,8 +562,8 @@ public class BattleEnemyActions : MonoBehaviour {
 		}
 	}
 	public void PlayersDeathHelper(int playerNdx, string playerTurnOrder){
-		// Deactivate Player Shield
-		_.playerShields[playerNdx].SetActive(false);
+		// Remove all status ailments 
+		BattleStatusEffects.S.RemoveAllStatusAilments(Party.S.stats[playerNdx].name, true, playerNdx);
 
 		_.playerDead[playerNdx] = true;
 

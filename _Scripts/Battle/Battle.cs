@@ -11,10 +11,6 @@ public class Battle : MonoBehaviour {
 	public List<GameObject>		playerSprite;
 	public List<SpriteRenderer> enemySprite;
 
-	// Player/Enemy Defense Shields
-	public List<GameObject>	playerShields;
-	public List<GameObject>	enemyShields;
-
 	// Enemy "Help!" Word Bubbles
 	public List<GameObject> enemyHelpBubbles;
 
@@ -35,7 +31,6 @@ public class Battle : MonoBehaviour {
 	public bool				qteEnabled = true;
 
 	[Header("Set Dynamically")]
-	// Singleton
 	private static Battle	_S;
 	public static Battle	S { get { return _S; } set { _S = value; } }
 
@@ -384,12 +379,6 @@ public class Battle : MonoBehaviour {
 		BattleUI.S.turnCursor.SetActive(false);
 		Utilities.S.SetActiveList(BattleUI.S.targetCursors, false);
 
-		// Deactivate Player Shields
-		Utilities.S.SetActiveList(playerShields, false);
-
-		// Deactivate Enemy Shields
-		Utilities.S.SetActiveList(enemyShields, false);
-
 		// Deactivate Enemy "Help" Word Bubbles
 		Utilities.S.SetActiveList(enemyHelpBubbles, false);
 
@@ -489,8 +478,7 @@ public class Battle : MonoBehaviour {
 		dotDotDotWordBubble.SetActive(false);
 
 		// If Defended previous turn, remove from Defenders list
-		BattleStatusEffects.S.RemoveDefender(Party.S.stats[PlayerNdx()].name);
-		playerShields[PlayerNdx()].SetActive(false);
+		BattleStatusEffects.S.RemoveDefender(Party.S.stats[PlayerNdx()].name, true, PlayerNdx());
 
 		// Set Turn Cursor Position
 		BattleUI.S.TurnCursorPosition(playerSprite[PlayerNdx()].gameObject);
@@ -565,8 +553,7 @@ public class Battle : MonoBehaviour {
 		BattleUI.S.DisplayTurnOrder();
 
 		// If Defended previous turn, remove from Defenders list
-		BattleStatusEffects.S.RemoveDefender(enemyStats[EnemyNdx()].name);
-		enemyShields[EnemyNdx()].SetActive(false);
+		BattleStatusEffects.S.RemoveDefender(enemyStats[EnemyNdx()].name, false, EnemyNdx());
 
 		// Deactivate '...' Word Bubble
 		dotDotDotWordBubble.SetActive(false);

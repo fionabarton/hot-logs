@@ -171,7 +171,7 @@ public class BattlePlayerActions : MonoBehaviour {
 				}
 
 				// Deactivate Player Shields
-				Utilities.S.SetActiveList(_.playerShields, false);
+				Utilities.S.SetActiveList(BattleStatusEffects.S.playerShields, false);;
 
 				// You ran away, so the enemy is chasing after you!
 				EnemyManager.S.GetEnemyMovement(eMovement.pursueRun);
@@ -207,11 +207,7 @@ public class BattlePlayerActions : MonoBehaviour {
 		ButtonsDisableAll();
 
 		// Defend until next turn
-		BattleStatusEffects.S.AddDefender(Party.S.stats[_.PlayerNdx()].name);
-
-		// TBR
-		// Animation: Player DEFEND
-		_.playerShields[_.PlayerNdx()].SetActive(true);
+		BattleStatusEffects.S.AddDefender(Party.S.stats[_.PlayerNdx()].name, true);
 
 		BattleDialogue.S.DisplayText(Party.S.stats[_.PlayerNdx()].name + " defends themself until their next turn!");
 

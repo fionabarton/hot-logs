@@ -72,12 +72,26 @@ public class BattleStatusEffects : MonoBehaviour {
 }
 
 	// Defending /////////////////////////////////////////////////////////////
-	public void AddDefender(string defender) {
+	public void AddDefender(string defender, bool isPlayer) {
 		defenders.Add(defender);
+
+		// Activate defense shield
+		if (isPlayer) {
+			playerShields[_.PlayerNdx()].SetActive(true);
+		} else {
+			enemyShields[_.EnemyNdx()].SetActive(true);
+		}
 	}
-	public void RemoveDefender(string defender) {
+	public void RemoveDefender(string defender, bool isPlayer, int ndx) {
 		if (defenders.Contains(defender)) {
 			defenders.Remove(defender);
+
+			// Deactivate defense shield
+			if (isPlayer) {
+				playerShields[ndx].SetActive(false);
+			} else {
+				enemyShields[ndx].SetActive(false);
+			}
 		}
 	}
 	// If defending, cut attackDamage in half
@@ -209,8 +223,8 @@ public class BattleStatusEffects : MonoBehaviour {
 		} else {
 			// If player turn...
 			// Get 6-10% of max HP
-			float lowEnd = Party.S.stats[ndx].HP * 0.06f;
-			float highEnd = Party.S.stats[ndx].HP * 0.10f;
+			float lowEnd = Party.S.stats[ndx].maxHP * 0.06f;
+			float highEnd = Party.S.stats[ndx].maxHP * 0.10f;
 			_.attackDamage = (int)Random.Range(lowEnd, highEnd);
 
 			// Play attack animations, SFX, and spawn objects
@@ -223,7 +237,7 @@ public class BattleStatusEffects : MonoBehaviour {
 			AudioManager.S.PlaySFX(eSoundName.deny);
 
 			// Display text
-			BattleDialogue.S.DisplayText(poisoned + " is poisoned and lost " + _.attackDamage + " HP!");
+			BattleDialogue.S.DisplayText(poisoned + " suffers the consequences of being poisoned...\n...damaged for " + _.attackDamage + " HP!");
 
 			// Check if dead
 			if (Party.S.stats[ndx].HP < 1) {
@@ -240,6 +254,14 @@ public class BattleStatusEffects : MonoBehaviour {
         }
 		return false;
 	}
+
+	// Remove all status ailments from a combatant
+	public void RemoveAllStatusAilments(string name, bool isPlayer, int ndx) {
+		RemoveDefender(name, isPlayer, ndx);
+		RemoveParalyzed(name);
+		RemovePoisoned(name);
+		RemoveSleeping(name);
+    }
 	//////////////////////////////////////////////////////////////////////////
 	//public int GetCombatantNdx(string name) {
 	//    for (int i = 0; i < Party.S.stats.Count; i++) {

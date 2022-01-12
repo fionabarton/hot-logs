@@ -43,8 +43,8 @@ public class BattleEnd : MonoBehaviour {
 			// Animation: Enemy RUN
 			_.enemyAnimator[ndx].CrossFade("Run", 0);
 
-			// Deactivate Enemy Shield
-			_.enemyShields[ndx].SetActive(false);
+			// Remove all status ailments 
+			BattleStatusEffects.S.RemoveAllStatusAilments(_.enemyStats[ndx].name, false, ndx);
 
 			// Deactivate Enemy "Help" Word Bubble
 			_.enemyHelpBubbles[ndx].SetActive(false);
@@ -102,8 +102,8 @@ public class BattleEnd : MonoBehaviour {
         // Animation: Enemy DEATH
         _.enemyAnimator[ndx].CrossFade("Death", 0);
 
-		// Deactivate Enemy Shield
-		_.enemyShields[ndx].SetActive(false);
+		// Remove all status ailments 
+		BattleStatusEffects.S.RemoveAllStatusAilments(_.enemyStats[ndx].name, false, ndx);
 
 		// Deactivate Enemy "Help" Word Bubble
 		_.enemyHelpBubbles[ndx].SetActive(false);
@@ -186,8 +186,8 @@ public class BattleEnd : MonoBehaviour {
 		// Animation: Player DEATH
 		_.playerAnimator[ndx].CrossFade("Death", 0);
 
-		// Deactivate Player Shield
-		_.playerShields[ndx].SetActive(false);
+		// Remove all status ailments 
+		BattleStatusEffects.S.RemoveAllStatusAilments(Party.S.stats[ndx].name, true, ndx);
 
 		// Remove Player 1 or 2 from Turn Order
 		//if (ndx == 0) { _.turnOrder.Remove(Party.S.stats[0].name); } else if (ndx == 1) { _.turnOrder.Remove(Party.S.stats[1].name); }
