@@ -388,8 +388,8 @@ public class BattleSpells : MonoBehaviour {
 		// Drop Enemy Anim
 		_.enemyAnimator[enemyNdx].CrossFade("Death", 0);
 
-		// Deactivate Enemy Shield
-		_.enemyShields[enemyNdx].SetActive(false);
+		// Remove all status ailments 
+		BattleStatusEffects.S.RemoveAllStatusAilments(_.enemyStats[enemyNdx].name, false, enemyNdx);
 
 		// Deactivate Enemy "Help" Word Bubble
 		_.enemyHelpBubbles[enemyNdx].SetActive(false);
