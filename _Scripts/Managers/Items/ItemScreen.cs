@@ -269,8 +269,10 @@ public class ItemScreen : MonoBehaviour {
 					BattleItems.S.AddFunctionToButton(BattleItems.S.HealAllPotion, "Use potion to heal all party members?", item);
 				} else if (item.name == "Revive Potion") {
 					BattleItems.S.AddFunctionToButton(BattleItems.S.RevivePotion, "Use potion to revive which party member?", item);
+				} else if (item.name == "Detoxify Potion") {
+					BattleItems.S.AddFunctionToButton(BattleItems.S.DetoxifyPotion, "Use potion to detoxify which party member?", item);
 				} else {
-					BattleItems.S.CantUseItem();
+					BattleItems.S.CantUseItemInBattle();
 				}
 			} else { // if Overworld
 				if (item.name == "Health Potion") {

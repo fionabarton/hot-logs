@@ -5,8 +5,7 @@ using UnityEngine;
 /// <summary>
 /// Stores and manages the party's inventory
 /// </summary>
-public class Inventory : MonoBehaviour
-{
+public class Inventory : MonoBehaviour {
 	[Header("Set Dynamically")]
 	// Singleton
 	private static Inventory		_S;
@@ -19,6 +18,9 @@ public class Inventory : MonoBehaviour
 	}
 
 	void Start() {
+        AddItemToInventory(ItemManager.S.items[25]);
+        AddItemToInventory(ItemManager.S.items[25]);
+        AddItemToInventory(ItemManager.S.items[25]);
         AddItemToInventory(ItemManager.S.items[0]);
         AddItemToInventory(ItemManager.S.items[0]);
         AddItemToInventory(ItemManager.S.items[1]);

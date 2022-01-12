@@ -5,7 +5,7 @@ using System;
 public enum eItem { hpPotion, mpPotion, paperSword, crap, nothing, paperArmor, paperHelmet, paperOther, woodenSword,
                     paperWand, berry, smallKey, bug1, bug2, bug3, bug4, bug5, bug6,
                     defaultWeapon, defaultArmor, defaultHelmet, defaultAccessory,
-                    healAllPotion, warpPotion, revivePotion
+                    healAllPotion, warpPotion, revivePotion, detoxifyPotion
 };
 public enum eItemType { weapon, armor, helmet, accessory, consumable, ingredient, important, nothing };
 public enum eItemStatEffect { HP, MP, STR, DEF, WIS, AGI, nothing };
@@ -127,6 +127,10 @@ public class ItemManager : MonoBehaviour {
         // Revive Potion
         items[24] = new Item("Revive Potion", eItemType.consumable, eItemStatEffect.HP, 12, 20, 25,
         "Revives a fallen party member and restores a small amount of their HP." + "\n Value: 25 Gold", itemSprite[24]);
+
+        // Detoxify Potion
+        items[25] = new Item("Detoxify Potion", eItemType.consumable, eItemStatEffect.nothing, 0, 0, 5,
+        "Eradicates any poisonous toxins that have infected a party member." + "\n Value: 5 Gold", itemSprite[25]);
     }
 
     public Item GetItem(eItem itemNdx){

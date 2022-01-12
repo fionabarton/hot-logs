@@ -55,6 +55,59 @@ public class BattleItems : MonoBehaviour {
 		}
 	}
 
+	public void DetoxifyPotion(int ndx, Item item) {
+		if (_.playerDead[ndx]) {
+			// Display Text
+			BattleDialogue.S.DisplayText(Party.S.stats[ndx].name + " is dead...\n...and dead folk don't need to be detoxified, dummy!");
+
+			// Audio: Deny
+			AudioManager.S.PlaySFX(eSoundName.deny);
+
+			// Switch Mode
+			_.battleMode = eBattleMode.playerTurn;
+
+			DisableButtonsAndRemoveListeners();
+
+			return;
+		}
+
+		if (BattleStatusEffects.S.CheckIfPoisoned(Party.S.stats[ndx].name)) {
+			// Remove from Inventory
+			Inventory.S.RemoveItemFromInventory(item);
+
+			// Remove poison
+			BattleStatusEffects.S.RemovePoisoned(Party.S.stats[ndx].name);
+
+			// Deactivate status ailment icon
+			BattleStatusEffects.S.playerPoisonedIcons[ndx].SetActive(false);
+
+			// Display Text
+			BattleDialogue.S.DisplayText("Used " + item.name + "!\n" + Party.S.stats[ndx].name + " is no longer poisoned!");
+            
+            // Get and position Poof game object
+            GameObject poof = ObjectPool.S.GetPooledObject("Poof");
+            ObjectPool.S.PosAndEnableObj(poof, _.playerSprite[ndx]);
+
+			// Set anim
+			_.playerAnimator[ndx].CrossFade("Win_Battle", 0);
+
+			// Audio: Buff 1
+			AudioManager.S.PlaySFX(eSoundName.buff1);
+
+			_.NextTurn();
+		} else {
+			BattleDialogue.S.DisplayText(Party.S.stats[ndx].name + " is not suffering from the effects of poison...\n...no need to use this potion!");
+
+			// Audio: Deny
+			AudioManager.S.PlaySFX(eSoundName.deny);
+
+			// Switch Mode
+			_.battleMode = eBattleMode.playerTurn;
+		}
+		DisableButtonsAndRemoveListeners();
+	}
+
+
     public void HPPotion(int ndx, Item item) {
         if (_.playerDead[ndx]) {
             // Display Text
@@ -192,7 +245,6 @@ public class BattleItems : MonoBehaviour {
 			Party.S.stats[2].HP < Party.S.stats[2].maxHP) {
 			for (int i = 0; i < _.playerDead.Count; i++) {
 				if (!_.playerDead[i]) {
-
 					// Get amount and max amount to heal
 					int amountToHeal = UnityEngine.Random.Range(item.statEffectMinValue, item.statEffectMaxValue);
 					int maxAmountToHeal = Party.S.stats[i].maxHP - Party.S.stats[i].HP;
@@ -278,7 +330,25 @@ public class BattleItems : MonoBehaviour {
 		Utilities.S.RemoveListeners(BattlePlayerActions.S.playerButtonCS);
 	}
 
-	public void CantUseItem() {
+	public void ItemIsNotUseful(string message) {
+		// Display Text
+		BattleDialogue.S.DisplayText(message);
+
+		// Deactivate Cursors
+		Utilities.S.SetActiveList(BattleUI.S.targetCursors, false);
+
+		// Audio: Deny
+		AudioManager.S.PlaySFX(eSoundName.deny);
+
+		// Switch Mode
+		_.battleMode = eBattleMode.playerTurn;
+
+		DisableButtonsAndRemoveListeners();
+
+		return;
+	}
+
+	public void CantUseItemInBattle() {
 		ItemScreen.S.Deactivate();
 
 		// Deactivate PauseMessage
