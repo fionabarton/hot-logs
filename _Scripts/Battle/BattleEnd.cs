@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class BattleEnd : MonoBehaviour {
     [Header("Set Dynamically")]
-	// Singleton
 	private static BattleEnd _S;
 	public static BattleEnd S { get { return _S; } set { _S = value; } }
 
@@ -93,7 +92,7 @@ public class BattleEnd : MonoBehaviour {
 	}
 
 	// Multiple enemy deaths are handled elsewhere: BattleSpells.S.EnemiesDeathHelper();
-	public void EnemyDeath(int ndx) {
+	public void EnemyDeath(int ndx, bool displayText = true) {
 		RemoveEnemy(ndx);
 
 		// Audio: Death
@@ -114,19 +113,25 @@ public class BattleEnd : MonoBehaviour {
 		BattleUI.S.turnCursor.SetActive(false); // Deactivate Turn Cursor
 		Utilities.S.SetActiveList(BattleUI.S.targetCursors, false);
 
-		BattleDialogue.S.DisplayText(_.enemyStats[ndx].name + " has been felled!");
+        if (displayText) {
+			BattleDialogue.S.DisplayText(_.enemyStats[ndx].name + " has been felled!");
+		}
 
 		// Randomly select DropItem
 		AddDroppedItems(ndx);
 
+		CheckIfAllEnemiesDead();
+	}
+
+	public void CheckIfAllEnemiesDead() {
 		// Add Exp & Gold or Next Turn
 		if (_.enemyAmount <= 0) {
 			// Animation: Player WIN BATTLE
 			for (int i = 0; i < _.playerAnimator.Count; i++) {
 				if (!_.playerDead[i]) {
 					_.playerAnimator[i].CrossFade("Win_Battle", 0);
-                }
-            }
+				}
+			}
 
 			// Deactivate top display message
 			BattleDialogue.S.displayMessageTextTop.gameObject.transform.parent.gameObject.SetActive(false);
@@ -136,8 +141,8 @@ public class BattleEnd : MonoBehaviour {
 				// Switch Mode
 				_.battleMode = eBattleMode.dropItem;
 			} else {
-                // Switch Mode
-                _.battleMode = eBattleMode.addExpAndGoldNoDrops;
+				// Switch Mode
+				_.battleMode = eBattleMode.addExpAndGoldNoDrops;
 			}
 		} else { _.NextTurn(); }
 	}
