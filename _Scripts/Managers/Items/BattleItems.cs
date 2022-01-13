@@ -57,17 +57,7 @@ public class BattleItems : MonoBehaviour {
 
 	public void DetoxifyPotion(int ndx, Item item) {
 		if (_.playerDead[ndx]) {
-			// Display Text
-			BattleDialogue.S.DisplayText(Party.S.stats[ndx].name + " is dead...\n...and dead folk don't need to be detoxified, dummy!");
-
-			// Audio: Deny
-			AudioManager.S.PlaySFX(eSoundName.deny);
-
-			// Switch Mode
-			_.battleMode = eBattleMode.playerTurn;
-
-			DisableButtonsAndRemoveListeners();
-
+			ItemIsNotUseful(Party.S.stats[ndx].name + " is dead...\n...and dead folk don't need to be detoxified, dummy!");
 			return;
 		}
 
@@ -95,34 +85,19 @@ public class BattleItems : MonoBehaviour {
 			AudioManager.S.PlaySFX(eSoundName.buff1);
 
 			_.NextTurn();
+
+			DisableButtonsAndRemoveListeners();
 		} else {
-			BattleDialogue.S.DisplayText(Party.S.stats[ndx].name + " is not suffering from the effects of poison...\n...no need to use this potion!");
-
-			// Audio: Deny
-			AudioManager.S.PlaySFX(eSoundName.deny);
-
-			// Switch Mode
-			_.battleMode = eBattleMode.playerTurn;
+			ItemIsNotUseful(Party.S.stats[ndx].name + " is not suffering from the effects of poison...\n...no need to use this potion!");
 		}
-		DisableButtonsAndRemoveListeners();
 	}
 
 
     public void HPPotion(int ndx, Item item) {
         if (_.playerDead[ndx]) {
-            // Display Text
-            BattleDialogue.S.DisplayText(Party.S.stats[ndx].name + " is dead...\n...and dead folk can't be healed, dummy!");
-
-			// Audio: Deny
-			AudioManager.S.PlaySFX(eSoundName.deny);
-
-			// Switch Mode
-			_.battleMode = eBattleMode.playerTurn;
-
-            DisableButtonsAndRemoveListeners();
-
-            return;
-        }
+			ItemIsNotUseful(Party.S.stats[ndx].name + " is dead...\n...and dead folk can't be healed, dummy!");
+			return;
+		}
 
         // If HP is less than maxHP
         if (Party.S.stats[ndx].HP < Party.S.stats[ndx].maxHP) {
@@ -160,31 +135,16 @@ public class BattleItems : MonoBehaviour {
 			AudioManager.S.PlaySFX(eSoundName.buff1);
 
 			_.NextTurn();
-        } else {
-            BattleDialogue.S.DisplayText(Party.S.stats[ndx].name + " already at full health...\n...no need to use this potion!");
 
-			// Audio: Deny
-			AudioManager.S.PlaySFX(eSoundName.deny);
-
-			// Switch Mode
-			_.battleMode = eBattleMode.playerTurn;
-        }
-        DisableButtonsAndRemoveListeners();
+			DisableButtonsAndRemoveListeners();
+		} else {
+			ItemIsNotUseful(Party.S.stats[ndx].name + " already at full health...\n...no need to use this potion!");
+		}
     }
 
     public void MPPotion(int ndx, Item item) {
 		if (_.playerDead[ndx]) {
-			// Display Text
-			BattleDialogue.S.DisplayText(Party.S.stats[ndx].name + " is dead...\n...and dead folk can't be healed, dummy!");
-			
-			// Audio: Deny
-			AudioManager.S.PlaySFX(eSoundName.deny);
-
-			// Switch Mode
-			_.battleMode = eBattleMode.playerTurn;
-
-			DisableButtonsAndRemoveListeners();
-
+			ItemIsNotUseful(Party.S.stats[ndx].name + " is dead...\n...and dead folk can't be healed, dummy!");
 			return;
 		}
 
@@ -225,16 +185,11 @@ public class BattleItems : MonoBehaviour {
 			AudioManager.S.PlaySFX(eSoundName.buff1);
 
 			_.NextTurn ();
+
+			DisableButtonsAndRemoveListeners();
 		} else {
-			BattleDialogue.S.DisplayText(Party.S.stats[ndx].name + " already at full magic...\n...no need to use this potion!");
-
-			// Audio: Deny
-			AudioManager.S.PlaySFX(eSoundName.deny);
-
-			// Switch Mode
-			_.battleMode = eBattleMode.playerTurn;
+			ItemIsNotUseful(Party.S.stats[ndx].name + " already at full magic...\n...no need to use this potion!");
 		}
-		DisableButtonsAndRemoveListeners();
 	}
 
 	public void HealAllPotion(int unusedIntBecauseOfAddFunctionToButtonParameter, Item item) {
@@ -284,20 +239,11 @@ public class BattleItems : MonoBehaviour {
 			AudioManager.S.PlaySFX(eSoundName.buff1);
 
 			_.NextTurn();
+
+			DisableButtonsAndRemoveListeners();
 		} else {
-			// Display Text
-			BattleDialogue.S.DisplayText("The party is already at full health...\n...no need to use this potion!");
-
-			// Deactivate Cursors
-			Utilities.S.SetActiveList(BattleUI.S.targetCursors, false);
-
-			// Audio: Deny
-			AudioManager.S.PlaySFX(eSoundName.deny);
-
-			// Switch Mode
-			_.battleMode = eBattleMode.playerTurn;
+			ItemIsNotUseful("The party is already at full health...\n...no need to use this potion!");
 		}
-		DisableButtonsAndRemoveListeners();
 	}
 
 	public void RevivePotion(int ndx, Item item) {
@@ -312,16 +258,7 @@ public class BattleItems : MonoBehaviour {
 
 			HPPotion(ndx, item);
 		} else {
-			// Display Text
-			BattleDialogue.S.DisplayText(Party.S.stats[ndx].name + " ain't dead...\n...and dead folk don't need to be revived, dummy!");
-
-			// Audio: Deny
-			AudioManager.S.PlaySFX(eSoundName.deny);
-
-			// Switch Mode
-			_.battleMode = eBattleMode.playerTurn;
-
-			DisableButtonsAndRemoveListeners();
+			ItemIsNotUseful(Party.S.stats[ndx].name + " ain't dead...\n...and dead folk don't need to be revived, dummy!");
 		}
 	}
 
@@ -340,13 +277,16 @@ public class BattleItems : MonoBehaviour {
 		// Audio: Deny
 		AudioManager.S.PlaySFX(eSoundName.deny);
 
-		// Switch Mode
-		_.battleMode = eBattleMode.playerTurn;
+        // Switch Mode
+        if (BattleStatusEffects.S.HasStatusAilment(Party.S.stats[_.PlayerNdx()].name)) {
+			_.battleMode = eBattleMode.statusAilment;
+		} else {
+			_.battleMode = eBattleMode.playerTurn;
+		}
 
 		DisableButtonsAndRemoveListeners();
-
-		return;
 	}
+
 
 	public void CantUseItemInBattle() {
 		ItemScreen.S.Deactivate();
