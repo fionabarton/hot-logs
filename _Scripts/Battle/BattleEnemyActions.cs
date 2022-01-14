@@ -316,10 +316,9 @@ public class BattleEnemyActions : MonoBehaviour {
 			_.NextTurn ();
 		} else {
 			// Shake Screen Anim
-			Battle.S.battleUIAnim.CrossFade ("BattleUI_Shake", 0); 
+			Battle.S.battleUIAnim.CrossFade ("BattleUI_Shake", 0);
 
-			int qtyKilled = 0;
-			bool[] tDead = new bool[3];
+			List<int> deadPlayers = new List<int>();
 
 			// Subtract 12-20 HP
 			_.attackDamage = Random.Range (10, 15);
@@ -372,13 +371,12 @@ public class BattleEnemyActions : MonoBehaviour {
 
 				// If Player HP < 0, DEAD!
 				if (Party.S.stats[i].HP < 1 && !_.playerDead[i]) {
-					qtyKilled += 1;
-					tDead[i] = true;
+					deadPlayers.Add(i);
 				}
 			}
 
 			// If no one is killed...
-			if (qtyKilled <= 0) {
+			if (deadPlayers.Count <= 0) {
 				BattleDialogue.S.DisplayText ("Used Fireblast Spell!\nHit ENTIRE party for an average of " + Utilities.S.CalculateAverage (totalAttackDamage, (Party.S.partyNdx + 1)) + " HP!");
 
 				// Audio: Fireblast
@@ -389,7 +387,7 @@ public class BattleEnemyActions : MonoBehaviour {
 				// Audio: Death
 				AudioManager.S.PlaySFX(eSoundName.death);
 
-				PlayersDeath(qtyKilled, totalAttackDamage, tDead[0], tDead[1], tDead[2]);
+				PlayersDeath(deadPlayers, totalAttackDamage);
 			}
 		}
 	}
@@ -540,37 +538,15 @@ public class BattleEnemyActions : MonoBehaviour {
 		_.NextTurn();
 	}
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////
-	public void PlayersDeath (int qtyKilled, int totalAttackDamage, bool player1 = false, bool player2 = false, bool player3 = false) {
-		// Subtract from PartyQty 
-		_.partyQty -= qtyKilled;
-
-		switch (qtyKilled) {
-		case 1: BattleDialogue.S.DisplayText("Used Fireblast Spell!\nHit ENTIRE party for an average of " + Utilities.S.CalculateAverage (totalAttackDamage, (Party.S.partyNdx + 1)) + " HP!" + "\nOne party member has been felled!"); break;
-		case 2: BattleDialogue.S.DisplayText("Used Fireblast Spell!\nHit ENTIRE party for an average of " + Utilities.S.CalculateAverage (totalAttackDamage, (Party.S.partyNdx + 1)) + " HP!" + "\nTwo party members have been felled!"); break;
-		case 3: BattleDialogue.S.DisplayText("Used Fireblast Spell!\nHit ENTIRE party for an average of " + Utilities.S.CalculateAverage(totalAttackDamage, (Party.S.partyNdx + 1)) + " HP!" + "\nThree party members have been felled!"); break;
+	public void PlayersDeath(List<int> deadPlayers, int totalAttackDamage) {
+		switch (deadPlayers.Count) {
+			case 1: BattleDialogue.S.DisplayText("Used Fireblast Spell!\nHit ENTIRE party for an average of " + Utilities.S.CalculateAverage(totalAttackDamage, (Party.S.partyNdx + 1)) + " HP!" + "\nOne party member has been felled!"); break;
+			case 2: BattleDialogue.S.DisplayText("Used Fireblast Spell!\nHit ENTIRE party for an average of " + Utilities.S.CalculateAverage(totalAttackDamage, (Party.S.partyNdx + 1)) + " HP!" + "\nTwo party members have been felled!"); break;
+			case 3: BattleDialogue.S.DisplayText("Used Fireblast Spell!\nHit ENTIRE party for an average of " + Utilities.S.CalculateAverage(totalAttackDamage, (Party.S.partyNdx + 1)) + " HP!" + "\nThree party members have been felled!"); break;
 		}
 
-		if (player1) { PlayersDeathHelper(0, Party.S.stats[0].name); }
-		if (player2) { PlayersDeathHelper(1, Party.S.stats[1].name); }
-		if (player3) { PlayersDeathHelper(2, Party.S.stats[2].name); }
-
-		// Add PartyDeath or NextTurn
-		if (_.partyQty < 0) {
-			_.battleMode = eBattleMode.partyDeath;} 
-		else {
-			_.NextTurn (); 
+		for (int i = 0; i < deadPlayers.Count; i++) {
+			BattleEnd.S.PlayerDeath(deadPlayers[i], false);
 		}
-	}
-	public void PlayersDeathHelper(int playerNdx, string playerTurnOrder){
-		// Remove all status ailments 
-		BattleStatusEffects.S.RemoveAllStatusAilments(Party.S.stats[playerNdx].name, true, playerNdx);
-
-		_.playerDead[playerNdx] = true;
-
-		// Animation: Player DEATH
-		_.playerAnimator[playerNdx].CrossFade("Death", 0);
-
-		// Remove Player from Turn Order
-		_.turnOrder.Remove (playerTurnOrder); 
 	}
 }

@@ -30,8 +30,8 @@ public class BattleEnd : MonoBehaviour {
 		// Reset this enemy's nextTurnMoveNdx
 		_.nextTurnMoveNdx[ndx] = 999;
 
-		// Remove Enemy 1, 2, or 3 from Turn Order
-		if (ndx == 0) { _.turnOrder.Remove(_.enemyStats[0].name); } else if (ndx == 1) { _.turnOrder.Remove(_.enemyStats[1].name); } else if (ndx == 2) { _.turnOrder.Remove(_.enemyStats[2].name); }
+		// Remove enemy from turn order
+		_.turnOrder.Remove(_.enemyStats[ndx].name);
 	}
 
     public void EnemyRun(int ndx) {
@@ -178,7 +178,7 @@ public class BattleEnd : MonoBehaviour {
 		_.battleMode = eBattleMode.addExpAndGold;
 	}
 
-	public void PlayerDeath(int ndx) {
+	public void PlayerDeath(int ndx, bool displayText = true) {
 		// For EnemyAttack (prevents attacking dead party members)
 		_.playerDead[ndx] = true;
 
@@ -194,11 +194,12 @@ public class BattleEnd : MonoBehaviour {
 		// Remove all status ailments 
 		BattleStatusEffects.S.RemoveAllStatusAilments(Party.S.stats[ndx].name, true, ndx);
 
-		// Remove Player 1 or 2 from Turn Order
-		//if (ndx == 0) { _.turnOrder.Remove(Party.S.stats[0].name); } else if (ndx == 1) { _.turnOrder.Remove(Party.S.stats[1].name); }
+		// Remove player from turn order
 		_.turnOrder.Remove(Party.S.stats[ndx].name);
 
-		BattleDialogue.S.DisplayText("Oh no!\n" + Party.S.stats[ndx].name + " has been felled!");
+        if (displayText) {
+			BattleDialogue.S.DisplayText("Oh no!\n" + Party.S.stats[ndx].name + " has been felled!");
+		}
 
 		// Add PartyDeath or NextTurn 
 		// Switch Mode
