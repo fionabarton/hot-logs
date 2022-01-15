@@ -108,15 +108,7 @@ public class BattleSpells : MonoBehaviour {
 		// Add to TARGET Player's HP
 		RPG.S.AddPlayerHP(ndx, amountToHeal);
 
-		// Get and position Poof game object
-		GameObject poof = ObjectPool.S.GetPooledObject("Poof");
-		ObjectPool.S.PosAndEnableObj(poof, _.playerSprite[ndx]);
-
-		// Display Floating Score
-		RPG.S.InstantiateFloatingScore(_.playerSprite[ndx], amountToHeal, Color.green);
-
-		// Set anim
-		_.playerAnimator[ndx].CrossFade("Win_Battle", 0);
+		CurePlayerAnimation(ndx, true, amountToHeal);
 	}
 
 	//////////////////////////////////////////////////////////
@@ -329,9 +321,6 @@ public class BattleSpells : MonoBehaviour {
 
 				_.NextTurn();
 			} else {
-				// Audio: Death
-				AudioManager.S.PlaySFX(eSoundName.death);
-
 				EnemiesDeath(deadEnemies, totalAttackDamage);
 			}
 		}
@@ -411,7 +400,22 @@ public class BattleSpells : MonoBehaviour {
 		// Add Player to Turn Order
 		_.turnOrder.Add(Party.S.stats[ndx].name);
 
-		HealSinglePartyMember(ndx, spell);
+		// Get 6-10% of max HP
+		float lowEnd = Party.S.stats[ndx].maxHP * 0.06f;
+		float highEnd = Party.S.stats[ndx].maxHP * 0.10f;
+		Heal(ndx, (int)lowEnd, (int)highEnd);
+
+		// Display Text
+		if (amountToHeal >= maxAmountToHeal) {
+			BattleDialogue.S.DisplayText("Used " + spell.name + " Spell!\nHealed " + Party.S.stats[ndx].name + " back to Max HP!");
+		} else {
+			BattleDialogue.S.DisplayText("Used " + spell.name + " Spell!\nHealed " + Party.S.stats[ndx].name + " for " + amountToHeal + " HP!");
+		}
+
+		// Audio: Buff 1
+		AudioManager.S.PlaySFX(eSoundName.buff1);
+
+		_.NextTurn();
 	}
 
 	public void SpellIsNotUseful(string message) {
@@ -430,5 +434,19 @@ public class BattleSpells : MonoBehaviour {
 		} else {
 			_.battleMode = eBattleMode.playerTurn;
 		}
+	}
+
+	public void CurePlayerAnimation(int ndx, bool displayFloatingScore = false, int scoreAmount = 0) {
+		// Get and position Poof game object
+		GameObject poof = ObjectPool.S.GetPooledObject("Poof");
+		ObjectPool.S.PosAndEnableObj(poof, _.playerSprite[ndx]);
+
+		// Display Floating Score
+		if (displayFloatingScore) {
+			RPG.S.InstantiateFloatingScore(_.playerSprite[ndx], scoreAmount, Color.green);
+		}
+
+		// Set anim
+		_.playerAnimator[ndx].CrossFade("Win_Battle", 0);
 	}
 }
