@@ -18,36 +18,6 @@ public class BattleEnemyActions : MonoBehaviour {
 		_ = Battle.S;
 	}
 
-	// Play attack animations, SFX, and spawn objects
-	public void PlaySingleAttackAnimsAndSFX(int playerToAttack, bool playEnemyAnim = true, bool displayFloatingScore = true) {
-		// Animation: Enemy ATTACK in center
-		if (playEnemyAnim) {
-			_.enemyAnimator[_.animNdx].CrossFade("Attack", 0);
-		}
-
-        // If player doesn't have a status ailment...
-        if (!BattleStatusEffects.S.HasStatusAilment(Party.S.stats[playerToAttack].name)) {
-			// Animation: Player Damage
-			_.playerAnimator[playerToAttack].CrossFade("Damage", 0);
-		}
-
-		// Audio: Damage
-		int randomInt = Random.Range(2, 4);
-		AudioManager.S.PlaySFX(randomInt);
-
-		// Animation: Shake Screen
-		Battle.S.battleUIAnim.CrossFade("BattleUI_Shake", 0);
-
-		// Get and position Explosion game object
-		GameObject explosion = ObjectPool.S.GetPooledObject("Explosion");
-		ObjectPool.S.PosAndEnableObj(explosion, _.playerSprite[playerToAttack]);
-
-        // Display Floating Score
-        if (displayFloatingScore) {
-			RPG.S.InstantiateFloatingScore(_.playerSprite[playerToAttack], _.attackDamage, Color.red);
-		}
-	}
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Index = 0
 	// Attack ONE Party Member
 	public void Attack() {
@@ -106,9 +76,6 @@ public class BattleEnemyActions : MonoBehaviour {
 		BattleStatusEffects.S.AddDefender(_.enemyStats [_.EnemyNdx()].name, false);
 
 		BattleDialogue.S.DisplayText (_.enemyStats [_.EnemyNdx()].name + " defends themself until their next turn!");
-
-		// Audio: Buff 2
-		AudioManager.S.PlaySFX(eSoundName.buff2);
 
 		_.NextTurn();
 	}
@@ -384,9 +351,6 @@ public class BattleEnemyActions : MonoBehaviour {
 
 				_.NextTurn (); 
 			} else {
-				// Audio: Death
-				AudioManager.S.PlaySFX(eSoundName.death);
-
 				PlayersDeath(deadPlayers, totalAttackDamage);
 			}
 		}
@@ -461,6 +425,18 @@ public class BattleEnemyActions : MonoBehaviour {
 		// Display Text
 		BattleDialogue.S.DisplayText(_.enemyStats[_.EnemyNdx()].name + " called for backup...\n...and someone came!");
 	}
+
+	public void PlayersDeath(List<int> deadPlayers, int totalAttackDamage) {
+		switch (deadPlayers.Count) {
+			case 1: BattleDialogue.S.DisplayText("Used Fireblast Spell!\nHit ENTIRE party for an average of " + Utilities.S.CalculateAverage(totalAttackDamage, (Party.S.partyNdx + 1)) + " HP!" + "\nOne party member has been felled!"); break;
+			case 2: BattleDialogue.S.DisplayText("Used Fireblast Spell!\nHit ENTIRE party for an average of " + Utilities.S.CalculateAverage(totalAttackDamage, (Party.S.partyNdx + 1)) + " HP!" + "\nTwo party members have been felled!"); break;
+			case 3: BattleDialogue.S.DisplayText("Used Fireblast Spell!\nHit ENTIRE party for an average of " + Utilities.S.CalculateAverage(totalAttackDamage, (Party.S.partyNdx + 1)) + " HP!" + "\nThree party members have been felled!"); break;
+		}
+
+		for (int i = 0; i < deadPlayers.Count; i++) {
+			BattleEnd.S.PlayerDeath(deadPlayers[i], false);
+		}
+	}
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Index = 9
 	// Charge
@@ -476,77 +452,60 @@ public class BattleEnemyActions : MonoBehaviour {
 	// Paralyze
 	public void Paralyze(int ndx) {
 		// Paralyze party member
-		BattleStatusEffects.S.AddParalyzed(Party.S.stats[ndx].name);
+		BattleStatusEffects.S.AddParalyzed(Party.S.stats[ndx].name, ndx);
 
 		// Play attack animations, SFX, and spawn objects
 		PlaySingleAttackAnimsAndSFX(ndx, true, false);
-
-		// Activate paralyzed icon
-		BattleStatusEffects.S.playerParalyzedIcons[ndx].SetActive(true);
-
-		// Anim
-		_.playerAnimator[ndx].CrossFade("Paralyzed", 0);
-
-		// Audio: Buff 2
-		AudioManager.S.PlaySFX(eSoundName.buff2);
-
-        BattleDialogue.S.DisplayText(_.enemyStats[_.EnemyNdx()].name + " has temporarily paralyzed " + Party.S.stats[ndx].name + "...\n...not nice!");
-        _.NextTurn();
     }
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Index = 11
 	// Sleep
 	public void Sleep(int ndx) {
 		// Put party member to sleep
-		BattleStatusEffects.S.AddSleeping(Party.S.stats[ndx].name);
+		BattleStatusEffects.S.AddSleeping(Party.S.stats[ndx].name, ndx);
 
 		// Play attack animations, SFX, and spawn objects
 		PlaySingleAttackAnimsAndSFX(ndx, true, false);
-
-		// Activate sleeping icon
-		BattleStatusEffects.S.playerSleepingIcons[ndx].SetActive(true);
-
-		// Anim
-		_.playerAnimator[ndx].CrossFade("Sleeping", 0);
-
-		// Audio: Buff 2
-		AudioManager.S.PlaySFX(eSoundName.buff2);
-
-		BattleDialogue.S.DisplayText(_.enemyStats[_.EnemyNdx()].name + " has temporarily put " + Party.S.stats[ndx].name + " to sleep...\n...not nice!");
-		_.NextTurn();
 	}
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Index = 12
 	// Poison
 	public void Poison(int ndx) {
 		// Poison party member
-		BattleStatusEffects.S.AddPoisoned(Party.S.stats[ndx].name);
+		BattleStatusEffects.S.AddPoisoned(Party.S.stats[ndx].name, ndx);
 
 		// Play attack animations, SFX, and spawn objects
 		PlaySingleAttackAnimsAndSFX(ndx, true, false);
-
-		// Activate poisoned icon
-		BattleStatusEffects.S.playerPoisonedIcons[ndx].SetActive(true);
-
-		// Anim
-		_.playerAnimator[ndx].CrossFade("Poisoned", 0);
-
-		// Audio: Buff 2
-		AudioManager.S.PlaySFX(eSoundName.buff2);
-
-		BattleDialogue.S.DisplayText(_.enemyStats[_.EnemyNdx()].name + " has temporarily poisoned " + Party.S.stats[ndx].name + " ...\n...not nice!");
-		_.NextTurn();
 	}
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////
-	public void PlayersDeath(List<int> deadPlayers, int totalAttackDamage) {
-		switch (deadPlayers.Count) {
-			case 1: BattleDialogue.S.DisplayText("Used Fireblast Spell!\nHit ENTIRE party for an average of " + Utilities.S.CalculateAverage(totalAttackDamage, (Party.S.partyNdx + 1)) + " HP!" + "\nOne party member has been felled!"); break;
-			case 2: BattleDialogue.S.DisplayText("Used Fireblast Spell!\nHit ENTIRE party for an average of " + Utilities.S.CalculateAverage(totalAttackDamage, (Party.S.partyNdx + 1)) + " HP!" + "\nTwo party members have been felled!"); break;
-			case 3: BattleDialogue.S.DisplayText("Used Fireblast Spell!\nHit ENTIRE party for an average of " + Utilities.S.CalculateAverage(totalAttackDamage, (Party.S.partyNdx + 1)) + " HP!" + "\nThree party members have been felled!"); break;
+	// Play attack animations, SFX, and spawn objects
+	public void PlaySingleAttackAnimsAndSFX(int playerToAttack, bool playEnemyAnim = true, bool displayFloatingScore = true) {
+		// Animation: Enemy ATTACK in center
+		if (playEnemyAnim) {
+			_.enemyAnimator[_.animNdx].CrossFade("Attack", 0);
 		}
 
-		for (int i = 0; i < deadPlayers.Count; i++) {
-			BattleEnd.S.PlayerDeath(deadPlayers[i], false);
+		// If player doesn't have a status ailment...
+		if (!BattleStatusEffects.S.HasStatusAilment(Party.S.stats[playerToAttack].name)) {
+			// Animation: Player Damage
+			_.playerAnimator[playerToAttack].CrossFade("Damage", 0);
+		}
+
+		// Audio: Damage
+		int randomInt = Random.Range(2, 4);
+		AudioManager.S.PlaySFX(randomInt);
+
+		// Animation: Shake Screen
+		Battle.S.battleUIAnim.CrossFade("BattleUI_Shake", 0);
+
+		// Get and position Explosion game object
+		GameObject explosion = ObjectPool.S.GetPooledObject("Explosion");
+		ObjectPool.S.PosAndEnableObj(explosion, _.playerSprite[playerToAttack]);
+
+		// Display Floating Score
+		if (displayFloatingScore) {
+			RPG.S.InstantiateFloatingScore(_.playerSprite[playerToAttack], _.attackDamage, Color.red);
 		}
 	}
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////
 }

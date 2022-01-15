@@ -189,11 +189,6 @@ public class Battle : MonoBehaviour {
 								} else if (BattleStatusEffects.S.CheckIfPoisoned(Party.S.stats[PlayerNdx()].name)){
 									PlayerTurn(true, false);
 								} else {
-									// Deactivate status ailment icons
-									BattleStatusEffects.S.playerParalyzedIcons[PlayerNdx()].SetActive(false);
-									BattleStatusEffects.S.playerSleepingIcons[PlayerNdx()].SetActive(false);
-									BattleStatusEffects.S.playerPoisonedIcons[PlayerNdx()].SetActive(false);
-
 									PlayerTurn(true, false);
 								}
 							} else {
@@ -452,25 +447,7 @@ public class Battle : MonoBehaviour {
 	}
 
 	public void PlayerTurn(bool setPreviousSelected = true, bool checkForAilment = true) { // if (Input.GetButtonDown ("Submit"))
-		// Reset Animation: Player Idle
-		for (int i = 0; i <= Party.S.partyNdx; i++) {
-			if (!playerDead[i]) {
-				// If doesn't have a status ailment...
-                if (!BattleStatusEffects.S.HasStatusAilment(Party.S.stats[i].name)) {
-					playerAnimator[i].CrossFade("Idle", 0);
-				}else if (BattleStatusEffects.S.CheckIfPoisoned(Party.S.stats[i].name)) {
-					playerAnimator[i].CrossFade("Poisoned", 0);
-				}
-			} else {
-				playerAnimator[i].CrossFade("Death", 0);
-			}
-		}
-		// Reset Animation: Enemy Idle
-		for (int i = 0; i < enemyAnimator.Count; i++) {
-			if (!enemyStats[i].isDead) {
-				enemyAnimator[i].CrossFade("Idle", 0);
-			}
-		}
+		SetAllCombatantAnimations();
 
 		BattleUI.S.DisplayTurnOrder();
 
@@ -487,13 +464,13 @@ public class Battle : MonoBehaviour {
 		if (checkForAilment) {
 			// If paralyzed...
 			if (BattleStatusEffects.S.CheckIfParalyzed(Party.S.stats[PlayerNdx()].name)) {
-				BattleStatusEffects.S.Paralyzed(Party.S.stats[PlayerNdx()].name);
+				BattleStatusEffects.S.Paralyzed(Party.S.stats[PlayerNdx()].name, PlayerNdx());
 				return;
 			}
 
 			// If sleeping...
 			if (BattleStatusEffects.S.CheckIfSleeping(Party.S.stats[PlayerNdx()].name)) {
-				BattleStatusEffects.S.Sleeping(Party.S.stats[PlayerNdx()].name);
+				BattleStatusEffects.S.Sleeping(Party.S.stats[PlayerNdx()].name, PlayerNdx());
 				return;
 			}
 
@@ -522,25 +499,7 @@ public class Battle : MonoBehaviour {
 
     // Enemy is about to act!
     public void EnemyTurn () { // if (Input.GetButtonDown ("Submit"))
-		// Reset Animation: Player Idle
-		for (int i = 0; i <= Party.S.partyNdx; i++) {
-			if (!playerDead[i]) {
-				// If doesn't have a status ailment...
-				if (!BattleStatusEffects.S.HasStatusAilment(Party.S.stats[i].name)) {
-					playerAnimator[i].CrossFade("Idle", 0);
-				} else if (BattleStatusEffects.S.CheckIfPoisoned(Party.S.stats[i].name)) {
-					playerAnimator[i].CrossFade("Poisoned", 0);
-				}
-			} else {
-				playerAnimator[i].CrossFade("Death", 0);
-			}
-		}
-		// Reset Animation: Enemy Idle
-		for (int i = 0; i < enemyAnimator.Count; i++) {
-			if (!enemyStats[i].isDead) {
-				enemyAnimator[i].CrossFade("Idle", 0);
-			}
-		}
+		SetAllCombatantAnimations();
 
 		// Reset BattlePlayerActions.S.buttonsCS text color
 		Utilities.S.SetTextColor(BattlePlayerActions.S.buttonsCS, new Color32(39, 201, 255, 255));
@@ -568,5 +527,27 @@ public class Battle : MonoBehaviour {
 		animNdx = EnemyNdx();
 		enemyAnimator[animNdx].CrossFade("RunToCenter", 0);
 		BattleUI.S.turnCursor.SetActive(false);
+	}
+
+	public void SetAllCombatantAnimations() {
+		// Set Player Animations
+		for (int i = 0; i <= Party.S.partyNdx; i++) {
+			if (!playerDead[i]) {
+				// If doesn't have a status ailment...
+				if (!BattleStatusEffects.S.HasStatusAilment(Party.S.stats[i].name)) {
+					playerAnimator[i].CrossFade("Idle", 0);
+				} else if (BattleStatusEffects.S.CheckIfPoisoned(Party.S.stats[i].name)) {
+					playerAnimator[i].CrossFade("Poisoned", 0);
+				}
+			} else {
+				playerAnimator[i].CrossFade("Death", 0);
+			}
+		}
+		// Set Enemy Animations
+		for (int i = 0; i < enemyAnimator.Count; i++) {
+			if (!enemyStats[i].isDead) {
+				enemyAnimator[i].CrossFade("Idle", 0);
+			}
+		}
 	}
 }

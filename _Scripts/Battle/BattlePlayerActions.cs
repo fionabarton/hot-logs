@@ -212,9 +212,6 @@ public class BattlePlayerActions : MonoBehaviour {
 		BattleDialogue.S.DisplayText(Party.S.stats[_.PlayerNdx()].name + " defends themself until their next turn!");
 
 		_.NextTurn();
-
-		// Audio: Buff 2
-		AudioManager.S.PlaySFX(eSoundName.buff2);
 	}
 	// Spell Button
 	public void SpellButton() {
