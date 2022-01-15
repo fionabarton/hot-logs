@@ -32,6 +32,18 @@ public class BattleEnd : MonoBehaviour {
 
 		// Remove enemy from turn order
 		_.turnOrder.Remove(_.enemyStats[ndx].name);
+
+		// Remove all status ailments 
+		BattleStatusEffects.S.RemoveAllStatusAilments(_.enemyStats[ndx].name, false, ndx);
+
+		// Deactivate Enemy "Help" Word Bubble
+		_.enemyHelpBubbles[ndx].SetActive(false);
+
+		// Deactivate '...' Word Bubble
+		_.dotDotDotWordBubble.SetActive(false);
+
+		BattleUI.S.turnCursor.SetActive(false); // Deactivate Turn Cursor
+		Utilities.S.SetActiveList(BattleUI.S.targetCursors, false);
 	}
 
     public void EnemyRun(int ndx) {
@@ -42,12 +54,6 @@ public class BattleEnd : MonoBehaviour {
 			// Animation: Enemy RUN
 			_.enemyAnimator[ndx].CrossFade("Run", 0);
 
-			// Remove all status ailments 
-			BattleStatusEffects.S.RemoveAllStatusAilments(_.enemyStats[ndx].name, false, ndx);
-
-			// Deactivate Enemy "Help" Word Bubble
-			_.enemyHelpBubbles[ndx].SetActive(false);
-
 			BattleDialogue.S.DisplayText(_.enemyStats[ndx].name + " ran away!\nCOWARD! HO HO HO!");
 
 			// Subtract EXP/Gold
@@ -55,9 +61,6 @@ public class BattleEnd : MonoBehaviour {
             _.goldToAdd -= _.enemyStats[ndx].Gold;
 
 			_.turnNdx -= 1; // Lower Turn Index
-
-			BattleUI.S.turnCursor.SetActive(false); // Deactivate Turn Cursor
-			Utilities.S.SetActiveList(BattleUI.S.targetCursors, false);
 
 			// Randomly select DropItem
 			AddDroppedItems(ndx);
@@ -100,18 +103,6 @@ public class BattleEnd : MonoBehaviour {
 
         // Animation: Enemy DEATH
         _.enemyAnimator[ndx].CrossFade("Death", 0);
-
-		// Remove all status ailments 
-		BattleStatusEffects.S.RemoveAllStatusAilments(_.enemyStats[ndx].name, false, ndx);
-
-		// Deactivate Enemy "Help" Word Bubble
-		_.enemyHelpBubbles[ndx].SetActive(false);
-
-		// Deactivate '...' Word Bubble
-		_.dotDotDotWordBubble.SetActive(false);
-
-		BattleUI.S.turnCursor.SetActive(false); // Deactivate Turn Cursor
-		Utilities.S.SetActiveList(BattleUI.S.targetCursors, false);
 
         if (displayText) {
 			BattleDialogue.S.DisplayText(_.enemyStats[ndx].name + " has been felled!");
