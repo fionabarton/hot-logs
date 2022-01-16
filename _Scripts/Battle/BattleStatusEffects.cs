@@ -123,7 +123,7 @@ public class BattleStatusEffects : MonoBehaviour {
 			_.NextTurn();
 		}
 	}
-	void RemoveParalyzed(string paralyzed, int ndx) {
+	public void RemoveParalyzed(string paralyzed, int ndx) {
 		if (theParalyzed.Contains(paralyzed)) {
 			paralyzedCount.RemoveAt(theParalyzed.IndexOf(paralyzed));
 			theParalyzed.Remove(paralyzed);
@@ -185,7 +185,7 @@ public class BattleStatusEffects : MonoBehaviour {
 			_.NextTurn();
 		}
 	}
-	void RemoveSleeping(string sleeping, int ndx) {
+	public void RemoveSleeping(string sleeping, int ndx) {
 		if (theSleeping.Contains(sleeping)) {
 			sleepingCount.RemoveAt(theSleeping.IndexOf(sleeping));
 			theSleeping.Remove(sleeping);
