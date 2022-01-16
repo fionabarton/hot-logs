@@ -189,10 +189,7 @@ public class BattleItems : MonoBehaviour {
 
 		if (BattleStatusEffects.S.CheckIfPoisoned(Party.S.stats[ndx].name)) {
 			// Remove poison
-			BattleStatusEffects.S.RemovePoisoned(Party.S.stats[ndx].name);
-
-			// Deactivate status ailment icon
-			BattleStatusEffects.S.playerPoisonedIcons[ndx].SetActive(false);
+			BattleStatusEffects.S.RemovePoisoned(Party.S.stats[ndx].name, ndx);
 
 			// Display Text
 			BattleDialogue.S.DisplayText("Used " + item.name + "!\n" + Party.S.stats[ndx].name + " is no longer poisoned!");
@@ -202,6 +199,48 @@ public class BattleItems : MonoBehaviour {
 			ItemIsUseful(item);
 		} else {
 			ItemIsNotUseful(Party.S.stats[ndx].name + " is not suffering from the effects of poison...\n...no need to use this potion!");
+		}
+	}
+
+	public void MobilizePotion(int ndx, Item item) {
+		if (_.playerDead[ndx]) {
+			ItemIsNotUseful(Party.S.stats[ndx].name + " is dead...\n...and dead folk don't need their mobility restored, dummy!");
+			return;
+		}
+
+		if (BattleStatusEffects.S.CheckIfParalyzed(Party.S.stats[ndx].name)) {
+			// Remove paralyzed
+			BattleStatusEffects.S.RemoveParalyzed(Party.S.stats[ndx].name, ndx);
+
+			// Display Text
+			BattleDialogue.S.DisplayText("Used " + item.name + "!\n" + Party.S.stats[ndx].name + " is no longer paralyzed!");
+
+			CurePlayerAnimation(ndx);
+
+			ItemIsUseful(item);
+		} else {
+			ItemIsNotUseful(Party.S.stats[ndx].name + " is not suffering from the effects of paralysis...\n...no need to use this potion!");
+		}
+	}
+
+	public void WakePotion(int ndx, Item item) {
+		if (_.playerDead[ndx]) {
+			ItemIsNotUseful(Party.S.stats[ndx].name + " is dead...\n...and dead folk don't need to wake up, dummy!");
+			return;
+		}
+
+		if (BattleStatusEffects.S.CheckIfSleeping(Party.S.stats[ndx].name)) {
+			// Remove sleeping
+			BattleStatusEffects.S.RemoveSleeping(Party.S.stats[ndx].name, ndx);
+
+			// Display Text
+			BattleDialogue.S.DisplayText("Used " + item.name + "!\n" + Party.S.stats[ndx].name + " is no longer sleeping!");
+
+			CurePlayerAnimation(ndx);
+
+			ItemIsUseful(item);
+		} else {
+			ItemIsNotUseful(Party.S.stats[ndx].name + " is not sleeping...\n...no need to use this potion!");
 		}
 	}
 
