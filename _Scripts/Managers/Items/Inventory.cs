@@ -7,7 +7,6 @@ using UnityEngine;
 /// </summary>
 public class Inventory : MonoBehaviour {
 	[Header("Set Dynamically")]
-	// Singleton
 	private static Inventory		_S;
 	public static Inventory			S { get { return _S; } set { _S = value; } }
 
@@ -18,14 +17,20 @@ public class Inventory : MonoBehaviour {
 	}
 
 	void Start() {
+        // Add items to inventory
         AddItemToInventory(ItemManager.S.items[25]);
         AddItemToInventory(ItemManager.S.items[25]);
         AddItemToInventory(ItemManager.S.items[25]);
+        AddItemToInventory(ItemManager.S.items[26]);
+        AddItemToInventory(ItemManager.S.items[26]);
+        AddItemToInventory(ItemManager.S.items[26]);
+        AddItemToInventory(ItemManager.S.items[27]);
+        AddItemToInventory(ItemManager.S.items[27]);
+        AddItemToInventory(ItemManager.S.items[27]);
         AddItemToInventory(ItemManager.S.items[0]);
         AddItemToInventory(ItemManager.S.items[0]);
         AddItemToInventory(ItemManager.S.items[1]);
 
-        // Add items to inventory
         AddItemToInventory(ItemManager.S.items[23]);
         AddItemToInventory(ItemManager.S.items[23]);
         AddItemToInventory(ItemManager.S.items[2]);

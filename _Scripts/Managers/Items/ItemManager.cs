@@ -131,6 +131,14 @@ public class ItemManager : MonoBehaviour {
         // Detoxify Potion
         items[25] = new Item("Detoxify Potion", eItemType.consumable, eItemStatEffect.nothing, 0, 0, 5,
         "Eradicates any poisonous toxins that have infected a party member." + "\n Value: 5 Gold", itemSprite[25]);
+
+        // Mobilize Potion
+        items[26] = new Item("Mobilize Potion", eItemType.consumable, eItemStatEffect.nothing, 0, 0, 5,
+        "Restores a paralyzed party member's mobility." + "\n Value: 5 Gold", itemSprite[26]);
+
+        // Wake Potion
+        items[27] = new Item("Wake Potion", eItemType.consumable, eItemStatEffect.nothing, 0, 0, 5,
+        "Wakes up a sleeping party member." + "\n Value: 5 Gold", itemSprite[27]);
     }
 
     public Item GetItem(eItem itemNdx){

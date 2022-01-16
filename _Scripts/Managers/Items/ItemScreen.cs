@@ -270,7 +270,11 @@ public class ItemScreen : MonoBehaviour {
 				} else if (item.name == "Revive Potion") {
 					BattleItems.S.AddFunctionToButton(BattleItems.S.RevivePotion, "Use potion to revive which party member?", item);
 				} else if (item.name == "Detoxify Potion") {
-					BattleItems.S.AddFunctionToButton(BattleItems.S.DetoxifyPotion, "Use potion to detoxify which party member?", item);
+					BattleItems.S.AddFunctionToButton(BattleItems.S.DetoxifyPotion, "Use potion to detoxify which poisoned party member?", item);
+				} else if (item.name == "Mobilize Potion") {
+					BattleItems.S.AddFunctionToButton(BattleItems.S.MobilizePotion, "Use potion to restore which paralyzed party member's mobility?", item);
+				} else if (item.name == "Wake Potion") {
+					BattleItems.S.AddFunctionToButton(BattleItems.S.WakePotion, "Use potion to wake up which sleeping party member?", item);
 				} else {
 					BattleItems.S.CantUseItemInBattle();
 				}
