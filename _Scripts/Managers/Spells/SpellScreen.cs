@@ -365,7 +365,7 @@ public class SpellScreen : MonoBehaviour {
 
 		if (RPG.S.currentScene == "Battle") { // if Battle
 			if (spell.name == "Heal") {
-				BattleSpells.S.AddFunctionToButton(BattleSpells.S.AttemptHealSelectedPartyMember, "Heal which party member?", spell);
+				BattleSpells.S.AddFunctionToButton(BattleSpells.S.AttemptHealSinglePartyMember, "Heal which party member?", spell);
 			} else if (spell.name == "Fireball") {
 				BattleSpells.S.AddFunctionToButton(BattleSpells.S.AttemptAttackSelectedEnemy, "Attack which enemy?", spell);
 			} else if (spell.name == "Fireblast") {
@@ -374,6 +374,12 @@ public class SpellScreen : MonoBehaviour {
 				BattleSpells.S.AddFunctionToButton(BattleSpells.S.AttemptHealAll, "Heal all party members?", spell);
 			} else if (spell.name == "Revive") {
 				BattleSpells.S.AddFunctionToButton(BattleSpells.S.AttemptReviveSelectedPartyMember, "Revive which party member?", spell);
+			} else if (spell.name == "Detoxify") {
+				BattleSpells.S.AddFunctionToButton(BattleSpells.S.AttemptDetoxifySinglePartyMember, "Detoxify which poisoned party member?", spell);
+			} else if (spell.name == "Mobilize") {
+				BattleSpells.S.AddFunctionToButton(BattleSpells.S.AttemptMobilizeSinglePartyMember, "Restore the mobility of which paralyzed party member?", spell);
+			} else if (spell.name == "Wake") {
+				BattleSpells.S.AddFunctionToButton(BattleSpells.S.AttemptWakeSinglePartyMember, "Wake up which sleeping party member?", spell);
 			} else {
 				SpellManager.S.CantUseSpell("Can't use this spell during battle!");
 			}

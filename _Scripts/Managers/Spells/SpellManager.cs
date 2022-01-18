@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class SpellManager : MonoBehaviour {
     [Header("Set Dynamically")]
-    // Singleton
     private static SpellManager _S;
     public static SpellManager S { get { return _S; } set { _S = value; } }
 
@@ -44,6 +43,21 @@ public class SpellManager : MonoBehaviour {
 		spells[5] = new Spell("Revive",
 			eSpellType.healing, eSpellStatEffect.HP, eSpellUseableMode.battle, 12, 20, 6,
 			"Revives a fallen party member and restores a small amount of their HP." + "\n Cost: 6 MP");
+
+		// Detoxify 
+		spells[6] = new Spell("Detoxify",
+			eSpellType.healing, eSpellStatEffect.none, eSpellUseableMode.battle, 0, 0, 2,
+			"Eradicates any toxins that have infected a poisoned party member." + "\n Cost: 2 MP");
+
+		// Mobilize 
+		spells[7] = new Spell("Mobilize",
+			eSpellType.healing, eSpellStatEffect.none, eSpellUseableMode.battle, 0, 0, 2,
+			"Restores the mobility of a paralyzed party member." + "\n Cost: 2 MP");
+
+		// Wake 
+		spells[8] = new Spell("Wake",
+			eSpellType.healing, eSpellStatEffect.none, eSpellUseableMode.battle, 0, 0, 2,
+			"Wakes up a sleeping party member." + "\n Cost: 2 MP");
 	}
 
 	// Spell Utilities ////////////////////////////////////////////
