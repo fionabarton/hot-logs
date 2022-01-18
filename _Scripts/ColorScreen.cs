@@ -36,9 +36,6 @@ public class ColorScreen : MonoBehaviour{
         // Store animator's clips: (0: Swell, 1: Flicker)
         clips.Add(anim.runtimeAnimatorController.animationClips[0]);
         clips.Add(anim.runtimeAnimatorController.animationClips[1]);
-
-        //Debug.Log(clips[0].length);
-        //Debug.Log(clips[1].length);
     }
 
     public void ActivateBlackScreen() {
@@ -95,7 +92,7 @@ public class ColorScreen : MonoBehaviour{
         // Function to call after animation is played
         switch (actionNdx) {
             case 0: // Party: Heal Spell
-                BattleSpells.S.HealSelectedPartyMember(targetNdx, spell);
+                BattleSpells.S.HealSinglePartyMember(targetNdx, spell);
                 break;
             case 1: // Enemy: Heal Spell
                 BattleEnemyActions.S.HealSpell(targetNdx);
@@ -105,6 +102,15 @@ public class ColorScreen : MonoBehaviour{
                 break;
             case 3: // Party: Revive Spell
                 BattleSpells.S.ReviveSelectedPartyMember(targetNdx, spell);
+                break;
+            case 4: // Party: Detoxify Spell
+                BattleSpells.S.DetoxifySinglePartyMember(targetNdx, spell);
+                break;
+            case 5: // Party: Mobilize Spell
+                BattleSpells.S.MobilizeSinglePartyMember(targetNdx, spell);
+                break;
+            case 6: // Party: Wake Spell
+                BattleSpells.S.WakeSinglePartyMember(targetNdx, spell);
                 break;
         }
 
