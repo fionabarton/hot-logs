@@ -418,6 +418,120 @@ public class BattleSpells : MonoBehaviour {
 		_.NextTurn();
 	}
 
+	//////////////////////////////////////////////////////////
+	/// Detoxify - Detoxify a single party member 
+	//////////////////////////////////////////////////////////
+	public void AttemptDetoxifySinglePartyMember(int ndx, Spell spell) {
+		SpellHelper();
+
+		if (_.playerDead[ndx]) {
+			SpellIsNotUseful(Party.S.stats[ndx].name + " is dead...\n...and dead folk don't need to be detoxified, dummy!");
+			return;
+		}
+
+		if (BattleStatusEffects.S.CheckIfPoisoned(Party.S.stats[ndx].name)) {
+			ColorScreen.S.PlayClip("Swell", 4);
+			ColorScreen.S.targetNdx = ndx;
+			ColorScreen.S.spell = spell;
+		} else {
+			SpellIsNotUseful(Party.S.stats[ndx].name + " is not suffering from the effects of poison...\n...no need to cast this spell!");
+		}
+	}
+
+	public void DetoxifySinglePartyMember(int ndx, Spell spell) {
+		// Subtract Spell cost from Player's MP
+		RPG.S.SubtractPlayerMP(_.PlayerNdx(), spell.cost);
+
+		// Remove poison
+		BattleStatusEffects.S.RemovePoisoned(Party.S.stats[ndx].name, ndx);
+
+		// Display Text
+		BattleDialogue.S.DisplayText("Used " + spell.name + " Spell!\n" + Party.S.stats[ndx].name + " is no longer poisoned!");
+
+		CurePlayerAnimation(ndx, false);
+
+		// Audio: Buff 1
+		AudioManager.S.PlaySFX(eSoundName.buff1);
+
+		_.NextTurn();
+	}
+
+	//////////////////////////////////////////////////////////
+	/// Mobilize - Mobilize a single party member 
+	//////////////////////////////////////////////////////////
+	public void AttemptMobilizeSinglePartyMember(int ndx, Spell spell) {
+		SpellHelper();
+
+		if (_.playerDead[ndx]) {
+			SpellIsNotUseful(Party.S.stats[ndx].name + " is dead...\n...and dead folk don't need their mobility restored, dummy!");
+			return;
+		}
+
+		if (BattleStatusEffects.S.CheckIfParalyzed(Party.S.stats[ndx].name)) {
+			ColorScreen.S.PlayClip("Swell", 5);
+			ColorScreen.S.targetNdx = ndx;
+			ColorScreen.S.spell = spell;
+		} else {
+			SpellIsNotUseful(Party.S.stats[ndx].name + " is not suffering from the effects of paralysis...\n...no need to cast this spell!");
+		}
+	}
+
+	public void MobilizeSinglePartyMember(int ndx, Spell spell) {
+		// Subtract Spell cost from Player's MP
+		RPG.S.SubtractPlayerMP(_.PlayerNdx(), spell.cost);
+
+		// Remove paralysis
+		BattleStatusEffects.S.RemoveParalyzed(Party.S.stats[ndx].name, ndx);
+
+		// Display Text
+		BattleDialogue.S.DisplayText("Used " + spell.name + " Spell!\n" + Party.S.stats[ndx].name + " is no longer paralyzed!");
+
+		CurePlayerAnimation(ndx, false);
+
+		// Audio: Buff 1
+		AudioManager.S.PlaySFX(eSoundName.buff1);
+
+		_.NextTurn();
+	}
+
+	//////////////////////////////////////////////////////////
+	/// Wake - Wake a single party member 
+	//////////////////////////////////////////////////////////
+	public void AttemptWakeSinglePartyMember(int ndx, Spell spell) {
+		SpellHelper();
+
+		if (_.playerDead[ndx]) {
+			SpellIsNotUseful(Party.S.stats[ndx].name + " is dead...\n...and dead folk don't need to wake up, dummy!");
+			return;
+		}
+
+		if (BattleStatusEffects.S.CheckIfSleeping(Party.S.stats[ndx].name)) {
+			ColorScreen.S.PlayClip("Swell", 6);
+			ColorScreen.S.targetNdx = ndx;
+			ColorScreen.S.spell = spell;
+		} else {
+			SpellIsNotUseful(Party.S.stats[ndx].name + " is not sleeping...\n...no need to cast this spell!");
+		}
+	}
+
+	public void WakeSinglePartyMember(int ndx, Spell spell) {
+		// Subtract Spell cost from Player's MP
+		RPG.S.SubtractPlayerMP(_.PlayerNdx(), spell.cost);
+
+		// Remove sleeping
+		BattleStatusEffects.S.RemoveSleeping(Party.S.stats[ndx].name, ndx);
+
+		// Display Text
+		BattleDialogue.S.DisplayText("Used " + spell.name + " Spell!\n" + Party.S.stats[ndx].name + " is no longer sleeping!");
+
+		CurePlayerAnimation(ndx, false);
+
+		// Audio: Buff 1
+		AudioManager.S.PlaySFX(eSoundName.buff1);
+
+		_.NextTurn();
+	}
+
 	public void SpellIsNotUseful(string message) {
 		// Display Text
 		BattleDialogue.S.DisplayText(message);
