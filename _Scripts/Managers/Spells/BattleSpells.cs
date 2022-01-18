@@ -159,7 +159,7 @@ public class BattleSpells : MonoBehaviour {
 		ColorScreen.S.targetNdx = ndx;
 		ColorScreen.S.spell = spell;
 	}
-
+	
 	public void AttackSelectedEnemy(int ndx, Spell spell) {
 		// Subtract Spell cost from Player's MP
 		RPG.S.SubtractPlayerMP(_.PlayerNdx(), spell.cost);
@@ -181,9 +181,6 @@ public class BattleSpells : MonoBehaviour {
 
 			_.NextTurn();
 		} else {
-			// Set anim
-			_.playerAnimator[_.PlayerNdx()].CrossFade("Win_Battle", 0);
-
 			// Subtract 8-12 HP
 			_.attackDamage = UnityEngine.Random.Range(spell.statEffectMinValue, spell.statEffectMaxValue);
 			// Add Player's WIS to Damage
@@ -198,15 +195,7 @@ public class BattleSpells : MonoBehaviour {
 				_.attackDamage = 0;
 			}
 
-			// Animation: Shake Enemy Anim 
-			_.enemyAnimator[ndx].CrossFade("Damage", 0);
-
-			// Get and position Explosion game object
-			GameObject explosion = ObjectPool.S.GetPooledObject("Explosion");
-			ObjectPool.S.PosAndEnableObj(explosion, _.enemySprite[ndx].gameObject);
-
-			// Display Floating Score
-			RPG.S.InstantiateFloatingScore(_.enemySprite[ndx].gameObject, _.attackDamage, Color.red);
+			DamageEnemyAnimation(ndx, true);
 
 			// Subtract Enemy Health
 			RPG.S.SubtractEnemyHP(ndx, _.attackDamage);
@@ -256,9 +245,6 @@ public class BattleSpells : MonoBehaviour {
 
 			_.NextTurn();
 		} else {
-			// Set anim
-			_.playerAnimator[_.PlayerNdx()].CrossFade("Win_Battle", 0);
-
 			List<int> deadEnemies = new List<int>();
 
 			// Subtract 12-20 HP
@@ -292,15 +278,7 @@ public class BattleSpells : MonoBehaviour {
 
 				// Shake Enemy 1, 2, & 3's Anim
 				if (!_.enemyStats[i].isDead) {
-					// Shake Enemy Anim 
-					_.enemyAnimator[i].CrossFade("Damage", 0);
-
-					// Get and position Explosion game object
-					GameObject explosion = ObjectPool.S.GetPooledObject("Explosion");
-					ObjectPool.S.PosAndEnableObj(explosion, _.enemySprite[i].gameObject);
-
-					// Display Floating Score
-					RPG.S.InstantiateFloatingScore(_.enemySprite[i].gameObject, _.attackDamage, Color.red);
+					DamageEnemyAnimation(i, true);
 				}
 
 				// If DEFENDING, Reset AttackDamage for next Enemy
@@ -562,5 +540,22 @@ public class BattleSpells : MonoBehaviour {
 
 		// Set anim
 		_.playerAnimator[ndx].CrossFade("Win_Battle", 0);
+	}
+
+	public void DamageEnemyAnimation(int ndx, bool displayFloatingScore = false) {
+		// Get and position Explosion game object
+		GameObject explosion = ObjectPool.S.GetPooledObject("Explosion");
+		ObjectPool.S.PosAndEnableObj(explosion, _.enemySprite[ndx].gameObject);
+
+		// Display Floating Score
+		if (displayFloatingScore) {
+			RPG.S.InstantiateFloatingScore(_.enemySprite[ndx].gameObject, _.attackDamage, Color.red);
+		}
+
+		// Set player anim
+		_.playerAnimator[_.PlayerNdx()].CrossFade("Win_Battle", 0);
+
+		// Shake Enemy Anim 
+		_.enemyAnimator[ndx].CrossFade("Damage", 0);
 	}
 }
