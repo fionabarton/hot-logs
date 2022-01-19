@@ -132,6 +132,9 @@ public class ColorScreen : MonoBehaviour{
             case 3: // Enemy: Attack Single Spell
                 BattleEnemyActions.S.AttackSingle();
                 break;
+            case 4: // Party: Paralyze Single Spell
+                BattleSpells.S.ParalyzeSingle(targetNdx, spell);
+                break;
         }
 
         // Remove all animation events
