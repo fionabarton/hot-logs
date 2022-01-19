@@ -380,6 +380,8 @@ public class SpellScreen : MonoBehaviour {
 				BattleSpells.S.AddFunctionToButton(BattleSpells.S.AttemptMobilizeSinglePartyMember, "Restore the mobility of which paralyzed party member?", spell);
 			} else if (spell.name == "Wake") {
 				BattleSpells.S.AddFunctionToButton(BattleSpells.S.AttemptWakeSinglePartyMember, "Wake up which sleeping party member?", spell);
+			} else if (spell.name == "Paralyze") {
+				BattleSpells.S.AddFunctionToButton(BattleSpells.S.AttemptParalyzeSinglePartyMember, "Temporarily paralyze which enemy?", spell);
 			} else {
 				SpellManager.S.CantUseSpell("Can't use this spell during battle!");
 			}

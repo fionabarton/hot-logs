@@ -111,9 +111,7 @@ public class BattleSpells : MonoBehaviour {
 		CurePlayerAnimation(ndx, true, amountToHeal);
 	}
 
-	//////////////////////////////////////////////////////////
-	/// Heal - Heal a single party member 
-	//////////////////////////////////////////////////////////
+	// Heal - Heal a single party member 
 	public void AttemptHealSinglePartyMember(int ndx, Spell spell) {
 		SpellHelper();
 
@@ -150,9 +148,7 @@ public class BattleSpells : MonoBehaviour {
 		_.NextTurn();
 	}
 
-	//////////////////////////////////////////////////////////
-	/// Fireball - Attack the selected enemy
-	////////////////////////////////////////////////////////// 
+	// Fireball - Attack the selected enemy
 	public void AttemptAttackSelectedEnemy(int ndx, Spell spell) {
 		SpellHelper();
 		ColorScreen.S.PlayClip("Flicker", 0);
@@ -215,9 +211,7 @@ public class BattleSpells : MonoBehaviour {
 		}
 	}
 
-	//////////////////////////////////////////////////////////
-	/// Fireblast
-	//////////////////////////////////////////////////////////
+	// Fireblast
 	public void AttemptAttackAllEnemies(int unusedIntBecauseOfAddFunctionToButtonParameter, Spell spell) {
 		SpellHelper();
 		ColorScreen.S.PlayClip("Flicker", 1);
@@ -317,9 +311,7 @@ public class BattleSpells : MonoBehaviour {
 		}
 	}
 
-	//////////////////////////////////////////////////////////
-	/// Heal All - Heal all party members 
-	//////////////////////////////////////////////////////////
+	// Heal All - Heal all party members 
 	public void AttemptHealAll(int unusedIntBecauseOfAddFunctionToButtonParameter, Spell spell) {
 		SpellHelper();
 
@@ -357,6 +349,7 @@ public class BattleSpells : MonoBehaviour {
 		_.NextTurn();
 	}
 
+	// Revive - Revive a single party member
 	public void AttemptReviveSelectedPartyMember(int ndx, Spell spell) {
 		SpellHelper();
 
@@ -396,9 +389,7 @@ public class BattleSpells : MonoBehaviour {
 		_.NextTurn();
 	}
 
-	//////////////////////////////////////////////////////////
-	/// Detoxify - Detoxify a single party member 
-	//////////////////////////////////////////////////////////
+	// Detoxify - Detoxify a single party member 
 	public void AttemptDetoxifySinglePartyMember(int ndx, Spell spell) {
 		SpellHelper();
 
@@ -434,9 +425,7 @@ public class BattleSpells : MonoBehaviour {
 		_.NextTurn();
 	}
 
-	//////////////////////////////////////////////////////////
-	/// Mobilize - Mobilize a single party member 
-	//////////////////////////////////////////////////////////
+	// Mobilize - Mobilize a single party member 
 	public void AttemptMobilizeSinglePartyMember(int ndx, Spell spell) {
 		SpellHelper();
 
@@ -472,9 +461,7 @@ public class BattleSpells : MonoBehaviour {
 		_.NextTurn();
 	}
 
-	//////////////////////////////////////////////////////////
-	/// Wake - Wake a single party member 
-	//////////////////////////////////////////////////////////
+	// Wake - Wake a single party member 
 	public void AttemptWakeSinglePartyMember(int ndx, Spell spell) {
 		SpellHelper();
 
@@ -508,6 +495,33 @@ public class BattleSpells : MonoBehaviour {
 		AudioManager.S.PlaySFX(eSoundName.buff1);
 
 		_.NextTurn();
+	}
+
+	// Paralyze
+	public void AttemptParalyzeSinglePartyMember(int ndx, Spell spell) {
+		SpellHelper();
+
+		if (!BattleStatusEffects.S.CheckIfParalyzed(_.enemyStats[ndx].name)) {
+			ColorScreen.S.PlayClip("Flicker", 4);
+			ColorScreen.S.targetNdx = ndx;
+			ColorScreen.S.spell = spell;
+		} else {
+			SpellIsNotUseful(_.enemyStats[ndx].name + " is not already suffering from the effects of paralysis...\n...no need to cast this spell!");
+		}
+	}
+
+	public void ParalyzeSingle(int ndx, Spell spell) {
+		// Subtract Spell cost from Player's MP
+		RPG.S.SubtractPlayerMP(_.PlayerNdx(), spell.cost);
+
+		DamageEnemyAnimation(ndx);
+
+		// Audio: Damage
+		int randomInt = UnityEngine.Random.Range(2, 4);
+		AudioManager.S.PlaySFX(randomInt);
+
+		// Paralyze enemy
+		BattleStatusEffects.S.AddParalyzed(_.enemyStats[ndx].name, ndx);
 	}
 
 	public void SpellIsNotUseful(string message) {
