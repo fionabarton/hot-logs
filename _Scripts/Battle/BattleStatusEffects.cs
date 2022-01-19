@@ -61,6 +61,7 @@ public class BattleStatusEffects : MonoBehaviour {
 		Utilities.S.SetActiveList(playerParalyzedIcons, false);
 		Utilities.S.SetActiveList(playerPoisonedIcons, false);
 		Utilities.S.SetActiveList(playerSleepingIcons, false);
+		Utilities.S.SetActiveList(enemyParalyzedIcons, false);
 
 		// Clear status ailment lists
 		thePoisoned.Clear();
@@ -109,16 +110,24 @@ public class BattleStatusEffects : MonoBehaviour {
 			theParalyzed.Add(paralyzed);
 			paralyzedCount.Add(Random.Range(2, 4));
 
-			// Anim
-			_.playerAnimator[ndx].CrossFade("Paralyzed", 0);
+			// If this turn is a player's turn...
+			if (_.PlayerNdx() != -1) {
+				// Activate paralyzed icon
+				enemyParalyzedIcons[ndx].SetActive(true);
 
-			// Activate paralyzed icon
-			playerParalyzedIcons[ndx].SetActive(true);
+				BattleDialogue.S.DisplayText(Party.S.stats[_.PlayerNdx()].name + " has temporarily paralyzed " + _.enemyStats[ndx].name + "...\n...not nice!");
+			} else {
+				// Anim
+				_.playerAnimator[ndx].CrossFade("Paralyzed", 0);
+
+				// Activate paralyzed icon
+				playerParalyzedIcons[ndx].SetActive(true);
+
+				BattleDialogue.S.DisplayText(_.enemyStats[_.EnemyNdx()].name + " has temporarily paralyzed " + Party.S.stats[ndx].name + "...\n...not nice!");
+			}
 
 			// Audio: Buff 2
 			AudioManager.S.PlaySFX(eSoundName.buff2);
-
-			BattleDialogue.S.DisplayText(_.enemyStats[_.EnemyNdx()].name + " has temporarily paralyzed " + Party.S.stats[ndx].name + "...\n...not nice!");
 
 			_.NextTurn();
 		}
@@ -128,11 +137,17 @@ public class BattleStatusEffects : MonoBehaviour {
 			paralyzedCount.RemoveAt(theParalyzed.IndexOf(paralyzed));
 			theParalyzed.Remove(paralyzed);
 
-			// Anim
-			_.playerAnimator[ndx].CrossFade("Win_Battle", 0);
+			// If this turn is a player's turn...
+			if (_.PlayerNdx() != -1) {
+				// Anim
+				_.playerAnimator[ndx].CrossFade("Win_Battle", 0);
 
-			// Deactivate status ailment icon
-			playerParalyzedIcons[ndx].SetActive(false);
+				// Deactivate status ailment icon
+				playerParalyzedIcons[ndx].SetActive(false);
+			} else {
+				// Deactivate status ailment icon
+				enemyParalyzedIcons[ndx].SetActive(false);
+			}
 
 			// Display text
 			BattleDialogue.S.DisplayText(paralyzed + " is no longer paralyzed!");

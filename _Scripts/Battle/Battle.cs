@@ -185,14 +185,31 @@ public class Battle : MonoBehaviour {
 									} else {
 										EnemyTurn();
 									}
-								// If poisoned...
-								} else if (BattleStatusEffects.S.CheckIfPoisoned(Party.S.stats[PlayerNdx()].name)){
-									PlayerTurn(true, false);
+								//// If poisoned...
+								//} else if (BattleStatusEffects.S.CheckIfPoisoned(Party.S.stats[PlayerNdx()].name)) {
+								//	PlayerTurn(true, false);
 								} else {
 									PlayerTurn(true, false);
 								}
 							} else {
-								EnemyTurn();
+								// If paralyzed or sleeping...
+								if (BattleStatusEffects.S.CheckIfParalyzed(enemyStats[EnemyNdx()].name) ||
+									BattleStatusEffects.S.CheckIfSleeping(enemyStats[EnemyNdx()].name)) {
+									// Skip turn
+									NextTurn();
+
+									// If next turn is a player's turn...
+									if (PlayerNdx() != -1) {
+										PlayerTurn();
+									} else {
+										EnemyTurn();
+									}
+								//// If poisoned...
+								//} else if (BattleStatusEffects.S.CheckIfPoisoned(enemyStats[EnemyNdx()].name)) {
+								//	EnemyTurn(false);
+								} else {
+									EnemyTurn(false);
+								}
 							}
 						}
 						break;
@@ -447,36 +464,11 @@ public class Battle : MonoBehaviour {
 	}
 
 	public void PlayerTurn(bool setPreviousSelected = true, bool checkForAilment = true) { // if (Input.GetButtonDown ("Submit"))
-		SetAllCombatantAnimations();
+		TurnHelper(Party.S.stats[PlayerNdx()].name, PlayerNdx(), playerSprite[PlayerNdx()].gameObject);
 
-		BattleUI.S.DisplayTurnOrder();
-
-		// Deactivate '...' Word Bubble
-		dotDotDotWordBubble.SetActive(false);
-
-		// If Defended previous turn, remove from Defenders list
-		BattleStatusEffects.S.RemoveDefender(Party.S.stats[PlayerNdx()].name, true, PlayerNdx());
-
-		// Set Turn Cursor Position
-		BattleUI.S.TurnCursorPosition(playerSprite[PlayerNdx()].gameObject);
-
-		// If player has status ailment...
-		if (checkForAilment) {
-			// If paralyzed...
-			if (BattleStatusEffects.S.CheckIfParalyzed(Party.S.stats[PlayerNdx()].name)) {
-				BattleStatusEffects.S.Paralyzed(Party.S.stats[PlayerNdx()].name, PlayerNdx());
-				return;
-			}
-
-			// If sleeping...
-			if (BattleStatusEffects.S.CheckIfSleeping(Party.S.stats[PlayerNdx()].name)) {
-				BattleStatusEffects.S.Sleeping(Party.S.stats[PlayerNdx()].name, PlayerNdx());
-				return;
-			}
-
-			// If poisoned...
-			if (BattleStatusEffects.S.CheckIfPoisoned(Party.S.stats[PlayerNdx()].name)) {
-				BattleStatusEffects.S.Poisoned(Party.S.stats[PlayerNdx()].name, PlayerNdx());
+        // If player has status ailment...
+        if (checkForAilment) {
+			if (HasAilment(Party.S.stats[PlayerNdx()].name, PlayerNdx())) {
 				return;
 			}
 		}
@@ -498,35 +490,46 @@ public class Battle : MonoBehaviour {
 	}
 
     // Enemy is about to act!
-    public void EnemyTurn () { // if (Input.GetButtonDown ("Submit"))
+    public void EnemyTurn (bool checkForAilment = true) { // if (Input.GetButtonDown ("Submit"))
+		TurnHelper(enemyStats[EnemyNdx()].name, EnemyNdx(), enemySprite[EnemyNdx()].gameObject);
+
+		// If enemy has status ailment...
+		if (checkForAilment) {
+			if (HasAilment(enemyStats[EnemyNdx()].name, EnemyNdx())) {
+				return;
+			}
+		}
+
+		//DisplayText: THE ENEMY IS ABOUT TO ACT!
+		BattleDialogue.S.DisplayText (enemyStats[EnemyNdx()].name + " is about to act!");
+
+		// Animation: Enemy RUN to center
+		animNdx = EnemyNdx();
+		enemyAnimator[animNdx].CrossFade("RunToCenter", 0);
+		BattleUI.S.turnCursor.SetActive(false);
+
+		// Switch Mode
+		battleMode = eBattleMode.enemyAction;
+	}
+
+	public void TurnHelper(string name, int ndx, GameObject gameObject) {
 		SetAllCombatantAnimations();
+
+		BattleUI.S.DisplayTurnOrder();
+
+		// Deactivate '...' Word Bubble
+		dotDotDotWordBubble.SetActive(false);
+
+		// If Defended previous turn, remove from Defenders list
+		BattleStatusEffects.S.RemoveDefender(name, false, ndx);
+
+		BattleUI.S.TurnCursorPosition(gameObject);
 
 		// Reset BattlePlayerActions.S.buttonsCS text color
 		Utilities.S.SetTextColor(BattlePlayerActions.S.buttonsCS, new Color32(39, 201, 255, 255));
 
 		// Deactivate Text, was just displaying whether QTE Attack was successful or failed
 		BattleDialogue.S.displayMessageTextTop.gameObject.transform.parent.gameObject.SetActive(false);
-
-		BattleUI.S.TurnCursorPosition (enemySprite[EnemyNdx()].gameObject);
-
-		BattleUI.S.DisplayTurnOrder();
-
-		// If Defended previous turn, remove from Defenders list
-		BattleStatusEffects.S.RemoveDefender(enemyStats[EnemyNdx()].name, false, EnemyNdx());
-
-		// Deactivate '...' Word Bubble
-		dotDotDotWordBubble.SetActive(false);
-
-		//DisplayText: THE ENEMY IS ABOUT TO ACT!
-		BattleDialogue.S.DisplayText (enemyStats[EnemyNdx()].name + " is about to act!");
-
-		// Switch Mode
-		battleMode = eBattleMode.enemyAction;
-
-		// Animation: Enemy RUN to center
-		animNdx = EnemyNdx();
-		enemyAnimator[animNdx].CrossFade("RunToCenter", 0);
-		BattleUI.S.turnCursor.SetActive(false);
 	}
 
 	public void SetAllCombatantAnimations() {
@@ -549,5 +552,26 @@ public class Battle : MonoBehaviour {
 				enemyAnimator[i].CrossFade("Idle", 0);
 			}
 		}
+	}
+
+	bool HasAilment(string name, int ndx) {
+		// If paralyzed...
+		if (BattleStatusEffects.S.CheckIfParalyzed(name)) {
+			BattleStatusEffects.S.Paralyzed(name, ndx);
+			return true;
+		}
+
+		// If sleeping...
+		if (BattleStatusEffects.S.CheckIfSleeping(name)) {
+			BattleStatusEffects.S.Sleeping(name, ndx);
+			return true;
+		}
+
+		// If poisoned...
+		if (BattleStatusEffects.S.CheckIfPoisoned(name)) {
+			BattleStatusEffects.S.Poisoned(name, ndx);
+			return true;
+		}
+		return false;
 	}
 }
