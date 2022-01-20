@@ -174,4 +174,9 @@ public class AudioManager : MonoBehaviour {
 			sfxCS[i].volume = volume;
 		}
 	}
+
+	public void PlayRandomDamageSFX() {
+		int randomInt = UnityEngine.Random.Range(2, 4);
+		PlaySFX(randomInt);
+	}
 }
