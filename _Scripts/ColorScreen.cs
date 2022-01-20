@@ -10,7 +10,6 @@ public class ColorScreen : MonoBehaviour{
     [Header("Set Dynamically")]
     public List<AnimationClip>  clips;
 
-    // Singleton
     private static ColorScreen  _S;
 	public static ColorScreen   S { get { return _S; } set { _S = value; } }
 
@@ -47,7 +46,7 @@ public class ColorScreen : MonoBehaviour{
         RemoveEvents();
 
         // Prevent battle input
-        Battle.S.battleMode = eBattleMode.noInputPermitted;
+        Battle.S.mode = eBattleMode.noInputPermitted;
 
         // Remove all listeners
         Utilities.S.RemoveListeners(BattlePlayerActions.S.playerButtonCS);
@@ -132,8 +131,14 @@ public class ColorScreen : MonoBehaviour{
             case 3: // Enemy: Attack Single Spell
                 BattleEnemyActions.S.AttackSingle();
                 break;
-            case 4: // Party: Paralyze Single Spell
+            case 4: // Party: Poison Single Spell
+                BattleSpells.S.PoisonSingle(targetNdx, spell);
+                break;
+            case 5: // Party: Paralyze Single Spell
                 BattleSpells.S.ParalyzeSingle(targetNdx, spell);
+                break;
+            case 6: // Party: Sleep Single Spell
+                BattleSpells.S.SleepSingle(targetNdx, spell);
                 break;
         }
 
