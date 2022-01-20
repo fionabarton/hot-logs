@@ -9,7 +9,6 @@ using UnityEngine;
 /// </summary>
 public class Party : MonoBehaviour {
 	[Header("Set Dynamically")]
-	// Singleton
 	private static Party			_S;
 	public static Party				S { get { return _S; } set { _S = value; } }
 
@@ -30,7 +29,7 @@ public class Party : MonoBehaviour {
         stats.Add(new PartyStats("Blob", 40, 40, 40, 6, 6, 6,
             2, 2, 2, 2, 1, 1, 1, 1,
             0, 1, 10,
-            new List<Spell> { SpellManager.S.spells[1], SpellManager.S.spells[0], SpellManager.S.spells[2], SpellManager.S.spells[4], SpellManager.S.spells[5], SpellManager.S.spells[3], SpellManager.S.spells[6], SpellManager.S.spells[7], SpellManager.S.spells[8], SpellManager.S.spells[9] },
+            new List<Spell> { SpellManager.S.spells[1], SpellManager.S.spells[0], SpellManager.S.spells[2], SpellManager.S.spells[4], SpellManager.S.spells[5], SpellManager.S.spells[3], SpellManager.S.spells[6], SpellManager.S.spells[9], SpellManager.S.spells[10], SpellManager.S.spells[11] },
             new List<bool>(new bool[30]),
 			new List<int> { 0, 0, 7, 23, 47, 110, 220, 450, 800, 1300, 2000 },
 			false, 0)
@@ -39,7 +38,7 @@ public class Party : MonoBehaviour {
 		stats.Add(new PartyStats("Bill", 32, 32, 32, 15, 15, 15,
             1, 1, 1, 1, 2, 2, 2, 2,
             0, 1, 10,
-            new List<Spell> { SpellManager.S.spells[0], SpellManager.S.spells[1], SpellManager.S.spells[3], SpellManager.S.spells[4], SpellManager.S.spells[5], SpellManager.S.spells[2], SpellManager.S.spells[6], SpellManager.S.spells[7], SpellManager.S.spells[8], SpellManager.S.spells[9] },
+            new List<Spell> { SpellManager.S.spells[0], SpellManager.S.spells[1], SpellManager.S.spells[3], SpellManager.S.spells[4], SpellManager.S.spells[5], SpellManager.S.spells[2], SpellManager.S.spells[6], SpellManager.S.spells[9], SpellManager.S.spells[10], SpellManager.S.spells[11] },
             new List<bool>(new bool[30]), 
 			new List<int> { 0, 0, 9, 23, 55, 110, 250, 450, 850, 1300, 2100 },
 			false, 0)
@@ -54,8 +53,6 @@ public class Party : MonoBehaviour {
 			false, 0)
 		);
     }
-
-
 
 	// HP
 	public int GetHP(int playerNdx, int LVL) {
