@@ -37,7 +37,7 @@ public class Battle : MonoBehaviour {
 	// DontDestroyOnLoad
 	private static bool		exists;
 
-	public eBattleMode		battleMode;
+	public eBattleMode		mode;
 
 	// Attack Damage, Random Factor
 	public int				attackDamage, randomFactor, qteBonusDamage;
@@ -107,7 +107,7 @@ public class Battle : MonoBehaviour {
 			}
 
 			if (BattleDialogue.S.dialogueNdx <= 0) {
-				switch (battleMode) {
+				switch (mode) {
 					case eBattleMode.actionButtons:
 						break;
 					case eBattleMode.canGoBackToFightButton:
@@ -185,9 +185,6 @@ public class Battle : MonoBehaviour {
 									} else {
 										EnemyTurn();
 									}
-								//// If poisoned...
-								//} else if (BattleStatusEffects.S.CheckIfPoisoned(Party.S.stats[PlayerNdx()].name)) {
-								//	PlayerTurn(true, false);
 								} else {
 									PlayerTurn(true, false);
 								}
@@ -204,9 +201,6 @@ public class Battle : MonoBehaviour {
 									} else {
 										EnemyTurn();
 									}
-								//// If poisoned...
-								//} else if (BattleStatusEffects.S.CheckIfPoisoned(enemyStats[EnemyNdx()].name)) {
-								//	EnemyTurn(false);
 								} else {
 									EnemyTurn(false);
 								}
@@ -253,7 +247,7 @@ public class Battle : MonoBehaviour {
 		}
 
 		// Separate loop that ignores if BattleDialogue.S.dialogueFinished
-		switch (battleMode) {
+		switch (mode) {
 			case eBattleMode.actionButtons:
 				// Set buttons' text color
 				for (int i = 0; i < BattlePlayerActions.S.buttonsCS.Count; i++) {
@@ -273,7 +267,7 @@ public class Battle : MonoBehaviour {
     }
 
 	public void FixedLoop() {
-        switch (battleMode) {
+        switch (mode) {
 			case eBattleMode.actionButtons:
                 // Set Target Cursor Position: player action buttons (fight, defend, item, run, etc.)
 				BattleUI.S.TargetCursorPosition(UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject, 0);
@@ -328,7 +322,7 @@ public class Battle : MonoBehaviour {
 				break;
 		}
 
-		switch (battleMode) {
+		switch (mode) {
 			case eBattleMode.qte:
 				BattleQTE.S.FixedLoop();
 				break;
@@ -363,14 +357,7 @@ public class Battle : MonoBehaviour {
 
 		BattlePlayerActions.S.ButtonsDisableAll();
 		
-		// Reset Dialogue
-		BattleDialogue.S.dialogueFinished = true;
-		BattleDialogue.S.dialogueNdx = 0;
-		BattleDialogue.S.message.Clear();
-
-		// Deactivate Battle Text
-		BattleDialogue.S.displayMessageTextTop.gameObject.transform.parent.gameObject.SetActive(false);
-
+		BattleDialogue.S.Initialize();
 		BattleStatusEffects.S.Initialize();
 
 		// Clear Dropped Items
@@ -385,7 +372,7 @@ public class Battle : MonoBehaviour {
 		Utilities.S.SetTextColor(BattlePlayerActions.S.buttonsCS, new Color32(39, 201, 255, 255));
 
 		// Set Mode
-		battleMode = eBattleMode.actionButtons;
+		mode = eBattleMode.actionButtons;
 
 		// Deactivate Cursors
 		BattleUI.S.turnCursor.SetActive(false);
@@ -407,13 +394,13 @@ public class Battle : MonoBehaviour {
 		// Reset roundNdx
 		roundNdx = 1;
 
-		BattleInitiative.S.Initiative();
+		BattleInitiative.S.SetInitiative();
 
 		// Switch mode (playerTurn or enemyTurn) based off of turnNdx
 		if (turnNdx == turnOrder.IndexOf(Party.S.stats[0].name) || turnNdx == turnOrder.IndexOf(Party.S.stats[1].name) || turnNdx == turnOrder.IndexOf(Party.S.stats[2].name)) {
-			battleMode = eBattleMode.playerTurn;
+			mode = eBattleMode.playerTurn;
 		} else if (turnNdx == turnOrder.IndexOf(enemyStats[0].name) || turnNdx == turnOrder.IndexOf(enemyStats[1].name) || turnNdx == turnOrder.IndexOf(enemyStats[2].name)) {
-			battleMode = eBattleMode.enemyTurn;
+			mode = eBattleMode.enemyTurn;
 		}
 
 		// Display Turn Order
@@ -437,9 +424,9 @@ public class Battle : MonoBehaviour {
 
 		// Switch mode (playerTurn or enemyTurn) based off of turnNdx
 		if(PlayerNdx() != -1) {
-			battleMode = eBattleMode.playerTurn;
+			mode = eBattleMode.playerTurn;
         } else {
-			battleMode = eBattleMode.enemyTurn;
+			mode = eBattleMode.enemyTurn;
 		}
 	}
 
@@ -464,11 +451,11 @@ public class Battle : MonoBehaviour {
 	}
 
 	public void PlayerTurn(bool setPreviousSelected = true, bool checkForAilment = true) { // if (Input.GetButtonDown ("Submit"))
-		TurnHelper(Party.S.stats[PlayerNdx()].name, PlayerNdx(), playerSprite[PlayerNdx()].gameObject);
+		TurnHelper(Party.S.stats[PlayerNdx()].name, PlayerNdx(), playerSprite[PlayerNdx()].gameObject, true);
 
         // If player has status ailment...
         if (checkForAilment) {
-			if (HasAilment(Party.S.stats[PlayerNdx()].name, PlayerNdx())) {
+			if (HasAilment(Party.S.stats[PlayerNdx()].name, true, PlayerNdx())) {
 				return;
 			}
 		}
@@ -486,16 +473,16 @@ public class Battle : MonoBehaviour {
 		BattleDialogue.S.DisplayText("What will you do, " + Party.S.stats[PlayerNdx()].name + "?");
 
 		// Switch Mode
-		battleMode = eBattleMode.actionButtons;
+		mode = eBattleMode.actionButtons;
 	}
 
     // Enemy is about to act!
     public void EnemyTurn (bool checkForAilment = true) { // if (Input.GetButtonDown ("Submit"))
-		TurnHelper(enemyStats[EnemyNdx()].name, EnemyNdx(), enemySprite[EnemyNdx()].gameObject);
+		TurnHelper(enemyStats[EnemyNdx()].name, EnemyNdx(), enemySprite[EnemyNdx()].gameObject, false);
 
 		// If enemy has status ailment...
 		if (checkForAilment) {
-			if (HasAilment(enemyStats[EnemyNdx()].name, EnemyNdx())) {
+			if (HasAilment(enemyStats[EnemyNdx()].name, false, EnemyNdx())) {
 				return;
 			}
 		}
@@ -509,10 +496,10 @@ public class Battle : MonoBehaviour {
 		BattleUI.S.turnCursor.SetActive(false);
 
 		// Switch Mode
-		battleMode = eBattleMode.enemyAction;
+		mode = eBattleMode.enemyAction;
 	}
 
-	public void TurnHelper(string name, int ndx, GameObject gameObject) {
+	public void TurnHelper(string name, int ndx, GameObject gameObject, bool isPlayerTurn) {
 		SetAllCombatantAnimations();
 
 		BattleUI.S.DisplayTurnOrder();
@@ -521,7 +508,7 @@ public class Battle : MonoBehaviour {
 		dotDotDotWordBubble.SetActive(false);
 
 		// If Defended previous turn, remove from Defenders list
-		BattleStatusEffects.S.RemoveDefender(name, false, ndx);
+		BattleStatusEffects.S.RemoveDefender(name, isPlayerTurn, ndx);
 
 		BattleUI.S.TurnCursorPosition(gameObject);
 
@@ -554,22 +541,22 @@ public class Battle : MonoBehaviour {
 		}
 	}
 
-	bool HasAilment(string name, int ndx) {
+	bool HasAilment(string name, bool isPlayer, int ndx) {
+		// If poisoned...
+		if (BattleStatusEffects.S.CheckIfPoisoned(name)) {
+			BattleStatusEffects.S.Poisoned(name, isPlayer, ndx);
+			return true;
+		}
+
 		// If paralyzed...
 		if (BattleStatusEffects.S.CheckIfParalyzed(name)) {
-			BattleStatusEffects.S.Paralyzed(name, ndx);
+			BattleStatusEffects.S.Paralyzed(name, isPlayer, ndx);
 			return true;
 		}
 
 		// If sleeping...
 		if (BattleStatusEffects.S.CheckIfSleeping(name)) {
-			BattleStatusEffects.S.Sleeping(name, ndx);
-			return true;
-		}
-
-		// If poisoned...
-		if (BattleStatusEffects.S.CheckIfPoisoned(name)) {
-			BattleStatusEffects.S.Poisoned(name, ndx);
+			BattleStatusEffects.S.Sleeping(name, isPlayer, ndx);
 			return true;
 		}
 		return false;
