@@ -26,6 +26,16 @@ public class BattleDialogue : MonoBehaviour{
 		S = this;
 	}
 
+	public void Initialize() {
+		// Reset Dialogue
+		dialogueFinished = true;
+		dialogueNdx = 0;
+		message.Clear();
+
+		// Deactivate Battle Text
+		displayMessageTextTop.gameObject.transform.parent.gameObject.SetActive(false);
+	}
+
 	public void Loop() {
 		if (dialogueNdx <= 0) {
 			if (Input.GetButtonDown("SNES B Button") || Input.GetButtonDown("SNES Y Button")) {
