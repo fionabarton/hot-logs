@@ -79,9 +79,9 @@ public class BattleSpells : MonoBehaviour {
 
 		// If multiple targets
 		if (!spell.multipleTargets) {
-			_.battleMode = eBattleMode.canGoBackToFightButton;
+			_.mode = eBattleMode.canGoBackToFightButton;
 		} else {
-			_.battleMode = eBattleMode.canGoBackToFightButtonMultipleTargets;
+			_.mode = eBattleMode.canGoBackToFightButtonMultipleTargets;
 		}
 	}
 
@@ -91,6 +91,10 @@ public class BattleSpells : MonoBehaviour {
 		Utilities.S.RemoveListeners(BattlePlayerActions.S.playerButtonCS);
 		Utilities.S.RemoveListeners(BattlePlayerActions.S.enemyButtonCS);
 	}
+
+	////////////////////////////////////////////////////////////////////////////////////////
+	// Heal party members
+	////////////////////////////////////////////////////////////////////////////////////////
 
 	public void Heal(int ndx, int min, int max) {
 		// Get amount and max amount to heal
@@ -147,6 +151,88 @@ public class BattleSpells : MonoBehaviour {
 
 		_.NextTurn();
 	}
+
+	// Heal All - Heal all party members 
+	public void AttemptHealAll(int unusedIntBecauseOfAddFunctionToButtonParameter, Spell spell) {
+		SpellHelper();
+
+		if (Party.S.stats[0].HP < Party.S.stats[0].maxHP ||
+			Party.S.stats[1].HP < Party.S.stats[1].maxHP ||
+			Party.S.stats[2].HP < Party.S.stats[2].maxHP) {
+			ColorScreen.S.PlayClip("Swell", 2);
+			ColorScreen.S.spell = spell;
+		} else {
+			SpellIsNotUseful("The party is already at full health...\n...no need to cast this spell!");
+		}
+	}
+
+	public void HealAll(int unusedIntBecauseOfAddFunctionToButtonParameter, Spell spell) {
+		int totalAmountToHeal = 0;
+
+		// Subtract Spell cost from Player's MP
+		RPG.S.SubtractPlayerMP(_.PlayerNdx(), spell.cost);
+
+		for (int i = 0; i < _.playerDead.Count; i++) {
+			if (!_.playerDead[i]) {
+				Heal(i, spell.statEffectMinValue, spell.statEffectMaxValue);
+
+				totalAmountToHeal += amountToHeal;
+			}
+		}
+
+		// Display Text
+		BattleDialogue.S.DisplayText("Used " + spell.name + " Spell!\nHealed ALL party members for an average of "
+			+ Utilities.S.CalculateAverage(totalAmountToHeal, _.playerDead.Count) + " HP!");
+
+		// Audio: Buff 1
+		AudioManager.S.PlaySFX(eSoundName.buff1);
+
+		_.NextTurn();
+	}
+
+	// Revive - Revive a single party member
+	public void AttemptReviveSelectedPartyMember(int ndx, Spell spell) {
+		SpellHelper();
+
+		if (_.playerDead[ndx]) {
+			ColorScreen.S.PlayClip("Swell", 3);
+			ColorScreen.S.targetNdx = ndx;
+			ColorScreen.S.spell = spell;
+		} else {
+			SpellIsNotUseful(Party.S.stats[ndx].name + " ain't dead...\n...and dead folk don't need to be revived, dummy!");
+		}
+	}
+
+	public void ReviveSelectedPartyMember(int ndx, Spell spell) {
+		_.playerDead[ndx] = false;
+
+		// Add to PartyQty 
+		_.partyQty += 1;
+
+		// Add Player to Turn Order
+		_.turnOrder.Add(Party.S.stats[ndx].name);
+
+		// Get 6-10% of max HP
+		float lowEnd = Party.S.stats[ndx].maxHP * 0.06f;
+		float highEnd = Party.S.stats[ndx].maxHP * 0.10f;
+		Heal(ndx, (int)lowEnd, (int)highEnd);
+
+		// Display Text
+		if (amountToHeal >= maxAmountToHeal) {
+			BattleDialogue.S.DisplayText("Used " + spell.name + " Spell!\nHealed " + Party.S.stats[ndx].name + " back to Max HP!");
+		} else {
+			BattleDialogue.S.DisplayText("Used " + spell.name + " Spell!\nHealed " + Party.S.stats[ndx].name + " for " + amountToHeal + " HP!");
+		}
+
+		// Audio: Buff 1
+		AudioManager.S.PlaySFX(eSoundName.buff1);
+
+		_.NextTurn();
+	}
+
+	////////////////////////////////////////////////////////////////////////////////////////
+	// Damage enemies
+	////////////////////////////////////////////////////////////////////////////////////////
 
 	// Fireball - Attack the selected enemy
 	public void AttemptAttackSelectedEnemy(int ndx, Spell spell) {
@@ -311,83 +397,9 @@ public class BattleSpells : MonoBehaviour {
 		}
 	}
 
-	// Heal All - Heal all party members 
-	public void AttemptHealAll(int unusedIntBecauseOfAddFunctionToButtonParameter, Spell spell) {
-		SpellHelper();
-
-		if (Party.S.stats[0].HP < Party.S.stats[0].maxHP ||
-			Party.S.stats[1].HP < Party.S.stats[1].maxHP ||
-			Party.S.stats[2].HP < Party.S.stats[2].maxHP) {
-			ColorScreen.S.PlayClip("Swell", 2);
-			ColorScreen.S.spell = spell;
-		} else {
-			SpellIsNotUseful("The party is already at full health...\n...no need to cast this spell!");
-		}
-	}
-
-	public void HealAll(int unusedIntBecauseOfAddFunctionToButtonParameter, Spell spell) {
-		int totalAmountToHeal = 0;
-
-		// Subtract Spell cost from Player's MP
-		RPG.S.SubtractPlayerMP(_.PlayerNdx(), spell.cost);
-
-		for (int i = 0; i < _.playerDead.Count; i++) {
-			if (!_.playerDead[i]) {
-				Heal(i, spell.statEffectMinValue, spell.statEffectMaxValue);
-
-				totalAmountToHeal += amountToHeal;
-			}
-		}
-
-		// Display Text
-		BattleDialogue.S.DisplayText("Used " + spell.name + " Spell!\nHealed ALL party members for an average of "
-			+ Utilities.S.CalculateAverage(totalAmountToHeal, _.playerDead.Count) + " HP!");
-
-		// Audio: Buff 1
-		AudioManager.S.PlaySFX(eSoundName.buff1);
-
-		_.NextTurn();
-	}
-
-	// Revive - Revive a single party member
-	public void AttemptReviveSelectedPartyMember(int ndx, Spell spell) {
-		SpellHelper();
-
-		if (_.playerDead[ndx]) {
-			ColorScreen.S.PlayClip("Swell", 3);
-			ColorScreen.S.targetNdx = ndx;
-			ColorScreen.S.spell = spell;
-		} else {
-			SpellIsNotUseful(Party.S.stats[ndx].name + " ain't dead...\n...and dead folk don't need to be revived, dummy!");
-		}
-	}
-
-	public void ReviveSelectedPartyMember(int ndx, Spell spell) {
-		_.playerDead[ndx] = false;
-
-		// Add to PartyQty 
-		_.partyQty += 1;
-
-		// Add Player to Turn Order
-		_.turnOrder.Add(Party.S.stats[ndx].name);
-
-		// Get 6-10% of max HP
-		float lowEnd = Party.S.stats[ndx].maxHP * 0.06f;
-		float highEnd = Party.S.stats[ndx].maxHP * 0.10f;
-		Heal(ndx, (int)lowEnd, (int)highEnd);
-
-		// Display Text
-		if (amountToHeal >= maxAmountToHeal) {
-			BattleDialogue.S.DisplayText("Used " + spell.name + " Spell!\nHealed " + Party.S.stats[ndx].name + " back to Max HP!");
-		} else {
-			BattleDialogue.S.DisplayText("Used " + spell.name + " Spell!\nHealed " + Party.S.stats[ndx].name + " for " + amountToHeal + " HP!");
-		}
-
-		// Audio: Buff 1
-		AudioManager.S.PlaySFX(eSoundName.buff1);
-
-		_.NextTurn();
-	}
+	////////////////////////////////////////////////////////////////////////////////////////
+	// Cure status ailments
+	////////////////////////////////////////////////////////////////////////////////////////
 
 	// Detoxify - Detoxify a single party member 
 	public void AttemptDetoxifySinglePartyMember(int ndx, Spell spell) {
@@ -412,7 +424,7 @@ public class BattleSpells : MonoBehaviour {
 		RPG.S.SubtractPlayerMP(_.PlayerNdx(), spell.cost);
 
 		// Remove poison
-		BattleStatusEffects.S.RemovePoisoned(Party.S.stats[ndx].name, ndx);
+		BattleStatusEffects.S.RemovePoisoned(Party.S.stats[ndx].name, true, ndx);
 
 		// Display Text
 		BattleDialogue.S.DisplayText("Used " + spell.name + " Spell!\n" + Party.S.stats[ndx].name + " is no longer poisoned!");
@@ -448,7 +460,7 @@ public class BattleSpells : MonoBehaviour {
 		RPG.S.SubtractPlayerMP(_.PlayerNdx(), spell.cost);
 
 		// Remove paralysis
-		BattleStatusEffects.S.RemoveParalyzed(Party.S.stats[ndx].name, ndx);
+		BattleStatusEffects.S.RemoveParalyzed(Party.S.stats[ndx].name, true, ndx);
 
 		// Display Text
 		BattleDialogue.S.DisplayText("Used " + spell.name + " Spell!\n" + Party.S.stats[ndx].name + " is no longer paralyzed!");
@@ -484,7 +496,7 @@ public class BattleSpells : MonoBehaviour {
 		RPG.S.SubtractPlayerMP(_.PlayerNdx(), spell.cost);
 
 		// Remove sleeping
-		BattleStatusEffects.S.RemoveSleeping(Party.S.stats[ndx].name, ndx);
+		BattleStatusEffects.S.RemoveSleeping(Party.S.stats[ndx].name, true, ndx);
 
 		// Display Text
 		BattleDialogue.S.DisplayText("Used " + spell.name + " Spell!\n" + Party.S.stats[ndx].name + " is no longer sleeping!");
@@ -497,32 +509,79 @@ public class BattleSpells : MonoBehaviour {
 		_.NextTurn();
 	}
 
+	////////////////////////////////////////////////////////////////////////////////////////
+	// Inflict status ailments
+	////////////////////////////////////////////////////////////////////////////////////////
+
+	// Poison
+	public void AttemptPoisonSinglePartyMember(int ndx, Spell spell) {
+		SpellHelper();
+
+		if (!BattleStatusEffects.S.CheckIfPoisoned(_.enemyStats[ndx].name)) {
+			ColorScreen.S.PlayClip("Flicker", 4);
+			ColorScreen.S.targetNdx = ndx;
+			ColorScreen.S.spell = spell;
+		} else {
+			SpellIsNotUseful(_.enemyStats[ndx].name + " is not already suffering from the effects of poison...\n...no need to cast this spell!");
+		}
+	}
+	public void PoisonSingle(int ndx, Spell spell) {
+		// Subtract Spell cost from Player's MP
+		RPG.S.SubtractPlayerMP(_.PlayerNdx(), spell.cost);
+
+		DamageEnemyAnimation(ndx);
+
+		// Poison enemy
+		BattleStatusEffects.S.AddPoisoned(_.enemyStats[ndx].name, ndx);
+	}
+
 	// Paralyze
 	public void AttemptParalyzeSinglePartyMember(int ndx, Spell spell) {
 		SpellHelper();
 
 		if (!BattleStatusEffects.S.CheckIfParalyzed(_.enemyStats[ndx].name)) {
-			ColorScreen.S.PlayClip("Flicker", 4);
+			ColorScreen.S.PlayClip("Flicker", 5);
 			ColorScreen.S.targetNdx = ndx;
 			ColorScreen.S.spell = spell;
 		} else {
 			SpellIsNotUseful(_.enemyStats[ndx].name + " is not already suffering from the effects of paralysis...\n...no need to cast this spell!");
 		}
 	}
-
 	public void ParalyzeSingle(int ndx, Spell spell) {
 		// Subtract Spell cost from Player's MP
 		RPG.S.SubtractPlayerMP(_.PlayerNdx(), spell.cost);
 
 		DamageEnemyAnimation(ndx);
 
-		// Audio: Damage
-		int randomInt = UnityEngine.Random.Range(2, 4);
-		AudioManager.S.PlaySFX(randomInt);
-
 		// Paralyze enemy
 		BattleStatusEffects.S.AddParalyzed(_.enemyStats[ndx].name, ndx);
 	}
+
+	// Sleep
+	public void AttemptSleepSinglePartyMember(int ndx, Spell spell) {
+		SpellHelper();
+
+		if (!BattleStatusEffects.S.CheckIfSleeping(_.enemyStats[ndx].name)) {
+			ColorScreen.S.PlayClip("Flicker", 6);
+			ColorScreen.S.targetNdx = ndx;
+			ColorScreen.S.spell = spell;
+		} else {
+			SpellIsNotUseful(_.enemyStats[ndx].name + " is not already suffering from the effects of sleep...\n...no need to cast this spell!");
+		}
+	}
+	public void SleepSingle(int ndx, Spell spell) {
+		// Subtract Spell cost from Player's MP
+		RPG.S.SubtractPlayerMP(_.PlayerNdx(), spell.cost);
+
+		DamageEnemyAnimation(ndx);
+
+		// Put enemy to sleep 
+		BattleStatusEffects.S.AddSleeping(_.enemyStats[ndx].name, ndx);
+	}
+
+	////////////////////////////////////////////////////////////////////////////////////////
+	// Helper functions
+	////////////////////////////////////////////////////////////////////////////////////////
 
 	public void SpellIsNotUseful(string message) {
 		// Display Text
@@ -536,9 +595,9 @@ public class BattleSpells : MonoBehaviour {
 
 		// Switch Mode
         if (BattleStatusEffects.S.HasStatusAilment(Party.S.stats[_.PlayerNdx()].name)) {
-			_.battleMode = eBattleMode.statusAilment;
+			_.mode = eBattleMode.statusAilment;
 		} else {
-			_.battleMode = eBattleMode.playerTurn;
+			_.mode = eBattleMode.playerTurn;
 		}
 	}
 
@@ -556,7 +615,7 @@ public class BattleSpells : MonoBehaviour {
 		_.playerAnimator[ndx].CrossFade("Win_Battle", 0);
 	}
 
-	public void DamageEnemyAnimation(int ndx, bool displayFloatingScore = false) {
+	public void DamageEnemyAnimation(int ndx, bool displayFloatingScore = false, bool playPlayerAnim = true, bool playDamageSFX = true) {
 		// Get and position Explosion game object
 		GameObject explosion = ObjectPool.S.GetPooledObject("Explosion");
 		ObjectPool.S.PosAndEnableObj(explosion, _.enemySprite[ndx].gameObject);
@@ -567,9 +626,16 @@ public class BattleSpells : MonoBehaviour {
 		}
 
 		// Set player anim
-		_.playerAnimator[_.PlayerNdx()].CrossFade("Win_Battle", 0);
+		if (playPlayerAnim) {
+			_.playerAnimator[_.PlayerNdx()].CrossFade("Win_Battle", 0);
+		}
 
 		// Shake Enemy Anim 
 		_.enemyAnimator[ndx].CrossFade("Damage", 0);
+
+        // Audio: Damage
+        if (playDamageSFX) {
+			AudioManager.S.PlayRandomDamageSFX();
+		}
 	}
 }

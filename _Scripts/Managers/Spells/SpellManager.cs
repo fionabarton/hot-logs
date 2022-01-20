@@ -12,7 +12,7 @@ public class SpellManager : MonoBehaviour {
 	void Awake() {
         S = this;
 
-		spells = new Spell[10];
+		spells = new Spell[20];
 
 		// Heal
 		spells[0] = new Spell("Heal", 
@@ -59,10 +59,20 @@ public class SpellManager : MonoBehaviour {
 			eSpellType.healing, eSpellStatEffect.none, eSpellUseableMode.battle, 0, 0, 2,
 			"Wakes up a sleeping party member." + "\n Cost: 2 MP");
 
+		// Poison 
+		spells[9] = new Spell("Poison",
+			eSpellType.offensive, eSpellStatEffect.none, eSpellUseableMode.battle, 0, 0, 1,
+			"Temporarily poisons a single enemy for a few turns." + "\n Cost: 1 MP");
+
 		// Paralyze 
-		spells[9] = new Spell("Paralyze",
+		spells[10] = new Spell("Paralyze",
 			eSpellType.offensive, eSpellStatEffect.none, eSpellUseableMode.battle, 0, 0, 1,
 			"Temporarily paralyzes a single enemy for a few turns." + "\n Cost: 1 MP");
+
+		// Sleep 
+		spells[11] = new Spell("Sleep",
+			eSpellType.offensive, eSpellStatEffect.none, eSpellUseableMode.battle, 0, 0, 1,
+			"Temporarily puts a single enemy to sleep for a few turns." + "\n Cost: 1 MP");
 	}
 
 	// Spell Utilities ////////////////////////////////////////////

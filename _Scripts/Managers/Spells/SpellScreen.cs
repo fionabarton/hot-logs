@@ -87,7 +87,7 @@ public class SpellScreen : MonoBehaviour {
 		} else {
 			// If Player didn't use a Spell, go back to Player Turn
 			if (mode != eSpellScreenMode.pickSpell) {
-				if (Battle.S.battleMode == eBattleMode.itemOrSpellMenu) {
+				if (Battle.S.mode == eBattleMode.itemOrSpellMenu) {
 					Battle.S.PlayerTurn(false, false);
 				}
 			}
@@ -348,7 +348,7 @@ public class SpellScreen : MonoBehaviour {
 
 		Deactivate(true);
 
-		if (Battle.S.battleMode == eBattleMode.itemOrSpellMenu) {
+		if (Battle.S.mode == eBattleMode.itemOrSpellMenu) {
 			Battle.S.PlayerTurn(false, false);
 		}
 	}
@@ -380,8 +380,12 @@ public class SpellScreen : MonoBehaviour {
 				BattleSpells.S.AddFunctionToButton(BattleSpells.S.AttemptMobilizeSinglePartyMember, "Restore the mobility of which paralyzed party member?", spell);
 			} else if (spell.name == "Wake") {
 				BattleSpells.S.AddFunctionToButton(BattleSpells.S.AttemptWakeSinglePartyMember, "Wake up which sleeping party member?", spell);
+			} else if (spell.name == "Poison") {
+				BattleSpells.S.AddFunctionToButton(BattleSpells.S.AttemptPoisonSinglePartyMember, "Temporarily poison which enemy?", spell);
 			} else if (spell.name == "Paralyze") {
 				BattleSpells.S.AddFunctionToButton(BattleSpells.S.AttemptParalyzeSinglePartyMember, "Temporarily paralyze which enemy?", spell);
+			} else if (spell.name == "Sleep") {
+				BattleSpells.S.AddFunctionToButton(BattleSpells.S.AttemptSleepSinglePartyMember, "Temporarily put which enemy to sleep?", spell);
 			} else {
 				SpellManager.S.CantUseSpell("Can't use this spell during battle!");
 			}
