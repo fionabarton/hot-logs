@@ -21,7 +21,6 @@ public class SpellScreen : MonoBehaviour {
 	public GameObject		previousSelectedSpellGO;
 
 	[Header("Set Dynamically")]
-	// Singleton
 	private static SpellScreen _S;
 	public static SpellScreen S { get { return _S; } set { _S = value; } }
 
@@ -35,6 +34,13 @@ public class SpellScreen : MonoBehaviour {
 
 	public GameObject		previousSelectedPlayerGO;
 
+	// Caches what index of the inventory is currently stored in the first item slot
+	public int				firstSlotNdx;
+
+	// Prevents instantly registering input when the first or last slot is selected
+	private bool			verticalAxisIsInUse;
+	private bool			firstOrLastSlotSelected;
+
 	void Awake() {
 		S = this;
 	}
@@ -46,6 +52,8 @@ public class SpellScreen : MonoBehaviour {
 				previousSelectedPlayerGO = PlayerButtons.S.buttonsCS[0].gameObject;
 				previousSelectedSpellGO = spellsButtons[0].gameObject;
 			}
+
+			firstSlotNdx = 0;
 
 			SpellScreen_PickWhichSpellsToDisplay.S.Setup(S);
 
@@ -137,6 +145,11 @@ public class SpellScreen : MonoBehaviour {
 			SpellScreen_PickWhichSpellsToDisplay.S.Loop(S);
 		break;
 		case eSpellScreenMode.pickSpell:
+			// On vertical input, scroll the item list when the first or last slot is selected
+			if (Party.S.stats[playerNdx].spellNdx > spellsButtons.Count) {
+				ScrollSpellList();
+			}
+
 			SpellScreen_PickSpell.S.Loop(S);
 		break;
 		case eSpellScreenMode.doesntKnowSpells:
@@ -172,6 +185,68 @@ public class SpellScreen : MonoBehaviour {
 			SpellScreen_CantUseSpell.S.Loop(S);
 		break;
 		}
+	}
+
+	// On vertical input, scroll the item list when the first or last slot is selected
+	void ScrollSpellList() {
+		if (Inventory.S.GetItemList().Count > 1) {
+			// If first or last slot selected...
+			if (firstOrLastSlotSelected) {
+				if (Input.GetAxisRaw("Vertical") == 0) {
+					verticalAxisIsInUse = false;
+				} else {
+					if (!verticalAxisIsInUse) {
+						if (UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject == spellsButtons[0].gameObject) {
+							if (Input.GetAxisRaw("Vertical") > 0) {
+								if (firstSlotNdx == 0) {
+									firstSlotNdx = Party.S.stats[playerNdx].spellNdx - spellsButtons.Count;
+									
+									// Set  selected GameObject
+									Utilities.S.SetSelectedGO(spellsButtons[9].gameObject);
+								} else {
+									firstSlotNdx -= 1;
+								}
+							}
+						} else if (UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject == spellsButtons[9].gameObject) {
+							if (Input.GetAxisRaw("Vertical") < 0) {
+								if (firstSlotNdx + spellsButtons.Count == Party.S.stats[playerNdx].spellNdx) {
+									firstSlotNdx = 0;
+
+									// Set  selected GameObject
+									Utilities.S.SetSelectedGO(spellsButtons[0].gameObject);
+								} else {
+									firstSlotNdx += 1;
+								}
+							}
+						}
+
+						AssignSpellsEffect(playerNdx);
+						AssignSpellsNames(playerNdx);
+
+						// Audio: Selection
+						AudioManager.S.PlaySFX(eSoundName.selection);
+
+						verticalAxisIsInUse = true;
+
+						// Allows scrolling when the vertical axis is held down in 0.2 seconds
+						Invoke("VerticalAxisScrollDelay", 0.2f);
+					}
+				}
+			}
+
+			// Check if first or last slot is selected
+			if (UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject == spellsButtons[0].gameObject
+			 || UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject == spellsButtons[9].gameObject) {
+				firstOrLastSlotSelected = true;
+			} else {
+				firstOrLastSlotSelected = false;
+			}
+		}
+	}
+
+	// Allows scrolling when the vertical axis is held down 
+	void VerticalAxisScrollDelay() {
+		verticalAxisIsInUse = false;
 	}
 
 	void GoBackToPickSpellMode() {
@@ -255,9 +330,9 @@ public class SpellScreen : MonoBehaviour {
 	}
 
 	public void DisplaySpellsDescriptions (int playerNdx) {
-		for (int i = 0; i < Party.S.stats[playerNdx].spellNdx; i++) {
+		for (int i = 0; i < spellsButtons.Count; i++) {
 			if (UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject == spellsButtons[i].gameObject) {
-				PauseMessage.S.SetText(Party.S.stats[playerNdx].spells[i].description);
+				PauseMessage.S.SetText(Party.S.stats[playerNdx].spells[i + firstSlotNdx].description);
 
 				// Cursor Position set to Selected Button
 				Utilities.S.PositionCursor(spellsButtons[i].gameObject, -160, 0, 0);
@@ -292,10 +367,10 @@ public class SpellScreen : MonoBehaviour {
 		Utilities.S.RemoveListeners(PlayerButtons.S.buttonsCS);
 		Utilities.S.RemoveListeners(spellsButtons);
 
-		for (int i = 0; i < Party.S.stats[playerNdx].spellNdx; i++) {
+		for (int i = 0; i < spellsButtons.Count; i++) {
 			// Add listener to Spell Button
 			int copy = i;
-			spellsButtons[copy].onClick.AddListener(delegate { UseSpell(Party.S.stats[playerNdx].spells[copy]); });
+			spellsButtons[copy].onClick.AddListener(delegate { UseSpell(Party.S.stats[playerNdx].spells[firstSlotNdx + copy]); });
 
 			// Assign Button Name Text
 			AssignSpellsNames(playerNdx);
@@ -303,18 +378,27 @@ public class SpellScreen : MonoBehaviour {
 	}
 
 	public void AssignSpellsNames(int playerNdx) {
-		for (int i = 0; i < Party.S.stats[playerNdx].spellNdx; i++) {
-			// Assign Button Name Text
-			string ndx = (i + 1).ToString();
-			spellsButtonNameText[i].text = ndx + ") " + Party.S.stats[playerNdx].spells[i].name;
-			spellsButtonMPCostText[i].text = Party.S.stats[playerNdx].spells[i].cost.ToString();
+		//for (int i = 0; i < Party.S.stats[playerNdx].spellNdx; i++) {
+		//	// Assign Button Name Text
+		//	string ndx = (i + 1).ToString();
+		//	spellsButtonNameText[i].text = ndx + ") " + Party.S.stats[playerNdx].spells[i].name;
+		//	spellsButtonMPCostText[i].text = Party.S.stats[playerNdx].spells[i].cost.ToString();
+		//}
+
+		for (int i = 0; i < spellsButtons.Count; i++) {
+			if (firstSlotNdx + i < Party.S.stats[playerNdx].spellNdx) {
+				// Assign Button Name Text
+				string ndx = (firstSlotNdx + i + 1).ToString();
+				spellsButtonNameText[i].text = ndx + ") " + Party.S.stats[playerNdx].spells[firstSlotNdx + i].name;
+				spellsButtonMPCostText[i].text = Party.S.stats[playerNdx].spells[firstSlotNdx + i].cost.ToString();
+			}
 		}
 	}
 
 	// Set the first and last button’s navigation 
 	public void SetButtonNavigation() {
 		// Reset all button's navigation to automatic
-		for (int i = 0; i < Party.S.stats[playerNdx].spellNdx; i++) {
+		for (int i = 0; i < spellsButtons.Count; i++) {
 			// Get the Navigation data
 			Navigation navigation = spellsButtons[i].navigation;
 
@@ -326,20 +410,20 @@ public class SpellScreen : MonoBehaviour {
 		}
 
 		// Set button navigation if inventory is less than 10
-		//if (Party.S.stats[playerNdx].spellNdx < spellsButtons.Count) {
-		if (Party.S.stats[playerNdx].spellNdx > 1) {
-			// Set first button navigation
-			Utilities.S.SetVerticalButtonNavigation(
-				spellsButtons[0],
-				spellsButtons[1],
-				spellsButtons[Party.S.stats[playerNdx].spellNdx - 1]);
+		if (Party.S.stats[playerNdx].spellNdx < spellsButtons.Count) {
+			if (Party.S.stats[playerNdx].spellNdx > 1) {
+				// Set first button navigation
+				Utilities.S.SetVerticalButtonNavigation(
+					spellsButtons[0],
+					spellsButtons[1],
+					spellsButtons[Party.S.stats[playerNdx].spellNdx - 1]);
 
-			// Set last button navigation
-			Utilities.S.SetVerticalButtonNavigation(
-				spellsButtons[Party.S.stats[playerNdx].spellNdx - 1],
-				spellsButtons[0],
-				spellsButtons[Party.S.stats[playerNdx].spellNdx - 2]);
-			//}
+				// Set last button navigation
+				Utilities.S.SetVerticalButtonNavigation(
+					spellsButtons[Party.S.stats[playerNdx].spellNdx - 1],
+					spellsButtons[0],
+					spellsButtons[Party.S.stats[playerNdx].spellNdx - 2]);
+			}
 		}
 	}
 

@@ -22,6 +22,8 @@ public class SpellScreen_PickWhichSpellsToDisplay : MonoBehaviour {
 	}
 
 	public void Setup(SpellScreen spellScreen) {
+		spellScreen.firstSlotNdx = 0;
+
 		try {
 			if (RPG.S.currentScene != "Battle") {
 				// Buttons Interactable
