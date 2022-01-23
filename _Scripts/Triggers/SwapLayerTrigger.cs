@@ -1,6 +1,9 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Swaps colliders and sorting layers when the player moves up or down a ground level
+/// </summary>
 public class SwapLayerTrigger : MonoBehaviour{
     [Header("Set in Inspector")]
 	// Colliders that enable/disable when Player exits trigger
@@ -23,7 +26,7 @@ public class SwapLayerTrigger : MonoBehaviour{
 	// Set player/enemy ground level
 	void OnTriggerEnter2D(Collider2D coll) {
 		// Set player's level
-		if (coll.gameObject.tag == "PlayerTrigger") {
+		if (coll.gameObject.tag == "Player") {
 			Player.S.level = level;
 
 			ActivateColliders();
@@ -34,31 +37,6 @@ public class SwapLayerTrigger : MonoBehaviour{
 			Enemy enemy = coll.gameObject.GetComponent<Enemy>();
 			if (enemy != null) {
 				enemy.level = level;
-			}
-		}
-	}
-
-	// Set player/enemy isOnSwapLayerTrigger to true
-	void OnTriggerStay2D(Collider2D coll) {
-		SetIsOnSwapLayerTrigger(coll, true);
-	}
-
-	// Set player/enemy isOnSwapLayerTrigger to false
-	void OnTriggerExit2D(Collider2D coll) {
-		SetIsOnSwapLayerTrigger(coll, false);
-	}
-
-	void SetIsOnSwapLayerTrigger(Collider2D coll, bool trueOrFalse) {
-		// Set player's isOnSwapLayerTrigger
-		if (coll.gameObject.tag == "PlayerTrigger") {
-			Player.S.isOnSwapLayerTrigger = trueOrFalse;
-		}
-
-		// Set enemy's isOnSwapLayerTrigger
-		if (coll.gameObject.tag == "Enemy") {
-			Enemy enemy = coll.gameObject.GetComponent<Enemy>();
-			if (enemy != null) {
-				enemy.isOnSwapLayerTrigger = trueOrFalse;
 			}
 		}
 	}

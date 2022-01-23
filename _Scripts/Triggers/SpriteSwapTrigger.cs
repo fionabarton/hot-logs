@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Used for swaping open/closed door sprites on collision
+/// </summary>
 public class SpriteSwapTrigger : MonoBehaviour {
 	[Header("Set in Inspector")]
 	public List<Sprite>		sprites = new List<Sprite>();
