@@ -50,13 +50,13 @@ public class PlayerButtons : MonoBehaviour {
             // Set button navigation
             switch (Party.S.partyNdx) {
 				case 1:
-					Utilities.S.SetHorizontalButtonNavigation(buttonsCS[0], buttonsCS[1], buttonsCS[1]);
-					Utilities.S.SetHorizontalButtonNavigation(buttonsCS[1], buttonsCS[0], buttonsCS[0]);
+					Utilities.S.SetButtonNavigation(buttonsCS[0], null, null, buttonsCS[1], buttonsCS[1]);
+					Utilities.S.SetButtonNavigation(buttonsCS[1], null, null, buttonsCS[0], buttonsCS[0]);
 					break;
 				case 2:
-					Utilities.S.SetHorizontalButtonNavigation(buttonsCS[0], buttonsCS[2], buttonsCS[1]);
-					Utilities.S.SetHorizontalButtonNavigation(buttonsCS[1], buttonsCS[0], buttonsCS[2]);
-					Utilities.S.SetHorizontalButtonNavigation(buttonsCS[2], buttonsCS[1], buttonsCS[0]);
+					Utilities.S.SetButtonNavigation(buttonsCS[0], null, null, buttonsCS[2], buttonsCS[1]);
+					Utilities.S.SetButtonNavigation(buttonsCS[1], null, null, buttonsCS[0], buttonsCS[2]);
+					Utilities.S.SetButtonNavigation(buttonsCS[2], null, null, buttonsCS[1], buttonsCS[0]);
 					break;
             }
 		}

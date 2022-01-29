@@ -331,8 +331,8 @@ public class SaveScreen : MonoBehaviour {
 		Utilities.S.ButtonsInteractable(slotButtons, false);
 
 		// Set button navigation
-		Utilities.S.SetVerticalButtonNavigation(RPG.S.pauseSubMenu.buttonCS[0], RPG.S.pauseSubMenu.buttonCS[1], RPG.S.pauseSubMenu.buttonCS[1]);
-		Utilities.S.SetVerticalButtonNavigation(RPG.S.pauseSubMenu.buttonCS[1], RPG.S.pauseSubMenu.buttonCS[0], RPG.S.pauseSubMenu.buttonCS[0]);
+		Utilities.S.SetButtonNavigation(RPG.S.pauseSubMenu.buttonCS[0], RPG.S.pauseSubMenu.buttonCS[1], RPG.S.pauseSubMenu.buttonCS[1]);
+		Utilities.S.SetButtonNavigation(RPG.S.pauseSubMenu.buttonCS[1], RPG.S.pauseSubMenu.buttonCS[0], RPG.S.pauseSubMenu.buttonCS[0]);
 
 		// Deactivate screen cursor
 		ScreenCursor.S.cursorGO[0].SetActive(false);
