@@ -6,10 +6,8 @@ using UnityEngine.UI;
 /// <summary>
 /// A set of general functions that are HOPEFULLY useful in a multitude of projects
 /// </summary>
-public class Utilities : MonoBehaviour
-{
+public class Utilities : MonoBehaviour {
     [Header("Set Dynamically")]
-    // Singleton
     private static Utilities _S;
     public static Utilities S { get { return _S; } set { _S = value; } }
 
@@ -38,6 +36,26 @@ public class Utilities : MonoBehaviour
 
 		if(rect != null) {
 			rect.anchoredPosition = new Vector2(x, y);
+		}
+	}
+
+	// Set a UI object to the world position of a GameObject
+	public void SetUIObjectPosition(GameObject worldObject, GameObject UI_Object) {
+		// Get UI object's RectTransform
+		RectTransform UI_Rect = UI_Object.GetComponent<RectTransform>();
+
+		if(UI_Rect != null) {
+			// Get canvas' RectTransform
+			RectTransform canvasRect = Battle.S.gameObject.GetComponent<RectTransform>();
+
+			// Get the GameObject's position if it were a UI element with a RectTransform
+			Vector2 viewportPosition = Camera.main.WorldToViewportPoint(worldObject.transform.position);
+			Vector2 worldObjectScreenPosition = new Vector2(
+			((viewportPosition.x * canvasRect.sizeDelta.x) - (canvasRect.sizeDelta.x * 0.5f)),
+			((viewportPosition.y * canvasRect.sizeDelta.y) - (canvasRect.sizeDelta.y * 0.5f)));
+
+			// Set position of the UI object
+			UI_Rect.anchoredPosition = worldObjectScreenPosition;
 		}
 	}
 	////////////////////////////////////////////////////////////////////////////////
@@ -161,35 +179,23 @@ public class Utilities : MonoBehaviour
 
 	////////////////////////////////////////////////////////////////////////////////
 	// Explicitly set a button's navigation
-	public void SetVerticalButtonNavigation(Button button, Button buttonSelectOnDown, Button buttonSelectOnUp) {
+	public void SetButtonNavigation(Button button, Button buttonSelectOnUp = null, Button buttonSelectOnDown = null, Button buttonSelectOnLeft = null, Button buttonSelectOnRight = null) {
 		// Get the Navigation data
 		Navigation navigation = button.navigation;
 
 		// Switch mode to Explicit to allow for custom assigned behavior
 		navigation.mode = Navigation.Mode.Explicit;
 
-        // Highlight these buttons if the down or up arrow keys are pressed
-        navigation.selectOnDown = buttonSelectOnDown;
-        navigation.selectOnUp = buttonSelectOnUp;
-
-		// Reassign the struct data to the button
-		button.navigation = navigation;
-    }
-	public void SetHorizontalButtonNavigation(Button button, Button buttonSelectOnLeft, Button buttonSelectOnRight) {
-		// Get the Navigation data
-		Navigation navigation = button.navigation;
-
-		// Switch mode to Explicit to allow for custom assigned behavior
-		navigation.mode = Navigation.Mode.Explicit;
-
-		// Highlight these buttons if the down or up arrow keys are pressed
+		// Select buttons to navigate to on directional input
+		navigation.selectOnUp = buttonSelectOnUp;
+		navigation.selectOnDown = buttonSelectOnDown;
 		navigation.selectOnLeft = buttonSelectOnLeft;
 		navigation.selectOnRight = buttonSelectOnRight;
 
 		// Reassign the struct data to the button
 		button.navigation = navigation;
 	}
-
+	////////////////////////////////////////////////////////////////////////////////
 	// Play "Selection" SFX when a new gameObject is selected
 	public void PlayButtonSelectedSFX(ref GameObject previousSelectedGameObject) {
 		if (UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject != previousSelectedGameObject) {
