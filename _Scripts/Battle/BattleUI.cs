@@ -16,7 +16,6 @@ public class BattleUI : MonoBehaviour {
 	public Text				turnOrderTxt;
 
 	[Header("Set Dynamically")]
-	// Singleton
 	private static BattleUI _S;
 	public static BattleUI S { get { return _S; } set { _S = value; } }
 
@@ -91,6 +90,12 @@ public class BattleUI : MonoBehaviour {
 				targetCursorAnims[0].CrossFade("Target_Cursor_Flash_Right", 0);
 			} else if (go == BattlePlayerActions.S.enemyButtonGO[2]) {
 				targetCursors[0].transform.localPosition = new Vector2((_.enemySprite[2].transform.position.x + -1), (_.enemySprite[2].transform.position.y + y));
+				targetCursorAnims[0].CrossFade("Target_Cursor_Flash_Right", 0);
+			} else if (go == BattlePlayerActions.S.enemyButtonGO[3]) {
+				targetCursors[0].transform.localPosition = new Vector2((_.enemySprite[3].transform.position.x + -1), (_.enemySprite[3].transform.position.y + y));
+				targetCursorAnims[0].CrossFade("Target_Cursor_Flash_Right", 0);
+			} else if (go == BattlePlayerActions.S.enemyButtonGO[4]) {
+				targetCursors[0].transform.localPosition = new Vector2((_.enemySprite[4].transform.position.x + -1), (_.enemySprite[4].transform.position.y + y));
 				targetCursorAnims[0].CrossFade("Target_Cursor_Flash_Right", 0);
 			} else {
 				RectTransform rectTrans = go.GetComponent<RectTransform>();

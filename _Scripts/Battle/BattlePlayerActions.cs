@@ -47,7 +47,7 @@ public class BattlePlayerActions : MonoBehaviour {
 		Battle.S.previousSelectedGameObject = buttonsGO[0];
 
 		BattleDialogue.S.DisplayText("Attack which enemy?");
-		ButtonsInteractable(false, false, false, false, false, true, true, true, false, false);
+		ButtonsInteractable(false, false, false, false, false, true, true, true, true, true, false, false);
 
 		SetSelectedEnemyButton();
 
@@ -55,9 +55,11 @@ public class BattlePlayerActions : MonoBehaviour {
 		enemyButtonCS[0].onClick.AddListener(delegate { ClickedAttackEnemy(0); });
 		enemyButtonCS[1].onClick.AddListener(delegate { ClickedAttackEnemy(1); });
 		enemyButtonCS[2].onClick.AddListener(delegate { ClickedAttackEnemy(2); });
+		enemyButtonCS[3].onClick.AddListener(delegate { ClickedAttackEnemy(3); });
+		enemyButtonCS[4].onClick.AddListener(delegate { ClickedAttackEnemy(4); });
 
 		// Switch Mode
-		_.battleMode = eBattleMode.canGoBackToFightButton;
+		_.mode = eBattleMode.canGoBackToFightButton;
 
         // Audio: Confirm
         if (playSound) {
@@ -106,19 +108,7 @@ public class BattlePlayerActions : MonoBehaviour {
 			_.playerAnimator[_.animNdx].CrossFade("Attack", 0);
 		}
 
-		// Animation: Shake Enemy Anim 
-		_.enemyAnimator[ndx].CrossFade("Damage", 0);
-
-		// Audio: Damage
-		int randomInt = Random.Range(2, 4);
-		AudioManager.S.PlaySFX(randomInt);
-
-		// Get and position Explosion game object
-		GameObject explosion = ObjectPool.S.GetPooledObject("Explosion");
-		ObjectPool.S.PosAndEnableObj(explosion, _.enemySprite[ndx].gameObject);
-
-		// Display Floating Score
-		RPG.S.InstantiateFloatingScore(_.enemySprite[ndx].gameObject, _.attackDamage, Color.red);
+		BattleSpells.S.DamageEnemyAnimation(ndx, true);
 
 		// Enemy Death or Next Turn
 		if (_.enemyStats[ndx].HP < 1) {
@@ -192,7 +182,7 @@ public class BattlePlayerActions : MonoBehaviour {
 				AudioManager.S.PlaySFX(eSoundName.deny);
 			}
 		} else { // It's a "boss battle", so the party cannot run
-			_.battleMode = eBattleMode.triedToRunFromBoss;
+			_.mode = eBattleMode.triedToRunFromBoss;
 
 			Utilities.S.SetActiveList(BattleUI.S.targetCursors, false);
 			BattleDialogue.S.DisplayText(_.enemyStats[0].name + " is deadly serious...\n...there is ZERO chance of running away!");
@@ -224,7 +214,7 @@ public class BattlePlayerActions : MonoBehaviour {
 			Utilities.S.SetActiveList(BattleUI.S.targetCursors, false);
 
 			// Switch Mode
-			_.battleMode = eBattleMode.itemOrSpellMenu;
+			_.mode = eBattleMode.itemOrSpellMenu;
 
 			PauseMessage.S.gameObject.SetActive(true);
 
@@ -239,7 +229,7 @@ public class BattlePlayerActions : MonoBehaviour {
 			BattleDialogue.S.DisplayText(Party.S.stats[_.PlayerNdx()].name + " doesn't know any spells!");
 
 			// Switch Mode
-			_.battleMode = eBattleMode.playerTurn;
+			_.mode = eBattleMode.playerTurn;
 
 			// Audio: Deny
 			AudioManager.S.PlaySFX(eSoundName.deny);
@@ -257,7 +247,7 @@ public class BattlePlayerActions : MonoBehaviour {
 			Utilities.S.SetActiveList(BattleUI.S.targetCursors, false);
 
 			// Switch Mode
-			_.battleMode = eBattleMode.itemOrSpellMenu;
+			_.mode = eBattleMode.itemOrSpellMenu;
 
 			PauseMessage.S.gameObject.SetActive(true);
 
@@ -268,14 +258,14 @@ public class BattlePlayerActions : MonoBehaviour {
 			BattleDialogue.S.DisplayText(Party.S.stats[_.PlayerNdx()].name + " has no items!");
 
 			// Switch Mode
-			_.battleMode = eBattleMode.playerTurn;
+			_.mode = eBattleMode.playerTurn;
 
 			// Audio: Deny
 			AudioManager.S.PlaySFX(eSoundName.deny);
 		}
 	}
 
-	public void ButtonsInteractable(bool fight, bool spell, bool defend, bool run, bool item, bool eButton1, bool eButton2, bool eButton3, bool pButton1, bool pButton2) {
+	public void ButtonsInteractable(bool fight, bool spell, bool defend, bool run, bool item, bool eButton1, bool eButton2, bool eButton3, bool eButton4, bool eButton5, bool pButton1, bool pButton2) {
 		buttonsCS[0].interactable = fight;
 		buttonsCS[1].interactable = spell;
 		buttonsCS[2].interactable = defend;
@@ -285,13 +275,15 @@ public class BattlePlayerActions : MonoBehaviour {
 		enemyButtonCS[0].interactable = eButton1;
 		enemyButtonCS[1].interactable = eButton2;
 		enemyButtonCS[2].interactable = eButton3;
+		enemyButtonCS[3].interactable = eButton4;
+		enemyButtonCS[4].interactable = eButton5;
 		playerButtonCS[0].interactable = pButton1;
 		playerButtonCS[1].interactable = pButton2;
 	}
 		
-	public void ButtonsInitialInteractable() { ButtonsInteractable(true, true, true, true, true, false, false, false, false, false); }
+	public void ButtonsInitialInteractable() { ButtonsInteractable(true, true, true, true, true, false, false, false, false, false, false, false); }
 	
-	public void ButtonsDisableAll() { ButtonsInteractable(false, false, false, false, false, false, false, false, false, false); }
+	public void ButtonsDisableAll() { ButtonsInteractable(false, false, false, false, false, false, false, false, false, false, false, false); }
 	
 	public void SetSelectedEnemyButton() {
 		for(int i = _.enemyStats.Count - 1; i >= 0; i--) {

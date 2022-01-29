@@ -8,16 +8,20 @@ public class BattleInitiative : MonoBehaviour {
 	[Header("Set in Inspector")]
 	// Enemy GameObject Positions (varies depending on amount of enemies)
 	List<Vector3> enemyPositions = new List<Vector3> {
-		new Vector3(4.5f, 1.375f, 0f),
-		new Vector3(6f, -0.5f, 0f),
-		new Vector3(7.5f, 0.5f, 0f),
-		new Vector3(4.5f, 0.5f, 0f),
-		new Vector3(6f, 1.375f, 0f),
-		new Vector3(7.5f, -0.5f, 0f)
+		new Vector3(4.25f, 1.25f, 0f),
+		new Vector3(5f, -0.5f, 0f),
+		new Vector3(6.25f, 0.5f, 0f),
+		new Vector3(7.5f, 1.5f, 0f),
+		new Vector3(8f, -0.75f, 0f),
+		// If battle starts w/ one enemy
+		new Vector3(4.25f, 0.5f, 0f),
+		new Vector3(5.75f, 1.25f, 0f),
+		new Vector3(6.25f, -0.25f, 0f),
+		new Vector3(7.5f, 1.75f, 0f),
+		new Vector3(8f, -0.75f, 0f),
 	};
 
 	[Header ("Set Dynamically")]
-	// Singleton
 	private static BattleInitiative _S;
 	public static BattleInitiative S { get { return _S; } set { _S = value; } }
 
@@ -36,7 +40,7 @@ public class BattleInitiative : MonoBehaviour {
 		_ = Battle.S;
 	}
 
-	public void Initiative () {
+	public void SetInitiative () {
 		// Clear TurnOrder List
 		_.turnOrder.Clear();
 
@@ -77,21 +81,23 @@ public class BattleInitiative : MonoBehaviour {
 		// Randomly Set Enemy Amount
 		if (_.enemyAmount == 999) {
 			_.randomFactor = Random.Range(0, 100);
-			if (_.randomFactor < 33){
+			if (_.randomFactor < 20){
 				_.enemyAmount = 1;
-			}
-			else if (_.randomFactor >= 33 && _.randomFactor <= 66){
+			} else if (_.randomFactor >= 20 && _.randomFactor <= 40){
 				_.enemyAmount = 2;
-			}
-			else if (_.randomFactor > 66){
+			} else if (_.randomFactor >= 40 && _.randomFactor <= 60) {
 				_.enemyAmount = 3;
+			} else if (_.randomFactor >= 60 && _.randomFactor <= 80) {
+				_.enemyAmount = 4;
+			} else if (_.randomFactor > 66) {
+				_.enemyAmount = 5;
 			}
-		}else if(_.enemyAmount == 0) {
+		} else if(_.enemyAmount == 0) {
 			_.enemyAmount = 1;
 		}
 
 		// Set Enemy Amount (for testing)
-		//_.enemyAmount = 3;
+		_.enemyAmount = 5;
 
 		// Deactivate all enemies
 		for (int i = 0; i < _.enemySprite.Count; i++) {
@@ -113,8 +119,9 @@ public class BattleInitiative : MonoBehaviour {
 
 			Battle.S.enemyAnimator[i].CrossFade("Arrival", 0);
 
-			// HP
+			// HP/MP
 			_.enemyStats[i].HP = _.enemyStats[i].maxHP;
+			_.enemyStats[i].MP = _.enemyStats[i].maxMP;
 
 			// Gold/EXP payout
 			_.expToAdd += _.enemyStats[i].EXP;
@@ -133,10 +140,14 @@ public class BattleInitiative : MonoBehaviour {
 			_.enemyGameObjectHolders[0].transform.position = enemyPositions[0];
 			_.enemyGameObjectHolders[1].transform.position = enemyPositions[1];
 			_.enemyGameObjectHolders[2].transform.position = enemyPositions[2];
+			_.enemyGameObjectHolders[3].transform.position = enemyPositions[3];
+			_.enemyGameObjectHolders[4].transform.position = enemyPositions[4];
 		} else {
-			_.enemyGameObjectHolders[0].transform.position = enemyPositions[3];
-			_.enemyGameObjectHolders[1].transform.position = enemyPositions[4];
-			_.enemyGameObjectHolders[2].transform.position = enemyPositions[5];
+			_.enemyGameObjectHolders[0].transform.position = enemyPositions[5];
+			_.enemyGameObjectHolders[1].transform.position = enemyPositions[6];
+			_.enemyGameObjectHolders[2].transform.position = enemyPositions[7];
+			_.enemyGameObjectHolders[3].transform.position = enemyPositions[8];
+			_.enemyGameObjectHolders[4].transform.position = enemyPositions[9];
 		}
 
 		// Set Turn Order
@@ -189,9 +200,17 @@ public class BattleInitiative : MonoBehaviour {
 		// Enemy 2
 		if (_.enemyAmount >= 2) { 
 			RollInitiative (_.enemyStats[1].name, _.enemyStats[1].AGI, _.enemyStats[1].LVL, false, whoGoesFirst);
-		// Enemy 3
+			// Enemy 3
 			if (_.enemyAmount >= 3) {
 				RollInitiative (_.enemyStats[2].name, _.enemyStats[2].AGI, _.enemyStats[2].LVL, false, whoGoesFirst);
+				// Enemy 4
+				if (_.enemyAmount >= 4) {
+					RollInitiative(_.enemyStats[3].name, _.enemyStats[3].AGI, _.enemyStats[3].LVL, false, whoGoesFirst);
+					// Enemy 5
+					if (_.enemyAmount >= 5) {
+						RollInitiative(_.enemyStats[4].name, _.enemyStats[4].AGI, _.enemyStats[4].LVL, false, whoGoesFirst);
+					}
+				}
 			}
 		}
 

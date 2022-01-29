@@ -305,7 +305,13 @@ public class Battle : MonoBehaviour {
                     case "Enemy3Button":
                         BattleDialogue.S.displayMessageTextTop.text = enemyStats[2].name;
                         break;
-                    case "Player1Button":
+					case "Enemy4Button":
+						BattleDialogue.S.displayMessageTextTop.text = enemyStats[3].name;
+						break;
+					case "Enemy5Button":
+						BattleDialogue.S.displayMessageTextTop.text = enemyStats[4].name;
+						break;
+					case "Player1Button":
                         BattleDialogue.S.displayMessageTextTop.text = Party.S.stats[0].name;
                         break;
                     case "Player2Button":
@@ -399,7 +405,7 @@ public class Battle : MonoBehaviour {
 		// Switch mode (playerTurn or enemyTurn) based off of turnNdx
 		if (turnNdx == turnOrder.IndexOf(Party.S.stats[0].name) || turnNdx == turnOrder.IndexOf(Party.S.stats[1].name) || turnNdx == turnOrder.IndexOf(Party.S.stats[2].name)) {
 			mode = eBattleMode.playerTurn;
-		} else if (turnNdx == turnOrder.IndexOf(enemyStats[0].name) || turnNdx == turnOrder.IndexOf(enemyStats[1].name) || turnNdx == turnOrder.IndexOf(enemyStats[2].name)) {
+		} else if (turnNdx == turnOrder.IndexOf(enemyStats[0].name) || turnNdx == turnOrder.IndexOf(enemyStats[1].name) || turnNdx == turnOrder.IndexOf(enemyStats[2].name) || turnNdx == turnOrder.IndexOf(enemyStats[3].name) || turnNdx == turnOrder.IndexOf(enemyStats[4].name)) {
 			mode = eBattleMode.enemyTurn;
 		}
 
