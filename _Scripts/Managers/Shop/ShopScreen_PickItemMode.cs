@@ -29,9 +29,9 @@ public class ShopScreen_PickItemMode : MonoBehaviour {
 			// Reimport inventory if an item was sold
 			if (!shopScreen.buyOrSellMode) {
 				shopScreen.ImportInventory(Inventory.S.GetItemList());
-				titleText.text = "Shop: " + "<color=white>Sell</color>";
+				titleText.text = "Shop: " + "<color=white>SELL</color>";
 			} else {
-				titleText.text = "Shop: " + "<color=white>Buy</color>";
+				titleText.text = "Shop: " + "<color=white>BUY</color>";
 			}
 
 			DeactivateUnusedItemSlots(shopScreen);
@@ -42,7 +42,7 @@ public class ShopScreen_PickItemMode : MonoBehaviour {
 
 			// Freeze Player
 			RPG.S.paused = true;
-			Player.S.mode = eRPGMode.idle;
+			Player.S.mode = ePlayerMode.idle;
 
 			// Activate PlayerButtons
 			PlayerButtons.S.gameObject.SetActive(true);
@@ -183,16 +183,16 @@ public class ShopScreen_PickItemMode : MonoBehaviour {
 		if (shopScreen.inventory.Count < shopScreen.inventoryButtons.Count) {
 			if (shopScreen.inventory.Count > 1) {
 				// Set first button navigation
-				Utilities.S.SetVerticalButtonNavigation(
+				Utilities.S.SetButtonNavigation(
 					shopScreen.inventoryButtons[0],
-					shopScreen.inventoryButtons[1],
-					shopScreen.inventoryButtons[shopScreen.inventory.Count - 1]);
+					shopScreen.inventoryButtons[shopScreen.inventory.Count - 1],
+					shopScreen.inventoryButtons[1]);
 
 				// Set last button navigation
-				Utilities.S.SetVerticalButtonNavigation(
+				Utilities.S.SetButtonNavigation(
 					shopScreen.inventoryButtons[shopScreen.inventory.Count - 1],
-					shopScreen.inventoryButtons[0],
-					shopScreen.inventoryButtons[shopScreen.inventory.Count - 2]);
+					shopScreen.inventoryButtons[shopScreen.inventory.Count - 2],
+					shopScreen.inventoryButtons[0]);
 			}
 		}
 	}
