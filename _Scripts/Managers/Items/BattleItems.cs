@@ -30,7 +30,7 @@ public class BattleItems : MonoBehaviour {
 		// Deactivate PauseMessage
 		PauseMessage.S.gameObject.SetActive (false);
 
-		BattlePlayerActions.S.ButtonsInteractable (false, false, false, false, false, false, false, false, true, true);
+		BattlePlayerActions.S.ButtonsInteractable (false, false, false, false, false, false, false, false, false, false, true, true);
 
 		// Set a Player Button as Selected GameObject
 		Utilities.S.SetSelectedGO(BattlePlayerActions.S.playerButtonGO[_.PlayerNdx()].gameObject);
@@ -50,13 +50,17 @@ public class BattleItems : MonoBehaviour {
 
 		// If multiple targets
 		if (!item.multipleTargets) {
-			_.battleMode = eBattleMode.canGoBackToFightButton;
+			_.mode = eBattleMode.canGoBackToFightButton;
 		} else {
-			_.battleMode = eBattleMode.canGoBackToFightButtonMultipleTargets;
+			_.mode = eBattleMode.canGoBackToFightButtonMultipleTargets;
 			BattleUI.S.TargetAllPartyMembers();
 		}
 	}
 
+	////////////////////////////////////////////////////////////////////////////////////////
+	// Heal party members
+	////////////////////////////////////////////////////////////////////////////////////////
+	
 	public void Heal(int ndx, Item item, int min, int max) {
 		// Get amount and max amount to heal
 		amountToHeal = UnityEngine.Random.Range(min, max);
@@ -181,6 +185,10 @@ public class BattleItems : MonoBehaviour {
 		}
 	}
 
+	////////////////////////////////////////////////////////////////////////////////////////
+	// Cure status ailments
+	////////////////////////////////////////////////////////////////////////////////////////
+
 	public void DetoxifyPotion(int ndx, Item item) {
 		if (_.playerDead[ndx]) {
 			ItemIsNotUseful(Party.S.stats[ndx].name + " is dead...\n...and dead folk don't need to be detoxified, dummy!");
@@ -189,7 +197,7 @@ public class BattleItems : MonoBehaviour {
 
 		if (BattleStatusEffects.S.CheckIfPoisoned(Party.S.stats[ndx].name)) {
 			// Remove poison
-			BattleStatusEffects.S.RemovePoisoned(Party.S.stats[ndx].name, ndx);
+			BattleStatusEffects.S.RemovePoisoned(Party.S.stats[ndx].name, true, ndx);
 
 			// Display Text
 			BattleDialogue.S.DisplayText("Used " + item.name + "!\n" + Party.S.stats[ndx].name + " is no longer poisoned!");
@@ -210,7 +218,7 @@ public class BattleItems : MonoBehaviour {
 
 		if (BattleStatusEffects.S.CheckIfParalyzed(Party.S.stats[ndx].name)) {
 			// Remove paralyzed
-			BattleStatusEffects.S.RemoveParalyzed(Party.S.stats[ndx].name, ndx);
+			BattleStatusEffects.S.RemoveParalyzed(Party.S.stats[ndx].name, true, ndx);
 
 			// Display Text
 			BattleDialogue.S.DisplayText("Used " + item.name + "!\n" + Party.S.stats[ndx].name + " is no longer paralyzed!");
@@ -231,7 +239,7 @@ public class BattleItems : MonoBehaviour {
 
 		if (BattleStatusEffects.S.CheckIfSleeping(Party.S.stats[ndx].name)) {
 			// Remove sleeping
-			BattleStatusEffects.S.RemoveSleeping(Party.S.stats[ndx].name, ndx);
+			BattleStatusEffects.S.RemoveSleeping(Party.S.stats[ndx].name, true, ndx);
 
 			// Display Text
 			BattleDialogue.S.DisplayText("Used " + item.name + "!\n" + Party.S.stats[ndx].name + " is no longer sleeping!");
@@ -243,6 +251,10 @@ public class BattleItems : MonoBehaviour {
 			ItemIsNotUseful(Party.S.stats[ndx].name + " is not sleeping...\n...no need to use this potion!");
 		}
 	}
+
+	////////////////////////////////////////////////////////////////////////////////////////
+	// Helper functions
+	////////////////////////////////////////////////////////////////////////////////////////
 
 	public void DisableButtonsAndRemoveListeners() {
 		BattlePlayerActions.S.ButtonsDisableAll();
@@ -273,9 +285,9 @@ public class BattleItems : MonoBehaviour {
 
         // Switch Mode
         if (BattleStatusEffects.S.HasStatusAilment(Party.S.stats[_.PlayerNdx()].name)) {
-			_.battleMode = eBattleMode.statusAilment;
+			_.mode = eBattleMode.statusAilment;
 		} else {
-			_.battleMode = eBattleMode.playerTurn;
+			_.mode = eBattleMode.playerTurn;
 		}
 
 		DisableButtonsAndRemoveListeners();
@@ -287,7 +299,7 @@ public class BattleItems : MonoBehaviour {
 		// Deactivate PauseMessage
 		PauseMessage.S.gameObject.SetActive(false);
 
-		BattlePlayerActions.S.ButtonsInteractable(false, false, false, false, false, false, false, false, true, true);
+		BattlePlayerActions.S.ButtonsInteractable(false, false, false, false, false, false, false, false, false, false, true, true);
 
 		BattleDialogue.S.DisplayText("This item ain't usable in battle... sorry!");
 
@@ -295,7 +307,7 @@ public class BattleItems : MonoBehaviour {
 		AudioManager.S.PlaySFX(eSoundName.deny);
 
 		// Switch Mode
-		_.battleMode = eBattleMode.playerTurn;
+		_.mode = eBattleMode.playerTurn;
 	}
 
 	public void CurePlayerAnimation(int ndx, bool displayFloatingScore = false, int scoreAmount = 0, bool greenOrBlue = true) {
