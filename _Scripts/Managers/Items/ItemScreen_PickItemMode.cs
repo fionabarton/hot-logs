@@ -35,8 +35,10 @@ public class ItemScreen_PickItemMode : MonoBehaviour {
 
 			itemScreen.canUpdate = true;
 
-			// Activate PlayerButtons
-			PlayerButtons.S.gameObject.SetActive(true);
+			if (RPG.S.currentScene != "Battle") {
+				// Activate PlayerButtons
+				PlayerButtons.S.gameObject.SetActive(true);
+			}
 
 			// Activate Slot Headers 
 			itemScreen.nameHeaderText.text = "Name:";
@@ -98,16 +100,16 @@ public class ItemScreen_PickItemMode : MonoBehaviour {
 		if (Inventory.S.GetItemList().Count < itemScreen.itemButtons.Count) {
 			if (Inventory.S.GetItemList().Count > 1) {
 				// Set first button navigation
-				Utilities.S.SetVerticalButtonNavigation(
+				Utilities.S.SetButtonNavigation(
 					itemScreen.itemButtons[0],
-					itemScreen.itemButtons[1],
-					itemScreen.itemButtons[Inventory.S.GetItemList().Count - 1]);
+					itemScreen.itemButtons[Inventory.S.GetItemList().Count - 1],
+					itemScreen.itemButtons[1]);
 
 				// Set last button navigation
-				Utilities.S.SetVerticalButtonNavigation(
+				Utilities.S.SetButtonNavigation(
 					itemScreen.itemButtons[Inventory.S.GetItemList().Count - 1],
-					itemScreen.itemButtons[0],
-					itemScreen.itemButtons[Inventory.S.GetItemList().Count - 2]);
+					itemScreen.itemButtons[Inventory.S.GetItemList().Count - 2],
+					itemScreen.itemButtons[0]);
 			}
 		}
 	}
