@@ -413,16 +413,16 @@ public class SpellScreen : MonoBehaviour {
 		if (Party.S.stats[playerNdx].spellNdx < spellsButtons.Count) {
 			if (Party.S.stats[playerNdx].spellNdx > 1) {
 				// Set first button navigation
-				Utilities.S.SetVerticalButtonNavigation(
+				Utilities.S.SetButtonNavigation(
 					spellsButtons[0],
-					spellsButtons[1],
-					spellsButtons[Party.S.stats[playerNdx].spellNdx - 1]);
+					spellsButtons[Party.S.stats[playerNdx].spellNdx - 1],
+					spellsButtons[1]);
 
 				// Set last button navigation
-				Utilities.S.SetVerticalButtonNavigation(
+				Utilities.S.SetButtonNavigation(
 					spellsButtons[Party.S.stats[playerNdx].spellNdx - 1],
-					spellsButtons[0],
-					spellsButtons[Party.S.stats[playerNdx].spellNdx - 2]);
+					spellsButtons[Party.S.stats[playerNdx].spellNdx - 2],
+					spellsButtons[0]);
 			}
 		}
 	}
