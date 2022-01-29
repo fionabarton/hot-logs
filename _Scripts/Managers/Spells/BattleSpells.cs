@@ -358,7 +358,7 @@ public class BattleSpells : MonoBehaviour {
 				// Add to to TotalAttackDamage (Used to Calculate AVERAGE Damage)
 				totalAttackDamage += _.attackDamage;
 
-				// Shake Enemy 1, 2, & 3's Anim
+				// Shake Enemy Anim
 				if (!_.enemyStats[i].isDead) {
 					DamageEnemyAnimation(i, true);
 				}
@@ -392,6 +392,8 @@ public class BattleSpells : MonoBehaviour {
 			case 1: BattleDialogue.S.DisplayText("Used Fire BLAST Spell!\nHit ALL Enemies for an average of " + Utilities.S.CalculateAverage(totalAttackDamage, _.enemyStats.Count) + " HP!" + "\nOne enemy has been felled!"); break;
 			case 2: BattleDialogue.S.DisplayText("Used Fire BLAST Spell!\nHit ALL Enemies for an average of " + Utilities.S.CalculateAverage(totalAttackDamage, _.enemyStats.Count) + " HP!" + "\nTwo enemies have been felled!"); break;
 			case 3: BattleDialogue.S.DisplayText("Used Fire BLAST Spell!\nHit ALL Enemies for an average of " + Utilities.S.CalculateAverage(totalAttackDamage, _.enemyStats.Count) + " HP!" + "\nThree enemies have been felled!"); break;
+			case 4: BattleDialogue.S.DisplayText("Used Fire BLAST Spell!\nHit ALL Enemies for an average of " + Utilities.S.CalculateAverage(totalAttackDamage, _.enemyStats.Count) + " HP!" + "\nFour enemies have been felled!"); break;
+			case 5: BattleDialogue.S.DisplayText("Used Fire BLAST Spell!\nHit ALL Enemies for an average of " + Utilities.S.CalculateAverage(totalAttackDamage, _.enemyStats.Count) + " HP!" + "\nFive enemies have been felled!"); break;
 		}
 
 		for (int i = 0; i < deadEnemies.Count; i++) {
