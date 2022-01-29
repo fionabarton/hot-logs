@@ -35,8 +35,8 @@ public class ArcadeTrigger : ActivateOnButtonPress {
 		//RPG.S.gameSubMenu.subMenuButtonCS[3].onClick.AddListener(Option3);
 
 		// Set button navigation
-		Utilities.S.SetVerticalButtonNavigation(RPG.S.gameSubMenu.buttonCS[0], RPG.S.gameSubMenu.buttonCS[1], RPG.S.gameSubMenu.buttonCS[1]);
-		Utilities.S.SetVerticalButtonNavigation(RPG.S.gameSubMenu.buttonCS[1], RPG.S.gameSubMenu.buttonCS[0], RPG.S.gameSubMenu.buttonCS[0]);
+		Utilities.S.SetButtonNavigation(RPG.S.gameSubMenu.buttonCS[0], RPG.S.gameSubMenu.buttonCS[1], RPG.S.gameSubMenu.buttonCS[1]);
+		Utilities.S.SetButtonNavigation(RPG.S.gameSubMenu.buttonCS[1], RPG.S.gameSubMenu.buttonCS[0], RPG.S.gameSubMenu.buttonCS[0]);
 	}
 
 	void Play() {
@@ -75,7 +75,7 @@ public class ArcadeTrigger : ActivateOnButtonPress {
 
 		// Pause Game
 		RPG.S.paused = true;
-		Player.S.mode = eRPGMode.idle;
+		Player.S.mode = ePlayerMode.idle;
 
 		// Activate Black Screen
 		ColorScreen.S.ActivateBlackScreen();

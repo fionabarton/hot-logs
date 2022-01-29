@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class InnkeeperTrigger : ActivateOnButtonPress {
-
 	protected override void Action() {
 		// Set Camera to Innkeeper gameObject
 		CamManager.S.ChangeTarget(gameObject, true);
@@ -28,8 +27,8 @@ public class InnkeeperTrigger : ActivateOnButtonPress {
 		//RPG.S.gameSubMenu.subMenuButtonCS[3].onClick.AddListener(Option3);
 
 		// Set button navigation
-		Utilities.S.SetVerticalButtonNavigation(RPG.S.gameSubMenu.buttonCS[0], RPG.S.gameSubMenu.buttonCS[1], RPG.S.gameSubMenu.buttonCS[1]);
-		Utilities.S.SetVerticalButtonNavigation(RPG.S.gameSubMenu.buttonCS[1], RPG.S.gameSubMenu.buttonCS[0], RPG.S.gameSubMenu.buttonCS[0]);
+		Utilities.S.SetButtonNavigation(RPG.S.gameSubMenu.buttonCS[0], RPG.S.gameSubMenu.buttonCS[1], RPG.S.gameSubMenu.buttonCS[1]);
+		Utilities.S.SetButtonNavigation(RPG.S.gameSubMenu.buttonCS[1], RPG.S.gameSubMenu.buttonCS[0], RPG.S.gameSubMenu.buttonCS[0]);
 	}
 
 	public void Yes() {

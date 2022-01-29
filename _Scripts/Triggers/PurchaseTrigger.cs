@@ -30,8 +30,8 @@ public class PurchaseTrigger : ActivateOnButtonPress {
         RPG.S.gameSubMenu.buttonCS[1].onClick.AddListener(No);
 
         // Set button navigation
-        Utilities.S.SetVerticalButtonNavigation(RPG.S.gameSubMenu.buttonCS[0], RPG.S.gameSubMenu.buttonCS[1], RPG.S.gameSubMenu.buttonCS[1]);
-        Utilities.S.SetVerticalButtonNavigation(RPG.S.gameSubMenu.buttonCS[1], RPG.S.gameSubMenu.buttonCS[0], RPG.S.gameSubMenu.buttonCS[0]);
+        Utilities.S.SetButtonNavigation(RPG.S.gameSubMenu.buttonCS[0], RPG.S.gameSubMenu.buttonCS[1], RPG.S.gameSubMenu.buttonCS[1]);
+        Utilities.S.SetButtonNavigation(RPG.S.gameSubMenu.buttonCS[1], RPG.S.gameSubMenu.buttonCS[0], RPG.S.gameSubMenu.buttonCS[0]);
     }
 
     void Yes() {

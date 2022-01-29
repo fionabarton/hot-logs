@@ -50,9 +50,9 @@ public class ShopkeeperTrigger : ActivateOnButtonPress {
         //RPG.S.gameSubMenu.subMenuButtonCS[3].onClick.AddListener(Option3);
 
         // Set button navigation
-        Utilities.S.SetVerticalButtonNavigation(RPG.S.gameSubMenu.buttonCS[0], RPG.S.gameSubMenu.buttonCS[1], RPG.S.gameSubMenu.buttonCS[2]);
-        Utilities.S.SetVerticalButtonNavigation(RPG.S.gameSubMenu.buttonCS[1], RPG.S.gameSubMenu.buttonCS[2], RPG.S.gameSubMenu.buttonCS[0]);
-        Utilities.S.SetVerticalButtonNavigation(RPG.S.gameSubMenu.buttonCS[2], RPG.S.gameSubMenu.buttonCS[0], RPG.S.gameSubMenu.buttonCS[1]);
+        Utilities.S.SetButtonNavigation(RPG.S.gameSubMenu.buttonCS[0], RPG.S.gameSubMenu.buttonCS[2], RPG.S.gameSubMenu.buttonCS[1]);
+        Utilities.S.SetButtonNavigation(RPG.S.gameSubMenu.buttonCS[1], RPG.S.gameSubMenu.buttonCS[0], RPG.S.gameSubMenu.buttonCS[2]);
+        Utilities.S.SetButtonNavigation(RPG.S.gameSubMenu.buttonCS[2], RPG.S.gameSubMenu.buttonCS[1], RPG.S.gameSubMenu.buttonCS[0]);
     }
 
 	void Buy() {
