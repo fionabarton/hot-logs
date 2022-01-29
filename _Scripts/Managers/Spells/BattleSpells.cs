@@ -33,7 +33,7 @@ public class BattleSpells : MonoBehaviour {
 			Utilities.S.RemoveListeners(BattlePlayerActions.S.playerButtonCS);
 
 			if (spell.type == eSpellType.healing) {
-				BattlePlayerActions.S.ButtonsInteractable(false, false, false, false, false, false, false, false, true, true);
+				BattlePlayerActions.S.ButtonsInteractable(false, false, false, false, false, false, false, false, false, false, true, true);
 
 				// Set a Player Button as Selected GameObject
 				Utilities.S.SetSelectedGO(BattlePlayerActions.S.playerButtonGO[_.PlayerNdx()].gameObject);
@@ -51,7 +51,7 @@ public class BattleSpells : MonoBehaviour {
 					BattleUI.S.TargetAllPartyMembers();
 				}
 			} else if (spell.type == eSpellType.offensive) {
-				BattlePlayerActions.S.ButtonsInteractable(false, false, false, false, false, true, true, true, false, false);
+				BattlePlayerActions.S.ButtonsInteractable(false, false, false, false, false, true, true, true, true, true, false, false);
 
 				// Set an Enemy Button as Selected GameObject
 				BattlePlayerActions.S.SetSelectedEnemyButton();
@@ -60,6 +60,8 @@ public class BattleSpells : MonoBehaviour {
 				BattlePlayerActions.S.enemyButtonCS[0].onClick.AddListener(delegate { functionToPass(0, spell); });
 				BattlePlayerActions.S.enemyButtonCS[1].onClick.AddListener(delegate { functionToPass(1, spell); });
 				BattlePlayerActions.S.enemyButtonCS[2].onClick.AddListener(delegate { functionToPass(2, spell); });
+				BattlePlayerActions.S.enemyButtonCS[3].onClick.AddListener(delegate { functionToPass(3, spell); });
+				BattlePlayerActions.S.enemyButtonCS[4].onClick.AddListener(delegate { functionToPass(4, spell); });
 
 				// If multiple targets
 				if (spell.multipleTargets) {
