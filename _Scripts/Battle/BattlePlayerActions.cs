@@ -108,7 +108,7 @@ public class BattlePlayerActions : MonoBehaviour {
 			_.playerAnimator[_.animNdx].CrossFade("Attack", 0);
 		}
 
-		BattleSpells.S.DamageEnemyAnimation(ndx, true);
+		BattleSpells.S.DamageEnemyAnimation(ndx, true, false);
 
 		// Enemy Death or Next Turn
 		if (_.enemyStats[ndx].HP < 1) {
@@ -223,7 +223,6 @@ public class BattlePlayerActions : MonoBehaviour {
 
 			// Update Delgate
 			UpdateManager.updateDelegate += SpellScreen.S.Loop;
-
 		} else {
 			// Knows no Spells, go back to Player Turn
 			BattleDialogue.S.DisplayText(Party.S.stats[_.PlayerNdx()].name + " doesn't know any spells!");

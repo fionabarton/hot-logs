@@ -8,17 +8,19 @@ public class BattleInitiative : MonoBehaviour {
 	[Header("Set in Inspector")]
 	// Enemy GameObject Positions (varies depending on amount of enemies)
 	List<Vector3> enemyPositions = new List<Vector3> {
+        // If battle starts w/ two or more enemies
 		new Vector3(4.25f, 1.25f, 0f),
-		new Vector3(5f, -0.5f, 0f),
-		new Vector3(6.25f, 0.5f, 0f),
-		new Vector3(7.5f, 1.5f, 0f),
-		new Vector3(8f, -0.75f, 0f),
+        new Vector3(4.75f, -0.5f, 0f),
+        new Vector3(6.25f, 0.5f, 0f),
+        new Vector3(7.5f, 1.5f, 0f),
+        new Vector3(7.75f, -0.75f, 0f),
+	
 		// If battle starts w/ one enemy
 		new Vector3(4.25f, 0.5f, 0f),
 		new Vector3(5.75f, 1.25f, 0f),
-		new Vector3(6.25f, -0.25f, 0f),
-		new Vector3(7.5f, 1.75f, 0f),
-		new Vector3(8f, -0.75f, 0f),
+		new Vector3(6.25f, -0.5f, 0f),
+		new Vector3(7.5f, 1.5f, 0f),
+		new Vector3(8f, -0.75f, 0f)
 	};
 
 	[Header ("Set Dynamically")]
@@ -135,19 +137,20 @@ public class BattleInitiative : MonoBehaviour {
 			ProgressBars.S.enemyHealthBarsCS[i].UpdateBar(_.enemyStats[i].HP, _.enemyStats[i].maxHP);
 		}
 
-		// Set Enemy Sprite Positions
-		if (_.enemyAmount >= 2) {
-			_.enemyGameObjectHolders[0].transform.position = enemyPositions[0];
-			_.enemyGameObjectHolders[1].transform.position = enemyPositions[1];
-			_.enemyGameObjectHolders[2].transform.position = enemyPositions[2];
-			_.enemyGameObjectHolders[3].transform.position = enemyPositions[3];
-			_.enemyGameObjectHolders[4].transform.position = enemyPositions[4];
+        // Set Enemy Sprite Positions
+        if (_.enemyAmount >= 2) {
+			for (int i = 0; i < _.enemyGameObjectHolders.Count; i++) {
+				_.enemyGameObjectHolders[i].transform.position = enemyPositions[i];
+			}
 		} else {
-			_.enemyGameObjectHolders[0].transform.position = enemyPositions[5];
-			_.enemyGameObjectHolders[1].transform.position = enemyPositions[6];
-			_.enemyGameObjectHolders[2].transform.position = enemyPositions[7];
-			_.enemyGameObjectHolders[3].transform.position = enemyPositions[8];
-			_.enemyGameObjectHolders[4].transform.position = enemyPositions[9];
+			for (int i = 0; i < _.enemyGameObjectHolders.Count; i++) {
+				_.enemyGameObjectHolders[i].transform.position = enemyPositions[i+5];
+			}
+		}
+
+		// Set button positions directly over their respective enemy sprite
+		for (int i = 0; i < _.enemyGameObjectHolders.Count; i++) {
+			Utilities.S.SetUIObjectPosition(_.enemyGameObjectHolders[i], BattlePlayerActions.S.enemyButtonGO[i]);
 		}
 
 		// Set Turn Order

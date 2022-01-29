@@ -54,7 +54,7 @@ public class BattleEnemyActions : MonoBehaviour {
 			BattleQTE.S.Initialize();
 
 			// Set battleMode to QTE
-			_.battleMode = eBattleMode.qte;
+			_.mode = eBattleMode.qte;
 		}	
 	}
 
@@ -380,6 +380,10 @@ public class BattleEnemyActions : MonoBehaviour {
 			CallForBackupHelper(1);
 		} else if (_.enemyStats[2].isDead) {
 			CallForBackupHelper(2);
+		} else if (_.enemyStats[3].isDead) {
+			CallForBackupHelper(3);
+		} else if (_.enemyStats[4].isDead) {
+			CallForBackupHelper(4);
 		} else {
 			BattleDialogue.S.DisplayText(_.enemyStats[_.EnemyNdx()].name + " called for backup...\n...but no one came!");
 
@@ -449,6 +453,16 @@ public class BattleEnemyActions : MonoBehaviour {
 	}
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Index = 10
+	// Poison
+	public void Poison(int ndx) {
+		// Poison party member
+		BattleStatusEffects.S.AddPoisoned(Party.S.stats[ndx].name, ndx);
+
+		// Play attack animations, SFX, and spawn objects
+		PlaySingleAttackAnimsAndSFX(ndx, true, false);
+	}
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// Index = 11
 	// Paralyze
 	public void Paralyze(int ndx) {
 		// Paralyze party member
@@ -458,21 +472,11 @@ public class BattleEnemyActions : MonoBehaviour {
 		PlaySingleAttackAnimsAndSFX(ndx, true, false);
     }
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// Index = 11
+	// Index = 12
 	// Sleep
 	public void Sleep(int ndx) {
 		// Put party member to sleep
 		BattleStatusEffects.S.AddSleeping(Party.S.stats[ndx].name, ndx);
-
-		// Play attack animations, SFX, and spawn objects
-		PlaySingleAttackAnimsAndSFX(ndx, true, false);
-	}
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// Index = 12
-	// Poison
-	public void Poison(int ndx) {
-		// Poison party member
-		BattleStatusEffects.S.AddPoisoned(Party.S.stats[ndx].name, ndx);
 
 		// Play attack animations, SFX, and spawn objects
 		PlaySingleAttackAnimsAndSFX(ndx, true, false);
@@ -485,15 +489,14 @@ public class BattleEnemyActions : MonoBehaviour {
 			_.enemyAnimator[_.animNdx].CrossFade("Attack", 0);
 		}
 
-		// If player doesn't have a status ailment...
-		if (!BattleStatusEffects.S.HasStatusAilment(Party.S.stats[playerToAttack].name)) {
-			// Animation: Player Damage
-			_.playerAnimator[playerToAttack].CrossFade("Damage", 0);
+        // If player doesn't have a status ailment...
+        if (!BattleStatusEffects.S.HasStatusAilment(Party.S.stats[playerToAttack].name)) {
+            // Animation: Player Damage
+            _.playerAnimator[playerToAttack].CrossFade("Damage", 0);
 		}
 
 		// Audio: Damage
-		int randomInt = Random.Range(2, 4);
-		AudioManager.S.PlaySFX(randomInt);
+		AudioManager.S.PlayRandomDamageSFX();
 
 		// Animation: Shake Screen
 		Battle.S.battleUIAnim.CrossFade("BattleUI_Shake", 0);
@@ -507,5 +510,4 @@ public class BattleEnemyActions : MonoBehaviour {
 			RPG.S.InstantiateFloatingScore(_.playerSprite[playerToAttack], _.attackDamage, Color.red);
 		}
 	}
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////
 }
