@@ -146,16 +146,16 @@ public class WarpManager : MonoBehaviour {
 		//if (visitedLocations.Count < buttons.Count) {
 		if (visitedLocations.Count > 1) {
 			// Set first button navigation
-			Utilities.S.SetVerticalButtonNavigation(
+			Utilities.S.SetButtonNavigation(
 				buttons[0],
-				buttons[1],
-				buttons[visitedLocations.Count - 1]);
+				buttons[visitedLocations.Count - 1],
+				buttons[1]);
 
 			// Set last button navigation
-			Utilities.S.SetVerticalButtonNavigation(
+			Utilities.S.SetButtonNavigation(
 				buttons[visitedLocations.Count - 1],
-				buttons[0],
-				buttons[visitedLocations.Count - 2]);
+				buttons[visitedLocations.Count - 2],
+				buttons[0]);
 			//}
 		}
 	}
