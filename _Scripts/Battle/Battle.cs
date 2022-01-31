@@ -369,9 +369,9 @@ public class Battle : MonoBehaviour {
 		// Clear Dropped Items
 		droppedItems.Clear();
 
-		// Reset next turn move indexes
+		// Reset next turn move indexes & deactivate help bubbles
 		for(int i = 0; i < nextTurnMoveNdx.Count; i++) {
-			nextTurnMoveNdx[i] = 999;
+			StopCallingForHelp(i);
 		}
 
 		// Reset BattlePlayerActions.S.buttonsCS text color
@@ -566,5 +566,14 @@ public class Battle : MonoBehaviour {
 			return true;
 		}
 		return false;
+	}
+
+	// Reset next turn move index & deactivate help bubble
+	public void StopCallingForHelp(int ndx) {
+		// Reset next turn move index
+		nextTurnMoveNdx[ndx] = 999;
+
+		// Deactivate Enemy "Help" Word Bubble
+		enemyHelpBubbles[ndx].SetActive(false);
 	}
 }

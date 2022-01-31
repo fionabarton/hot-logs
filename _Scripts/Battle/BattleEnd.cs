@@ -27,17 +27,14 @@ public class BattleEnd : MonoBehaviour {
 		// Set Selected GameObject (Fight Button)
 		_.enemyStats[ndx].isDead = true;
 
-		// Reset this enemy's nextTurnMoveNdx
-		_.nextTurnMoveNdx[ndx] = 999;
+		// Reset next turn move index & deactivate help bubble
+		_.StopCallingForHelp(ndx);
 
 		// Remove enemy from turn order
 		_.turnOrder.Remove(_.enemyStats[ndx].name);
 
 		// Remove all status ailments 
 		BattleStatusEffects.S.RemoveAllStatusAilments(_.enemyStats[ndx].name, false, ndx);
-
-		// Deactivate Enemy "Help" Word Bubble
-		_.enemyHelpBubbles[ndx].SetActive(false);
 
 		// Deactivate '...' Word Bubble
 		_.dotDotDotWordBubble.SetActive(false);
@@ -76,10 +73,10 @@ public class BattleEnd : MonoBehaviour {
 				// DropItem or AddExpAndGold
 				if (_.droppedItems.Count >= 1) {
 					// Switch Mode
-					_.battleMode = eBattleMode.dropItem;
+					_.mode = eBattleMode.dropItem;
 				} else {
                     // Switch Mode
-                    _.battleMode = eBattleMode.addExpAndGold;
+                    _.mode = eBattleMode.addExpAndGold;
 				}
 			} else {
 				_.NextTurn();
@@ -130,10 +127,10 @@ public class BattleEnd : MonoBehaviour {
 			// DropItem or AddExpAndGold
 			if (_.droppedItems.Count >= 1) {
 				// Switch Mode
-				_.battleMode = eBattleMode.dropItem;
+				_.mode = eBattleMode.dropItem;
 			} else {
 				// Switch Mode
-				_.battleMode = eBattleMode.addExpAndGoldNoDrops;
+				_.mode = eBattleMode.addExpAndGoldNoDrops;
 			}
 		} else { _.NextTurn(); }
 	}
@@ -166,7 +163,7 @@ public class BattleEnd : MonoBehaviour {
 			BattleDialogue.S.DisplayText(_.enemyStats[0].name + " dropped a ton of junk.\nCheck your inventory later to find out what!");
 		}
 		// Switch Mode
-		_.battleMode = eBattleMode.addExpAndGold;
+		_.mode = eBattleMode.addExpAndGold;
 	}
 
 	public void PlayerDeath(int ndx, bool displayText = true) {
@@ -194,7 +191,7 @@ public class BattleEnd : MonoBehaviour {
 
 		// Add PartyDeath or NextTurn 
 		// Switch Mode
-		if (_.partyQty < 0) { _.battleMode = eBattleMode.partyDeath; } else { _.NextTurn(); }
+		if (_.partyQty < 0) { _.mode = eBattleMode.partyDeath; } else { _.NextTurn(); }
 	}
 	public void PartyDeath() {
 		BattleUI.S.turnCursor.SetActive(false);
@@ -261,7 +258,7 @@ public class BattleEnd : MonoBehaviour {
 	}
 	void LevelUpDelay() {
 		// Switch Mode
-		_.battleMode = eBattleMode.levelUp;
+		_.mode = eBattleMode.levelUp;
 	}
 
 	public List<int> membersToLevelUp = new List<int>();
@@ -296,7 +293,7 @@ public class BattleEnd : MonoBehaviour {
 
 			// If there are any more members that have levelled up...
 			if (membersToLevelUp.Count > 0) {
-				_.battleMode = eBattleMode.multiLvlUp;
+				_.mode = eBattleMode.multiLvlUp;
             } else {
 				ReturnToWorldDelay();
 			}
@@ -328,10 +325,10 @@ public class BattleEnd : MonoBehaviour {
 
 	public void ReturnToWorldDelay() {
 		// Switch Mode
-		_.battleMode = eBattleMode.returnToWorld;
+		_.mode = eBattleMode.returnToWorld;
 	}
 	public void ReturnToWorld() {
-		_.battleMode = eBattleMode.actionButtons;
+		_.mode = eBattleMode.actionButtons;
 
 		BattleDialogue.S.dialogueNdx = 99;
 

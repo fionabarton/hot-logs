@@ -239,6 +239,9 @@ public class BattleStatusEffects : MonoBehaviour {
 				// Activate paralyzed icon
 				enemyParalyzedIcons[ndx].SetActive(true);
 
+				// Reset next turn move index & deactivate help bubble
+				_.StopCallingForHelp(ndx);
+
 				BattleDialogue.S.DisplayText(Party.S.stats[_.PlayerNdx()].name + " has temporarily paralyzed " + _.enemyStats[ndx].name + "...\n...not nice!");
 			} else {
 				// Anim
@@ -319,6 +322,9 @@ public class BattleStatusEffects : MonoBehaviour {
 			if (_.PlayerNdx() != -1) {
 				// Activate sleeping icon
 				enemySleepingIcons[ndx].SetActive(true);
+
+				// Reset next turn move index & deactivate help bubble
+				_.StopCallingForHelp(ndx);
 
 				BattleDialogue.S.DisplayText(Party.S.stats[_.PlayerNdx()].name + " has temporarily put " + _.enemyStats[ndx].name + " to sleep...\n...not nice!");
 			} else {
