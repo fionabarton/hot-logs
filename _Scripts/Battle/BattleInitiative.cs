@@ -14,13 +14,15 @@ public class BattleInitiative : MonoBehaviour {
         new Vector3(6.25f, 0.5f, 0f),
         new Vector3(7.5f, 1.5f, 0f),
         new Vector3(7.75f, -0.75f, 0f),
-	
+		// Order in layers: 2, 4, 3, 1, 5
+
 		// If battle starts w/ one enemy
 		new Vector3(4.25f, 0.5f, 0f),
 		new Vector3(5.75f, 1.25f, 0f),
 		new Vector3(6.25f, -0.5f, 0f),
 		new Vector3(7.5f, 1.5f, 0f),
 		new Vector3(8f, -0.75f, 0f)
+		// Order in layers: 3, 2, 4, 1, 5
 	};
 
 	[Header ("Set Dynamically")]
@@ -99,7 +101,7 @@ public class BattleInitiative : MonoBehaviour {
 		}
 
 		// Set Enemy Amount (for testing)
-		_.enemyAmount = 5;
+		//_.enemyAmount = 4;
 
 		// Deactivate all enemies
 		for (int i = 0; i < _.enemySprite.Count; i++) {
@@ -138,15 +140,24 @@ public class BattleInitiative : MonoBehaviour {
 		}
 
         // Set Enemy Sprite Positions
-        if (_.enemyAmount >= 2) {
-			for (int i = 0; i < _.enemyGameObjectHolders.Count; i++) {
-				_.enemyGameObjectHolders[i].transform.position = enemyPositions[i];
-			}
-		} else {
-			for (int i = 0; i < _.enemyGameObjectHolders.Count; i++) {
-				_.enemyGameObjectHolders[i].transform.position = enemyPositions[i+5];
-			}
-		}
+        switch (_.enemyAmount) {
+			case 1:
+				for (int i = 0; i < _.enemyGameObjectHolders.Count; i++) {
+					_.enemyGameObjectHolders[i].transform.position = enemyPositions[i + 5];
+				}
+				break;
+			case 2:
+				for (int i = 0; i < _.enemyGameObjectHolders.Count; i++) {
+					_.enemyGameObjectHolders[i].transform.position = enemyPositions[i];
+				}
+				break;
+			default:
+				if(Random.value >= 0.5f) {
+					goto case 1;
+                } else {
+					goto case 2;
+				}
+        }
 
 		// Set button positions directly over their respective enemy sprite
 		for (int i = 0; i < _.enemyGameObjectHolders.Count; i++) {
