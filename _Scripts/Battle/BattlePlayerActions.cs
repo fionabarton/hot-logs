@@ -218,6 +218,10 @@ public class BattlePlayerActions : MonoBehaviour {
 
 			PauseMessage.S.gameObject.SetActive(true);
 
+			// Activate PlayerButtons
+			PlayerButtons.S.gameObject.SetActive(true);
+			PlayerButtons.S.rectTrans.anchoredPosition = new Vector2(0, -25);
+
 			// Open Spells Screen
 			SpellScreen.S.LoadSpells(_.PlayerNdx());
 
@@ -249,6 +253,10 @@ public class BattlePlayerActions : MonoBehaviour {
 			_.mode = eBattleMode.itemOrSpellMenu;
 
 			PauseMessage.S.gameObject.SetActive(true);
+
+			// Activate PlayerButtons
+			PlayerButtons.S.gameObject.SetActive(true);
+			PlayerButtons.S.rectTrans.anchoredPosition = new Vector2(0, -25);
 
 			// Open Item Screen
 			ItemScreen.S.Activate();
