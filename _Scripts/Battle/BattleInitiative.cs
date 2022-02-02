@@ -14,7 +14,6 @@ public class BattleInitiative : MonoBehaviour {
         new Vector3(6.25f, 0.5f, 0f),
         new Vector3(7.5f, 1.5f, 0f),
         new Vector3(7.75f, -0.75f, 0f),
-		// Order in layers: 2, 4, 3, 1, 5
 
 		// If battle starts w/ one enemy
 		new Vector3(4.25f, 0.5f, 0f),
@@ -22,7 +21,14 @@ public class BattleInitiative : MonoBehaviour {
 		new Vector3(6.25f, -0.5f, 0f),
 		new Vector3(7.5f, 1.5f, 0f),
 		new Vector3(8f, -0.75f, 0f)
-		// Order in layers: 3, 2, 4, 1, 5
+	};
+
+	List<int> enemySpriteSortingOrders = new List<int> {
+		// If battle starts w/ two or more enemies
+		2, 4, 3, 1, 5,
+
+		// If battle starts w/ one enemy
+		3, 2, 4, 1, 5
 	};
 
 	[Header ("Set Dynamically")]
@@ -139,23 +145,26 @@ public class BattleInitiative : MonoBehaviour {
 			ProgressBars.S.enemyHealthBarsCS[i].UpdateBar(_.enemyStats[i].HP, _.enemyStats[i].maxHP);
 		}
 
-        // Set Enemy Sprite Positions
+        // Set enemy sprite positions and sorting order
         switch (_.enemyAmount) {
 			case 1:
 				for (int i = 0; i < _.enemyGameObjectHolders.Count; i++) {
 					_.enemyGameObjectHolders[i].transform.position = enemyPositions[i + 5];
+					_.enemySprite[i].sortingOrder = enemySpriteSortingOrders[i + 5];
 				}
 				break;
 			case 2:
 				for (int i = 0; i < _.enemyGameObjectHolders.Count; i++) {
 					_.enemyGameObjectHolders[i].transform.position = enemyPositions[i];
+					_.enemySprite[i].sortingOrder = enemySpriteSortingOrders[i];
 				}
 				break;
 			default:
 				if(Random.value >= 0.5f) {
 					goto case 1;
                 } else {
-					goto case 2;
+					//goto case 2;
+					goto case 1;
 				}
         }
 
