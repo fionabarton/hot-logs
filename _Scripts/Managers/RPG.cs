@@ -21,7 +21,6 @@ public class RPG : MonoBehaviour {
 	public SubMenu				pauseSubMenu;
 
 	[Header("Set Dynamically")]
-	// Singleton
 	private static RPG _S;
 	public static RPG S { get { return _S; } set { _S = value; } }
 
@@ -63,13 +62,11 @@ public class RPG : MonoBehaviour {
 		//if (Input.GetKeyDown(KeyCode.Z)) {
 		//	Debug.Log("");
 		//}
-
-		// Play clip
-		if (Input.GetKeyDown(KeyCode.V)) {
-			ColorScreen.S.PlayClip("Swell", 666);
-		} else if (Input.GetKeyDown(KeyCode.B)) {
-			ColorScreen.S.PlayClip("Flicker", 69);
-		}
+		//if (Input.GetKeyDown(KeyCode.V)) {
+		//	ColorScreen.S.PlayClip("Swell", 666);
+		//} else if (Input.GetKeyDown(KeyCode.B)) {
+		//	ColorScreen.S.PlayClip("Flicker", 69);
+		//}
 
 		// Pause Screen input
 		if (!ItemScreen.S.gameObject.activeInHierarchy &&
@@ -195,40 +192,40 @@ public class RPG : MonoBehaviour {
 				break;
 		}
 
-		////////////// Music //////////////
-		switch (currentScene){
-			case "Title_Screen":
-				AudioManager.S.PlaySong(eSongName.zelda);
-				break;
-			case "Town_1":
-			case "Area_1":
-				if (!RainSpawner.S.isRaining){
-					AudioManager.S.PlaySong(eSongName.nineteenForty);
-				}else{
-					AudioManager.S.PlaySong(eSongName.never);
-				}
-				break;
-			case "Overworld_1":
-			case "Area_2":
-				AudioManager.S.PlaySong(eSongName.things);
-				break;
-			case "Battle":
-				AudioManager.S.PlaySong(eSongName.ninja);
-				break;
-			case "Shop_1":
-			case "Motel_1":
-			case "Area_3":
-				AudioManager.S.PlaySong(eSongName.soap);
-				break;
-			case "Area_5":
-				AudioManager.S.PlaySong(eSongName.gMinor);
-				break;
-			default:
-				break;
-		}
+        ////////////// Music //////////////
+        switch (currentScene) {
+            case "Title_Screen":
+                AudioManager.S.PlaySong(eSongName.zelda);
+                break;
+            case "Town_1":
+            case "Area_1":
+                if (!RainSpawner.S.isRaining) {
+                    AudioManager.S.PlaySong(eSongName.nineteenForty);
+                } else {
+                    AudioManager.S.PlaySong(eSongName.never);
+                }
+                break;
+            case "Overworld_1":
+            case "Area_2":
+                AudioManager.S.PlaySong(eSongName.things);
+                break;
+            case "Battle":
+                AudioManager.S.PlaySong(eSongName.ninja);
+                break;
+            case "Shop_1":
+            case "Motel_1":
+            case "Area_3":
+                AudioManager.S.PlaySong(eSongName.soap);
+                break;
+            case "Area_5":
+                AudioManager.S.PlaySong(eSongName.gMinor);
+                break;
+            default:
+                break;
+        }
 
-		// Set up Player, Camera, etc. for Scene 
-		switch (currentScene){
+        // Set up Player, Camera, etc. for Scene 
+        switch (currentScene){
 			// Menus
 			case "Title_Screen":
 			// Battle
@@ -335,7 +332,7 @@ public class RPG : MonoBehaviour {
 
 		// Freeze Player
 		Player.S.canMove = false;
-		Player.S.mode = eRPGMode.idle;
+		Player.S.mode = ePlayerMode.idle;
 
 		// Freeze all NPC & Enemies
 		paused = true;
@@ -444,7 +441,7 @@ public class RPG : MonoBehaviour {
 	}
 
 	// ************ Add/Subtract ENEMY MP ************ \\
-	public void InstantiateFloatingScore(GameObject gameObject, int amount, Color color) {
+	public void InstantiateFloatingScore(GameObject gameObject, string message, Color color) {
 		// Get and position Floating Score game object
 		GameObject floatingScore = ObjectPool.S.GetPooledObject("FloatingScore");
 		ObjectPool.S.PosAndEnableObj(floatingScore, gameObject);
@@ -455,7 +452,7 @@ public class RPG : MonoBehaviour {
 			Text[] texts = floatingScore.GetComponentsInChildren<Text>();
 			for(int i = 0; i < texts.Length; i++) {
 				// Display text
-				texts[i].text = amount.ToString();
+				texts[i].text = message;
 				// Set color of text in center
 				if(i == texts.Length - 1) {
 					texts[i].color = color;
