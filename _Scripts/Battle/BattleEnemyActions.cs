@@ -166,7 +166,7 @@ public class BattleEnemyActions : MonoBehaviour {
 		ObjectPool.S.PosAndEnableObj(poof, _.enemySprite[ndx].gameObject);
 
 		// Display Floating Score
-		RPG.S.InstantiateFloatingScore(_.enemySprite[ndx].gameObject, amountToHeal, Color.green);
+		RPG.S.InstantiateFloatingScore(_.enemySprite[ndx].gameObject, amountToHeal.ToString(), Color.green);
 
 		// Audio: Buff
 		AudioManager.S.PlaySFX(eSoundName.buff1);
@@ -330,7 +330,7 @@ public class BattleEnemyActions : MonoBehaviour {
 					ObjectPool.S.PosAndEnableObj (explosion, _.playerSprite[i]);
 
 					// Display Floating Score
-					RPG.S.InstantiateFloatingScore(_.playerSprite[i], _.attackDamage, Color.red);
+					RPG.S.InstantiateFloatingScore(_.playerSprite[i], _.attackDamage.ToString(), Color.red);
 				}
 
 				// If DEFENDING, Reset AttackDamage for next Enemy
@@ -507,7 +507,7 @@ public class BattleEnemyActions : MonoBehaviour {
 
 		// Display Floating Score
 		if (displayFloatingScore) {
-			RPG.S.InstantiateFloatingScore(_.playerSprite[playerToAttack], _.attackDamage, Color.red);
+			RPG.S.InstantiateFloatingScore(_.playerSprite[playerToAttack], _.attackDamage.ToString(), Color.red);
 		}
 	}
 }

@@ -8,7 +8,6 @@ public class BattleQTE : MonoBehaviour {
 	public ProgressBar healthBar;
 
 	[Header("Set Dynamically")]
-	// Singleton
 	private static BattleQTE _S;
 	public static BattleQTE S { get { return _S; } set { _S = value; } }
 
@@ -56,7 +55,6 @@ public class BattleQTE : MonoBehaviour {
 	private Battle _;
 
 	void Awake() {
-		// Singleton
 		S = this;
 	}
 
@@ -67,10 +65,10 @@ public class BattleQTE : MonoBehaviour {
 	// Start QTE: switch mode & provide instructions to user
 	public void StartQTE() {
 		// Switch mode
-		_.battleMode = eBattleMode.qteInitialize;
+		_.mode = eBattleMode.qteInitialize;
 
 		// Reset points
-		_.bonusDamage = 0;
+		_.qteBonusDamage = 0;
 
         // Select QTE Mode/Type
         //qteType = Random.Range(0, 4);
@@ -210,7 +208,7 @@ public class BattleQTE : MonoBehaviour {
 	}
 
 	public void Loop() {
-        switch (_.battleMode) {
+        switch (_.mode) {
 			case eBattleMode.qteInitialize:
 				if (Input.GetButtonDown("SNES B Button")) {
 					Initialize();
@@ -218,7 +216,7 @@ public class BattleQTE : MonoBehaviour {
 					// Animation: QTE CHARGE
 					_.playerAnimator[_.animNdx].CrossFade("QTE_Charge", 0);
 
-					_.battleMode = eBattleMode.qte;
+					_.mode = eBattleMode.qte;
 				}
 				break;
 			case eBattleMode.qte:
@@ -276,7 +274,7 @@ public class BattleQTE : MonoBehaviour {
 
 	// Update timer/health bar
 	public void FixedLoop() {
-		switch (_.battleMode) {
+		switch (_.mode) {
 			case eBattleMode.qte:
 				switch (qteType) {
 					case 0: /////////// MASH ///////////
@@ -424,7 +422,7 @@ public class BattleQTE : MonoBehaviour {
 			// Calculate bonus damage
 			switch (qteType) {
 				case 0: /////////// MASH ///////////
-					_.bonusDamage = (int)1.5f * Party.S.stats[_.PlayerNdx()].LVL;
+					_.qteBonusDamage = (int)1.5f * Party.S.stats[_.PlayerNdx()].LVL;
 					break;
 				case 1: /////////// HOLD ///////////
 				case 3: /////////// STOP ///////////
@@ -433,27 +431,27 @@ public class BattleQTE : MonoBehaviour {
 
 					if (val >= 90 && val <= 100) {
 						if(bonus < 3) { 
-							_.bonusDamage = 3;
+							_.qteBonusDamage = 3;
                         } else {
-							_.bonusDamage = bonus;
+							_.qteBonusDamage = bonus;
 						}
 					} else if (val >= 75 && val <= 90) {
 						if (bonus < 2) {
-							_.bonusDamage = 2;
+							_.qteBonusDamage = 2;
 						} else {
-							_.bonusDamage = bonus;
+							_.qteBonusDamage = bonus;
 						}
 
 					} else if (val >= 50 && val <= 75) {
 						if (bonus < 1) {
-							_.bonusDamage = 1;
+							_.qteBonusDamage = 1;
 						} else {
-							_.bonusDamage = bonus;
+							_.qteBonusDamage = bonus;
 						}
 					} 
 					break;
 				case 2: /////////// SEQUENCE ///////////	
-					_.bonusDamage = (int)1.5f * Party.S.stats[_.PlayerNdx()].LVL;
+					_.qteBonusDamage = (int)1.5f * Party.S.stats[_.PlayerNdx()].LVL;
 					break;
 				case 4: /////////// BLOCK ///////////	
 					// Calculate HP bonus 
@@ -467,7 +465,7 @@ public class BattleQTE : MonoBehaviour {
 					ObjectPool.S.PosAndEnableObj(poof, _.playerSprite[blockerNdx]);
 
 					// Display Floating Score
-					RPG.S.InstantiateFloatingScore(_.playerSprite[blockerNdx], amountToHeal, Color.green);
+					RPG.S.InstantiateFloatingScore(_.playerSprite[blockerNdx], amountToHeal.ToString(), Color.green);
 
 					// Audio: Confirm
 					AudioManager.S.PlaySFX(eSoundName.confirm);
