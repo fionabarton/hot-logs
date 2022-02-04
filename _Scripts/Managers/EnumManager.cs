@@ -5,7 +5,7 @@ public enum eBattleMode {
     actionButtons, playerTurn, canGoBackToFightButton, canGoBackToFightButtonMultipleTargets,
     qteInitialize, qte, itemOrSpellMenu, triedToRunFromBoss,
     enemyTurn, enemyAction,
-    dropItem, addExpAndGold, addExpAndGoldNoDrops, partyDeath, levelUp, multiLvlUp, returnToWorld, noInputPermitted,
+    dropItem, addExpAndGold, addExpAndGoldNoDrops, partyDeath, levelUp, returnToWorld, noInputPermitted,
     statusAilment
 };
 
