@@ -318,9 +318,9 @@ public class BattleItems : MonoBehaviour {
 		// Display Floating Score
 		if (displayFloatingScore) {
             if (greenOrBlue) {
-				RPG.S.InstantiateFloatingScore(_.playerSprite[ndx], scoreAmount, Color.green);
+				RPG.S.InstantiateFloatingScore(_.playerSprite[ndx], scoreAmount.ToString(), Color.green);
 			} else {
-				RPG.S.InstantiateFloatingScore(_.playerSprite[ndx], scoreAmount, new Color32(39, 201, 255, 255));
+				RPG.S.InstantiateFloatingScore(_.playerSprite[ndx], scoreAmount.ToString(), new Color32(39, 201, 255, 255));
 			}
 		}
 
