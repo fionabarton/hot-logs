@@ -250,6 +250,13 @@ public class BattleEnd : MonoBehaviour {
 		// LevelUp or ReturnToWorldDelay
 		Party.S.CheckForLevelUp();
 		if (Party.S.stats[0].hasLeveledUp || Party.S.stats[1].hasLeveledUp || Party.S.stats[2].hasLeveledUp) {
+			// Get all members that have levelled up
+			for (int i = 0; i < Party.S.stats.Count; i++) {
+				if (Party.S.stats[i].hasLeveledUp) {
+					membersToLevelUp.Add(i);
+				}
+			}
+
 			LevelUpDelay();
 		} else {
 			// Return to Overworld
@@ -262,63 +269,41 @@ public class BattleEnd : MonoBehaviour {
 	}
 
 	public List<int> membersToLevelUp = new List<int>();
-	public void LevelUp() {
-		// Get all members that have levelled up
-		for(int i = 0; i < Party.S.stats.Count; i++) {
-			if (Party.S.stats[i].hasLeveledUp) {
-				membersToLevelUp.Add(i);
-			}
-		}
+	public void LevelUp(int ndx) {
 
-		// If any amount of members have levelled up...
-		if(membersToLevelUp.Count > 0) {
-			// Audio: Buff 1
-			AudioManager.S.PlaySFX(eSoundName.buff1);
 
-			// Display text and document that the member has levelled up 
-			int ndx = membersToLevelUp[0];
 
-			BattleDialogue.S.DisplayText(
-			Party.S.stats[ndx].name + " has reached level " + Party.S.stats[ndx].LVL + "!" +
-				"\nHP +" + Party.S.GetHPUpgrade(ndx) +
-				", MP +" + Party.S.GetMPUpgrade(ndx) + "," +
-				"\nSTR +" + Party.S.GetSTRUpgrade(ndx) +
-				", DEF +" + Party.S.GetDEFUpgrade(ndx) +
-				", WIS +" + Party.S.GetWISUpgrade(ndx) +
-				", AGI +" + Party.S.GetAGIUpgrade(ndx));
-			Party.S.stats[ndx].hasLeveledUp = false;
+		LevelUpMessage.S.Initialize(ndx);
 
-			// Remove member index from list
-			membersToLevelUp.RemoveAt(0);
 
-			// If there are any more members that have levelled up...
-			if (membersToLevelUp.Count > 0) {
-				_.mode = eBattleMode.multiLvlUp;
-            } else {
-				ReturnToWorldDelay();
-			}
-		} 
-	}
-	public void MultiLvlUp(int ndx) {
+
 		// Audio: Buff 1
 		AudioManager.S.PlaySFX(eSoundName.buff1);
 
-		// Display Text
 		BattleDialogue.S.DisplayText(
-			Party.S.stats[ndx].name + " has reached level " + Party.S.stats[ndx].LVL + "!" +
-			"\nHP +" + Party.S.GetHPUpgrade(ndx) + 
-			", MP +" + Party.S.GetMPUpgrade(ndx) + "," + 
-			"\nSTR +" + Party.S.GetSTRUpgrade(ndx) + 
-			", DEF +" + Party.S.GetDEFUpgrade(ndx) + 
-			", WIS +" + Party.S.GetWISUpgrade(ndx) + 
+		Party.S.stats[ndx].name + " has reached level " + Party.S.stats[ndx].LVL + "!" +
+			"\nHP +" + Party.S.GetHPUpgrade(ndx) +
+			", MP +" + Party.S.GetMPUpgrade(ndx) + "," +
+			"\nSTR +" + Party.S.GetSTRUpgrade(ndx) +
+			", DEF +" + Party.S.GetDEFUpgrade(ndx) +
+			", WIS +" + Party.S.GetWISUpgrade(ndx) +
 			", AGI +" + Party.S.GetAGIUpgrade(ndx));
 		Party.S.stats[ndx].hasLeveledUp = false;
+
+		RPG.S.InstantiateFloatingScore(_.playerSprite[ndx], "Lvl\nUp!", Color.green);
 
 		// Remove member index from list
 		membersToLevelUp.RemoveAt(0);
 
-		// If list doesn't contain any more members, return to overworld
+		// If there are any more members that have levelled up...
 		if (membersToLevelUp.Count <= 0) {
+
+
+
+			LevelUpMessage.S.Initialize(ndx);
+
+
+
 			ReturnToWorldDelay();
 		}
 	}
@@ -328,6 +313,8 @@ public class BattleEnd : MonoBehaviour {
 		_.mode = eBattleMode.returnToWorld;
 	}
 	public void ReturnToWorld() {
+		LevelUpMessage.S.levelUpMessageGO.SetActive(false);
+
 		_.mode = eBattleMode.actionButtons;
 
 		BattleDialogue.S.dialogueNdx = 99;

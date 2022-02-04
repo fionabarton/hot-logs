@@ -229,12 +229,7 @@ public class Battle : MonoBehaviour {
 						break;
 					case eBattleMode.levelUp:
 						if (Input.GetButtonDown("SNES B Button")) {
-							BattleEnd.S.LevelUp();
-						}
-						break;
-					case eBattleMode.multiLvlUp:
-						if (Input.GetButtonDown("SNES B Button")) {
-							BattleEnd.S.MultiLvlUp(BattleEnd.S.membersToLevelUp[0]);
+							BattleEnd.S.LevelUp(BattleEnd.S.membersToLevelUp[0]);
 						}
 						break;
 					case eBattleMode.returnToWorld:
