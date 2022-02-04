@@ -612,7 +612,7 @@ public class BattleSpells : MonoBehaviour {
 
 		// Display Floating Score
 		if (displayFloatingScore) {
-			RPG.S.InstantiateFloatingScore(_.playerSprite[ndx], scoreAmount, Color.green);
+			RPG.S.InstantiateFloatingScore(_.playerSprite[ndx], scoreAmount.ToString(), Color.green);
 		}
 
 		// Set anim
@@ -626,7 +626,7 @@ public class BattleSpells : MonoBehaviour {
 
 		// Display Floating Score
 		if (displayFloatingScore) {
-			RPG.S.InstantiateFloatingScore(_.enemySprite[ndx].gameObject, _.attackDamage, Color.red);
+			RPG.S.InstantiateFloatingScore(_.enemySprite[ndx].gameObject, _.attackDamage.ToString(), Color.red);
 		}
 
 		// Set player anim
