@@ -1,7 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
-	
+
 // AI, Status Effects (Poison, Blind, Confuse, etc.)
 
 /// <summary>
@@ -28,7 +27,7 @@ public class Party : MonoBehaviour {
         // Player 1
         stats.Add(new PartyStats("Blob", 40, 40, 40, 6, 6, 6,
             2, 2, 2, 2, 1, 1, 1, 1,
-            0, 1, 12,
+            0, 1, 0,
             new List<Spell> { SpellManager.S.spells[1], SpellManager.S.spells[0], SpellManager.S.spells[2], SpellManager.S.spells[4], SpellManager.S.spells[5], SpellManager.S.spells[3], SpellManager.S.spells[6], SpellManager.S.spells[7], SpellManager.S.spells[8], SpellManager.S.spells[9], SpellManager.S.spells[10], SpellManager.S.spells[11] },
             new List<bool>(new bool[30]),
 			new List<int> { 0, 0, 7, 23, 47, 110, 220, 450, 800, 1300, 2000 },
@@ -37,8 +36,8 @@ public class Party : MonoBehaviour {
 		// Player 2
 		stats.Add(new PartyStats("Bill", 32, 32, 32, 15, 15, 15,
             1, 1, 1, 1, 2, 2, 2, 2,
-            0, 1, 12,
-            new List<Spell> { SpellManager.S.spells[0], SpellManager.S.spells[1], SpellManager.S.spells[3], SpellManager.S.spells[4], SpellManager.S.spells[5], SpellManager.S.spells[2], SpellManager.S.spells[6], SpellManager.S.spells[7], SpellManager.S.spells[8], SpellManager.S.spells[9], SpellManager.S.spells[10], SpellManager.S.spells[11] },
+            0, 1, 2,
+            new List<Spell> { SpellManager.S.spells[3], SpellManager.S.spells[1], SpellManager.S.spells[0], SpellManager.S.spells[4], SpellManager.S.spells[5], SpellManager.S.spells[2], SpellManager.S.spells[6], SpellManager.S.spells[7], SpellManager.S.spells[8], SpellManager.S.spells[9], SpellManager.S.spells[10], SpellManager.S.spells[11] },
             new List<bool>(new bool[30]), 
 			new List<int> { 0, 0, 9, 23, 55, 110, 250, 450, 850, 1300, 2100 },
 			false, 0)
@@ -46,8 +45,8 @@ public class Party : MonoBehaviour {
 		// Player 3
 		stats.Add(new PartyStats("Fake Bill", 25, 25, 25, 10, 10, 10,
 			1, 1, 1, 1, 2, 2, 2, 2,
-			0, 1, 10,
-			new List<Spell> { SpellManager.S.spells[4], SpellManager.S.spells[3], SpellManager.S.spells[0], SpellManager.S.spells[2], SpellManager.S.spells[1], SpellManager.S.spells[5], SpellManager.S.spells[6], SpellManager.S.spells[7], SpellManager.S.spells[8], SpellManager.S.spells[9] },
+			0, 1, 2,
+			new List<Spell> { SpellManager.S.spells[3], SpellManager.S.spells[4], SpellManager.S.spells[0], SpellManager.S.spells[2], SpellManager.S.spells[1], SpellManager.S.spells[5], SpellManager.S.spells[6], SpellManager.S.spells[7], SpellManager.S.spells[8], SpellManager.S.spells[9] },
 			new List<bool>(new bool[30]),
 			new List<int> { 0, 0, 9, 23, 55, 110, 250, 450, 850, 1300, 2100 },
 			false, 0)
@@ -152,12 +151,19 @@ public class Party : MonoBehaviour {
 
 	// SpellNdx (Mathf.Min used to prevent spellNdx from exceeding
 	// the amount of spells each party member is capable of learning)
-	public void SetNewSpellNdx(int playerNdx) {
+	public int GetSpellNdx(int playerNdx, int LVL) {
 		if (playerNdx == 0) {
-			stats[playerNdx].spellNdx = Mathf.Min((int)(0.5f * stats[playerNdx].LVL), stats[playerNdx].spells.Count); // Blob: Lvl 1 = 0
+			return Mathf.Min((int)(0.5f * LVL), stats[playerNdx].spells.Count); // Blob: Lvl 1 = 0
 		} else {
-			stats[playerNdx].spellNdx = Mathf.Min((int)(1.0f * stats[playerNdx].LVL + 1), stats[playerNdx].spells.Count); // Chani: Lvl 1 = 2
+			return Mathf.Min((int)(1.0f * LVL + 1), stats[playerNdx].spells.Count); // Chani: Lvl 1 = 2
 		}
+	}
+
+	public void SetSpellNdx(int playerNdx) {
+		stats[playerNdx].spellNdx = GetSpellNdx(playerNdx, stats[playerNdx].LVL);
+	}
+	public int GetSpellNdxUpgrade(int playerNdx) {
+		return GetSpellNdx(playerNdx, stats[playerNdx].LVL) - GetSpellNdx(playerNdx, stats[playerNdx].previousLVL);
 	}
 
 	public int GetExpToNextLevel(int playerNdx) {
@@ -181,7 +187,7 @@ public class Party : MonoBehaviour {
 
 		stats[playerNdx].previousLVL = stats[playerNdx].LVL;
 		stats[playerNdx].LVL = newLVL;
-		SetNewSpellNdx(playerNdx);
+		SetSpellNdx(playerNdx);
 
 		// Assign Stats
 		SetHP(playerNdx);
