@@ -42,19 +42,26 @@ public class BattleEnemyActions : MonoBehaviour {
 		if (Party.S.stats[playerToAttack].HP < 1) {
 			BattleEnd.S.PlayerDeath(playerToAttack);
 		} else {
-			// BLOCK!!!
+			// If not sleeping or paralyzed...attempt to block!
+            if (!BattleStatusEffects.S.CheckIfParalyzed(Party.S.stats[playerToAttack].name) &&
+				!BattleStatusEffects.S.CheckIfSleeping(Party.S.stats[playerToAttack].name)) {
+				// Index of the party member that is blocking
+				BattleQTE.S.blockerNdx = playerToAttack;
 
-			// Index of the party member that is blocking
-			BattleQTE.S.blockerNdx = playerToAttack;
+				// Set qteType to Block
+				BattleQTE.S.qteType = 4;
 
-			// Set qteType to Block
-			BattleQTE.S.qteType = 4;
+				// Enable progress bar/timer 
+				BattleQTE.S.Initialize();
 
-			// Enable progress bar/timer 
-			BattleQTE.S.Initialize();
+				// Set battleMode to QTE
+				_.mode = eBattleMode.qte;
+			} else {
+				// Deactivate Battle Text
+				BattleDialogue.S.displayMessageTextTop.gameObject.transform.parent.gameObject.SetActive(false);
 
-			// Set battleMode to QTE
-			_.mode = eBattleMode.qte;
+				_.NextTurn();
+			}
 		}	
 	}
 
