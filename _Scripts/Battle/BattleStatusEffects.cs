@@ -242,6 +242,9 @@ public class BattleStatusEffects : MonoBehaviour {
 				// Reset next turn move index & deactivate help bubble
 				_.StopCallingForHelp(ndx);
 
+				// If defending...stop defending
+				RemoveDefender(paralyzed, false, ndx);
+
 				BattleDialogue.S.DisplayText(Party.S.stats[_.PlayerNdx()].name + " has temporarily paralyzed " + _.enemyStats[ndx].name + "...\n...not nice!");
 			} else {
 				// Anim
@@ -249,6 +252,9 @@ public class BattleStatusEffects : MonoBehaviour {
 
 				// Activate paralyzed icon
 				playerParalyzedIcons[ndx].SetActive(true);
+
+				// If defending...stop defending
+				RemoveDefender(paralyzed, true, ndx);
 
 				BattleDialogue.S.DisplayText(_.enemyStats[_.EnemyNdx()].name + " has temporarily paralyzed " + Party.S.stats[ndx].name + "...\n...not nice!");
 			}
@@ -326,6 +332,9 @@ public class BattleStatusEffects : MonoBehaviour {
 				// Reset next turn move index & deactivate help bubble
 				_.StopCallingForHelp(ndx);
 
+				// If defending...stop defending
+				RemoveDefender(sleeping, false, ndx);
+
 				BattleDialogue.S.DisplayText(Party.S.stats[_.PlayerNdx()].name + " has temporarily put " + _.enemyStats[ndx].name + " to sleep...\n...not nice!");
 			} else {
 				// Anim
@@ -333,6 +342,9 @@ public class BattleStatusEffects : MonoBehaviour {
 
 				// Activate sleeping icon
 				playerSleepingIcons[ndx].SetActive(true);
+
+				// If defending...stop defending
+				RemoveDefender(sleeping, true, ndx);
 
 				BattleDialogue.S.DisplayText(_.enemyStats[_.EnemyNdx()].name + " has temporarily put " + Party.S.stats[ndx].name + " to sleep...\n...not nice!");
 			}
