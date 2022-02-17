@@ -72,7 +72,6 @@ public class EnemyMovement : MonoBehaviour {
 
 				switch (currentMode) {
 					case eMovement.randomWalk:
-						// Move GameObject
 						if (isWalking) {
 							switch (walkDirection) {
 								case 0: Walk(speed, 0, 2); break; //right
@@ -85,14 +84,14 @@ public class EnemyMovement : MonoBehaviour {
 								case 7: Walk(-speed / 2, -speed / 2, 5); break; //left down
 							}
 
-							// Count down Walk Counter
+							// Decrement timer to start waiting
 							timer -= Time.deltaTime;
 
 							if (timer < 0) {
 								StartWaiting();
 							}
 						} else {
-							// Count down Wait Counter
+							// Decrement timer to start walking
 							timer -= Time.deltaTime;
 							rigid.velocity = Vector2.zero;
 
@@ -117,20 +116,45 @@ public class EnemyMovement : MonoBehaviour {
 						}
 						break;
 					case eMovement.pursueRun:
-						PursueOrFlee(gameObject, Player.S.gameObject);
-						//PursueOrFlee(gameObject, Player.S.gameObject, speed);
+						// Pursue the player
+						Pursue(gameObject, Player.S.gameObject);
+						//Pursue(gameObject, Player.S.gameObject, speed);
 						break;
 					case eMovement.flee:
-						PursueOrFlee(Player.S.gameObject, gameObject);
-						//PursueOrFlee(Player.S.gameObject, gameObject, speed * -1);
+						// Flee from the player
+						Pursue(Player.S.gameObject, gameObject);
+						//Pursue(Player.S.gameObject, gameObject, speed * -1);
 						break;
 					case eMovement.reverse:
-						// Countdown back to defaultMovementMode
+						// Decrement timer back to defaultMovementMode
 						timer -= Time.deltaTime;
 						if (timer < 0) {
 							currentMode = cachedMode;
 							timer = Random.Range(waitDuration.x, waitDuration.y);
 							StartWalking();
+						}
+						break;
+					case eMovement.pursueWait:
+						if (isWalking) {
+							// Pursue the player
+							Pursue(gameObject, Player.S.gameObject);
+
+							// Decrement timer to start waiting
+							timer -= Time.deltaTime;
+
+                            if (timer < 0) {
+                                StartWaiting();
+                            }
+                        } else {
+							// Decrement timer to start pursuing
+							timer -= Time.deltaTime;
+							rigid.velocity = Vector2.zero;
+
+							if (timer < 0) {
+								anim.speed = 1;
+								isWalking = true;
+								timer = Random.Range(waitDuration.x, waitDuration.y);
+							}
 						}
 						break;
 				}
@@ -179,7 +203,7 @@ public class EnemyMovement : MonoBehaviour {
 	}
 
 	// My implementation
-	void PursueOrFlee(GameObject hunter, GameObject chase) {
+	void Pursue(GameObject hunter, GameObject chase) {
 		if (hunter.transform.position.x >= chase.transform.position.x) {
 			if (hunter.transform.position.y >= chase.transform.position.y) {
 				rigid.velocity = new Vector2(-speed, -speed); // Left/Down
@@ -196,7 +220,7 @@ public class EnemyMovement : MonoBehaviour {
 	}
 
 	// Uses Unity's MoveTowards function
-	void PursueOrFlee(GameObject hunter, GameObject chase, float speed) {
+	void Pursue(GameObject hunter, GameObject chase, float speed) {
 		// Flip
 		if ((hunter.transform.position.x > chase.transform.position.x && !facingRight) ||
 			(hunter.transform.position.x < chase.transform.position.x && facingRight)) {
