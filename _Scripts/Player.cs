@@ -24,7 +24,7 @@ public class Player : MonoBehaviour {
 
 	private float 				speed = 4f;
 
-	public ePlayerMode				mode = ePlayerMode.idle;
+	public ePlayerMode			mode = ePlayerMode.idle;
 
 	// Respawn
 	public Vector3				respawnPos;
@@ -308,14 +308,38 @@ public class Player : MonoBehaviour {
         // Measure amount of steps
         currentPos = transform.position;
 		// If moved 1 unit
-		if (currentPos.x > previousPos.x + 1 || currentPos.x < previousPos.x - 1 || currentPos.y > previousPos.y + 1 || currentPos.y < previousPos.y - 1)
-		{
+		if (currentPos.x > previousPos.x + 1 || currentPos.x < previousPos.x - 1 || currentPos.y > previousPos.y + 1 || currentPos.y < previousPos.y - 1) {
 			// Used in PauseScreen.cs to measure & display Steps
 			stepsCount += 1;
 			previousPos = transform.position;
+
+			// Every 4 steps...
+			if(stepsCount % 4 == 0) {
+				// For each party member...
+				for (int i = 0; i <= Party.S.partyNdx; i++) {
+					// If poisoned...
+					if (BattleStatusEffects.S.CheckIfPoisoned(Party.S.stats[i].name)) {
+						Debug.Log(Party.S.stats[i].name + "is poisoned!");
+
+						// ...decrement HP by 1
+						if (Party.S.stats[i].HP > 1) {
+							Party.S.stats[i].HP -= 1;
+						}
+
+						// Audio: Damage
+						AudioManager.S.PlayRandomDamageSFX();
+
+						// Start flickering
+						invincibility.StartInvincibility(0.5f, 0.1f, false);
+
+						// Display Floating Score
+						RPG.S.InstantiateFloatingScore(gameObject, "-1", Color.red);
+					}
+				}
+			}
+			
 		}
 	}
-
     #region Fixed Loop
     public void FixedLoop () {
 		if (canMove) {
