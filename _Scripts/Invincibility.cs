@@ -5,13 +5,14 @@ using UnityEngine;
 public class Invincibility : MonoBehaviour {
     [Header("Set Dynamically")]
 	public bool		isInvincible; // enables StartBattle() in RPGEnemy.cs upon collision w/ Enemies
+	public bool		isFlashing;
 	private float	timeToFlash;
 	private float	flashRate;
 	private float	timeToEndInvincibility;
 
 	public void FixedLoop() {
         if (!RPG.S.paused) {
-            if (isInvincible) {
+            if (isFlashing) {
                 if (Time.time >= timeToEndInvincibility) {
                     EndInvincibility();
                 } else {
@@ -34,13 +35,14 @@ public class Invincibility : MonoBehaviour {
 		}
     }
 
-	public void StartInvincibility() {
-		isInvincible = true;
+	public void StartInvincibility(float duration = 3f, float _flashRate = 0.25f, bool _isInvincible = true) {
+		isInvincible = _isInvincible;
+		isFlashing = true;
 
 		// Set timers
-		flashRate = 0.25f;
+		flashRate = _flashRate;
 		timeToFlash = Time.time + flashRate;
-		timeToEndInvincibility = Time.time + 3f;
+		timeToEndInvincibility = Time.time + duration;
 
 		// Add FixedLoop() to UpdateManager
 		UpdateManager.fixedUpdateDelegate += FixedLoop;
@@ -48,6 +50,7 @@ public class Invincibility : MonoBehaviour {
 
 	public void EndInvincibility() {
 		isInvincible = false;
+		isFlashing = false;
 
 		// Enable SpriteRenderer
 		Player.S.sRend.enabled = true;
