@@ -16,11 +16,10 @@ public class PlayerButtons : MonoBehaviour {
 	public Text				goldValue;
 
 	[Header("Set Dynamically")]
-	// Singleton
-	private static PlayerButtons	_S;
-	public static PlayerButtons		S { get { return _S; } set { _S = value; } }
+	public RectTransform	rectTrans;
 
-	public RectTransform			rectTrans;
+	private static PlayerButtons _S;
+	public static PlayerButtons S { get { return _S; } set { _S = value; } }
 
 	void Awake() {
 		S = this;
@@ -34,7 +33,7 @@ public class PlayerButtons : MonoBehaviour {
 			if (RPG.S.paused) {
 				rectTrans.anchoredPosition = new Vector2(0, -25);
 			} else {
-				rectTrans.anchoredPosition = new Vector2(0, 650);
+				rectTrans.anchoredPosition = new Vector2(0, 625);
 			}
 
 			// Deactivate all player buttons 
