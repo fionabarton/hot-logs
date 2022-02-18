@@ -21,18 +21,18 @@ public class RPG : MonoBehaviour {
 	public SubMenu				pauseSubMenu;
 
 	[Header("Set Dynamically")]
-	private static RPG _S;
-	public static RPG S { get { return _S; } set { _S = value; } }
-
-	// DontDestroyOnLoad
-	private static bool			exists;
-
 	public bool					paused;
 
 	// Respawn Level
 	public string				currentScene;
 	public string 				previousScene;
 	private string				previousPreviousScene;
+
+	private static RPG			_S;
+	public static RPG			S { get { return _S; } set { _S = value; } }
+
+	// DontDestroyOnLoad
+	private static bool			exists;
 
 	void Awake() {
 		S = this;
@@ -154,6 +154,19 @@ public class RPG : MonoBehaviour {
 		if (currentScene != "Battle") {
 			EnemyManager.S.GetEnemyGameObjects();
 			SwapLayerManager.S.GetSpriteRenderers();
+
+			// If poisoned, activate poisoned icons
+			StatusEffects.S.playerPoisonedIcon.SetActive(false);
+			for (int i = 0; i <= Party.S.partyNdx; i++) {
+				if (StatusEffects.S.CheckIfPoisoned(Party.S.stats[i].name)) {
+					StatusEffects.S.playerButtonsPoisonedIcons[i].SetActive(true);
+					StatusEffects.S.pauseScreenPoisonedIcons[i].SetActive(true);
+					StatusEffects.S.playerPoisonedIcon.SetActive(true);
+				} else {
+					StatusEffects.S.playerButtonsPoisonedIcons[i].SetActive(false);
+					StatusEffects.S.pauseScreenPoisonedIcons[i].SetActive(false);
+				}
+			}
 		} 
 
 		// Get all enemy gameobjects' death status, and clear lists in EnemyManager.cs
