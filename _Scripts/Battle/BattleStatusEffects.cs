@@ -34,10 +34,9 @@ public class BattleStatusEffects : MonoBehaviour {
 	public List<string>		thePoisoned = new List<string>();
 
 	// Amount of time left for a status ailment to subside:
-	// Paralysis, Sleep, Poison
+	// Paralysis, Sleep
 	public List<int>		paralyzedCount = new List<int>();
 	public List<int>		sleepingCount = new List<int>();
-	public List<int>		poisonedCount = new List<int>();
 
 	private Battle _;
 	void Awake() {
@@ -66,12 +65,18 @@ public class BattleStatusEffects : MonoBehaviour {
 		Utilities.S.SetActiveList(enemySleepingIcons, false);
 
 		// Clear status ailment lists
-		thePoisoned.Clear();
 		theParalyzed.Clear();
 		theSleeping.Clear();
-		poisonedCount.Clear();
 		paralyzedCount.Clear();
 		sleepingCount.Clear();
+
+		for (int i = 0; i <= Party.S.partyNdx; i++) {
+			// If already poisoned...
+			if (CheckIfPoisoned(Party.S.stats[i].name)) {
+				// ...activate poison icon
+				playerPoisonedIcons[i].SetActive(true);
+            }
+		}
 	}
 
 	////////////////////////////////////////////////////////////////////////////////////////
@@ -115,7 +120,6 @@ public class BattleStatusEffects : MonoBehaviour {
 	public void AddPoisoned(string poisoned, int ndx) {
 		if (!thePoisoned.Contains(poisoned)) {
 			thePoisoned.Add(poisoned);
-			poisonedCount.Add(Random.Range(2, 4));
 
 			// If this turn is a player's turn...
 			if (_.PlayerNdx() != -1) {
@@ -141,7 +145,7 @@ public class BattleStatusEffects : MonoBehaviour {
 	}
 	public void RemovePoisoned(string poisoned, bool isPlayer, int ndx) {
 		if (thePoisoned.Contains(poisoned)) {
-			poisonedCount.RemoveAt(thePoisoned.IndexOf(poisoned));
+			//poisonedCount.RemoveAt(thePoisoned.IndexOf(poisoned));
 			thePoisoned.Remove(poisoned);
 
 			// If this turn is a player's turn...
@@ -168,59 +172,45 @@ public class BattleStatusEffects : MonoBehaviour {
 	}
 
 	public void Poisoned(string poisoned, bool isPlayer, int ndx) {
-		// Decrement counter
-		poisonedCount[thePoisoned.IndexOf(poisoned)] -= 1;
+		// If this turn is a player's turn...
+		if (isPlayer) {
+			// Get 6-10% of max HP
+			float lowEnd = Party.S.stats[ndx].maxHP * 0.06f;
+			float highEnd = Party.S.stats[ndx].maxHP * 0.10f;
+			_.attackDamage = (int)Random.Range(lowEnd, highEnd);
 
-		// If counter depleted...
-		if (poisonedCount[thePoisoned.IndexOf(poisoned)] <= 0) {
-			// ...no longer poisoned
-			RemovePoisoned(poisoned, isPlayer, ndx);
-			
-			// Anim
-			if (isPlayer) {
-				_.playerAnimator[ndx].CrossFade("Win_Battle", 0);
+			// Play attack animations, SFX, and spawn objects
+			BattleEnemyActions.S.PlaySingleAttackAnimsAndSFX(ndx, false);
+
+			// Decrement HP
+			RPG.S.SubtractPlayerHP(ndx, _.attackDamage);
+
+			// Display text
+			BattleDialogue.S.DisplayText(poisoned + " suffers the consequences of being poisoned...\n...damaged for " + _.attackDamage + " HP!");
+
+			// Check if dead
+			if (Party.S.stats[ndx].HP < 1) {
+				BattleEnd.S.PlayerDeath(ndx);
+				return;
 			}
 		} else {
-			// If this turn is a player's turn...
-			if (isPlayer) {
-				// Get 6-10% of max HP
-				float lowEnd = Party.S.stats[ndx].maxHP * 0.06f;
-				float highEnd = Party.S.stats[ndx].maxHP * 0.10f;
-				_.attackDamage = (int)Random.Range(lowEnd, highEnd);
+			// Get 6-10% of max HP
+			float lowEnd = _.enemyStats[ndx].maxHP * 0.06f;
+			float highEnd = _.enemyStats[ndx].maxHP * 0.10f;
+			_.attackDamage = Mathf.Max(1, (int)Random.Range(lowEnd, highEnd));
 
-				// Play attack animations, SFX, and spawn objects
-				BattleEnemyActions.S.PlaySingleAttackAnimsAndSFX(ndx, false);
+			BattleSpells.S.DamageEnemyAnimation(ndx, true, false);
 
-				// Decrement HP
-				RPG.S.SubtractPlayerHP(ndx, _.attackDamage);
+			// Decrement HP
+			RPG.S.SubtractEnemyHP(ndx, _.attackDamage);
 
-				// Display text
-				BattleDialogue.S.DisplayText(poisoned + " suffers the consequences of being poisoned...\n...damaged for " + _.attackDamage + " HP!");
+			// Display text
+			BattleDialogue.S.DisplayText(poisoned + " suffers the consequences of being poisoned...\n...damaged for " + _.attackDamage + " HP!");
 
-				// Check if dead
-				if (Party.S.stats[ndx].HP < 1) {
-					BattleEnd.S.PlayerDeath(ndx);
-					return;
-				}
-			} else {
-				// Get 6-10% of max HP
-				float lowEnd = _.enemyStats[ndx].maxHP * 0.06f;
-				float highEnd = _.enemyStats[ndx].maxHP * 0.10f;
-				_.attackDamage = Mathf.Max(1, (int)Random.Range(lowEnd, highEnd));
-
-				BattleSpells.S.DamageEnemyAnimation(ndx, true, false);
-
-				// Decrement HP
-				RPG.S.SubtractEnemyHP(ndx, _.attackDamage);
-
-				// Display text
-				BattleDialogue.S.DisplayText(poisoned + " suffers the consequences of being poisoned...\n...damaged for " + _.attackDamage + " HP!");
-
-				// Check if dead
-				if (_.enemyStats[ndx].HP < 1) {
-					BattleEnd.S.EnemyDeath(ndx);
-					return;
-				}
+			// Check if dead
+			if (_.enemyStats[ndx].HP < 1) {
+				BattleEnd.S.EnemyDeath(ndx);
+				return;
 			}
 		}
 		_.mode = eBattleMode.statusAilment;
