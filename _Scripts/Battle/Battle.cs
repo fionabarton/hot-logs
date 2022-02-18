@@ -406,6 +406,8 @@ public class Battle : MonoBehaviour {
 
 		// Display Turn Order
 		BattleUI.S.DisplayTurnOrder();
+
+		SetAllCombatantAnimations();
 	}
 
 	public void NextTurn() {
