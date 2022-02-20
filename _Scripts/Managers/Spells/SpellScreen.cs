@@ -473,6 +473,8 @@ public class SpellScreen : MonoBehaviour {
 				WorldSpells.S.WarpSpell();
 			} else if (spell.name == "Heal All") {
 				WorldSpells.S.AddFunctionToButton(WorldSpells.S.HealAllPartyMembers, "Heal all party members?", spell);
+			} else if (spell.name == "Detoxify") {
+				WorldSpells.S.AddFunctionToButton(WorldSpells.S.DetoxifySelectedPartyMember, "Detoxify which poisoned party member?", spell);
 			} else {
 				SpellManager.S.CantUseSpell("You ain't battlin' no one, so ya can't use this spell!");
 			}
