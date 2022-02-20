@@ -136,7 +136,7 @@ public class StatusEffects : MonoBehaviour {
 				// Activate poisoned icon
 				enemyPoisonedIcons[ndx].SetActive(true);
 
-				BattleDialogue.S.DisplayText(Party.S.stats[_.PlayerNdx()].name + " has temporarily poisoned " + _.enemyStats[ndx].name + "...\n...not nice!");
+				BattleDialogue.S.DisplayText(Party.S.stats[_.PlayerNdx()].name + " has poisoned " + _.enemyStats[ndx].name + " indefinitely" + "...\n...not nice!");
 			} else {
 				// Anim
 				_.playerAnimator[ndx].CrossFade("Poisoned", 0);
@@ -144,7 +144,7 @@ public class StatusEffects : MonoBehaviour {
 				// Activate poisoned icon
 				playerPoisonedIcons[ndx].SetActive(true);
 
-				BattleDialogue.S.DisplayText(_.enemyStats[_.EnemyNdx()].name + " has temporarily poisoned " + Party.S.stats[ndx].name + " ...\n...not nice!");
+				BattleDialogue.S.DisplayText(_.enemyStats[_.EnemyNdx()].name + " has poisoned " + Party.S.stats[ndx].name + " indefinitely" + " ...\n...not nice!");
 			}
 
 			// Audio: Buff 2
