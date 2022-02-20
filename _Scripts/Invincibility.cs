@@ -10,7 +10,7 @@ public class Invincibility : MonoBehaviour {
 	private float	flashRate;
 	private float	timeToEndInvincibility;
 
-	public void FixedLoop() {
+    public void FixedLoop() {
         if (!RPG.S.paused) {
             if (isFlashing) {
                 if (Time.time >= timeToEndInvincibility) {
@@ -29,9 +29,11 @@ public class Invincibility : MonoBehaviour {
                 }
             }
         } else {
-			// Effectively "pauses" both timers when the game is paused
-			timeToEndInvincibility += Time.fixedDeltaTime;
-			timeToFlash += Time.fixedDeltaTime;
+            if (!Player.S.isBattling) {
+				// Effectively "pauses" both timers when the game is paused
+				timeToEndInvincibility += Time.fixedDeltaTime;
+				timeToFlash += Time.fixedDeltaTime;
+			}
 		}
     }
 
@@ -41,7 +43,7 @@ public class Invincibility : MonoBehaviour {
 
 		// Set timers
 		flashRate = _flashRate;
-		timeToFlash = Time.time + flashRate;
+		timeToFlash = Time.time + _flashRate;
 		timeToEndInvincibility = Time.time + duration;
 
 		// Add FixedLoop() to UpdateManager
