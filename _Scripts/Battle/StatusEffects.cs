@@ -425,4 +425,22 @@ public class StatusEffects : MonoBehaviour {
 		RemovePoisoned(name, isPlayer, ndx);
 		RemoveSleeping(name, isPlayer, ndx);
     }
+
+	// If a party member is poisoned, enable their overworld poisoned icon
+	public void SetOverworldPoisonIcons() {
+		playerPoisonedIcon.SetActive(false);
+		for (int i = 0; i <= Party.S.partyNdx; i++) {
+			// If poisoned...
+			if (CheckIfPoisoned(Party.S.stats[i].name)) {
+				// ...activate poisoned icons
+				playerButtonsPoisonedIcons[i].SetActive(true);
+				pauseScreenPoisonedIcons[i].SetActive(true);
+				playerPoisonedIcon.SetActive(true);
+			} else {
+				// ...deactivate poisoned icons
+				playerButtonsPoisonedIcons[i].SetActive(false);
+				pauseScreenPoisonedIcons[i].SetActive(false);
+			}
+		}
+	}
 }
