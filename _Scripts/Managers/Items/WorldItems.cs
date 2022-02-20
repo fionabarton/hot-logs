@@ -134,6 +134,38 @@ public class WorldItems : MonoBehaviour {
 		ClickedButtonHelper();
 	}
 
+	public void DetoxifyPotion(int ndx) {
+		if (StatusEffects.S.CheckIfPoisoned(Party.S.stats[ndx].name)) {
+			// Remove from Inventory
+			Inventory.S.RemoveItemFromInventory(ItemManager.S.items[25]);
+
+			// Remove poison
+			StatusEffects.S.RemovePoisoned(Party.S.stats[ndx].name, true, ndx);
+
+			// Display Text
+			PauseMessage.S.DisplayText("Used Detoxify Potion!\n" + Party.S.stats[ndx].name + " is no longer poisoned!");
+
+			// Set animation to success
+			PlayerButtons.S.anim[ndx].CrossFade("Success", 0);
+
+			// If poisoned, activate overworld poisoned icons
+			StatusEffects.S.SetOverworldPoisonIcons();
+
+			// Audio: Buff 1
+			AudioManager.S.PlaySFX(eSoundName.buff1);
+		} else {
+			// Display Text
+			PauseMessage.S.DisplayText(Party.S.stats[ndx].name + " is not suffering from the effects of poison...\n...no need to use this potion!");
+
+			// Set animation to idle
+			PlayerButtons.S.anim[ndx].CrossFade("Idle", 0);
+
+			// Audio: Deny
+			AudioManager.S.PlaySFX(eSoundName.deny);
+		}
+		ClickedButtonHelper();
+	}
+
 	public void HealAllPotion(int unusedIntBecauseOfAddFunctionToButtonParameter = 0) {
 		int totalAmountToHeal = 0;
 

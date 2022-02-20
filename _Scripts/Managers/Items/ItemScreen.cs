@@ -19,7 +19,6 @@ public class ItemScreen : MonoBehaviour {
 	public Button			sortButton;
 
 	[Header("Set Dynamically")]
-	// Singleton
 	private static ItemScreen _S;
 	public static ItemScreen S { get { return _S; } set { _S = value; } }
 
@@ -272,7 +271,7 @@ public class ItemScreen : MonoBehaviour {
 				} else if (item.name == "Detoxify Potion") {
 					BattleItems.S.AddFunctionToButton(BattleItems.S.DetoxifyPotion, "Use potion to detoxify which poisoned party member?", item);
 				} else if (item.name == "Mobilize Potion") {
-					BattleItems.S.AddFunctionToButton(BattleItems.S.MobilizePotion, "Use potion to restore which paralyzed party member's mobility?", item);
+					BattleItems.S.AddFunctionToButton(BattleItems.S.MobilizePotion, "Use potion to restore the mobility of which paralyzed party member?", item);
 				} else if (item.name == "Wake Potion") {
 					BattleItems.S.AddFunctionToButton(BattleItems.S.WakePotion, "Use potion to wake up which sleeping party member?", item);
 				} else {
@@ -283,6 +282,8 @@ public class ItemScreen : MonoBehaviour {
 					WorldItems.S.AddFunctionToButton(WorldItems.S.HPPotion, "Heal which party member?", item);
 				} else if (item.name == "Magic Potion") {
 					WorldItems.S.AddFunctionToButton(WorldItems.S.MPPotion, "Use MP potion on which party member?", item);
+				} else if (item.name == "Detoxify Potion") {
+					WorldItems.S.AddFunctionToButton(WorldItems.S.DetoxifyPotion, "Use potion to detoxify which poisoned party member?", item);
 				} else if (item.name == "Heal All Potion") {
 					WorldItems.S.AddFunctionToButton(WorldItems.S.HealAllPotion, "Use potion to heal all party members?", item);
 				} else if (item.name == "Warp Potion") {
