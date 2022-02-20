@@ -155,18 +155,8 @@ public class RPG : MonoBehaviour {
 			EnemyManager.S.GetEnemyGameObjects();
 			SwapLayerManager.S.GetSpriteRenderers();
 
-			// If poisoned, activate poisoned icons
-			StatusEffects.S.playerPoisonedIcon.SetActive(false);
-			for (int i = 0; i <= Party.S.partyNdx; i++) {
-				if (StatusEffects.S.CheckIfPoisoned(Party.S.stats[i].name)) {
-					StatusEffects.S.playerButtonsPoisonedIcons[i].SetActive(true);
-					StatusEffects.S.pauseScreenPoisonedIcons[i].SetActive(true);
-					StatusEffects.S.playerPoisonedIcon.SetActive(true);
-				} else {
-					StatusEffects.S.playerButtonsPoisonedIcons[i].SetActive(false);
-					StatusEffects.S.pauseScreenPoisonedIcons[i].SetActive(false);
-				}
-			}
+			// If poisoned, activate overworld poisoned icons
+			StatusEffects.S.SetOverworldPoisonIcons();
 		} 
 
 		// Get all enemy gameobjects' death status, and clear lists in EnemyManager.cs
@@ -361,7 +351,7 @@ public class RPG : MonoBehaviour {
 	}
 
 	void LoadBattleScene() {
-		LoadLevel ("Battle");
+		LoadLevel("Battle");
 
 		// Add Update & Fixed Update Delegate
 		UpdateManager.updateDelegate += Battle.S.Loop;
