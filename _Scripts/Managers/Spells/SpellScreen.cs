@@ -378,13 +378,6 @@ public class SpellScreen : MonoBehaviour {
 	}
 
 	public void AssignSpellsNames(int playerNdx) {
-		//for (int i = 0; i < Party.S.stats[playerNdx].spellNdx; i++) {
-		//	// Assign Button Name Text
-		//	string ndx = (i + 1).ToString();
-		//	spellsButtonNameText[i].text = ndx + ") " + Party.S.stats[playerNdx].spells[i].name;
-		//	spellsButtonMPCostText[i].text = Party.S.stats[playerNdx].spells[i].cost.ToString();
-		//}
-
 		for (int i = 0; i < spellsButtons.Count; i++) {
 			if (firstSlotNdx + i < Party.S.stats[playerNdx].spellNdx) {
 				// Assign Button Name Text
@@ -465,7 +458,7 @@ public class SpellScreen : MonoBehaviour {
 			} else if (spell.name == "Wake") {
 				BattleSpells.S.AddFunctionToButton(BattleSpells.S.AttemptWakeSinglePartyMember, "Wake up which sleeping party member?", spell);
 			} else if (spell.name == "Poison") {
-				BattleSpells.S.AddFunctionToButton(BattleSpells.S.AttemptPoisonSinglePartyMember, "Temporarily poison which enemy?", spell);
+				BattleSpells.S.AddFunctionToButton(BattleSpells.S.AttemptPoisonSinglePartyMember, "Indefinitely poison which enemy?", spell);
 			} else if (spell.name == "Paralyze") {
 				BattleSpells.S.AddFunctionToButton(BattleSpells.S.AttemptParalyzeSinglePartyMember, "Temporarily paralyze which enemy?", spell);
 			} else if (spell.name == "Sleep") {
