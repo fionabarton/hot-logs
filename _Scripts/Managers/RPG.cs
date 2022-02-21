@@ -337,6 +337,9 @@ public class RPG : MonoBehaviour {
 		Player.S.canMove = false;
 		Player.S.mode = ePlayerMode.idle;
 
+		// End player invincibility
+		Player.S.invincibility.EndInvincibility();
+
 		// Freeze all NPC & Enemies
 		paused = true;
 
