@@ -16,26 +16,26 @@ public class Invincibility : MonoBehaviour {
                 if (Time.time >= timeToEndInvincibility) {
                     EndInvincibility();
                 } else {
-					if (Time.time >= timeToFlash) {
-						// "Flash" the sprite by enabling its SpriteRenderer
-						Player.S.sRend.enabled = !Player.S.sRend.enabled;
+                    if (Time.time >= timeToFlash) {
+                        // "Flash" the sprite by enabling its SpriteRenderer
+                        Player.S.sRend.enabled = !Player.S.sRend.enabled;
 
-						// Increase the rate at which the sprite will flash
-						flashRate -= 0.01f;
+                        // Increase the rate at which the sprite will flash
+                        flashRate -= 0.01f;
 
-						// Reset the timer
-						timeToFlash = Time.time + flashRate;
-					}
+                        // Reset the timer
+                        timeToFlash = Time.time + flashRate;
+                    }
                 }
             }
         } else {
-			// Effectively "pauses" both timers when the game is paused
-			timeToEndInvincibility += Time.fixedDeltaTime;
-			timeToFlash += Time.fixedDeltaTime;
-		}
+            // Effectively "pauses" both timers when the game is paused
+            timeToEndInvincibility += Time.fixedDeltaTime;
+            timeToFlash += Time.fixedDeltaTime;
+        }
     }
 
-	public void StartInvincibility(float duration = 3f, float _flashRate = 0.25f, bool _isInvincible = true) {
+    public void StartInvincibility(float duration = 3f, float _flashRate = 0.25f, bool _isInvincible = true) {
 		isInvincible = _isInvincible;
 		isFlashing = true;
 
