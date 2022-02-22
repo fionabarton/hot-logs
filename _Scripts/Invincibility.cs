@@ -29,9 +29,11 @@ public class Invincibility : MonoBehaviour {
                 }
             }
         } else {
-            // Effectively "pauses" both timers when the game is paused
-            timeToEndInvincibility += Time.fixedDeltaTime;
-            timeToFlash += Time.fixedDeltaTime;
+			if (!Player.S.isBattling) {
+				// Effectively "pauses" both timers when the game is paused
+				timeToEndInvincibility += Time.fixedDeltaTime;
+				timeToFlash += Time.fixedDeltaTime;
+			}
         }
     }
 
