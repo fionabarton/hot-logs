@@ -135,12 +135,12 @@ public class WorldItems : MonoBehaviour {
 	}
 
 	public void DetoxifyPotion(int ndx) {
-		if (StatusEffects.S.CheckIfPoisoned(Party.S.stats[ndx].name)) {
+		if (StatusEffects.S.CheckIfPoisoned(true, ndx)) {
 			// Remove from Inventory
 			Inventory.S.RemoveItemFromInventory(ItemManager.S.items[25]);
 
 			// Remove poison
-			StatusEffects.S.RemovePoisoned(Party.S.stats[ndx].name, true, ndx);
+			StatusEffects.S.RemovePoisoned(true, ndx);
 
 			// Display Text
 			PauseMessage.S.DisplayText("Used Detoxify Potion!\n" + Party.S.stats[ndx].name + " is no longer poisoned!");
