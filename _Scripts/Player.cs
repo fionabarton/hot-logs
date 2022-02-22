@@ -18,10 +18,6 @@ public class Player : MonoBehaviour {
 	public BoxCollider2D		boxColl;
 
 	[Header ("Set Dynamically")]
-	// Singleton
-	private static Player _S;
-	public static Player S { get { return _S; } set { _S = value; } }
-
 	private float 				speed = 4f;
 
 	public ePlayerMode			mode = ePlayerMode.idle;
@@ -60,6 +56,9 @@ public class Player : MonoBehaviour {
 	public bool					isOnSwapLayerTrigger;
 
 	public Invincibility		invincibility;
+
+	private static Player		_S;
+	public static Player		S { get { return _S; } set { _S = value; } }
 
 	void Awake () {
 		S = this;
@@ -313,31 +312,30 @@ public class Player : MonoBehaviour {
 			stepsCount += 1;
 			previousPos = transform.position;
 
-			// Every 4 steps...
-			if(stepsCount % 4 == 0) {
-				// For each party member...
-				for (int i = 0; i <= Party.S.partyNdx; i++) {
-					// If poisoned...
-					if (BattleStatusEffects.S.CheckIfPoisoned(Party.S.stats[i].name)) {
-						Debug.Log(Party.S.stats[i].name + "is poisoned!");
+            // Every 4 steps...
+            if (!invincibility.isInvincible) {
+				if (stepsCount % 4 == 0) {
+					// For each party member...
+					for (int i = 0; i <= Party.S.partyNdx; i++) {
+						// If poisoned...
+						if (StatusEffects.S.CheckIfPoisoned(true, i)) {
+							// ...decrement HP by 1
+							if (Party.S.stats[i].HP > 1) {
+								Party.S.stats[i].HP -= 1;
+							}
 
-						// ...decrement HP by 1
-						if (Party.S.stats[i].HP > 1) {
-							Party.S.stats[i].HP -= 1;
+							// Audio: Damage
+							AudioManager.S.PlayRandomDamageSFX();
+
+							// Start flickering
+							invincibility.StartInvincibility(0.5f, 0.1f, false);
+
+							// Display Floating Score
+							RPG.S.InstantiateFloatingScore(gameObject, "-1", Color.red);
 						}
-
-						// Audio: Damage
-						AudioManager.S.PlayRandomDamageSFX();
-
-						// Start flickering
-						invincibility.StartInvincibility(0.5f, 0.1f, false);
-
-						// Display Floating Score
-						RPG.S.InstantiateFloatingScore(gameObject, "-1", Color.red);
 					}
 				}
 			}
-			
 		}
 	}
     #region Fixed Loop
