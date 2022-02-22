@@ -118,7 +118,7 @@ public class BattleStats : MonoBehaviour {
 	}
 
 	// Get basic physical attack damage
-	public void GetAttackDamage(int attackerLVL,int attackerSTR, int attackerAGI, int defenderDEF, int defenderAGI, string attackerName, string defenderName, int defenderHP) {
+	public void GetAttackDamage(int attackerLVL,int attackerSTR, int attackerAGI, int defenderDEF, int defenderAGI, string attackerName, string defenderName, int defenderHP, bool targetIsPlayer, int targetNdx) {
 		// Reset Attack Damage
 		_.attackDamage = 0;
 
@@ -171,7 +171,7 @@ public class BattleStats : MonoBehaviour {
 			_.attackDamage += _.qteBonusDamage;
 
 			// If DEFENDING, cut AttackDamage in HALF
-			BattleStatusEffects.S.CheckIfDefending(defenderName);
+			StatusEffects.S.CheckIfDefending(targetIsPlayer, targetNdx);
 
 			// Display Text
 			if (defenderHP > _.attackDamage) {

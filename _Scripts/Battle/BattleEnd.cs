@@ -34,7 +34,7 @@ public class BattleEnd : MonoBehaviour {
 		_.turnOrder.Remove(_.enemyStats[ndx].name);
 
 		// Remove all status ailments 
-		BattleStatusEffects.S.RemoveAllStatusAilments(_.enemyStats[ndx].name, false, ndx);
+		StatusEffects.S.RemoveAllStatusAilments(false, ndx);
 
 		// Deactivate '...' Word Bubble
 		_.dotDotDotWordBubble.SetActive(false);
@@ -91,7 +91,6 @@ public class BattleEnd : MonoBehaviour {
 		}
 	}
 
-	// Multiple enemy deaths are handled elsewhere: BattleSpells.S.EnemiesDeathHelper();
 	public void EnemyDeath(int ndx, bool displayText = true) {
 		RemoveEnemy(ndx);
 
@@ -180,7 +179,7 @@ public class BattleEnd : MonoBehaviour {
 		_.playerAnimator[ndx].CrossFade("Death", 0);
 
 		// Remove all status ailments 
-		BattleStatusEffects.S.RemoveAllStatusAilments(Party.S.stats[ndx].name, true, ndx);
+		StatusEffects.S.RemoveAllStatusAilments(true, ndx);
 
 		// Remove player from turn order
 		_.turnOrder.Remove(Party.S.stats[ndx].name);
@@ -270,12 +269,7 @@ public class BattleEnd : MonoBehaviour {
 
 	public List<int> membersToLevelUp = new List<int>();
 	public void LevelUp(int ndx) {
-
-
-
 		LevelUpMessage.S.Initialize(ndx);
-
-
 
 		// Audio: Buff 1
 		AudioManager.S.PlaySFX(eSoundName.buff1);
@@ -297,12 +291,7 @@ public class BattleEnd : MonoBehaviour {
 
 		// If there are any more members that have levelled up...
 		if (membersToLevelUp.Count <= 0) {
-
-
-
 			LevelUpMessage.S.Initialize(ndx);
-
-
 
 			ReturnToWorldDelay();
 		}

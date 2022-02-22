@@ -29,7 +29,7 @@ public class BattleEnemyActions : MonoBehaviour {
 									   _.enemyStats[_.EnemyNdx()].STR, _.enemyStats[_.EnemyNdx()].AGI,
 									   Party.S.stats[playerToAttack].DEF, Party.S.stats[playerToAttack].AGI,
 									   _.enemyStats[_.EnemyNdx()].name, Party.S.stats[playerToAttack].name,
-										Party.S.stats[playerToAttack].HP);
+										Party.S.stats[playerToAttack].HP, true, playerToAttack);
 
 		// Subtract Player Health
 		RPG.S.SubtractPlayerHP (playerToAttack, _.attackDamage);
@@ -43,8 +43,8 @@ public class BattleEnemyActions : MonoBehaviour {
 			BattleEnd.S.PlayerDeath(playerToAttack);
 		} else {
 			// If not sleeping or paralyzed...attempt to block!
-            if (!BattleStatusEffects.S.CheckIfParalyzed(Party.S.stats[playerToAttack].name) &&
-				!BattleStatusEffects.S.CheckIfSleeping(Party.S.stats[playerToAttack].name)) {
+            if (!StatusEffects.S.CheckIfParalyzed(true, playerToAttack) &&
+				!StatusEffects.S.CheckIfSleeping(true, playerToAttack)) {
 				// Index of the party member that is blocking
 				BattleQTE.S.blockerNdx = playerToAttack;
 
@@ -80,7 +80,7 @@ public class BattleEnemyActions : MonoBehaviour {
 	// Index = 1
 	// Defend
 	public void Defend(){
-		BattleStatusEffects.S.AddDefender(_.enemyStats [_.EnemyNdx()].name, false);
+		StatusEffects.S.AddDefender(false, _.EnemyNdx());
 
 		BattleDialogue.S.DisplayText (_.enemyStats [_.EnemyNdx()].name + " defends themself until their next turn!");
 
@@ -312,7 +312,7 @@ public class BattleEnemyActions : MonoBehaviour {
 				_.attackDamage -= Party.S.stats[i].DEF;
 
 				// If DEFENDING, cut AttackDamage in HALF
-				BattleStatusEffects.S.CheckIfDefending(Party.S.stats[i].name);
+				StatusEffects.S.CheckIfDefending(true, i);
 
 				if (_.attackDamage < 0) {
 					_.attackDamage = 0;
@@ -327,7 +327,7 @@ public class BattleEnemyActions : MonoBehaviour {
 				// Shake Enemy 1, 2, & 3's Anim
 				if (!_.playerDead[i]) {
 					// If player doesn't have a status ailment...
-					if (!BattleStatusEffects.S.HasStatusAilment(Party.S.stats[i].name)) {
+					if (!StatusEffects.S.HasStatusAilment(true, i)) {
 						// Animation: Player Damage
 						_.playerAnimator[i].CrossFade("Damage", 0);
 					}
@@ -463,7 +463,7 @@ public class BattleEnemyActions : MonoBehaviour {
 	// Poison
 	public void Poison(int ndx) {
 		// Poison party member
-		BattleStatusEffects.S.AddPoisoned(Party.S.stats[ndx].name, ndx);
+		StatusEffects.S.AddPoisoned(ndx);
 
 		// Play attack animations, SFX, and spawn objects
 		PlaySingleAttackAnimsAndSFX(ndx, true, false);
@@ -473,7 +473,7 @@ public class BattleEnemyActions : MonoBehaviour {
 	// Paralyze
 	public void Paralyze(int ndx) {
 		// Paralyze party member
-		BattleStatusEffects.S.AddParalyzed(Party.S.stats[ndx].name, ndx);
+		StatusEffects.S.AddParalyzed(ndx);
 
 		// Play attack animations, SFX, and spawn objects
 		PlaySingleAttackAnimsAndSFX(ndx, true, false);
@@ -483,7 +483,7 @@ public class BattleEnemyActions : MonoBehaviour {
 	// Sleep
 	public void Sleep(int ndx) {
 		// Put party member to sleep
-		BattleStatusEffects.S.AddSleeping(Party.S.stats[ndx].name, ndx);
+		StatusEffects.S.AddSleeping(ndx);
 
 		// Play attack animations, SFX, and spawn objects
 		PlaySingleAttackAnimsAndSFX(ndx, true, false);
@@ -497,7 +497,7 @@ public class BattleEnemyActions : MonoBehaviour {
 		}
 
         // If player doesn't have a status ailment...
-        if (!BattleStatusEffects.S.HasStatusAilment(Party.S.stats[playerToAttack].name)) {
+        if (!StatusEffects.S.HasStatusAilment(true, playerToAttack)) {
             // Animation: Player Damage
             _.playerAnimator[playerToAttack].CrossFade("Damage", 0);
 		}

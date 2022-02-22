@@ -174,8 +174,8 @@ public class Battle : MonoBehaviour {
 							// If this turn is a player's turn...
 							if (PlayerNdx() != -1) {
 								// If paralyzed or sleeping...
-								if (BattleStatusEffects.S.CheckIfParalyzed(Party.S.stats[PlayerNdx()].name) ||
-									BattleStatusEffects.S.CheckIfSleeping(Party.S.stats[PlayerNdx()].name)) {
+								if (StatusEffects.S.CheckIfParalyzed(true, PlayerNdx()) ||
+									StatusEffects.S.CheckIfSleeping(true, PlayerNdx())) {
 									// Skip turn
 									NextTurn();
 
@@ -190,8 +190,8 @@ public class Battle : MonoBehaviour {
 								}
 							} else {
 								// If paralyzed or sleeping...
-								if (BattleStatusEffects.S.CheckIfParalyzed(enemyStats[EnemyNdx()].name) ||
-									BattleStatusEffects.S.CheckIfSleeping(enemyStats[EnemyNdx()].name)) {
+								if (StatusEffects.S.CheckIfParalyzed(false, EnemyNdx()) ||
+									StatusEffects.S.CheckIfSleeping(false, EnemyNdx())) {
 									// Skip turn
 									NextTurn();
 
@@ -359,7 +359,7 @@ public class Battle : MonoBehaviour {
 		BattlePlayerActions.S.ButtonsDisableAll();
 		
 		BattleDialogue.S.Initialize();
-		BattleStatusEffects.S.Initialize();
+		StatusEffects.S.Initialize();
 
 		// Clear Dropped Items
 		droppedItems.Clear();
@@ -511,7 +511,7 @@ public class Battle : MonoBehaviour {
 		dotDotDotWordBubble.SetActive(false);
 
 		// If Defended previous turn, remove from Defenders list
-		BattleStatusEffects.S.RemoveDefender(name, isPlayerTurn, ndx);
+		StatusEffects.S.RemoveDefender(isPlayerTurn, ndx);
 
 		BattleUI.S.TurnCursorPosition(gameObject);
 
@@ -527,9 +527,9 @@ public class Battle : MonoBehaviour {
 		for (int i = 0; i <= Party.S.partyNdx; i++) {
 			if (!playerDead[i]) {
 				// If doesn't have a status ailment...
-				if (!BattleStatusEffects.S.HasStatusAilment(Party.S.stats[i].name)) {
+				if (!StatusEffects.S.HasStatusAilment(true, i)) {
 					playerAnimator[i].CrossFade("Idle", 0);
-				} else if (BattleStatusEffects.S.CheckIfPoisoned(Party.S.stats[i].name)) {
+				} else if (StatusEffects.S.CheckIfPoisoned(true, i)) {
 					playerAnimator[i].CrossFade("Poisoned", 0);
 				}
 			} else {
@@ -546,20 +546,20 @@ public class Battle : MonoBehaviour {
 
 	bool HasAilment(string name, bool isPlayer, int ndx) {
 		// If poisoned...
-		if (BattleStatusEffects.S.CheckIfPoisoned(name)) {
-			BattleStatusEffects.S.Poisoned(name, isPlayer, ndx);
+		if (StatusEffects.S.CheckIfPoisoned(isPlayer, ndx)) {
+			StatusEffects.S.Poisoned(name, isPlayer, ndx);
 			return true;
 		}
 
 		// If paralyzed...
-		if (BattleStatusEffects.S.CheckIfParalyzed(name)) {
-			BattleStatusEffects.S.Paralyzed(name, isPlayer, ndx);
+		if (StatusEffects.S.CheckIfParalyzed(isPlayer, ndx)) {
+			StatusEffects.S.Paralyzed(name, isPlayer, ndx);
 			return true;
 		}
 
 		// If sleeping...
-		if (BattleStatusEffects.S.CheckIfSleeping(name)) {
-			BattleStatusEffects.S.Sleeping(name, isPlayer, ndx);
+		if (StatusEffects.S.CheckIfSleeping(isPlayer, ndx)) {
+			StatusEffects.S.Sleeping(name, isPlayer, ndx);
 			return true;
 		}
 		return false;
