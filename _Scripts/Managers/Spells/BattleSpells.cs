@@ -273,7 +273,7 @@ public class BattleSpells : MonoBehaviour {
 			_.attackDamage -= _.enemyStats[ndx].DEF;
 
 			// If DEFENDING, cut AttackDamage in HALF
-			BattleStatusEffects.S.CheckIfDefending(Battle.S.enemyStats[ndx].name);
+			StatusEffects.S.CheckIfDefending(false, ndx);
 
 			if (_.attackDamage < 0) {
 				_.attackDamage = 0;
@@ -346,7 +346,7 @@ public class BattleSpells : MonoBehaviour {
 				_.attackDamage -= Battle.S.enemyStats[i].DEF;
 
 				// If DEFENDING, cut AttackDamage in HALF
-				BattleStatusEffects.S.CheckIfDefending(Battle.S.enemyStats[i].name);
+				StatusEffects.S.CheckIfDefending(false, i);
 
 				if (_.attackDamage < 0) {
 					_.attackDamage = 0;
@@ -414,7 +414,7 @@ public class BattleSpells : MonoBehaviour {
 			return;
 		}
 
-		if (BattleStatusEffects.S.CheckIfPoisoned(Party.S.stats[ndx].name)) {
+		if (StatusEffects.S.CheckIfPoisoned(true, ndx)) {
 			ColorScreen.S.PlayClip("Swell", 4);
 			ColorScreen.S.targetNdx = ndx;
 			ColorScreen.S.spell = spell;
@@ -428,7 +428,7 @@ public class BattleSpells : MonoBehaviour {
 		RPG.S.SubtractPlayerMP(_.PlayerNdx(), spell.cost);
 
 		// Remove poison
-		BattleStatusEffects.S.RemovePoisoned(Party.S.stats[ndx].name, true, ndx);
+		StatusEffects.S.RemovePoisoned(true, ndx);
 
 		// Display Text
 		BattleDialogue.S.DisplayText("Used " + spell.name + " Spell!\n" + Party.S.stats[ndx].name + " is no longer poisoned!");
@@ -450,7 +450,7 @@ public class BattleSpells : MonoBehaviour {
 			return;
 		}
 
-		if (BattleStatusEffects.S.CheckIfParalyzed(Party.S.stats[ndx].name)) {
+		if (StatusEffects.S.CheckIfParalyzed(true, ndx)) {
 			ColorScreen.S.PlayClip("Swell", 5);
 			ColorScreen.S.targetNdx = ndx;
 			ColorScreen.S.spell = spell;
@@ -464,7 +464,7 @@ public class BattleSpells : MonoBehaviour {
 		RPG.S.SubtractPlayerMP(_.PlayerNdx(), spell.cost);
 
 		// Remove paralysis
-		BattleStatusEffects.S.RemoveParalyzed(Party.S.stats[ndx].name, true, ndx);
+		StatusEffects.S.RemoveParalyzed(true, ndx);
 
 		// Display Text
 		BattleDialogue.S.DisplayText("Used " + spell.name + " Spell!\n" + Party.S.stats[ndx].name + " is no longer paralyzed!");
@@ -486,7 +486,7 @@ public class BattleSpells : MonoBehaviour {
 			return;
 		}
 
-		if (BattleStatusEffects.S.CheckIfSleeping(Party.S.stats[ndx].name)) {
+		if (StatusEffects.S.CheckIfSleeping(true, ndx)) {
 			ColorScreen.S.PlayClip("Swell", 6);
 			ColorScreen.S.targetNdx = ndx;
 			ColorScreen.S.spell = spell;
@@ -500,7 +500,7 @@ public class BattleSpells : MonoBehaviour {
 		RPG.S.SubtractPlayerMP(_.PlayerNdx(), spell.cost);
 
 		// Remove sleeping
-		BattleStatusEffects.S.RemoveSleeping(Party.S.stats[ndx].name, true, ndx);
+		StatusEffects.S.RemoveSleeping(true, ndx);
 
 		// Display Text
 		BattleDialogue.S.DisplayText("Used " + spell.name + " Spell!\n" + Party.S.stats[ndx].name + " is no longer sleeping!");
@@ -521,7 +521,7 @@ public class BattleSpells : MonoBehaviour {
 	public void AttemptPoisonSinglePartyMember(int ndx, Spell spell) {
 		SpellHelper();
 
-		if (!BattleStatusEffects.S.CheckIfPoisoned(_.enemyStats[ndx].name)) {
+		if (!StatusEffects.S.CheckIfPoisoned(false, ndx)) {
 			ColorScreen.S.PlayClip("Flicker", 4);
 			ColorScreen.S.targetNdx = ndx;
 			ColorScreen.S.spell = spell;
@@ -536,14 +536,14 @@ public class BattleSpells : MonoBehaviour {
 		DamageEnemyAnimation(ndx);
 
 		// Poison enemy
-		BattleStatusEffects.S.AddPoisoned(_.enemyStats[ndx].name, ndx);
+		StatusEffects.S.AddPoisoned(ndx);
 	}
 
 	// Paralyze
 	public void AttemptParalyzeSinglePartyMember(int ndx, Spell spell) {
 		SpellHelper();
 
-		if (!BattleStatusEffects.S.CheckIfParalyzed(_.enemyStats[ndx].name)) {
+		if (!StatusEffects.S.CheckIfParalyzed(false, ndx)) {
 			ColorScreen.S.PlayClip("Flicker", 5);
 			ColorScreen.S.targetNdx = ndx;
 			ColorScreen.S.spell = spell;
@@ -558,14 +558,14 @@ public class BattleSpells : MonoBehaviour {
 		DamageEnemyAnimation(ndx);
 
 		// Paralyze enemy
-		BattleStatusEffects.S.AddParalyzed(_.enemyStats[ndx].name, ndx);
+		StatusEffects.S.AddParalyzed(ndx);
 	}
 
 	// Sleep
 	public void AttemptSleepSinglePartyMember(int ndx, Spell spell) {
 		SpellHelper();
 
-		if (!BattleStatusEffects.S.CheckIfSleeping(_.enemyStats[ndx].name)) {
+		if (!StatusEffects.S.CheckIfSleeping(false, ndx)) {
 			ColorScreen.S.PlayClip("Flicker", 6);
 			ColorScreen.S.targetNdx = ndx;
 			ColorScreen.S.spell = spell;
@@ -580,7 +580,7 @@ public class BattleSpells : MonoBehaviour {
 		DamageEnemyAnimation(ndx);
 
 		// Put enemy to sleep 
-		BattleStatusEffects.S.AddSleeping(_.enemyStats[ndx].name, ndx);
+		StatusEffects.S.AddSleeping(ndx);
 	}
 
 	////////////////////////////////////////////////////////////////////////////////////////
@@ -598,7 +598,7 @@ public class BattleSpells : MonoBehaviour {
 		AudioManager.S.PlaySFX(eSoundName.deny);
 
 		// Switch Mode
-        if (BattleStatusEffects.S.HasStatusAilment(Party.S.stats[_.PlayerNdx()].name)) {
+        if (StatusEffects.S.HasStatusAilment(true, _.PlayerNdx())) {
 			_.mode = eBattleMode.statusAilment;
 		} else {
 			_.mode = eBattleMode.playerTurn;

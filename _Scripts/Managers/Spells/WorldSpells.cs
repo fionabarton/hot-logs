@@ -110,9 +110,9 @@ public class WorldSpells : MonoBehaviour {
 	/// Detoxify - Detoxify a single party member 
 	//////////////////////////////////////////////////////////
 	public void DetoxifySelectedPartyMember(int ndx) {
-		if (StatusEffects.S.CheckIfPoisoned(Party.S.stats[ndx].name)) {
+		if (StatusEffects.S.CheckIfPoisoned(true, ndx)) {
 			// Remove poison
-			StatusEffects.S.RemovePoisoned(Party.S.stats[ndx].name, true, ndx);
+			StatusEffects.S.RemovePoisoned(true, ndx);
 
 			// Set animation to success
 			PlayerButtons.S.anim[ndx].CrossFade("Success", 0);
