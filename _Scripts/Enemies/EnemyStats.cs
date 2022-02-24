@@ -2,26 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-///////////////////// AI /////////////////////
-// 0: eEnemyAI.CallForBackup;
-// 1: eEnemyAI.DontUseMP; TO BE COMPLETED
-// 2: eEnemyAI.FightWisely;
-// 3: eEnemyAI.FocusOnAttack;
-// 4: eEnemyAI.FocusOnDefend;
-// 5: eEnemyAI.FocusOnHeal;
-// 6: eEnemyAI.Random;
-// 7: eEnemyAI.RunAway;
-// 7: eEnemyAI.Charge;
-
-///////////////////// MOVES /////////////////////
-//	0: Attack
-//	1: Defend
-//	2: Run
-//	3: Stunned
-//	4: Heal Spell
-//	5: Attack All
-//	6: Call for Backup
-
 [CreateAssetMenu(fileName = "New Enemy Stats")]
 public class EnemyStats : ScriptableObject
 {
@@ -41,7 +21,7 @@ public class EnemyStats : ScriptableObject
 	public int			LVL;
 
 	// Drop Item
-	public eItem		itemToDrop;
+	public List<eItem>	itemsToDrop = new List<eItem>();
 	public float		chanceToDrop;
 
 	// AI
