@@ -136,14 +136,20 @@ public class BattleEnd : MonoBehaviour {
 
 	public void AddDroppedItems(int ndx) {
 		if (Random.value < _.enemyStats[ndx].chanceToDrop) {
-            Inventory.S.AddItemToInventory(ItemManager.S.GetItem(_.enemyStats[ndx].itemToDrop));
+			// Get random item index
+			int randomNdx = Random.Range(0, _.enemyStats[ndx].itemsToDrop.Count);
 
-            // Add to List of Items on this script
-            _.droppedItems.Add(ItemManager.S.GetItem(_.enemyStats[ndx].itemToDrop));
+            // Add item to droppedItems list
+            _.droppedItems.Add(ItemManager.S.GetItem(_.enemyStats[ndx].itemsToDrop[randomNdx]));
 		}
     }
 
 	public void DropItem() { // For DisplayText, if (partyQty >= 1) && if (!playerDead [0]), else if (!playerDead [1])
+		// Add dropped items to inventory
+		for(int i = 0; i < _.droppedItems.Count; i++) {
+			Inventory.S.AddItemToInventory(_.droppedItems[i]);
+		}
+		
 		// Audio: Win
 		AudioManager.S.PlaySong(eSongName.win);
 
