@@ -14,7 +14,9 @@ public class EnemyMovement : MonoBehaviour {
 
 	public float		speed = 2;
 
-	public Vector2		walkZone = new Vector2(2.5f, 2.5f);
+	public Vector2		moveZone = new Vector2(2.5f, 2.5f);
+
+	public Vector2		moveDuration = new Vector2(0.25f, 0.75f);
 	public Vector2		waitDuration = new Vector2(0.75f, 1.25f);
 
     [Header("Set Dynamically")]
@@ -24,14 +26,14 @@ public class EnemyMovement : MonoBehaviour {
 	private Enemy		enemy;
 
 	// Walk Zone
-	Vector2				minWalkPoint;
-	Vector2				maxWalkPoint;
+	Vector2				minMovePoint;
+	Vector2				maxMovePoint;
 
 	public bool			canMove = true;
 
-	private bool		isWalking;
-	private int			walkDirection;
-	private int			nextWalkDirection = -1;
+	private bool		isMoving;
+	private int			moveDirection;
+	private int			nextMoveDirection = -1;
 	// 0 = right, 1 = up, 2 = left, 3 = down, 4 = Down Right, 5 = Up Right, 6 = Up Left, 7 = Down Left
 
 	private float		timer = 0;
@@ -41,15 +43,17 @@ public class EnemyMovement : MonoBehaviour {
 
 	public eMovement	cachedMode;
 
+	private Vector2		targetPos;
+
 	void Start() {
 		rigid = GetComponent<Rigidbody2D>();
 		anim = GetComponent<Animator>();
 		enemy = GetComponent<Enemy>();
 
-		minWalkPoint = new Vector2(transform.position.x - walkZone.x,
-								   transform.position.y - walkZone.y);
-		maxWalkPoint = new Vector2(transform.position.x + walkZone.x,
-								   transform.position.y + walkZone.y);
+		minMovePoint = new Vector2(transform.position.x - moveZone.x,
+								   transform.position.y - moveZone.y);
+		maxMovePoint = new Vector2(transform.position.x + moveZone.x,
+								   transform.position.y + moveZone.y);
 
 		// Flee if the enemy's level is only 33% or less of the player's level 
 		if (Utilities.S.GetPercentage(enemy.stats[0].LVL, Party.S.stats[0].LVL) <= 0.33f) {
@@ -72,8 +76,8 @@ public class EnemyMovement : MonoBehaviour {
 
 				switch (currentMode) {
 					case eMovement.randomWalk:
-						if (isWalking) {
-							switch (walkDirection) {
+						if (isMoving) {
+							switch (moveDirection) {
 								case 0: Walk(speed, 0, 2); break; //right
 								case 1: Walk(0, speed, 3); break; //up
 								case 2: Walk(-speed, 0, 0); break; //left
@@ -117,12 +121,12 @@ public class EnemyMovement : MonoBehaviour {
 						break;
 					case eMovement.pursueRun:
 						// Pursue the player
-						Pursue(gameObject, Player.S.gameObject);
+						Pursue(gameObject.transform.position, Player.S.gameObject.transform.position);
 						//Pursue(gameObject, Player.S.gameObject, speed);
 						break;
 					case eMovement.flee:
 						// Flee from the player
-						Pursue(Player.S.gameObject, gameObject);
+						Pursue(Player.S.gameObject.transform.position, gameObject.transform.position);
 						//Pursue(Player.S.gameObject, gameObject, speed * -1);
 						break;
 					case eMovement.reverse:
@@ -134,15 +138,18 @@ public class EnemyMovement : MonoBehaviour {
 							StartWalking();
 						}
 						break;
-					case eMovement.pursueWait:
-						if (isWalking) {
+					case eMovement.pursueWait: // Pursue target, then wait
+						if (isMoving) {
 							// Pursue the player
-							Pursue(gameObject, Player.S.gameObject);
+							Pursue(gameObject.transform.position, Player.S.gameObject.transform.position);
 
 							// Decrement timer to start waiting
 							timer -= Time.deltaTime;
 
                             if (timer < 0) {
+								// Reset target position
+								//targetPos = Player.S.gameObject.transform.position;
+
                                 StartWaiting();
                             }
                         } else {
@@ -151,10 +158,23 @@ public class EnemyMovement : MonoBehaviour {
 							rigid.velocity = Vector2.zero;
 
 							if (timer < 0) {
-								anim.speed = 1;
-								isWalking = true;
-								timer = Random.Range(waitDuration.x, waitDuration.y);
+								StartWalking(false);
 							}
+						}
+						break;
+					case eMovement.pursueDelayedTargetPos: // Update target position intermittently
+						// Pursue the player
+						Pursue(gameObject.transform.position, targetPos);
+
+						// Decrement timer 
+						timer -= Time.deltaTime;
+
+						if (timer < 0) {
+							// Reset target position
+							targetPos = Player.S.gameObject.transform.position;
+
+							// Reset timer
+							timer = Random.Range(waitDuration.x, waitDuration.y);
 						}
 						break;
 				}
@@ -170,48 +190,53 @@ public class EnemyMovement : MonoBehaviour {
 	}
 
 	// Walk
-	public void StartWalking() {
+	public void StartWalking(bool selectNewDirection = true) {
 		anim.speed = 1;
-		isWalking = true;
-		timer = Random.Range(waitDuration.x, waitDuration.y);
+		isMoving = true;
+		timer = Random.Range(moveDuration.x, moveDuration.y);
 
-		// Set walkDirection
-		if (nextWalkDirection == -1) {
-			// Select random direction
-			walkDirection = Random.Range(0, 8);
-		} else {
-			walkDirection = nextWalkDirection;
-			// Reset nextWalkDirection 
-			nextWalkDirection = -1;
+        // Set walkDirection
+        if (selectNewDirection) {
+			if (nextMoveDirection == -1) {
+				// Select random direction
+				moveDirection = Random.Range(0, 8);
+			} else {
+				moveDirection = nextMoveDirection;
+				// Reset nextWalkDirection 
+				nextMoveDirection = -1;
+			}
 		}
 	}
 
 	// Wait
 	public void StartWaiting() {
 		anim.speed = 0;
-		isWalking = false;
+		isMoving = false;
 		timer = Random.Range(waitDuration.x, waitDuration.y);
 	}
 
-	void Walk(float xVelocity, float yVelocity, int nextDirection) {
+	void Walk(float xVelocity, float yVelocity, int oppositeDirection) {
+		// Enemy is outside of bounds
+		//if (transform.position.x < minMovePoint.x || transform.position.x > maxMovePoint.x ||
+		//	transform.position.y < minMovePoint.y || transform.position.y > maxMovePoint.y) {
+		//	nextMoveDirection = oppositeDirection;
+		//	StartWaiting();
+		//}
+
+		// Move enemy
 		rigid.velocity = new Vector2(xVelocity, yVelocity);
-		if (transform.position.x <= minWalkPoint.x || transform.position.x >= maxWalkPoint.x ||
-			transform.position.y <= minWalkPoint.y || transform.position.y >= maxWalkPoint.y) {
-			StartWaiting();
-			nextWalkDirection = nextDirection;
-		}
 	}
 
 	// My implementation
-	void Pursue(GameObject hunter, GameObject chase) {
-		if (hunter.transform.position.x >= chase.transform.position.x) {
-			if (hunter.transform.position.y >= chase.transform.position.y) {
+	void Pursue(Vector2 hunter, Vector2 chase) {
+		if (hunter.x >= chase.x) {
+			if (hunter.y >= chase.y) {
 				rigid.velocity = new Vector2(-speed, -speed); // Left/Down
 			} else {
 				rigid.velocity = new Vector2(-speed, speed); // Left/Up
 			}
 		} else {
-			if (hunter.transform.position.y >= chase.transform.position.y) {
+			if (hunter.y >= chase.y) {
 				rigid.velocity = new Vector2(speed, -speed); // Right/Down
 			} else {
 				rigid.velocity = new Vector2(speed, speed); // Right/Up
@@ -260,11 +285,11 @@ public class EnemyMovement : MonoBehaviour {
 
 				// Randomly select direction
 				if (selectRandomDirection) {
-					walkDirection = Random.Range(0, 8);
+					moveDirection = Random.Range(0, 8);
 				}
 
 				// Go in opposite direction
-				switch (walkDirection) {
+				switch (moveDirection) {
 					case 0: rigid.velocity = new Vector2(-speed, 0); break;
 					case 1: rigid.velocity = new Vector2(0, -speed); break;
 					case 2: rigid.velocity = new Vector2(speed, 0); break;
