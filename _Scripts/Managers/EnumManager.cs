@@ -21,7 +21,7 @@ public enum eGroundType { desert, dirt, grass, sand, snow };
 
 public enum eItemScreenMode { pickItem, pickPartyMember, pickAllPartyMembers, usedItem, pickWhereToWarp };
 
-public enum eMovement { randomWalk, patrol, pursueWalk, pursueRun, pursueWait, flee, idle, reverse, auto };
+public enum eMovement { randomWalk, patrol, pursueWalk, pursueRun, pursueWait, pursueDelayedTargetPos, flee, idle, reverse, auto };
 
 public enum eParallax { autoScroll, scrollWithPlayer, childedToPlayer };
 
