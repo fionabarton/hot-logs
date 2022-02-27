@@ -41,8 +41,23 @@ public class SpellScreen : MonoBehaviour {
 	private bool			verticalAxisIsInUse;
 	private bool			firstOrLastSlotSelected;
 
+	public PickWhichSpellsToDisplay pickWhichSpellsToDisplay;
+	public PickSpell				pickSpell;
+	public DoesntKnowSpells			doesntKnowSpells;
+	public PickWhichMemberToHeal	pickWhichMemberToHeal;
+	public UsedSpell				usedSpell;
+	public CantUseSpell				cantUseSpell;
+
 	void Awake() {
 		S = this;
+
+		// Get components
+		pickWhichSpellsToDisplay = GetComponent<PickWhichSpellsToDisplay>();
+		pickSpell = GetComponent<PickSpell>();
+		doesntKnowSpells = GetComponent<DoesntKnowSpells>();
+		pickWhichMemberToHeal = GetComponent<PickWhichMemberToHeal>();
+		usedSpell = GetComponent<UsedSpell>();
+		cantUseSpell = GetComponent<CantUseSpell>();
 	}
 
 	void OnEnable () {
@@ -55,12 +70,13 @@ public class SpellScreen : MonoBehaviour {
 
 			firstSlotNdx = 0;
 
-			SpellScreen_PickWhichSpellsToDisplay.S.Setup(S);
+			pickWhichSpellsToDisplay.Setup(S);
 
 			// Add Loop() to Update Delgate
 			UpdateManager.updateDelegate += Loop;
+		} catch (Exception e) {
+			Debug.Log(e);
 		}
-		catch (NullReferenceException) { }
 	}
 
 	public void Activate() {
@@ -142,7 +158,7 @@ public class SpellScreen : MonoBehaviour {
 
 		switch (mode) {
 		case eSpellScreenMode.pickWhichSpellsToDisplay:
-			SpellScreen_PickWhichSpellsToDisplay.S.Loop(S);
+			pickWhichSpellsToDisplay.Loop(S);
 		break;
 		case eSpellScreenMode.pickSpell:
 			// On vertical input, scroll the item list when the first or last slot is selected
@@ -150,13 +166,13 @@ public class SpellScreen : MonoBehaviour {
 				ScrollSpellList();
 			}
 
-			SpellScreen_PickSpell.S.Loop(S);
+			pickSpell.Loop(S);
 		break;
 		case eSpellScreenMode.doesntKnowSpells:
-			SpellScreen_DoesntKnowSpells.S.Loop(S);
+			doesntKnowSpells.Loop(S);
 		break;
 		case eSpellScreenMode.pickWhichMemberToHeal:
-			SpellScreen_PickWhichMemberToHeal.S.Loop(S);
+			pickWhichMemberToHeal.Loop(S);
 		break;
 		case eSpellScreenMode.pickAllMembersToHeal:
 			if (Input.GetButtonDown("SNES Y Button")) {
@@ -178,11 +194,11 @@ public class SpellScreen : MonoBehaviour {
 			}
 		break;
 		case eSpellScreenMode.usedSpell:
-			SpellScreen_UsedSpell.S.Loop(S);
+			usedSpell.Loop(S);
 		break;
 		// During Battle... "Not Enough MP Message", then back to Player Turn w/ Button Press
 		case eSpellScreenMode.cantUseSpell:
-			SpellScreen_CantUseSpell.S.Loop(S);
+			cantUseSpell.Loop(S);
 		break;
 		}
 	}

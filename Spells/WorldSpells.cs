@@ -28,7 +28,7 @@ public class WorldSpells : MonoBehaviour {
 			Utilities.S.SetSelectedGO(SpellScreen.S.previousSelectedPlayerGO);
 
 			// Set previously selected GameObject
-			SpellScreen_PickWhichMemberToHeal.S.previousSelectedPlayerGO = SpellScreen.S.previousSelectedPlayerGO;
+			SpellScreen.S.pickWhichMemberToHeal.previousSelectedPlayerGO = SpellScreen.S.previousSelectedPlayerGO;
 
 			// Display Text
 			PauseMessage.S.DisplayText(messageToDisplay);
