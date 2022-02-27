@@ -7,14 +7,6 @@ using System;
 /// Outside of battle, handles what happens when a spell button is clicked
 /// </summary>
 public class WorldSpells : MonoBehaviour {
-	[Header("Set Dynamically")]
-	private static WorldSpells _S;
-	public static WorldSpells S { get { return _S; } set { _S = value; } }
-
-	void Awake() {
-		S = this;
-	}
-
     public void AddFunctionToButton(Action<int> functionToPass, string messageToDisplay, Spell spell) {
 		if (Party.S.stats[SpellScreen.S.playerNdx].MP >= spell.cost) {
 			// Audio: Confirm
@@ -40,7 +32,7 @@ public class WorldSpells : MonoBehaviour {
 
 			SpellScreen.S.canUpdate = true;
 		} else {
-			SpellManager.S.CantUseSpell("Not enough MP to cast this spell!");
+			SpellScreen.S.spellManager.CantUseSpell("Not enough MP to cast this spell!");
 			return;
 		}
 
@@ -103,7 +95,7 @@ public class WorldSpells : MonoBehaviour {
 			// Audio: Deny
 			AudioManager.S.PlaySFX(eSoundName.deny);
 		}
-		SpellManager.S.SpellHelper();
+		SpellScreen.S.spellManager.SpellHelper();
 	}
 
 	//////////////////////////////////////////////////////////
@@ -138,7 +130,7 @@ public class WorldSpells : MonoBehaviour {
 			// Audio: Deny
 			AudioManager.S.PlaySFX(eSoundName.deny);
 		}
-		SpellManager.S.SpellHelper();
+		SpellScreen.S.spellManager.SpellHelper();
 	}
 
 	//////////////////////////////////////////////////////////
@@ -166,7 +158,7 @@ public class WorldSpells : MonoBehaviour {
 			// Audio: Confirm
 			AudioManager.S.PlaySFX(eSoundName.confirm);
 		} else {
-			SpellManager.S.CantUseSpell("Not enough MP to cast this spell!");
+			SpellScreen.S.spellManager.CantUseSpell("Not enough MP to cast this spell!");
 		}
 	}
 
@@ -230,6 +222,6 @@ public class WorldSpells : MonoBehaviour {
 		// Deactivate screen cursors
 		Utilities.S.SetActiveList(ScreenCursor.S.cursorGO, false);
 
-		SpellManager.S.SpellHelper();
+		SpellScreen.S.spellManager.SpellHelper();
 	}
 }

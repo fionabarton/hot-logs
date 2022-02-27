@@ -11,14 +11,7 @@ public class BattleSpells : MonoBehaviour {
 	int amountToHeal;
 	int maxAmountToHeal;
 
-	private static BattleSpells _S;
-	public static BattleSpells S { get { return _S; } set { _S = value; } }
-
 	private Battle _;
-
-	void Awake() {
-		S = this;
-	}
 
 	void Start() {
 		_ = Battle.S;
@@ -69,7 +62,7 @@ public class BattleSpells : MonoBehaviour {
 				}
 			}
 		} else {
-			SpellManager.S.CantUseSpell("Not enough MP to cast this spell!");
+			SpellScreen.S.spellManager.CantUseSpell("Not enough MP to cast this spell!");
 			return;
 		}
 

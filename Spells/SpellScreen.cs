@@ -41,23 +41,30 @@ public class SpellScreen : MonoBehaviour {
 	private bool			verticalAxisIsInUse;
 	private bool			firstOrLastSlotSelected;
 
+	public SpellManager				spellManager;
 	public PickWhichSpellsToDisplay pickWhichSpellsToDisplay;
 	public PickSpell				pickSpell;
 	public DoesntKnowSpells			doesntKnowSpells;
 	public PickWhichMemberToHeal	pickWhichMemberToHeal;
 	public UsedSpell				usedSpell;
 	public CantUseSpell				cantUseSpell;
+	public BattleSpells				battleSpells;
+	public WorldSpells				worldSpells;
 
 	void Awake() {
 		S = this;
 
 		// Get components
+		
 		pickWhichSpellsToDisplay = GetComponent<PickWhichSpellsToDisplay>();
 		pickSpell = GetComponent<PickSpell>();
 		doesntKnowSpells = GetComponent<DoesntKnowSpells>();
 		pickWhichMemberToHeal = GetComponent<PickWhichMemberToHeal>();
 		usedSpell = GetComponent<UsedSpell>();
 		cantUseSpell = GetComponent<CantUseSpell>();
+		battleSpells = GetComponent<BattleSpells>();
+		worldSpells = GetComponent<WorldSpells>();
+		spellManager = GetComponent<SpellManager>();
 	}
 
 	void OnEnable () {
@@ -458,41 +465,41 @@ public class SpellScreen : MonoBehaviour {
 
 		if (GameManager.S.currentScene == "Battle") { // if Battle
 			if (spell.name == "Heal") {
-				BattleSpells.S.AddFunctionToButton(BattleSpells.S.AttemptHealSinglePartyMember, "Heal which party member?", spell);
+				battleSpells.AddFunctionToButton(battleSpells.AttemptHealSinglePartyMember, "Heal which party member?", spell);
 			} else if (spell.name == "Fireball") {
-				BattleSpells.S.AddFunctionToButton(BattleSpells.S.AttemptAttackSelectedEnemy, "Attack which enemy?", spell);
+				battleSpells.AddFunctionToButton(battleSpells.AttemptAttackSelectedEnemy, "Attack which enemy?", spell);
 			} else if (spell.name == "Fireblast") {
-				BattleSpells.S.AddFunctionToButton(BattleSpells.S.AttemptAttackAllEnemies, "Attack all enemies?", spell);
+				battleSpells.AddFunctionToButton(battleSpells.AttemptAttackAllEnemies, "Attack all enemies?", spell);
 			} else if (spell.name == "Heal All") {
-				BattleSpells.S.AddFunctionToButton(BattleSpells.S.AttemptHealAll, "Heal all party members?", spell);
+				battleSpells.AddFunctionToButton(battleSpells.AttemptHealAll, "Heal all party members?", spell);
 			} else if (spell.name == "Revive") {
-				BattleSpells.S.AddFunctionToButton(BattleSpells.S.AttemptReviveSelectedPartyMember, "Revive which party member?", spell);
+				battleSpells.AddFunctionToButton(battleSpells.AttemptReviveSelectedPartyMember, "Revive which party member?", spell);
 			} else if (spell.name == "Detoxify") {
-				BattleSpells.S.AddFunctionToButton(BattleSpells.S.AttemptDetoxifySinglePartyMember, "Detoxify which poisoned party member?", spell);
+				battleSpells.AddFunctionToButton(battleSpells.AttemptDetoxifySinglePartyMember, "Detoxify which poisoned party member?", spell);
 			} else if (spell.name == "Mobilize") {
-				BattleSpells.S.AddFunctionToButton(BattleSpells.S.AttemptMobilizeSinglePartyMember, "Restore the mobility of which paralyzed party member?", spell);
+				battleSpells.AddFunctionToButton(battleSpells.AttemptMobilizeSinglePartyMember, "Restore the mobility of which paralyzed party member?", spell);
 			} else if (spell.name == "Wake") {
-				BattleSpells.S.AddFunctionToButton(BattleSpells.S.AttemptWakeSinglePartyMember, "Wake up which sleeping party member?", spell);
+				battleSpells.AddFunctionToButton(battleSpells.AttemptWakeSinglePartyMember, "Wake up which sleeping party member?", spell);
 			} else if (spell.name == "Poison") {
-				BattleSpells.S.AddFunctionToButton(BattleSpells.S.AttemptPoisonSinglePartyMember, "Indefinitely poison which enemy?", spell);
+				battleSpells.AddFunctionToButton(battleSpells.AttemptPoisonSinglePartyMember, "Indefinitely poison which enemy?", spell);
 			} else if (spell.name == "Paralyze") {
-				BattleSpells.S.AddFunctionToButton(BattleSpells.S.AttemptParalyzeSinglePartyMember, "Temporarily paralyze which enemy?", spell);
+				battleSpells.AddFunctionToButton(battleSpells.AttemptParalyzeSinglePartyMember, "Temporarily paralyze which enemy?", spell);
 			} else if (spell.name == "Sleep") {
-				BattleSpells.S.AddFunctionToButton(BattleSpells.S.AttemptSleepSinglePartyMember, "Temporarily put which enemy to sleep?", spell);
+				battleSpells.AddFunctionToButton(battleSpells.AttemptSleepSinglePartyMember, "Temporarily put which enemy to sleep?", spell);
 			} else {
-				SpellManager.S.CantUseSpell("Can't use this spell during battle!");
+				SpellScreen.S.spellManager.CantUseSpell("Can't use this spell during battle!");
 			}
 		} else { // if Overworld
 			if (spell.name == "Heal") {
-				WorldSpells.S.AddFunctionToButton(WorldSpells.S.HealSelectedPartyMember, "Heal which party member?", spell);
+				worldSpells.AddFunctionToButton(worldSpells.HealSelectedPartyMember, "Heal which party member?", spell);
 			} else if (spell.name == "Warp") {
-				WorldSpells.S.WarpSpell();
+				worldSpells.WarpSpell();
 			} else if (spell.name == "Heal All") {
-				WorldSpells.S.AddFunctionToButton(WorldSpells.S.HealAllPartyMembers, "Heal all party members?", spell);
+				worldSpells.AddFunctionToButton(worldSpells.HealAllPartyMembers, "Heal all party members?", spell);
 			} else if (spell.name == "Detoxify") {
-				WorldSpells.S.AddFunctionToButton(WorldSpells.S.DetoxifySelectedPartyMember, "Detoxify which poisoned party member?", spell);
+				worldSpells.AddFunctionToButton(worldSpells.DetoxifySelectedPartyMember, "Detoxify which poisoned party member?", spell);
 			} else {
-				SpellManager.S.CantUseSpell("You ain't battlin' no one, so ya can't use this spell!");
+				SpellScreen.S.spellManager.CantUseSpell("You ain't battlin' no one, so ya can't use this spell!");
 			}
 		}
 	}

@@ -3,15 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class SpellManager : MonoBehaviour {
-    [Header("Set Dynamically")]
-    private static SpellManager _S;
-    public static SpellManager S { get { return _S; } set { _S = value; } }
-
 	public Spell[] spells;
 
 	void Awake() {
-        S = this;
-
 		spells = new Spell[20];
 
 		// Heal
