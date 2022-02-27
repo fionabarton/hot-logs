@@ -108,7 +108,7 @@ public class BattlePlayerActions : MonoBehaviour {
 			_.playerAnimator[_.animNdx].CrossFade("Attack", 0);
 		}
 
-		BattleSpells.S.DamageEnemyAnimation(ndx, true, false);
+		SpellScreen.S.battleSpells.DamageEnemyAnimation(ndx, true, false);
 
 		// Enemy Death or Next Turn
 		if (_.enemyStats[ndx].HP < 1) {
