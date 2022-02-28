@@ -11,14 +11,7 @@ public class BattleItems : MonoBehaviour {
 	int amountToHeal;
 	int maxAmountToHeal;
 
-	private static BattleItems _S;
-	public static BattleItems S { get { return _S; } set { _S = value; } }
-
 	private Battle _;
-
-	void Awake() {
-		S = this;
-	}
 
 	void Start () {
 		_ = Battle.S;

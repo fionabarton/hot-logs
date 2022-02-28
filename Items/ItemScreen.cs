@@ -37,8 +37,23 @@ public class ItemScreen : MonoBehaviour {
 	private bool			verticalAxisIsInUse;
 	private bool			firstOrLastSlotSelected;
 
+	//public ItemManager			itemManager;
+	public PickItemMode			pickItemMode;
+	public PickPartyMemberMode	pickPartyMemberMode;
+	public UsedItemMode			usedItemMode;
+	public BattleItems			battleItems;
+	public WorldItems			worldItems;
+
 	void Awake() {
 		S = this;
+
+		// Get components
+		//itemManager = GetComponent<ItemManager>();
+		pickItemMode = GetComponent<PickItemMode>();
+		pickPartyMemberMode = GetComponent<PickPartyMemberMode>();
+		usedItemMode = GetComponent<UsedItemMode>();
+		battleItems = GetComponent<BattleItems>();
+		worldItems = GetComponent<WorldItems>();
 	}
 
 	public void OnEnable () {
@@ -47,7 +62,7 @@ public class ItemScreen : MonoBehaviour {
 
 		firstSlotNdx = 0;
 
-		ItemScreen_PickItemMode.S.Setup(S);
+		pickItemMode.Setup(S);
 
 		// Add Loop() to Update Delgate
 		UpdateManager.updateDelegate += Loop;
@@ -121,10 +136,10 @@ public class ItemScreen : MonoBehaviour {
 					ScrollItemList();
 				}
 
-				ItemScreen_PickItemMode.S.Loop(S);
+				pickItemMode.Loop(S);
 				break;
 			case eItemScreenMode.pickPartyMember:
-				ItemScreen_PickPartyMemberMode.S.Loop(S);
+				pickPartyMemberMode.Loop(S);
 			break;
 			case eItemScreenMode.pickAllPartyMembers:
 				if (Input.GetButtonDown("SNES Y Button")) {
@@ -141,7 +156,7 @@ public class ItemScreen : MonoBehaviour {
 				}
 				break;
 			case eItemScreenMode.usedItem:
-				ItemScreen_UsedItemMode.S.Loop(S);
+				usedItemMode.Loop(S);
 			break;
 		}
 
@@ -229,7 +244,7 @@ public class ItemScreen : MonoBehaviour {
 			AudioManager.S.PlaySFX(eSoundName.deny);
 
 			// Go back to PickItem mode
-			ItemScreen_PickItemMode.S.Setup(S);
+			pickItemMode.Setup(S);
 		}
 	}
 
@@ -261,35 +276,35 @@ public class ItemScreen : MonoBehaviour {
 
 			if (GameManager.S.currentScene == "Battle") { // if Battle
 				if (item.name == "Health Potion") {
-					BattleItems.S.AddFunctionToButton(BattleItems.S.HPPotion, "Use potion on which party member?", item);
+					battleItems.AddFunctionToButton(battleItems.HPPotion, "Use potion on which party member?", item);
 				} else if (item.name == "Magic Potion") {
-					BattleItems.S.AddFunctionToButton(BattleItems.S.MPPotion, "Use potion on which party member?", item);
+					battleItems.AddFunctionToButton(battleItems.MPPotion, "Use potion on which party member?", item);
 				} else if (item.name == "Heal All Potion") {
-					BattleItems.S.AddFunctionToButton(BattleItems.S.HealAllPotion, "Use potion to heal all party members?", item);
+					battleItems.AddFunctionToButton(battleItems.HealAllPotion, "Use potion to heal all party members?", item);
 				} else if (item.name == "Revive Potion") {
-					BattleItems.S.AddFunctionToButton(BattleItems.S.RevivePotion, "Use potion to revive which party member?", item);
+					battleItems.AddFunctionToButton(battleItems.RevivePotion, "Use potion to revive which party member?", item);
 				} else if (item.name == "Detoxify Potion") {
-					BattleItems.S.AddFunctionToButton(BattleItems.S.DetoxifyPotion, "Use potion to detoxify which poisoned party member?", item);
+					battleItems.AddFunctionToButton(battleItems.DetoxifyPotion, "Use potion to detoxify which poisoned party member?", item);
 				} else if (item.name == "Mobilize Potion") {
-					BattleItems.S.AddFunctionToButton(BattleItems.S.MobilizePotion, "Use potion to restore the mobility of which paralyzed party member?", item);
+					battleItems.AddFunctionToButton(battleItems.MobilizePotion, "Use potion to restore the mobility of which paralyzed party member?", item);
 				} else if (item.name == "Wake Potion") {
-					BattleItems.S.AddFunctionToButton(BattleItems.S.WakePotion, "Use potion to wake up which sleeping party member?", item);
+					battleItems.AddFunctionToButton(battleItems.WakePotion, "Use potion to wake up which sleeping party member?", item);
 				} else {
-					BattleItems.S.CantUseItemInBattle();
+					battleItems.CantUseItemInBattle();
 				}
 			} else { // if Overworld
 				if (item.name == "Health Potion") {
-					WorldItems.S.AddFunctionToButton(WorldItems.S.HPPotion, "Heal which party member?", item);
+					worldItems.AddFunctionToButton(worldItems.HPPotion, "Heal which party member?", item);
 				} else if (item.name == "Magic Potion") {
-					WorldItems.S.AddFunctionToButton(WorldItems.S.MPPotion, "Use MP potion on which party member?", item);
+					worldItems.AddFunctionToButton(worldItems.MPPotion, "Use MP potion on which party member?", item);
 				} else if (item.name == "Detoxify Potion") {
-					WorldItems.S.AddFunctionToButton(WorldItems.S.DetoxifyPotion, "Use potion to detoxify which poisoned party member?", item);
+					worldItems.AddFunctionToButton(worldItems.DetoxifyPotion, "Use potion to detoxify which poisoned party member?", item);
 				} else if (item.name == "Heal All Potion") {
-					WorldItems.S.AddFunctionToButton(WorldItems.S.HealAllPotion, "Use potion to heal all party members?", item);
+					worldItems.AddFunctionToButton(worldItems.HealAllPotion, "Use potion to heal all party members?", item);
 				} else if (item.name == "Warp Potion") {
-					WorldItems.S.WarpPotion();
+					worldItems.WarpPotion();
 				} else {
-					WorldItems.S.CantUseItem();
+					worldItems.CantUseItem();
 				}
 			}
 		}

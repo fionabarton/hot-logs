@@ -7,15 +7,6 @@ using System;
 /// Outside of battle, handles what happens when an item button is clicked
 /// </summary>
 public class WorldItems : MonoBehaviour {
-	[Header("Set Dynamically")]
-	// Singleton
-	private static WorldItems _S;
-	public static WorldItems S { get { return _S; } set { _S = value; } }
-
-	void Awake() {
-		S = this;
-	}
-
 	public void AddFunctionToButton(Action<int> functionToPass, string messageToDisplay, Item item) { 
 		// Buttons Interactable
 		Utilities.S.ButtonsInteractable(PlayerButtons.S.buttonsCS, true);
@@ -25,7 +16,7 @@ public class WorldItems : MonoBehaviour {
 		Utilities.S.SetSelectedGO(PlayerButtons.S.buttonsCS[0].gameObject);
 
 		// Set previously selected GameObject
-		ItemScreen_PickPartyMemberMode.S.previousSelectedPlayerGO = PlayerButtons.S.buttonsCS[0].gameObject;
+		ItemScreen.S.pickPartyMemberMode.previousSelectedPlayerGO = PlayerButtons.S.buttonsCS[0].gameObject;
 
 		// Remove Listeners
 		Utilities.S.RemoveListeners(PlayerButtons.S.buttonsCS);
