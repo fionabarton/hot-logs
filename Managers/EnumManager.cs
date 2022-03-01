@@ -19,7 +19,15 @@ public enum eEquipScreenMode { pickPartyMember, pickTypeToEquip, noInventory, pi
 
 public enum eGroundType { desert, dirt, grass, sand, snow };
 
-public enum eItemScreenMode { pickItem, pickPartyMember, pickAllPartyMembers, usedItem, pickWhereToWarp };
+public enum eItem {
+    hpPotion, mpPotion, paperSword, crap, nothing, paperArmor, paperHelmet, paperOther, woodenSword,
+    paperWand, berry, smallKey, bug1, bug2, bug3, bug4, bug5, bug6,
+    defaultWeapon, defaultArmor, defaultHelmet, defaultAccessory,
+    healAllPotion, warpPotion, revivePotion, detoxifyPotion
+};
+public enum eItemMenuMode { pickItem, pickPartyMember, pickAllPartyMembers, usedItem, pickWhereToWarp };
+public enum eItemStatEffect { HP, MP, STR, DEF, WIS, AGI, nothing };
+public enum eItemType { Weapon, Armor, Helmet, Accessory, Consumable, Ingredient, Important, Useless };
 
 public enum eMovement { randomWalk, patrol, pursueWalk, pursueRun, pursueWait, pursueDelayedTargetPos, flee, idle, reverse, auto };
 
