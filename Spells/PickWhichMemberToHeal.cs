@@ -11,7 +11,7 @@ public class PickWhichMemberToHeal : MonoBehaviour {
 	// Ensures audio is only played once when button is selected
 	public GameObject previousSelectedPlayerGO;
 
-	public void Loop(SpellScreen spellScreen) {
+	public void Loop(SpellMenu spellScreen) {
 		if (spellScreen.canUpdate) {
 			Utilities.S.PositionCursor(UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject, 0, 60, 3);
 

@@ -20,7 +20,7 @@ public class PickWhichSpellsToDisplay : MonoBehaviour {
  //       S = this;
  //   }
 
-	public void Setup(SpellScreen spellScreen) {
+	public void Setup(SpellMenu spellScreen) {
 		spellScreen.firstSlotNdx = 0;
 
 		try {
@@ -28,7 +28,7 @@ public class PickWhichSpellsToDisplay : MonoBehaviour {
 				// Buttons Interactable
 				Utilities.S.ButtonsInteractable(PlayerButtons.S.buttonsCS, true);
 				Utilities.S.ButtonsInteractable(spellScreen.spellsButtons, false);
-				Utilities.S.ButtonsInteractable(PauseScreen.S.buttonCS, false);
+				Utilities.S.ButtonsInteractable(PauseMenu.S.buttonCS, false);
 
 				spellScreen.canUpdate = true;
 
@@ -68,7 +68,7 @@ public class PickWhichSpellsToDisplay : MonoBehaviour {
 		}
 	}
 
-	public void Loop(SpellScreen spellScreen) {
+	public void Loop(SpellMenu spellScreen) {
 		if (spellScreen.canUpdate) {
 			// Display each Member's Spells
 			for (int i = 0; i < PlayerButtons.S.buttonsCS.Count; i++) {

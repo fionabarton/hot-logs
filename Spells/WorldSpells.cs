@@ -8,19 +8,19 @@ using System;
 /// </summary>
 public class WorldSpells : MonoBehaviour {
     public void AddFunctionToButton(Action<int> functionToPass, string messageToDisplay, Spell spell) {
-		if (Party.S.stats[SpellScreen.S.playerNdx].MP >= spell.cost) {
+		if (Party.S.stats[Spells.S.menu.playerNdx].MP >= spell.cost) {
 			// Audio: Confirm
 			AudioManager.S.PlaySFX(eSoundName.confirm);
 
 			// Buttons Interactable
 			Utilities.S.ButtonsInteractable(PlayerButtons.S.buttonsCS, true);
-			Utilities.S.ButtonsInteractable(SpellScreen.S.spellsButtons, false);
+			Utilities.S.ButtonsInteractable(Spells.S.menu.spellsButtons, false);
 
 			// Set Selected GameObject
-			Utilities.S.SetSelectedGO(SpellScreen.S.previousSelectedPlayerGO);
+			Utilities.S.SetSelectedGO(Spells.S.menu.previousSelectedPlayerGO);
 
 			// Set previously selected GameObject
-			SpellScreen.S.pickWhichMemberToHeal.previousSelectedPlayerGO = SpellScreen.S.previousSelectedPlayerGO;
+			Spells.S.menu.pickWhichMemberToHeal.previousSelectedPlayerGO = Spells.S.menu.previousSelectedPlayerGO;
 
 			// Display Text
 			PauseMessage.S.DisplayText(messageToDisplay);
@@ -30,9 +30,9 @@ public class WorldSpells : MonoBehaviour {
 			PlayerButtons.S.buttonsCS[1].onClick.AddListener(delegate { functionToPass(1); });
 			PlayerButtons.S.buttonsCS[2].onClick.AddListener(delegate { functionToPass(2); });
 
-			SpellScreen.S.canUpdate = true;
+			Spells.S.menu.canUpdate = true;
 		} else {
-			SpellScreen.S.spellManager.CantUseSpell("Not enough MP to cast this spell!");
+			Spells.S.CantUseSpell("Not enough MP to cast this spell!");
 			return;
 		}
 
@@ -41,7 +41,7 @@ public class WorldSpells : MonoBehaviour {
 			// Set animation to idle
 			PlayerButtons.S.SetSelectedAnim("Idle");
 
-			SpellScreen.S.mode = eSpellScreenMode.pickWhichMemberToHeal;
+			Spells.S.menu.mode = eSpellScreenMode.pickWhichMemberToHeal;
 		} else {
 			for (int i = 0; i <= Party.S.partyNdx; i++) {
 				// Set cursor positions
@@ -57,7 +57,7 @@ public class WorldSpells : MonoBehaviour {
 			// Set button colors
 			PlayerButtons.S.SetButtonsColor(PlayerButtons.S.buttonsCS, new Color32(253, 255, 116, 255));
 
-			SpellScreen.S.mode = eSpellScreenMode.pickAllMembersToHeal;
+			Spells.S.menu.mode = eSpellScreenMode.pickAllMembersToHeal;
 		}
 	}
 
@@ -70,7 +70,7 @@ public class WorldSpells : MonoBehaviour {
 			PlayerButtons.S.anim[ndx].CrossFade("Success", 0);
 
 			// Subtract Spell cost from CASTING Player's MP 
-			GameManager.S.SubtractPlayerMP(SpellScreen.S.playerNdx, 3);
+			GameManager.S.SubtractPlayerMP(Spells.S.menu.playerNdx, 3);
 
 			// Add 30-45 HP to TARGET Player's HP
 			int randomValue = UnityEngine.Random.Range(30, 45);
@@ -95,7 +95,7 @@ public class WorldSpells : MonoBehaviour {
 			// Audio: Deny
 			AudioManager.S.PlaySFX(eSoundName.deny);
 		}
-		SpellScreen.S.spellManager.SpellHelper();
+		Spells.S.SpellHelper();
 	}
 
 	//////////////////////////////////////////////////////////
@@ -113,7 +113,7 @@ public class WorldSpells : MonoBehaviour {
 			StatusEffects.S.SetOverworldPoisonIcons();
 
 			// Subtract Spell cost from CASTING Player's MP 
-			GameManager.S.SubtractPlayerMP(SpellScreen.S.playerNdx, 2);
+			GameManager.S.SubtractPlayerMP(Spells.S.menu.playerNdx, 2);
 
 			// Display Text
 			PauseMessage.S.DisplayText("Used Detoxify Spell!\n" + Party.S.stats[ndx].name + " is no longer poisoned!");
@@ -130,7 +130,7 @@ public class WorldSpells : MonoBehaviour {
 			// Audio: Deny
 			AudioManager.S.PlaySFX(eSoundName.deny);
 		}
-		SpellScreen.S.spellManager.SpellHelper();
+		Spells.S.SpellHelper();
 	}
 
 	//////////////////////////////////////////////////////////
@@ -139,26 +139,26 @@ public class WorldSpells : MonoBehaviour {
 	public void WarpSpell() {
 		if (Party.S.stats[0].MP >= 1) {
 			// Subtract Spell cost from CASTING Player's MP 
-			GameManager.S.SubtractPlayerMP(SpellScreen.S.playerNdx, 1);
+			GameManager.S.SubtractPlayerMP(Spells.S.menu.playerNdx, 1);
 
-			SpellScreen.S.mode = eSpellScreenMode.pickWhereToWarp;
+			Spells.S.menu.mode = eSpellScreenMode.pickWhereToWarp;
 
 			// Set Selected GameObject
-			Utilities.S.SetSelectedGO(SpellScreen.S.spellsButtons[0].gameObject);
+			Utilities.S.SetSelectedGO(Spells.S.menu.spellsButtons[0].gameObject);
 
 			// Set previously selected GameObject
-			WarpManager.S.previousSelectedLocationGO = SpellScreen.S.spellsButtons[0].gameObject;
+			WarpManager.S.previousSelectedLocationGO = Spells.S.menu.spellsButtons[0].gameObject;
 
 			// Use SpellScreen's buttons to select/display warp locations
-			WarpManager.S.DeactivateUnusedButtonSlots(SpellScreen.S.spellsButtons);
-			WarpManager.S.AssignButtonEffect(SpellScreen.S.spellsButtons);
-			WarpManager.S.AssignButtonNames(SpellScreen.S.spellsButtonNameText);
-			WarpManager.S.SetButtonNavigation(SpellScreen.S.spellsButtons);
+			WarpManager.S.DeactivateUnusedButtonSlots(Spells.S.menu.spellsButtons);
+			WarpManager.S.AssignButtonEffect(Spells.S.menu.spellsButtons);
+			WarpManager.S.AssignButtonNames(Spells.S.menu.spellsButtonNameText);
+			WarpManager.S.SetButtonNavigation(Spells.S.menu.spellsButtons);
 
 			// Audio: Confirm
 			AudioManager.S.PlaySFX(eSoundName.confirm);
 		} else {
-			SpellScreen.S.spellManager.CantUseSpell("Not enough MP to cast this spell!");
+			Spells.S.CantUseSpell("Not enough MP to cast this spell!");
 		}
 	}
 
@@ -172,7 +172,7 @@ public class WorldSpells : MonoBehaviour {
 			Party.S.stats[1].HP < Party.S.stats[1].maxHP ||
 			Party.S.stats[2].HP < Party.S.stats[2].maxHP) {
 			// Subtract Spell cost from Player's MP
-			GameManager.S.SubtractPlayerMP(SpellScreen.S.playerNdx, 6);
+			GameManager.S.SubtractPlayerMP(Spells.S.menu.playerNdx, 6);
 
 			for (int i = 0; i < Party.S.stats.Count; i++) {
 				// Get amount and max amount to heal
@@ -222,6 +222,6 @@ public class WorldSpells : MonoBehaviour {
 		// Deactivate screen cursors
 		Utilities.S.SetActiveList(ScreenCursor.S.cursorGO, false);
 
-		SpellScreen.S.spellManager.SpellHelper();
+		Spells.S.SpellHelper();
 	}
 }

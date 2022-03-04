@@ -7,7 +7,7 @@ using UnityEngine;
 /// - Select which spell to use
 /// </summary>
 public class PickSpell : MonoBehaviour {
-	public void Loop(SpellScreen spellScreen) {
+	public void Loop(SpellMenu spellScreen) {
 		if (spellScreen.canUpdate) {
 			spellScreen.DisplaySpellsDescriptions(spellScreen.playerNdx);
 			spellScreen.canUpdate = false;

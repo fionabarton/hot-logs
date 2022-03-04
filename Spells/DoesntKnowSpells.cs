@@ -7,7 +7,7 @@ using UnityEngine;
 /// - This party member doesn't know any spells
 /// </summary>
 public class DoesntKnowSpells : MonoBehaviour {
-	public void Loop(SpellScreen spellScreen) {
+	public void Loop(SpellMenu spellScreen) {
 		if (PauseMessage.S.dialogueFinished) {
 			if (Input.GetButtonDown("SNES B Button")) {
 				spellScreen.pickWhichSpellsToDisplay.Setup(spellScreen);

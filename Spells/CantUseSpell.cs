@@ -7,7 +7,7 @@ using UnityEngine;
 /// - Can't use this spell
 /// </summary
 public class CantUseSpell : MonoBehaviour {
-	public void Loop(SpellScreen spellScreen) {
+	public void Loop(SpellMenu spellScreen) {
 		if (PauseMessage.S.dialogueFinished) {
 			if (Input.GetButtonDown("SNES B Button")) {
 				spellScreen.ScreenOffPlayerTurn();

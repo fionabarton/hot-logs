@@ -62,12 +62,12 @@ public class BattleSpells : MonoBehaviour {
 				}
 			}
 		} else {
-			SpellScreen.S.spellManager.CantUseSpell("Not enough MP to cast this spell!");
+			Spells.S.CantUseSpell("Not enough MP to cast this spell!");
 			return;
 		}
 
 		// Deactivate SpellScreen and PauseMessage
-		SpellScreen.S.Deactivate();
+		Spells.S.menu.Deactivate();
 		PauseMessage.S.gameObject.SetActive(false);
 
 		BattleDialogue.S.DisplayText(messageToDisplay);
@@ -279,7 +279,7 @@ public class BattleSpells : MonoBehaviour {
 
 			if (_.enemyStats[ndx].HP < 1) {
 				// Deactivate Spells Screen then Enemy Death
-				SpellScreen.S.ScreenOffEnemyDeath(ndx);
+				Spells.S.menu.ScreenOffEnemyDeath(ndx);
 			} else {
 				// Deactivate Spells Screen then Enemy Turn
 				BattleDialogue.S.DisplayText("Used " + spell.name + " Spell!\nHit " + _.enemyStats[ndx].name + " for " + _.attackDamage + " HP!");

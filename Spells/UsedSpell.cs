@@ -7,7 +7,7 @@ using UnityEngine;
 /// - Used a spell
 /// </summary
 public class UsedSpell : MonoBehaviour {
-	public void Loop(SpellScreen spellScreen) {
+	public void Loop(SpellMenu spellScreen) {
 		if (PauseMessage.S.dialogueFinished) {
 			if (Input.GetButtonDown("SNES B Button")) {
 				// Set animation to idle
