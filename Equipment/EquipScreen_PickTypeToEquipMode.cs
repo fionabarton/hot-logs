@@ -9,17 +9,10 @@ using UnityEngine.UI;
 /// </summary>
 public class EquipScreen_PickTypeToEquipMode : MonoBehaviour {
 	[Header("Set Dynamically")]
-	private static EquipScreen_PickTypeToEquipMode _S;
-	public static EquipScreen_PickTypeToEquipMode S { get { return _S; } set { _S = value; } }
-
 	// Ensures audio is only played once when button is selected
 	public GameObject previousSelectedGameObject;
 
-	void Awake() {
-		S = this;
-	}
-
-	public void SetUp(int ndx, EquipScreen equipScreen, int soundNdx = 99) {
+	public void SetUp(int ndx, EquipMenu equipScreen, int soundNdx = 99) {
 		// Audio
 		if (soundNdx != 99) {
 			AudioManager.S.PlaySFX(soundNdx);
@@ -45,7 +38,7 @@ public class EquipScreen_PickTypeToEquipMode : MonoBehaviour {
 		Utilities.S.ButtonsInteractable(equipScreen.inventoryButtons, false);
 	}
 
-	public void Loop(EquipScreen equipScreen) {
+	public void Loop(EquipMenu equipScreen) {
 		if (equipScreen.canUpdate) {
 			DisplayCurrentEquipmentDescriptions(equipScreen.playerNdx, equipScreen);
 			
@@ -87,7 +80,7 @@ public class EquipScreen_PickTypeToEquipMode : MonoBehaviour {
 		// Go back to pickPartyMember mode
 		if (PauseMessage.S.dialogueFinished) {
 			if (Input.GetButtonDown("SNES Y Button")) {
-				EquipScreen_PickPartyMemberMode.S.SetUp(equipScreen);
+				EquipMenu.S.pickPartyMemberMode.SetUp(equipScreen);
 
 				// Reset equippedButtons text color
 				Utilities.S.SetTextColor(equipScreen.equippedButtons, new Color32(39, 201, 255, 255));
@@ -99,17 +92,17 @@ public class EquipScreen_PickTypeToEquipMode : MonoBehaviour {
 	}
 
 	// Add listeners to equipped buttons
-	public void AddListenersToEquippedButtons(EquipScreen equipScreen) {
+	public void AddListenersToEquippedButtons(EquipMenu equipScreen) {
 		// Remove and add listeners
 		for (int i = 0; i < equipScreen.equippedButtons.Count; i++) {
 			int tInt = i;
 			equipScreen.equippedButtons[tInt].onClick.RemoveAllListeners();
-			equipScreen.equippedButtons[tInt].onClick.AddListener(delegate { EquipScreen_PickItemToEquipMode.S.SetUp((eItemType)tInt, equipScreen); });
+			equipScreen.equippedButtons[tInt].onClick.AddListener(delegate { equipScreen.pickItemToEquipMode.SetUp((eItemType)tInt, equipScreen); });
 		}
 	}
 
 	// Display descriptions of party member's current equipment
-	public void DisplayCurrentEquipmentDescriptions(int playerNdx, EquipScreen equipScreen) {
+	public void DisplayCurrentEquipmentDescriptions(int playerNdx, EquipMenu equipScreen) {
 		for (int i = 0; i <= equipScreen.equippedButtons.Count - 1; i++) {
 			if (UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject == equipScreen.equippedButtons[i].gameObject) {
 				// Display item's description

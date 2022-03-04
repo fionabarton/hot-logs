@@ -8,16 +8,7 @@ using System;
 /// - Select which party member to equip
 /// </summary>
 public class EquipScreen_PickPartyMemberMode : MonoBehaviour {
-	[Header("Set Dynamically")]
-	// Singleton
-	private static EquipScreen_PickPartyMemberMode _S;
-	public static EquipScreen_PickPartyMemberMode S { get { return _S; } set { _S = value; } }
-
-	void Awake() {
-		S = this;
-	}
-
-	public void SetUp(EquipScreen equipScreen) {
+	public void SetUp(EquipMenu equipScreen) {
 		try {
 			// Set anim
 			equipScreen.playerAnim.CrossFade("Idle", 0);
@@ -37,9 +28,9 @@ public class EquipScreen_PickPartyMemberMode : MonoBehaviour {
 
 			// Remove & Add Listeners
 			Utilities.S.RemoveListeners(PlayerButtons.S.buttonsCS);
-			PlayerButtons.S.buttonsCS[0].onClick.AddListener(delegate { EquipScreen_PickTypeToEquipMode.S.SetUp(0, equipScreen, 6); });
-			PlayerButtons.S.buttonsCS[1].onClick.AddListener(delegate { EquipScreen_PickTypeToEquipMode.S.SetUp(1, equipScreen, 6); });
-			PlayerButtons.S.buttonsCS[2].onClick.AddListener(delegate { EquipScreen_PickTypeToEquipMode.S.SetUp(2, equipScreen, 6); });
+			PlayerButtons.S.buttonsCS[0].onClick.AddListener(delegate { equipScreen.pickTypeToEquipMode.SetUp(0, equipScreen, 6); });
+			PlayerButtons.S.buttonsCS[1].onClick.AddListener(delegate { equipScreen.pickTypeToEquipMode.SetUp(1, equipScreen, 6); });
+			PlayerButtons.S.buttonsCS[2].onClick.AddListener(delegate { equipScreen.pickTypeToEquipMode.SetUp(2, equipScreen, 6); });
 
 			// Activate PlayerButtons
 			PlayerButtons.S.gameObject.SetActive(true);
@@ -55,9 +46,9 @@ public class EquipScreen_PickPartyMemberMode : MonoBehaviour {
 		catch (NullReferenceException) { }
 	}
 
-	public void Loop(EquipScreen equipScreen) {
+	public void Loop(EquipMenu equipScreen) {
 		if (equipScreen.canUpdate) {
-			if (EquipScreen.S.previousSelectedGameObject != UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject) {
+			if (EquipMenu.S.previousSelectedGameObject != UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject) {
 				// Position Cursor
 				Utilities.S.PositionCursor(UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject, 0, 60, 3);
 
@@ -70,7 +61,7 @@ public class EquipScreen_PickPartyMemberMode : MonoBehaviour {
 
 					if (UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject == PlayerButtons.S.buttonsCS[i].gameObject) {
 						// Audio: Selection (when a new gameObject is selected)
-						Utilities.S.PlayButtonSelectedSFX(ref EquipScreen.S.previousSelectedGameObject);
+						Utilities.S.PlayButtonSelectedSFX(ref EquipMenu.S.previousSelectedGameObject);
 
 						equipScreen.DisplayCurrentStats(i);
 						equipScreen.DisplayCurrentEquipmentNames(i);

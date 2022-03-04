@@ -10,18 +10,10 @@ using UnityEngine.UI;
 /// </summary>
 public class EquipScreen_PickItemToEquipMode : MonoBehaviour {
 	[Header("Set Dynamically")]
-	// Singleton
-	private static EquipScreen_PickItemToEquipMode _S;
-	public static EquipScreen_PickItemToEquipMode S { get { return _S; } set { _S = value; } }
-
 	// Ensures audio is only played once when button is selected
 	public GameObject previousSelectedGameObject;
 
-	void Awake() {
-		S = this;
-	}
-
-	public void SetUp(eItemType itemType, EquipScreen equipScreen) {
+	public void SetUp(eItemType itemType, EquipMenu equipScreen) {
 		// Audio: Confirm
 		AudioManager.S.PlaySFX(eSoundName.confirm);
 
@@ -54,7 +46,7 @@ public class EquipScreen_PickItemToEquipMode : MonoBehaviour {
 	}
 
 	// Set the first and last button’s navigation 
-	public void SetButtonNavigation(EquipScreen equipScreen) {
+	public void SetButtonNavigation(EquipMenu equipScreen) {
 		// Reset all button's navigation to automatic
 		for (int i = 0; i < equipScreen.inventoryButtons.Count; i++) {
 			// Get the Navigation data
@@ -85,7 +77,7 @@ public class EquipScreen_PickItemToEquipMode : MonoBehaviour {
 		}
     }
 
-	public void Loop(EquipScreen equipScreen) {
+	public void Loop(EquipMenu equipScreen) {
 		if (equipScreen.canUpdate) {
 			DisplayInventoryDescriptions(equipScreen.playerNdx, equipScreen);
 			equipScreen.canUpdate = false;
@@ -97,7 +89,7 @@ public class EquipScreen_PickItemToEquipMode : MonoBehaviour {
 	}
 
 	// Add listeners to inventory buttons
-	public void AddListenersToInventoryButtons(int playerNdx, EquipScreen equipScreen) {
+	public void AddListenersToInventoryButtons(int playerNdx, EquipMenu equipScreen) {
 		// Remove and add listeners
 		for (int i = 0; i < equipScreen.inventoryButtons.Count; i++) {
 			int tInt = i;
@@ -107,7 +99,7 @@ public class EquipScreen_PickItemToEquipMode : MonoBehaviour {
 	}
 
 	// Display description of item to be potentially equipped
-	public void DisplayInventoryDescriptions(int playerNdx, EquipScreen equipScreen) {
+	public void DisplayInventoryDescriptions(int playerNdx, EquipMenu equipScreen) {
 		if (SortItems.S.tItems != null) {
 			for (int i = 0; i < SortItems.S.tItems.Count; i++) {
 				if (UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject == equipScreen.inventoryButtons[i].gameObject) {
@@ -121,7 +113,7 @@ public class EquipScreen_PickItemToEquipMode : MonoBehaviour {
 					equipScreen.inventoryButtonsTxt[i].color = new Color32(205, 208, 0, 255);
 
 					// Calculate and display potential stats
-					EquipStatsEffect.S.DisplayPotentialStats(playerNdx, SortItems.S.tItems[i], equipScreen.playerEquipment);
+					EquipMenu.S.equipStatsEffect.DisplayPotentialStats(playerNdx, SortItems.S.tItems[i], equipScreen.playerEquipment);
 
 					// Audio: Selection (when a new gameObject is selected)
 					Utilities.S.PlayButtonSelectedSFX(ref previousSelectedGameObject);

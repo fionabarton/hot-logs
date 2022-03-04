@@ -12,14 +12,6 @@ public class EquipStatsEffect : MonoBehaviour {
 	public List<GameObject> arrowGO;
 	public List<Animator>	arrowAnim;
 
-	[Header("Set Dynamically")]
-	private static EquipStatsEffect _S;
-	public static EquipStatsEffect S { get { return _S; } set { _S = value; } }
-
-	void Awake() {
-		S = this;
-	}
-
 	void OnDisable() {
 		// Deactivate Arrow Sprites
 		for (int i = 0; i <= arrowGO.Count - 1; i++) {
