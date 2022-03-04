@@ -45,13 +45,17 @@ public class GameManager : MonoBehaviour {
 			Destroy (gameObject);
 		}
 
-		// Load First Scene
-		SceneManager.LoadScene (firstScene);
+		//// Load First Scene
+		//SceneManager.LoadScene(firstScene);
 	}
 
 	void Start () {
-		//LoadSettings ();
-		StartCoroutine("LoadSettingsCo");
+		// Load First Scene
+		//SceneManager.LoadScene(firstScene);
+		LoadLevel(firstScene);
+
+		//LoadSettings();
+		//StartCoroutine("LoadSettingsCo");
 
 		// Add Loop() to UpdateManager
 		UpdateManager.updateDelegate += Loop;
@@ -69,7 +73,7 @@ public class GameManager : MonoBehaviour {
 		//}
 
 		// Pause Screen input
-		if (!ItemScreen.S.gameObject.activeInHierarchy &&
+		if (!Items.S.menu.gameObject.activeInHierarchy &&
 			!SpellScreen.S.gameObject.activeInHierarchy &&
 			!EquipScreen.S.gameObject.activeInHierarchy &&
 			!ShopScreen.S.gameObject.activeInHierarchy &&
@@ -100,8 +104,8 @@ public class GameManager : MonoBehaviour {
 
 		canInput = false;
 
-		SceneManager.LoadScene (levelToLoad);
-		StartCoroutine ("LoadSettingsCo");
+		SceneManager.LoadScene(levelToLoad);
+		StartCoroutine("LoadSettingsCo");
 	}
 	private IEnumerator LoadSettingsCo(){ // Calls LoadSettings() AFTER scene has changed
 		yield return new WaitForSeconds(0.05f);
@@ -126,7 +130,7 @@ public class GameManager : MonoBehaviour {
 
 		// Deactivate screens
 		PauseScreen.S.UnPause();
-		ItemScreen.S.Deactivate();
+		Items.S.menu.Deactivate();
 		SpellScreen.S.Deactivate();
 		EquipScreen.S.Deactivate();
 		OptionsScreen.S.Deactivate();
