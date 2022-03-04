@@ -74,20 +74,20 @@ public class GameManager : MonoBehaviour {
 
 		// Pause Screen input
 		if (!Items.S.menu.gameObject.activeInHierarchy &&
-			!SpellScreen.S.gameObject.activeInHierarchy &&
-			!EquipScreen.S.gameObject.activeInHierarchy &&
-			!ShopScreen.S.gameObject.activeInHierarchy &&
-			!OptionsScreen.S.gameObject.activeInHierarchy &&
-			!SaveScreen.S.gameObject.activeInHierarchy) {
+			!Spells.S.menu.gameObject.activeInHierarchy &&
+			!EquipMenu.S.gameObject.activeInHierarchy &&
+			!ShopMenu.S.gameObject.activeInHierarchy &&
+			!OptionsMenu.S.gameObject.activeInHierarchy &&
+			!SaveMenu.S.gameObject.activeInHierarchy) {
 
 			if (currentScene != "Battle" && currentScene != "Title_Screen") {
-				if (!PauseScreen.S.gameObject.activeInHierarchy) {
+				if (!PauseMenu.S.gameObject.activeInHierarchy) {
 					if (Input.GetButtonDown("Pause")) {
-						PauseScreen.S.Pause();
+						PauseMenu.S.Pause();
 					}
 				} else {
 					if (Input.GetButtonDown("Pause") || Input.GetButtonDown("SNES Y Button")) {
-						PauseScreen.S.UnPause(true);
+						PauseMenu.S.UnPause(true);
 					}
 				}
 			}
@@ -129,13 +129,13 @@ public class GameManager : MonoBehaviour {
 		DialogueManager.S.DeactivateTextBox();
 
 		// Deactivate screens
-		PauseScreen.S.UnPause();
+		PauseMenu.S.UnPause();
 		Items.S.menu.Deactivate();
-		SpellScreen.S.Deactivate();
-		EquipScreen.S.Deactivate();
-		OptionsScreen.S.Deactivate();
-		SaveScreen.S.Deactivate();
-		ShopScreen.S.Deactivate();
+		Spells.S.menu.Deactivate();
+		EquipMenu.S.Deactivate();
+		OptionsMenu.S.Deactivate();
+		SaveMenu.S.Deactivate();
+		ShopMenu.S.Deactivate();
 		TitleScreen.S.Deactivate();
 
 		// Deactivate PlayerButtons
