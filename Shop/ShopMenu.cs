@@ -50,16 +50,18 @@ public class ShopMenu : MonoBehaviour {
 		displayPotentialStats = GetComponent<ShopScreen_DisplayPotentialStats>();
 	}
 
-	void OnEnable () {
+	public void Activate() {
 		// Ensures first slot is selected when screen enabled
 		previousSelectedGameObject = inventoryButtons[0].gameObject;
 
 		firstSlotNdx = 0;
 
-		pickItemMode.Setup(S);
-
 		// Add Loop() to Update Delgate
 		UpdateManager.updateDelegate += Loop;
+
+		gameObject.SetActive(true);
+
+		pickItemMode.Setup(S);
 	}
 
 	public void Deactivate() {
