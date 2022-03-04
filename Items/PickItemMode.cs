@@ -12,9 +12,9 @@ public class PickItemMode : MonoBehaviour {
 	[Header("Set Dynamically")]
 	public int previousSelectedNdx;
 
-	public void Setup(ItemScreen itemScreen) {
+	public void Setup(ItemMenu itemScreen) {
 		try {
-			itemScreen.mode = eItemScreenMode.pickItem;
+			itemScreen.mode = eItemMenuMode.pickItem;
 
 			DeactivateUnusedItemSlots(itemScreen);
 			itemScreen.AssignItemNames();
@@ -45,12 +45,12 @@ public class PickItemMode : MonoBehaviour {
 				Utilities.S.SetActiveList(ScreenCursor.S.cursorGO, false);
 			} else {
 				// If previousSelectedGameObject is enabled...
-				if (ItemScreen.S.previousSelectedGameObject.activeInHierarchy) {
+				if (Items.S.menu.previousSelectedGameObject.activeInHierarchy) {
 					// Select previousSelectedGameObject
-					Utilities.S.SetSelectedGO(ItemScreen.S.previousSelectedGameObject);
+					Utilities.S.SetSelectedGO(Items.S.menu.previousSelectedGameObject);
 
 					// Set previously selected GameObject
-					Battle.S.previousSelectedForAudio = ItemScreen.S.previousSelectedGameObject;
+					Battle.S.previousSelectedForAudio = Items.S.menu.previousSelectedGameObject;
 				} else {
 					// Select previous itemButton in the list
 					Utilities.S.SetSelectedGO(itemScreen.itemButtons[previousSelectedNdx - 1].gameObject);
@@ -75,7 +75,7 @@ public class PickItemMode : MonoBehaviour {
 	}
 
 	// Set the first and last button’s navigation if the player’s inventory is less than 10
-	public void SetButtonNavigation(ItemScreen itemScreen) {
+	public void SetButtonNavigation(ItemMenu itemScreen) {
 		// Reset all button's navigation to automatic
 		for (int i = 0; i < itemScreen.itemButtons.Count; i++) {
 			// Get the Navigation data
@@ -106,7 +106,7 @@ public class PickItemMode : MonoBehaviour {
 		}
 	}
 
-	public void Loop(ItemScreen itemScreen) {
+	public void Loop(ItemMenu itemScreen) {
 		if (Inventory.S.GetItemList().Count > 0) {
 			if (itemScreen.canUpdate) {
 				DisplayItemDescriptions(itemScreen);
@@ -121,7 +121,7 @@ public class PickItemMode : MonoBehaviour {
 		}
 	}
 
-	public void DisplayItemDescriptions(ItemScreen itemScreen) {
+	public void DisplayItemDescriptions(ItemMenu itemScreen) {
 		for (int i = 0; i < itemScreen.itemButtons.Count; i++) {
 			if (UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject == itemScreen.itemButtons[i].gameObject) {
 				PauseMessage.S.SetText(Inventory.S.GetItemList()[i + itemScreen.firstSlotNdx].description);
@@ -135,7 +135,7 @@ public class PickItemMode : MonoBehaviour {
 				itemScreen.itemButtonsQTYOwnedText[i].color = new Color32(205, 208, 0, 255);
 
 				// Audio: Selection (when a new gameObject is selected)
-				Utilities.S.PlayButtonSelectedSFX(ref ItemScreen.S.previousSelectedGameObject);
+				Utilities.S.PlayButtonSelectedSFX(ref Items.S.menu.previousSelectedGameObject);
 				// Cache Selected Gameobject's index 
 				previousSelectedNdx = i;
 			} else {
@@ -147,7 +147,7 @@ public class PickItemMode : MonoBehaviour {
 		}
 	}
 
-	void DeactivateUnusedItemSlots(ItemScreen itemScreen) {
+	void DeactivateUnusedItemSlots(ItemMenu itemScreen) {
 		for (int i = 0; i < itemScreen.itemButtons.Count; i++) {
 			if (i < Inventory.S.GetItemList().Count) {
 				itemScreen.itemButtons[i].gameObject.SetActive(true);

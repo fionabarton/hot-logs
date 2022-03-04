@@ -7,14 +7,14 @@ using UnityEngine;
 /// - Consumed an item
 /// </summary>
 public class UsedItemMode : MonoBehaviour { 
-	public void Loop(ItemScreen itemScreen) {
+	public void Loop(ItemMenu itemScreen) {
 		if (PauseMessage.S.dialogueFinished) {
 			if (Input.GetButtonDown("SNES B Button")) {
 				// Set animation to idle
 				PlayerButtons.S.SetSelectedAnim("Idle");
 
 				// Go back to PickItem mode
-				itemScreen.pickItemMode.Setup(ItemScreen.S);
+				itemScreen.pickItemMode.Setup(Items.S.menu);
 			}
 		}
 	}

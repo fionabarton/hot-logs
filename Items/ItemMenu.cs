@@ -19,8 +19,8 @@ public class ItemMenu : MonoBehaviour {
 	public Button			sortButton;
 
 	[Header("Set Dynamically")]
-	private static ItemMenu _S;
-	public static ItemMenu S { get { return _S; } set { _S = value; } }
+	//private static ItemMenu _S;
+	//public static ItemMenu S { get { return _S; } set { _S = value; } }
 
 	// For Input & Display Message
 	public eItemMenuMode  mode;
@@ -42,7 +42,7 @@ public class ItemMenu : MonoBehaviour {
 	public UsedItemMode			usedItemMode;
 
 	void Awake() {
-		S = this;
+		//S = this;
 
 		// Get components
 		pickItemMode = GetComponent<PickItemMode>();
@@ -56,7 +56,7 @@ public class ItemMenu : MonoBehaviour {
 
 		firstSlotNdx = 0;
 
-		pickItemMode.Setup(S);
+		pickItemMode.Setup(Items.S.menu);
 
 		// Add Loop() to Update Delgate
 		UpdateManager.updateDelegate += Loop;
@@ -130,10 +130,10 @@ public class ItemMenu : MonoBehaviour {
 					ScrollItemList();
 				}
 
-				pickItemMode.Loop(S);
+				pickItemMode.Loop(Items.S.menu);
 				break;
 			case eItemMenuMode.pickPartyMember:
-				pickPartyMemberMode.Loop(S);
+				pickPartyMemberMode.Loop(Items.S.menu);
 			break;
 			case eItemMenuMode.pickAllPartyMembers:
 				if (Input.GetButtonDown("SNES Y Button")) {
@@ -150,7 +150,7 @@ public class ItemMenu : MonoBehaviour {
 				}
 				break;
 			case eItemMenuMode.usedItem:
-				usedItemMode.Loop(S);
+				usedItemMode.Loop(Items.S.menu);
 			break;
 		}
 
@@ -238,7 +238,7 @@ public class ItemMenu : MonoBehaviour {
 			AudioManager.S.PlaySFX(eSoundName.deny);
 
 			// Go back to PickItem mode
-			pickItemMode.Setup(S);
+			pickItemMode.Setup(Items.S.menu);
 		}
 	}
 

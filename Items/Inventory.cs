@@ -18,48 +18,48 @@ public class Inventory : MonoBehaviour {
 
 	void Start() {
         // Add items to inventory
-        AddItemToInventory(ItemManager.S.items[25]);
-        AddItemToInventory(ItemManager.S.items[25]);
-        AddItemToInventory(ItemManager.S.items[25]);
-        AddItemToInventory(ItemManager.S.items[26]);
-        AddItemToInventory(ItemManager.S.items[26]);
-        AddItemToInventory(ItemManager.S.items[26]);
-        AddItemToInventory(ItemManager.S.items[27]);
-        AddItemToInventory(ItemManager.S.items[27]);
-        AddItemToInventory(ItemManager.S.items[27]);
-        AddItemToInventory(ItemManager.S.items[0]);
-        AddItemToInventory(ItemManager.S.items[0]);
-        AddItemToInventory(ItemManager.S.items[1]);
+        AddItemToInventory(Items.S.items[25]);
+        AddItemToInventory(Items.S.items[25]);
+        AddItemToInventory(Items.S.items[25]);
+        AddItemToInventory(Items.S.items[26]);
+        AddItemToInventory(Items.S.items[26]);
+        AddItemToInventory(Items.S.items[26]);
+        AddItemToInventory(Items.S.items[27]);
+        AddItemToInventory(Items.S.items[27]);
+        AddItemToInventory(Items.S.items[27]);
+        AddItemToInventory(Items.S.items[0]);
+        AddItemToInventory(Items.S.items[0]);
+        AddItemToInventory(Items.S.items[1]);
 
-        AddItemToInventory(ItemManager.S.items[23]);
-        AddItemToInventory(ItemManager.S.items[23]);
-        AddItemToInventory(ItemManager.S.items[2]);
-        AddItemToInventory(ItemManager.S.items[3]);
-        AddItemToInventory(ItemManager.S.items[4]);
-        AddItemToInventory(ItemManager.S.items[5]);
-        AddItemToInventory(ItemManager.S.items[6]);
-        AddItemToInventory(ItemManager.S.items[7]);
-        AddItemToInventory(ItemManager.S.items[8]);
-        AddItemToInventory(ItemManager.S.items[9]);
+        AddItemToInventory(Items.S.items[23]);
+        AddItemToInventory(Items.S.items[23]);
+        AddItemToInventory(Items.S.items[2]);
+        AddItemToInventory(Items.S.items[3]);
+        AddItemToInventory(Items.S.items[4]);
+        AddItemToInventory(Items.S.items[5]);
+        AddItemToInventory(Items.S.items[6]);
+        AddItemToInventory(Items.S.items[7]);
+        AddItemToInventory(Items.S.items[8]);
+        AddItemToInventory(Items.S.items[9]);
 
-        AddItemToInventory(ItemManager.S.items[10]);
-        AddItemToInventory(ItemManager.S.items[0]);
-        AddItemToInventory(ItemManager.S.items[11]);
-        AddItemToInventory(ItemManager.S.items[12]);
-        AddItemToInventory(ItemManager.S.items[13]);
-        AddItemToInventory(ItemManager.S.items[14]);
-        AddItemToInventory(ItemManager.S.items[15]);
-        AddItemToInventory(ItemManager.S.items[16]);
-        AddItemToInventory(ItemManager.S.items[17]);
-        AddItemToInventory(ItemManager.S.items[18]);
-        AddItemToInventory(ItemManager.S.items[19]);
-        AddItemToInventory(ItemManager.S.items[20]);
+        AddItemToInventory(Items.S.items[10]);
+        AddItemToInventory(Items.S.items[0]);
+        AddItemToInventory(Items.S.items[11]);
+        AddItemToInventory(Items.S.items[12]);
+        AddItemToInventory(Items.S.items[13]);
+        AddItemToInventory(Items.S.items[14]);
+        AddItemToInventory(Items.S.items[15]);
+        AddItemToInventory(Items.S.items[16]);
+        AddItemToInventory(Items.S.items[17]);
+        AddItemToInventory(Items.S.items[18]);
+        AddItemToInventory(Items.S.items[19]);
+        AddItemToInventory(Items.S.items[20]);
 
-        AddItemToInventory(ItemManager.S.items[22]);
-        AddItemToInventory(ItemManager.S.items[22]);
-        AddItemToInventory(ItemManager.S.items[24]);
-        AddItemToInventory(ItemManager.S.items[24]);
-        AddItemToInventory(ItemManager.S.items[24]);
+        AddItemToInventory(Items.S.items[22]);
+        AddItemToInventory(Items.S.items[22]);
+        AddItemToInventory(Items.S.items[24]);
+        AddItemToInventory(Items.S.items[24]);
+        AddItemToInventory(Items.S.items[24]);
     }
 
     public void AddItemToInventory(Item name) {
@@ -74,7 +74,7 @@ public class Inventory : MonoBehaviour {
         items[name]--;
 
         // Update Pause & Overworld GUI
-        ItemScreen.S.AssignItemNames();
+        Items.S.menu.AssignItemNames();
         PauseScreen.S.UpdateGUI();
 
         // Remove the entry if the count goes to 0.

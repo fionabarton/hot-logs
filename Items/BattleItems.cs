@@ -18,7 +18,7 @@ public class BattleItems : MonoBehaviour {
 	}
 
 	public void AddFunctionToButton(Action<int, Item> functionToPass, string messageToDisplay, Item item) {
-		ItemScreen.S.Deactivate();
+		Items.S.menu.Deactivate();
 
 		// Deactivate PauseMessage
 		PauseMessage.S.gameObject.SetActive (false);
@@ -287,7 +287,7 @@ public class BattleItems : MonoBehaviour {
 	}
 
 	public void CantUseItemInBattle() {
-		ItemScreen.S.Deactivate();
+		Items.S.menu.Deactivate();
 
 		// Deactivate PauseMessage
 		PauseMessage.S.gameObject.SetActive(false);

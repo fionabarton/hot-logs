@@ -7,7 +7,6 @@ using UnityEngine;
 /// </summary>
 public class KeyItemManager : MonoBehaviour {
 	[Header("Set Dynamically")]
-	// Singleton
 	private static KeyItemManager _S;
 	public static KeyItemManager S { get { return _S; } set { _S = value; } }
 
@@ -16,11 +15,10 @@ public class KeyItemManager : MonoBehaviour {
 	private Transform				tTransform;
 
 	void Awake(){
-		// Singleton
 		S = this;
 	}
 
-	// Called in RPG.cs
+	// Called in GameManager.cs
 	public void SetObjects () {
 		// In the scene that was just loaded, find the parent gameObject holding all key items within the scene
 		GameObject tGO = GameObject.Find ("Items");

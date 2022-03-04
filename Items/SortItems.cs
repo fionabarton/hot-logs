@@ -8,7 +8,6 @@ using System.Linq;
 /// </summary>
 public class SortItems : MonoBehaviour {
     [Header("Set Dynamically")]
-    // Singleton
     private static SortItems _S;
     public static SortItems S { get { return _S; } set { _S = value; } }
 
@@ -37,8 +36,8 @@ public class SortItems : MonoBehaviour {
 			tDict.Add(k, items[k]);
 		}
 
-		ItemScreen.S.AssignItemNames();
-		ItemScreen.S.AssignItemEffect();
+		Items.S.menu.AssignItemNames();
+		Items.S.menu.AssignItemEffect();
 
 		return tDict;
 	}
@@ -61,8 +60,8 @@ public class SortItems : MonoBehaviour {
 			tDict.Add(k, items[k]);
 		}
 
-		ItemScreen.S.AssignItemNames();
-		ItemScreen.S.AssignItemEffect();
+		Items.S.menu.AssignItemNames();
+		Items.S.menu.AssignItemEffect();
 
 		return tDict;
 	}

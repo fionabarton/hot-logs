@@ -9,7 +9,7 @@ public class PickPartyMemberMode : MonoBehaviour {
 	// Ensures audio is only played once when button is selected
 	public GameObject previousSelectedPlayerGO;
 
-	public void Loop(ItemScreen itemScreen) {
+	public void Loop(ItemMenu itemScreen) {
 		if (itemScreen.canUpdate) {
 			Utilities.S.PositionCursor(UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject, 0, 60, 3);
 
@@ -31,7 +31,7 @@ public class PickPartyMemberMode : MonoBehaviour {
 				AudioManager.S.PlaySFX(eSoundName.deny);
 
 				// Go back to PickItem mode
-				itemScreen.pickItemMode.Setup(ItemScreen.S); 
+				itemScreen.pickItemMode.Setup(Items.S.menu); 
 			}
 		}
 	}

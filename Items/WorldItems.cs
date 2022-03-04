@@ -10,13 +10,13 @@ public class WorldItems : MonoBehaviour {
 	public void AddFunctionToButton(Action<int> functionToPass, string messageToDisplay, Item item) { 
 		// Buttons Interactable
 		Utilities.S.ButtonsInteractable(PlayerButtons.S.buttonsCS, true);
-		Utilities.S.ButtonsInteractable(ItemScreen.S.itemButtons, false);
+		Utilities.S.ButtonsInteractable(Items.S.menu.itemButtons, false);
 
 		// Set Selected GameObject
 		Utilities.S.SetSelectedGO(PlayerButtons.S.buttonsCS[0].gameObject);
 
 		// Set previously selected GameObject
-		ItemScreen.S.pickPartyMemberMode.previousSelectedPlayerGO = PlayerButtons.S.buttonsCS[0].gameObject;
+		Items.S.menu.pickPartyMemberMode.previousSelectedPlayerGO = PlayerButtons.S.buttonsCS[0].gameObject;
 
 		// Remove Listeners
 		Utilities.S.RemoveListeners(PlayerButtons.S.buttonsCS);
@@ -37,7 +37,7 @@ public class WorldItems : MonoBehaviour {
 			// Set animation to idle
 			PlayerButtons.S.SetSelectedAnim("Idle");
 
-			ItemScreen.S.mode = eItemScreenMode.pickPartyMember;
+			Items.S.menu.mode = eItemMenuMode.pickPartyMember;
 		} else {
 			for (int i = 0; i <= Party.S.partyNdx; i++) {
 				// Set cursor positions
@@ -53,14 +53,14 @@ public class WorldItems : MonoBehaviour {
 			// Set button colors
 			PlayerButtons.S.SetButtonsColor(PlayerButtons.S.buttonsCS, new Color32(253, 255, 116, 255));
 
-			ItemScreen.S.mode = eItemScreenMode.pickAllPartyMembers;
+			Items.S.menu.mode = eItemMenuMode.pickAllPartyMembers;
 		}
 	}
 
 	public void HPPotion(int ndx) {
 		if (Party.S.stats[ndx].HP < Party.S.stats[ndx].maxHP) {
 			// Remove from Inventory
-			Inventory.S.RemoveItemFromInventory(ItemManager.S.items[0]);
+			Inventory.S.RemoveItemFromInventory(Items.S.items[0]);
 
 			// Add 30-45 HP to TARGET Player's HP
 			int randomValue = UnityEngine.Random.Range(30, 45);
@@ -94,7 +94,7 @@ public class WorldItems : MonoBehaviour {
 	public void MPPotion(int ndx) {
 		if (Party.S.stats[ndx].MP < Party.S.stats[ndx].maxMP) {
 			// Remove from Inventory
-			Inventory.S.RemoveItemFromInventory(ItemManager.S.items[1]);
+			Inventory.S.RemoveItemFromInventory(Items.S.items[1]);
 
 			// Add 30-45 MP to TARGET Player's MP
 			int randomValue = UnityEngine.Random.Range(30, 45);
@@ -128,7 +128,7 @@ public class WorldItems : MonoBehaviour {
 	public void DetoxifyPotion(int ndx) {
 		if (StatusEffects.S.CheckIfPoisoned(true, ndx)) {
 			// Remove from Inventory
-			Inventory.S.RemoveItemFromInventory(ItemManager.S.items[25]);
+			Inventory.S.RemoveItemFromInventory(Items.S.items[25]);
 
 			// Remove poison
 			StatusEffects.S.RemovePoisoned(true, ndx);
@@ -182,7 +182,7 @@ public class WorldItems : MonoBehaviour {
 			}
 
 			// Remove from Inventory
-			Inventory.S.RemoveItemFromInventory(ItemManager.S.items[22]);
+			Inventory.S.RemoveItemFromInventory(Items.S.items[22]);
 
 			// Display Text
 			PauseMessage.S.DisplayText("Used Heal All Potion!\nHealed ALL party members for an average of "
@@ -218,19 +218,19 @@ public class WorldItems : MonoBehaviour {
 	}
 
 	public void WarpPotion() {
-		ItemScreen.S.mode = eItemScreenMode.pickWhereToWarp;
+		Items.S.menu.mode = eItemMenuMode.pickWhereToWarp;
 
 		// Set Selected GameObject
-		Utilities.S.SetSelectedGO(ItemScreen.S.itemButtons[0].gameObject);
+		Utilities.S.SetSelectedGO(Items.S.menu.itemButtons[0].gameObject);
 
 		// Set previously selected GameObject
-		WarpManager.S.previousSelectedLocationGO = ItemScreen.S.itemButtons[0].gameObject;
+		WarpManager.S.previousSelectedLocationGO = Items.S.menu.itemButtons[0].gameObject;
 
 		// Use ItemScreen's buttons to select/display warp locations
-		WarpManager.S.DeactivateUnusedButtonSlots(ItemScreen.S.itemButtons);
-		WarpManager.S.AssignButtonEffect(ItemScreen.S.itemButtons);
-		WarpManager.S.AssignButtonNames(ItemScreen.S.itemButtonsNameText);
-		WarpManager.S.SetButtonNavigation(ItemScreen.S.itemButtons);
+		WarpManager.S.DeactivateUnusedButtonSlots(Items.S.menu.itemButtons);
+		WarpManager.S.AssignButtonEffect(Items.S.menu.itemButtons);
+		WarpManager.S.AssignButtonNames(Items.S.menu.itemButtonsNameText);
+		WarpManager.S.SetButtonNavigation(Items.S.menu.itemButtons);
 
 		// Audio: Confirm
 		AudioManager.S.PlaySFX(eSoundName.confirm);
@@ -239,7 +239,7 @@ public class WorldItems : MonoBehaviour {
 	public void ClickedButtonHelper() {
 		// Buttons Interactable
 		Utilities.S.ButtonsInteractable(PlayerButtons.S.buttonsCS, false);
-		Utilities.S.ButtonsInteractable(ItemScreen.S.itemButtons, true);
+		Utilities.S.ButtonsInteractable(Items.S.menu.itemButtons, true);
 
 		// Update GUI
 		PlayerButtons.S.UpdateGUI();
@@ -248,15 +248,15 @@ public class WorldItems : MonoBehaviour {
 		// Deactivate screen cursors
 		Utilities.S.SetActiveList(ScreenCursor.S.cursorGO, false);
 
-		ItemScreen.S.canUpdate = true;
+		Items.S.menu.canUpdate = true;
 
 		// Switch ScreenMode 
-		ItemScreen.S.mode = eItemScreenMode.usedItem;
+		Items.S.menu.mode = eItemMenuMode.usedItem;
 	}
 
 	public void CantUseItem() {
-		Utilities.S.ButtonsInteractable(ItemScreen.S.itemButtons, false);
-		ItemScreen.S.mode = eItemScreenMode.usedItem;
+		Utilities.S.ButtonsInteractable(Items.S.menu.itemButtons, false);
+		Items.S.menu.mode = eItemMenuMode.usedItem;
 		PauseMessage.S.DisplayText("This item is not usable... sorry!");
 		
 		// Deactivate screen cursors

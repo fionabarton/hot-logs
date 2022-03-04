@@ -10,7 +10,6 @@ public class Items : MonoBehaviour {
 
 	[Header("Set Dynamically")]
     public ItemMenu menu;
-    public Items itemManager;
     public BattleItems battle;
     public WorldItems world;
 
@@ -23,7 +22,6 @@ public class Items : MonoBehaviour {
 		S = this;
 
         // Get components
-        itemManager = GetComponent<Items>();
         menu = GetComponent<ItemMenu>();
         battle = GetComponent<BattleItems>();
         world = GetComponent<WorldItems>();
@@ -32,7 +30,7 @@ public class Items : MonoBehaviour {
     }
 
     public void InitializeItems() {
-        // Initialize array of Items
+        // Initialize array of items
         items = new Item[30];
 
         // Health Potion
