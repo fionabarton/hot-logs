@@ -55,26 +55,20 @@ public class SpellMenu : MonoBehaviour {
 		cantUseSpell = GetComponent<CantUseSpell>();
 	}
 
-	void OnEnable () {
-		try {
-			if (GameManager.S.currentScene != "Battle") {
-				// Ensures first slots are selected when screen enabled
-				previousSelectedPlayerGO = PlayerButtons.S.buttonsCS[0].gameObject;
-				previousSelectedSpellGO = spellsButtons[0].gameObject;
-			}
-
-			firstSlotNdx = 0;
-
-			pickWhichSpellsToDisplay.Setup(Spells.S.menu);
-
-			// Add Loop() to Update Delgate
-			UpdateManager.updateDelegate += Loop;
-		} catch (Exception e) {
-			Debug.Log(e);
-		}
-	}
-
 	public void Activate() {
+		if (GameManager.S.currentScene != "Battle") {
+			// Ensures first slots are selected when screen enabled
+			previousSelectedPlayerGO = PlayerButtons.S.buttonsCS[0].gameObject;
+			previousSelectedSpellGO = spellsButtons[0].gameObject;
+		}
+
+		firstSlotNdx = 0;
+
+		pickWhichSpellsToDisplay.Setup(Spells.S.menu);
+
+		// Add Loop() to Update Delgate
+		UpdateManager.updateDelegate += Loop;
+
 		// Activate MP Cost header
 		MPCostHeader.SetActive(true);
 		
