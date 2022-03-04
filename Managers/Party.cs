@@ -254,9 +254,9 @@ public class Party : MonoBehaviour {
 		SetWIS(playerNdx);
 
 		// Add current equipment's stat effect(s) to party member's stats
-		for (int i = 0; i < EquipScreen.S.playerEquipment[0].Count; i++) {
-            if (EquipScreen.S.playerEquipment[playerNdx][i] != null) {
-                EquipStatsEffect.S.AddItemEffect(playerNdx, EquipScreen.S.playerEquipment[playerNdx][i]);
+		for (int i = 0; i < EquipMenu.S.playerEquipment[0].Count; i++) {
+            if (EquipMenu.S.playerEquipment[playerNdx][i] != null) {
+				EquipMenu.S.equipStatsEffect.AddItemEffect(playerNdx, EquipMenu.S.playerEquipment[playerNdx][i]);
             }
         }
 
