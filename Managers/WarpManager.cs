@@ -89,13 +89,13 @@ public class WarpManager : MonoBehaviour {
 				SpellScreen.S.nameHeaderText.text = "Warp Destination:";
 				SpellScreen.S.MPCostHeader.SetActive(false);
 
-			} else if (ItemScreen.S.gameObject.activeInHierarchy) {
-				ItemScreen.S.itemButtonsValueText[i].gameObject.SetActive(false);
-				ItemScreen.S.itemButtonsQTYOwnedText[i].gameObject.SetActive(false);
+			} else if (Items.S.menu.gameObject.activeInHierarchy) {
+				Items.S.menu.itemButtonsValueText[i].gameObject.SetActive(false);
+				Items.S.menu.itemButtonsQTYOwnedText[i].gameObject.SetActive(false);
 
-				ItemScreen.S.nameHeaderText.text = "Warp Destination:";
-				ItemScreen.S.valueHeader.SetActive(false);
-				ItemScreen.S.QTYOwnedHeader.SetActive(false);
+				Items.S.menu.nameHeaderText.text = "Warp Destination:";
+				Items.S.menu.valueHeader.SetActive(false);
+				Items.S.menu.QTYOwnedHeader.SetActive(false);
 			}
 		}
 
@@ -168,8 +168,8 @@ public class WarpManager : MonoBehaviour {
 							bool camFollows = true, 
 							Vector3 camWarpPos = default(Vector3)) {
 		// If used a warp potion, remove it from the inventory 
-		if (ItemScreen.S.gameObject.activeInHierarchy) {
-			Inventory.S.RemoveItemFromInventory(ItemManager.S.items[23]);
+		if (Items.S.menu.gameObject.activeInHierarchy) {
+			Inventory.S.RemoveItemFromInventory(Items.S.items[23]);
 		}
 
 		// Activate Black Screen
