@@ -196,7 +196,7 @@ public class OptionsScreen : MonoBehaviour {
 				sliderTextGO[i].GetComponent<Text>().color = new Color32(205, 208, 0, 255);
 
 				// Audio: Selection (when a new gameObject is selected)
-				Utilities.S.PlayButtonSelectedSFX(ref ItemScreen.S.previousSelectedGameObject);
+				Utilities.S.PlayButtonSelectedSFX(ref Items.S.menu.previousSelectedGameObject);
 			} else {
 				// Set non-selected button text color
 				sliderTextGO[i].GetComponent<Text>().color = new Color32(255, 255, 255, 255);
