@@ -21,7 +21,7 @@ public class ShopkeeperTrigger : ActivateOnButtonPress {
         // Convert eItem enumeration into Item
         inventory.Clear();
         for (int i = 0; i < itemsToPopulateInventory.Count; i++) {
-            inventory.Add(ItemManager.S.GetItem(itemsToPopulateInventory[i]));
+            inventory.Add(Items.S.GetItem(itemsToPopulateInventory[i]));
         }
     }
 
@@ -95,16 +95,16 @@ public class ShopkeeperTrigger : ActivateOnButtonPress {
                 if (mode != eShopkeeperMode.pickBuyOrSell) {
                     if (mode == eShopkeeperMode.pickedBuy) {
                         // Import shopkeeper inventory
-                        ShopScreen.S.ImportInventory(inventory);
-                        ShopScreen.S.buyOrSellMode = true;
+                        ShopMenu.S.ImportInventory(inventory);
+                        ShopMenu.S.buyOrSellMode = true;
                     } else if (mode == eShopkeeperMode.pickedSell) {
                         // Import party inventory
-                        ShopScreen.S.ImportInventory(Inventory.S.GetItemList());
-                        ShopScreen.S.buyOrSellMode = false;
+                        ShopMenu.S.ImportInventory(Inventory.S.GetItemList());
+                        ShopMenu.S.buyOrSellMode = false;
                     }
 
                     // Activate Shop Screen
-                    ShopScreen.S.gameObject.SetActive(true);
+                    ShopMenu.S.Activate();
 
                     DialogueManager.S.DeactivateTextBox();
 
