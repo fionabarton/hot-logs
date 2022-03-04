@@ -259,7 +259,7 @@ public class BattlePlayerActions : MonoBehaviour {
 			PlayerButtons.S.rectTrans.anchoredPosition = new Vector2(0, -25);
 
 			// Open Item Screen
-			ItemScreen.S.Activate();
+			Items.S.menu.Activate();
 		} else {
 			// Has no Items, go back to Player Turn 
 			BattleDialogue.S.DisplayText(Party.S.stats[_.PlayerNdx()].name + " has no items!");
