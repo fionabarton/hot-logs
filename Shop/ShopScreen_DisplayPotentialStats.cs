@@ -11,15 +11,6 @@ public class ShopScreen_DisplayPotentialStats : MonoBehaviour {
 
 	public List<Animator> anim;
 
-	[Header("Set Dynamically")]
-	// Singleton
-	private static ShopScreen_DisplayPotentialStats _S;
-	public static ShopScreen_DisplayPotentialStats S { get { return _S; } set { _S = value; } }
-
-	void Awake() {
-		S = this;
-	}
-
     public void ActivatePotentialStats() {
 		// Deactivate all potential stats gameObjects
 		for (int i = 0; i < nameText.Count; i++) {

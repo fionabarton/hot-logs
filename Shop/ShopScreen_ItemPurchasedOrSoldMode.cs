@@ -7,24 +7,15 @@ using UnityEngine;
 /// - Buy or sell an item
 /// </summary>
 public class ShopScreen_ItemPurchasedOrSoldMode : MonoBehaviour {
-	[Header("Set Dynamically")]
-	// Singleton
-	private static ShopScreen_ItemPurchasedOrSoldMode _S;
-	public static ShopScreen_ItemPurchasedOrSoldMode S { get { return _S; } set { _S = value; } }
-
-	void Awake() {
-		S = this;
-	}
-
-	public void Loop(ShopScreen shopScreen) {
+	public void Loop(ShopMenu shopScreen) {
 		if (PauseMessage.S.dialogueFinished) {
 			if (Input.GetButtonDown("SNES B Button")) {
-				ShopScreen_PickItemMode.S.Setup(shopScreen);
+				shopScreen.pickItemMode.Setup(shopScreen);
 			}
 		}
 	}
 
-	public void PurchaseItem(Item item, ShopScreen shopScreen) {
+	public void PurchaseItem(Item item, ShopMenu shopScreen) {
 		shopScreen.canUpdate = true;
 
 		// Switch ScreenMode 
@@ -60,7 +51,7 @@ public class ShopScreen_ItemPurchasedOrSoldMode : MonoBehaviour {
 		Utilities.S.SetActiveList(ScreenCursor.S.cursorGO, false);
 	}
 
-	public void SellItem(Item item, ShopScreen shopScreen) {
+	public void SellItem(Item item, ShopMenu shopScreen) {
 		shopScreen.canUpdate = true;
 
 		// Switch ScreenMode 

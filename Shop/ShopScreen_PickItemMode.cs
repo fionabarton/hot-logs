@@ -12,16 +12,7 @@ public class ShopScreen_PickItemMode : MonoBehaviour {
 	[Header("Set in Inspector")]
 	public Text titleText;
 
-	[Header("Set Dynamically")]
-	// Singleton
-	private static ShopScreen_PickItemMode _S;
-	public static ShopScreen_PickItemMode S { get { return _S; } set { _S = value; } }
-
-	void Awake() {
-		S = this;
-	}
-
-	public void Setup(ShopScreen shopScreen) {
+	public void Setup(ShopMenu shopScreen) {
 		try {
 			// Set ScreenMode
 			shopScreen.shopScreenMode = eShopScreenMode.pickItem;
@@ -49,7 +40,7 @@ public class ShopScreen_PickItemMode : MonoBehaviour {
 			Utilities.S.ButtonsInteractable(PlayerButtons.S.buttonsCS, false);
 
 			// Activate Player Stats
-			ShopScreen_DisplayPotentialStats.S.ActivatePotentialStats();
+			shopScreen.displayPotentialStats.ActivatePotentialStats();
 
 			// If Inventory Empty... 
 			if (Inventory.S.GetItemList().Count == 0 && !shopScreen.buyOrSellMode) {
@@ -79,11 +70,12 @@ public class ShopScreen_PickItemMode : MonoBehaviour {
 
 			// Activate PauseMessage
 			PauseMessage.S.gameObject.SetActive(true);
+		} catch (Exception e) {
+			Debug.Log(e);
 		}
-		catch (NullReferenceException) { }
 	}
 
-	public void Loop(ShopScreen shopScreen) {
+	public void Loop(ShopMenu shopScreen) {
 		if (shopScreen.canUpdate) {
 			if(shopScreen.inventory.Count > 0) {
 				DisplayItemDescriptions(shopScreen);
@@ -92,7 +84,7 @@ public class ShopScreen_PickItemMode : MonoBehaviour {
 		}
 	}
 
-	public void DeactivateUnusedItemSlots(ShopScreen shopScreen) {
+	public void DeactivateUnusedItemSlots(ShopMenu shopScreen) {
 		for (int i = 0; i < shopScreen.inventoryButtons.Count; i++) {
 			if (i < shopScreen.inventory.Count) {
 				shopScreen.inventoryButtons[i].gameObject.SetActive(true);
@@ -108,20 +100,20 @@ public class ShopScreen_PickItemMode : MonoBehaviour {
 		}
 	}
 
-	public void AssignItemEffect(ShopScreen shopScreen) {
+	public void AssignItemEffect(ShopMenu shopScreen) {
 		for (int i = 0; i < shopScreen.inventoryButtons.Count; i++) {
 			int copy = i;
 			shopScreen.inventoryButtons[i].onClick.RemoveAllListeners();
 
 			if (shopScreen.buyOrSellMode) {
-				shopScreen.inventoryButtons[copy].onClick.AddListener(delegate { ShopScreen_ItemPurchasedOrSoldMode.S.PurchaseItem(shopScreen.inventory[shopScreen.firstSlotNdx + copy], shopScreen); });
+				shopScreen.inventoryButtons[copy].onClick.AddListener(delegate { shopScreen.itemPurchasedOrSoldMode.PurchaseItem(shopScreen.inventory[shopScreen.firstSlotNdx + copy], shopScreen); });
 			} else {
-				shopScreen.inventoryButtons[copy].onClick.AddListener(delegate { ShopScreen_ItemPurchasedOrSoldMode.S.SellItem(shopScreen.inventory[shopScreen.firstSlotNdx + copy], shopScreen); });
+				shopScreen.inventoryButtons[copy].onClick.AddListener(delegate { shopScreen.itemPurchasedOrSoldMode.SellItem(shopScreen.inventory[shopScreen.firstSlotNdx + copy], shopScreen); });
 			}
 		}
 	}
 
-	public void AssignItemNames(ShopScreen shopScreen) {
+	public void AssignItemNames(ShopMenu shopScreen) {
 		for (int i = 0; i < shopScreen.inventoryButtonsNameText.Count; i++) {
 			if (shopScreen.firstSlotNdx + i < shopScreen.inventory.Count) {
 				string inventoryNdx = (shopScreen.firstSlotNdx + i + 1).ToString();
@@ -134,13 +126,13 @@ public class ShopScreen_PickItemMode : MonoBehaviour {
 		}
 	}
 
-	public void DisplayItemDescriptions(ShopScreen shopScreen) {
+	public void DisplayItemDescriptions(ShopMenu shopScreen) {
 		for (int i = 0; i < shopScreen.inventoryButtonsNameText.Count; i++) {
 			if (UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject == shopScreen.inventoryButtons[i].gameObject) {
 				PauseMessage.S.SetText(shopScreen.inventory[shopScreen.firstSlotNdx + i].description);
 
 				// Display potential player stats
-				ShopScreen_DisplayPotentialStats.S.DisplayPotentialStats(shopScreen.inventory[shopScreen.firstSlotNdx + i]);
+				shopScreen.displayPotentialStats.DisplayPotentialStats(shopScreen.inventory[shopScreen.firstSlotNdx + i]);
 
 				// Cursor Position set to Selected Button
 				Utilities.S.PositionCursor(shopScreen.inventoryButtons[i].gameObject, -160, 0, 0);
@@ -166,7 +158,7 @@ public class ShopScreen_PickItemMode : MonoBehaviour {
 	}
 
 	// Set the first and last button’s navigation 
-	public void SetButtonNavigation(ShopScreen shopScreen) {
+	public void SetButtonNavigation(ShopMenu shopScreen) {
 		// Reset all button's navigation to automatic
 		for (int i = 0; i < shopScreen.inventoryButtons.Count; i++) {
 			// Get the Navigation data
