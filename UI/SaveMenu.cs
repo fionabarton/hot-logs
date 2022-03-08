@@ -8,30 +8,30 @@ TO BE IMPLEMENTED:
 Current HP/MP, Steps, Party Members, Inventory, Equipment, Doors/Chests/KeyItems, Quests Completed/Activated
  */
 public class SaveMenu : MonoBehaviour {
-	[Header ("Set in Inspector")]
-	public List<Button>			slotButtons;
+	[Header("Set in Inspector")]
+	public List<Button> slotButtons;
 
-	public List<Text> 			slotDataText;
+	public List<Text> slotDataText;
 
 	// Load, Save, Delete
-	public List<Button>			actionButtons;
+	public List<Button> actionButtons;
 
-	[Header ("Set Dynamically")]
+	[Header("Set Dynamically")]
 	// For Input & Display Message
-	public eSaveScreenMode		saveScreenMode;
+	public eSaveScreenMode saveScreenMode;
 
 	// Allows parts of Loop() to be called once rather than repeatedly every frame.
-	public bool					canUpdate;
+	public bool canUpdate;
 
 	// Ensures audio is only played once when button is selected
-	GameObject					previousSelectedActionButton;
-	GameObject					previousSelectedSlotButton;
+	GameObject previousSelectedActionButton;
+	GameObject previousSelectedSlotButton;
 
 	// Index of the file the user is currently playing
-	public int					currentFileNdx;
+	public int currentFileNdx;
 
 	// Load, Save, Delete
-	public int					currentActionNdx;
+	public int currentActionNdx;
 
 	private static SaveMenu _S;
 	public static SaveMenu S { get { return _S; } set { _S = value; } }
@@ -51,7 +51,7 @@ public class SaveMenu : MonoBehaviour {
 	}
 
 	void SetUp() {
-		try{
+		try {
 			// Freeze Player
 			if (GameManager.S.currentScene != "Title_Screen") {
 				GameManager.S.paused = true;
@@ -85,7 +85,8 @@ public class SaveMenu : MonoBehaviour {
 			actionButtons[2].onClick.AddListener(delegate { ClickedLoadSaveOrDelete(2); });
 
 			canUpdate = true;
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			Debug.Log(e);
 		}
 	}
@@ -108,7 +109,7 @@ public class SaveMenu : MonoBehaviour {
 			// Set Selected Gameobject (Pause Screen: Save Button)
 			Utilities.S.SetSelectedGO(PauseMenu.S.buttonGO[4]);
 
-			PauseMessage.S.DisplayText ("Welcome to the Pause Screen!");
+			PauseMessage.S.DisplayText("Welcome to the Pause Screen!");
 
 			PauseMenu.S.canUpdate = true;
 		}
@@ -132,7 +133,7 @@ public class SaveMenu : MonoBehaviour {
 		gameObject.SetActive(false);
 	}
 
-    public void Loop(){
+	public void Loop() {
 		// Reset canUpdate
 		if (Input.GetAxisRaw("Horizontal") != 0f || Input.GetAxisRaw("Vertical") != 0f) {
 			canUpdate = true;
@@ -168,7 +169,7 @@ public class SaveMenu : MonoBehaviour {
 				if (Input.GetButtonDown("SNES Y Button")) {
 					// Audio: Deny
 					AudioManager.S.PlaySFX(eSoundName.deny);
-	
+
 					SetUp();
 				}
 				break;
@@ -193,7 +194,7 @@ public class SaveMenu : MonoBehaviour {
 						ClickedLoadSaveOrDelete(currentActionNdx);
 					}
 				}
-                break;
+				break;
 			case eSaveScreenMode.pickedFile:
 				if (PauseMessage.S.dialogueFinished) {
 					if (Input.GetButtonDown("SNES B Button") || Input.GetButtonDown("SNES Y Button")) {
@@ -208,7 +209,7 @@ public class SaveMenu : MonoBehaviour {
 	}
 	///////////////////////////////////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////////////////////////////////
-	void ClickedLoadSaveOrDelete(int loadSaveOrDelete){
+	void ClickedLoadSaveOrDelete(int loadSaveOrDelete) {
 		// Remove Listeners and Update GUI 
 		Utilities.S.RemoveListeners(actionButtons);
 		UpdateGUI();
@@ -226,27 +227,27 @@ public class SaveMenu : MonoBehaviour {
 		currentActionNdx = loadSaveOrDelete;
 
 		switch (loadSaveOrDelete) {
-		case 0:
-			slotButtons[0].onClick.AddListener (delegate{ ClickedLoadButton(0);});
-			slotButtons[1].onClick.AddListener (delegate{ ClickedLoadButton(1);});
-			slotButtons[2].onClick.AddListener (delegate{ ClickedLoadButton(2);});
+			case 0:
+				slotButtons[0].onClick.AddListener(delegate { ClickedLoadButton(0); });
+				slotButtons[1].onClick.AddListener(delegate { ClickedLoadButton(1); });
+				slotButtons[2].onClick.AddListener(delegate { ClickedLoadButton(2); });
 
-			PauseMessage.S.DisplayText ("Load which file?");
-			break;
-		case 1:
-			slotButtons[0].onClick.AddListener (delegate{ ClickedSaveButton(0);});
-			slotButtons[1].onClick.AddListener (delegate{ ClickedSaveButton(1);});
-			slotButtons[2].onClick.AddListener (delegate{ ClickedSaveButton(2);});
+				PauseMessage.S.DisplayText("Load which file?");
+				break;
+			case 1:
+				slotButtons[0].onClick.AddListener(delegate { ClickedSaveButton(0); });
+				slotButtons[1].onClick.AddListener(delegate { ClickedSaveButton(1); });
+				slotButtons[2].onClick.AddListener(delegate { ClickedSaveButton(2); });
 
-			PauseMessage.S.DisplayText ("Save your progress to which file?");
-			break;
-		case 2:
-			slotButtons[0].onClick.AddListener (delegate{ ClickedDeleteButton(0);});
-			slotButtons[1].onClick.AddListener (delegate{ ClickedDeleteButton(1);});
-			slotButtons[2].onClick.AddListener (delegate{ ClickedDeleteButton(2);});
+				PauseMessage.S.DisplayText("Save your progress to which file?");
+				break;
+			case 2:
+				slotButtons[0].onClick.AddListener(delegate { ClickedDeleteButton(0); });
+				slotButtons[1].onClick.AddListener(delegate { ClickedDeleteButton(1); });
+				slotButtons[2].onClick.AddListener(delegate { ClickedDeleteButton(2); });
 
-			PauseMessage.S.DisplayText ("Delete which file?");
-			break;
+				PauseMessage.S.DisplayText("Delete which file?");
+				break;
 		}
 
 		// Audio: Confirm
@@ -273,7 +274,7 @@ public class SaveMenu : MonoBehaviour {
 
 				ClickedActionButtonHelper();
 			}
-        } else {
+		} else {
 			// Cannot perform this action
 			CannotPerformAction("This file cannot be loaded because it is empty!");
 		}
@@ -283,10 +284,10 @@ public class SaveMenu : MonoBehaviour {
 		// Set Text
 		PauseMessage.S.DisplayText("Are you sure that you would like to save your progress to this file?", false, true);
 
-        // Set OnClick Methods
-        Utilities.S.RemoveListeners(GameManager.S.pauseSubMenu.buttonCS);
-        GameManager.S.pauseSubMenu.buttonCS[0].onClick.AddListener(delegate { SaveFile(fileNdx); });
-        GameManager.S.pauseSubMenu.buttonCS[1].onClick.AddListener(delegate { No(1); });
+		// Set OnClick Methods
+		Utilities.S.RemoveListeners(GameManager.S.pauseSubMenu.buttonCS);
+		GameManager.S.pauseSubMenu.buttonCS[0].onClick.AddListener(delegate { SaveFile(fileNdx); });
+		GameManager.S.pauseSubMenu.buttonCS[1].onClick.AddListener(delegate { No(1); });
 
 		ClickedActionButtonHelper();
 	}
@@ -308,7 +309,7 @@ public class SaveMenu : MonoBehaviour {
 
 				ClickedActionButtonHelper();
 			}
-        } else {
+		} else {
 			// Cannot perform this action
 			CannotPerformAction("This file cannot be deleted because it is empty!");
 		}
@@ -421,10 +422,10 @@ public class SaveMenu : MonoBehaviour {
 			int ndx = visitedLocationsNdxArray[i] - 48;
 
 			WarpManager.S.visitedLocations.Add(WarpManager.S.locations[ndx]);
-        }
+		}
 
-        // Warp to this file's current location
-        StartCoroutine(WarpManager.S.Warp(
+		// Warp to this file's current location
+		StartCoroutine(WarpManager.S.Warp(
 			WarpManager.S.visitedLocations[PlayerPrefs.GetInt(fileNdx + "LocationNdx")].position,
 			true,
 			WarpManager.S.visitedLocations[PlayerPrefs.GetInt(fileNdx + "LocationNdx")].sceneName,
@@ -507,8 +508,8 @@ public class SaveMenu : MonoBehaviour {
 	}
 	///////////////////////////////////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////////////////////////////////
-	void UpdateGUI(){
-		for(int i = 0; i < slotDataText.Count; i++) {
+	void UpdateGUI() {
+		for (int i = 0; i < slotDataText.Count; i++) {
 			if (PlayerPrefs.HasKey(i + "Time")) {
 				if (PlayerPrefs.GetString(i + "Time") == "0:00") {
 					slotDataText[i].text = "<color=yellow>New Game</color>";

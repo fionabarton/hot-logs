@@ -58,9 +58,10 @@ public class PlayerButtons : MonoBehaviour {
 					Utilities.S.SetButtonNavigation(buttonsCS[2], null, null, buttonsCS[1], buttonsCS[0]);
 					break;
             }
+		} catch (Exception e) {
+			Debug.Log(e);
 		}
-        catch (NullReferenceException) { }
-    }
+	}
 
     // Display the party's current HP, MP, and Gold
     public void UpdateGUI(){

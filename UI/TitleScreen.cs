@@ -28,8 +28,8 @@ public class TitleScreen : MonoBehaviour{
 
         // Add listeners
         buttons[0].onClick.AddListener(NewGame);
-        buttons[1].onClick.AddListener(SaveScreen.S.Activate);
-        buttons[2].onClick.AddListener(OptionsScreen.S.Activate);
+        buttons[1].onClick.AddListener(SaveMenu.S.Activate);
+        buttons[2].onClick.AddListener(OptionsMenu.S.Activate);
 
         // Set Selected GameObject and Position Cursor 
         if (PlayerPrefs.HasKey("0Time") || PlayerPrefs.HasKey("1Time") || PlayerPrefs.HasKey("2Time")) {
@@ -81,7 +81,7 @@ public class TitleScreen : MonoBehaviour{
 		}
 
         if (canUpdate) {
-            if (!OptionsScreen.S.gameObject.activeInHierarchy && !SaveScreen.S.gameObject.activeInHierarchy) {
+            if (!OptionsMenu.S.gameObject.activeInHierarchy && !SaveMenu.S.gameObject.activeInHierarchy) {
                 for (int i = 0; i < buttons.Count; i++) {
                     if (UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject == buttons[i].gameObject) {
                         // Set Cursor Position set to Selected Button
@@ -107,7 +107,7 @@ public class TitleScreen : MonoBehaviour{
         Utilities.S.RemoveListeners(buttons);
 
         // Close Curtains
-        BattleCurtain.S.Close();
+        Curtain.S.Close();
 
         // Audio: Buff 2
         AudioManager.S.PlaySFX(eSoundName.buff2);

@@ -3,33 +3,33 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 
-public class ColorScreen : MonoBehaviour{
-	[Header("Set in Inspector")]
-	public Animator             anim;
+public class ColorScreen : MonoBehaviour {
+    [Header("Set in Inspector")]
+    public Animator anim;
 
     [Header("Set Dynamically")]
-    public List<AnimationClip>  clips;
+    public List<AnimationClip> clips;
 
-    private static ColorScreen  _S;
-	public static ColorScreen   S { get { return _S; } set { _S = value; } }
+    private static ColorScreen _S;
+    public static ColorScreen S { get { return _S; } set { _S = value; } }
 
-	// DontDestroyOnLoad
-	private static bool         exists;
+    // DontDestroyOnLoad
+    private static bool exists;
 
-    public int                  targetNdx;
-    public Spell                spell;
+    public int targetNdx;
+    public Spell spell;
 
     void Awake() {
-		S = this;
+        S = this;
 
-		// DontDestroyOnLoad
-		if (!exists) {
-			exists = true;
-			DontDestroyOnLoad(transform.parent.gameObject);
-		} else {
-			Destroy(transform.parent.gameObject);
-		}
-	}
+        // DontDestroyOnLoad
+        if (!exists) {
+            exists = true;
+            DontDestroyOnLoad(transform.parent.gameObject);
+        } else {
+            Destroy(transform.parent.gameObject);
+        }
+    }
 
     private void Start() {
         // Store animator's clips: (0: Swell, 1: Flicker)
@@ -59,7 +59,7 @@ public class ColorScreen : MonoBehaviour{
         // Set animation event parameters
         evt.functionName = functionName;
         evt.intParameter = actionNdx;
-        
+
         // Add event to clip
         switch (functionName) {
             case "Swell":
@@ -91,39 +91,39 @@ public class ColorScreen : MonoBehaviour{
         // Function to call after animation is played
         switch (actionNdx) {
             case 0: // Party: Heal Spell
-                SpellScreen.S.battleSpells.HealSinglePartyMember(targetNdx, spell);
+                Spells.S.battle.HealSinglePartyMember(targetNdx, spell);
                 break;
             case 1: // Enemy: Heal Spell
                 BattleEnemyActions.S.HealSpell(targetNdx);
                 break;
             case 2: // Party: Heal All Spell
-                SpellScreen.S.battleSpells.HealAll(targetNdx, spell);
+                 Spells.S.battle.HealAll(targetNdx, spell);
                 break;
             case 3: // Party: Revive Spell
-                SpellScreen.S.battleSpells.ReviveSelectedPartyMember(targetNdx, spell);
+                 Spells.S.battle.ReviveSelectedPartyMember(targetNdx, spell);
                 break;
             case 4: // Party: Detoxify Spell
-                SpellScreen.S.battleSpells.DetoxifySinglePartyMember(targetNdx, spell);
+                 Spells.S.battle.DetoxifySinglePartyMember(targetNdx, spell);
                 break;
             case 5: // Party: Mobilize Spell
-                SpellScreen.S.battleSpells.MobilizeSinglePartyMember(targetNdx, spell);
+                 Spells.S.battle.MobilizeSinglePartyMember(targetNdx, spell);
                 break;
             case 6: // Party: Wake Spell
-                SpellScreen.S.battleSpells.WakeSinglePartyMember(targetNdx, spell);
+                 Spells.S.battle.WakeSinglePartyMember(targetNdx, spell);
                 break;
         }
 
         // Remove all animation events
         RemoveEvents();
     }
-	public void Flicker(int actionNdx = 0) {
+    public void Flicker(int actionNdx = 0) {
         // Function to call after animation is played
         switch (actionNdx) {
             case 0: // Party: Fireball Spell
-                SpellScreen.S.battleSpells.AttackSelectedEnemy(targetNdx, spell);
+                 Spells.S.battle.AttackSelectedEnemy(targetNdx, spell);
                 break;
             case 1: // Party: Fireblast Spell
-                SpellScreen.S.battleSpells.AttackAllEnemies(targetNdx, spell);
+                 Spells.S.battle.AttackAllEnemies(targetNdx, spell);
                 break;
             case 2: // Enemy: Attack All Spell
                 BattleEnemyActions.S.AttackAll();
@@ -132,13 +132,13 @@ public class ColorScreen : MonoBehaviour{
                 BattleEnemyActions.S.AttackSingle();
                 break;
             case 4: // Party: Poison Single Spell
-                SpellScreen.S.battleSpells.PoisonSingle(targetNdx, spell);
+                 Spells.S.battle.PoisonSingle(targetNdx, spell);
                 break;
             case 5: // Party: Paralyze Single Spell
-                SpellScreen.S.battleSpells.ParalyzeSingle(targetNdx, spell);
+                 Spells.S.battle.ParalyzeSingle(targetNdx, spell);
                 break;
             case 6: // Party: Sleep Single Spell
-                SpellScreen.S.battleSpells.SleepSingle(targetNdx, spell);
+                 Spells.S.battle.SleepSingle(targetNdx, spell);
                 break;
         }
 

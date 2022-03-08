@@ -126,7 +126,7 @@ public class DialogueManager : MonoBehaviour {
 
 			dialogueSentences += dialogueWords[i] + " ";
 			dialogueTextCS.text = dialogueSentences;
-			yield return new WaitForSeconds(OptionsScreen.S.textSpeed);
+			yield return new WaitForSeconds(OptionsMenu.S.textSpeed);
 		}
 
 		// Optionally Activate cursor

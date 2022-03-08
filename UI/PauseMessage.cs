@@ -49,7 +49,7 @@ public class PauseMessage : MonoBehaviour {
 		for (int i = 0; i < dialogueWords.Length; i++) {
 			dialogueSentences += dialogueWords [i] + " ";
 			message.text = dialogueSentences;
-			yield return new WaitForSeconds(OptionsScreen.S.textSpeed);
+			yield return new WaitForSeconds(OptionsMenu.S.textSpeed);
 		}
 		// Activate cursor
 		cursorGO.SetActive(true);
