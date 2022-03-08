@@ -157,7 +157,7 @@ public class CutsceneManager : MonoBehaviour
                             CamManager.S.ChangeTarget(Player.S.gameObject, true);
                             break;
                         case 6: // Add Item to Inventory & Display Dialogue  
-                            Inventory.S.AddItemToInventory(ItemManager.S.GetItem(eItem.mpPotion));
+                            Inventory.S.AddItemToInventory(Items.S.GetItem(eItem.mpPotion));
                            
                             message.Clear();
                             message.Add("You were just gifted a magic potion...");

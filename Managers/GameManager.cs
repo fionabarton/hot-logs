@@ -8,31 +8,31 @@ using UnityEngine.SceneManagement;
 /// Loads Scenes, Enemy Tracking, etc.
 /// </summary>
 public class GameManager : MonoBehaviour {
-	[Header ("Set in Inspector")]
-	public string 				firstScene;
+	[Header("Set in Inspector")]
+	public string firstScene;
 
 	// BATTLE
-	public GameObject 			battleUIGO; // UI
-	public GameObject			battleGameObjects; // Player(s), Enemy(s), Scenery etc.
+	public GameObject battleUIGO; // UI
+	public GameObject battleGameObjects; // Player(s), Enemy(s), Scenery etc.
 
-	public bool					canInput;
+	public bool canInput;
 
-	public SubMenu				gameSubMenu;
-	public SubMenu				pauseSubMenu;
+	public SubMenu gameSubMenu;
+	public SubMenu pauseSubMenu;
 
 	[Header("Set Dynamically")]
-	public bool					paused;
+	public bool paused;
 
 	// Respawn Level
-	public string				currentScene;
-	public string 				previousScene;
-	private string				previousPreviousScene;
+	public string currentScene;
+	public string previousScene;
+	private string previousPreviousScene;
 
-	private static GameManager	_S;
-	public static GameManager	S { get { return _S; } set { _S = value; } }
+	private static GameManager _S;
+	public static GameManager S { get { return _S; } set { _S = value; } }
 
 	// DontDestroyOnLoad
-	private static bool			exists;
+	private static bool exists;
 
 	void Awake() {
 		S = this;
@@ -40,16 +40,16 @@ public class GameManager : MonoBehaviour {
 		// DontDestroyOnLoad
 		if (!exists) {
 			exists = true;
-			DontDestroyOnLoad (gameObject);
+			DontDestroyOnLoad(gameObject);
 		} else {
-			Destroy (gameObject);
+			Destroy(gameObject);
 		}
 
 		//// Load First Scene
 		//SceneManager.LoadScene(firstScene);
 	}
 
-	void Start () {
+	void Start() {
 		// Load First Scene
 		//SceneManager.LoadScene(firstScene);
 		LoadLevel(firstScene);
@@ -94,8 +94,8 @@ public class GameManager : MonoBehaviour {
 		}
 	}
 
-    // Load Level
-    public void LoadLevel (string levelToLoad){
+	// Load Level
+	public void LoadLevel(string levelToLoad) {
 		previousPreviousScene = previousScene;
 		previousScene = SceneManager.GetActiveScene().name;
 
@@ -107,7 +107,7 @@ public class GameManager : MonoBehaviour {
 		SceneManager.LoadScene(levelToLoad);
 		StartCoroutine("LoadSettingsCo");
 	}
-	private IEnumerator LoadSettingsCo(){ // Calls LoadSettings() AFTER scene has changed
+	private IEnumerator LoadSettingsCo() { // Calls LoadSettings() AFTER scene has changed
 		yield return new WaitForSeconds(0.05f);
 
 		// Current Scene
@@ -161,7 +161,7 @@ public class GameManager : MonoBehaviour {
 
 			// If poisoned, activate overworld poisoned icons
 			StatusEffects.S.SetOverworldPoisonIcons();
-		} 
+		}
 
 		// Get all enemy gameobjects' death status, and clear lists in EnemyManager.cs
 		if (currentScene != "Battle" && previousScene != "Battle") {
@@ -173,7 +173,7 @@ public class GameManager : MonoBehaviour {
 
 		////////////// Rain //////////////
 		RainSpawner.S.StopCoroutine("FixedUpdateCoroutine");
-		switch (currentScene){
+		switch (currentScene) {
 			case "Title_Screen":
 			case "Area_1":
 				RainSpawner.S.StartRaining();
@@ -181,58 +181,58 @@ public class GameManager : MonoBehaviour {
 			//case "Overworld_1":
 			//case "Town_1":
 			//case "Area_2":
-				//if (Random.value > 0.5f){
-				//	switch (previousScene){
-				//		case "Cave_1":
-				//			RainSpawner.S.StopRaining();
-				//			break;
-				//		default:
-				//			RainSpawner.S.StartRaining();
-				//			break;
-				//	}
-				//}else{
-				//	goto default;
-				//}
-				//break;
+			//if (Random.value > 0.5f){
+			//	switch (previousScene){
+			//		case "Cave_1":
+			//			RainSpawner.S.StopRaining();
+			//			break;
+			//		default:
+			//			RainSpawner.S.StartRaining();
+			//			break;
+			//	}
+			//}else{
+			//	goto default;
+			//}
+			//break;
 			default:
 				RainSpawner.S.StopRaining();
 				break;
 		}
 
-        ////////////// Music //////////////
-        switch (currentScene) {
-            case "Title_Screen":
-                AudioManager.S.PlaySong(eSongName.zelda);
-                break;
-            case "Town_1":
-            case "Area_1":
-                if (!RainSpawner.S.isRaining) {
-                    AudioManager.S.PlaySong(eSongName.nineteenForty);
-                } else {
-                    AudioManager.S.PlaySong(eSongName.never);
-                }
-                break;
-            case "Overworld_1":
-            case "Area_2":
-                AudioManager.S.PlaySong(eSongName.things);
-                break;
-            case "Battle":
-                AudioManager.S.PlaySong(eSongName.ninja);
-                break;
-            case "Shop_1":
-            case "Motel_1":
-            case "Area_3":
-                AudioManager.S.PlaySong(eSongName.soap);
-                break;
-            case "Area_5":
-                AudioManager.S.PlaySong(eSongName.gMinor);
-                break;
-            default:
-                break;
-        }
+		////////////// Music //////////////
+		switch (currentScene) {
+			case "Title_Screen":
+				AudioManager.S.PlaySong(eSongName.zelda);
+				break;
+			case "Town_1":
+			case "Area_1":
+				if (!RainSpawner.S.isRaining) {
+					AudioManager.S.PlaySong(eSongName.nineteenForty);
+				} else {
+					AudioManager.S.PlaySong(eSongName.never);
+				}
+				break;
+			case "Overworld_1":
+			case "Area_2":
+				AudioManager.S.PlaySong(eSongName.things);
+				break;
+			case "Battle":
+				AudioManager.S.PlaySong(eSongName.ninja);
+				break;
+			case "Shop_1":
+			case "Motel_1":
+			case "Area_3":
+				AudioManager.S.PlaySong(eSongName.soap);
+				break;
+			case "Area_5":
+				AudioManager.S.PlaySong(eSongName.gMinor);
+				break;
+			default:
+				break;
+		}
 
-        // Set up Player, Camera, etc. for Scene 
-        switch (currentScene){
+		// Set up Player, Camera, etc. for Scene 
+		switch (currentScene) {
 			// Menus
 			case "Title_Screen":
 			// Battle
@@ -260,7 +260,7 @@ public class GameManager : MonoBehaviour {
 				CamManager.S.transform.position = tPos;
 
 				// Handle more specific settings
-				switch (currentScene){
+				switch (currentScene) {
 					case "Title_Screen":
 						TitleScreen.S.Activate();
 						break;
@@ -304,17 +304,17 @@ public class GameManager : MonoBehaviour {
 					EnemyManager.S.SetEnemyMovement();
 					SwapLayerManager.S.SetLayerNames();
 				}
-				
+
 				// Freeze Camera
-				if (currentScene == "Motel_1" || currentScene == "Shop_1"){
+				if (currentScene == "Motel_1" || currentScene == "Shop_1") {
 					// Freeze Camera
 					CamManager.S.camMode = eCamMode.freezeCam;
 
-                } else {
+				} else {
 					// Set camera to Player position
 					Camera.main.transform.position = Player.S.gameObject.transform.position;
 				}
-			break;
+				break;
 		}
 
 		// Wait 0.05f seconds
@@ -327,7 +327,7 @@ public class GameManager : MonoBehaviour {
 
 		// Open Curtains 
 		if (currentScene == "Battle" || previousScene == "Title_Screen") {
-			BattleCurtain.S.Open();
+			Curtain.S.Open();
 		}
 	}
 
@@ -351,7 +351,7 @@ public class GameManager : MonoBehaviour {
 		AudioManager.S.PlaySong(eSongName.startBattle);
 
 		// Close Curtains
-		BattleCurtain.S.Close();
+		Curtain.S.Close();
 
 		// Delay, then Load Scene
 		Invoke("LoadBattleScene", 1.25f);
@@ -366,7 +366,7 @@ public class GameManager : MonoBehaviour {
 	}
 
 	// ************ Add/Subtract PLAYER HP ************ \\
-	public void AddSubtractPlayerHP(int ndx, bool addOrSubtract, int amount){
+	public void AddSubtractPlayerHP(int ndx, bool addOrSubtract, int amount) {
 		if (addOrSubtract) { Party.S.stats[ndx].HP += amount; } else { Party.S.stats[ndx].HP -= amount; }
 
 		// Prevent going above Max HP & below Min HP
@@ -410,7 +410,7 @@ public class GameManager : MonoBehaviour {
 	}
 
 	// ************ Add/Subtract ENEMY HP ************ \\
-	public void AddSubtractEnemyHP(int ndx, bool addOrSubtract, int amount){
+	public void AddSubtractEnemyHP(int ndx, bool addOrSubtract, int amount) {
 		if (addOrSubtract) { Battle.S.enemyStats[ndx].HP += amount; } else { Battle.S.enemyStats[ndx].HP -= amount; }
 
 		// Prevent going above Max HP & below Min HP
@@ -460,11 +460,11 @@ public class GameManager : MonoBehaviour {
 		if (floatingScore != null) {
 			// Get text components (one for colored text in center, four for the black outline)
 			Text[] texts = floatingScore.GetComponentsInChildren<Text>();
-			for(int i = 0; i < texts.Length; i++) {
+			for (int i = 0; i < texts.Length; i++) {
 				// Display text
 				texts[i].text = message;
 				// Set color of text in center
-				if(i == texts.Length - 1) {
+				if (i == texts.Length - 1) {
 					texts[i].color = color;
 				}
 			}

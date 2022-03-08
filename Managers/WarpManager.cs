@@ -4,30 +4,30 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class WarpManager : MonoBehaviour {
-    [Header("Set Dynamically")]
-    // Singleton
-    private static WarpManager	_S;
-    public static WarpManager	S { get { return _S; } set { _S = value; } }
+	[Header("Set Dynamically")]
+	// Singleton
+	private static WarpManager _S;
+	public static WarpManager S { get { return _S; } set { _S = value; } }
 
 	// All warp locations 
-	public List<WarpLocation>	locations = new List<WarpLocation>();
+	public List<WarpLocation> locations = new List<WarpLocation>();
 
 	// Locations the party has already visited and can warp to
-	public List<WarpLocation>	visitedLocations = new List<WarpLocation>();
+	public List<WarpLocation> visitedLocations = new List<WarpLocation>();
 
 	// Ensures audio is only played once when button is selected
-	public GameObject			previousSelectedLocationGO;
+	public GameObject previousSelectedLocationGO;
 
 	// Index and name of the player's current location
-	public int					locationNdx;
-	public string				locationName;
-	public string				visitedLocationNdxs;
+	public int locationNdx;
+	public string locationName;
+	public string visitedLocationNdxs;
 
 	void Awake() {
-        S = this;
-    }
+		S = this;
+	}
 
-    void Start() {
+	void Start() {
 		locations.Add(new WarpLocation("Starting Point", "Area_1", new Vector3(0, 2, 0), "The location at which you started this wreck of a \"game\".", 1));
 		locations.Add(new WarpLocation("Brown Valley", "Area_2", new Vector3(0, -2, 0), "Enemies are afoot in this region; beware, fool!", 3));
 		locations.Add(new WarpLocation("Mountain Top", "Town_1", new Vector3(0, -11, 0), "A vaguely interesting area populated by a few vaguely interesting businesses.", 1));
@@ -59,8 +59,8 @@ public class WarpManager : MonoBehaviour {
 
 	public void DisplayButtonDescriptions(List<Button> buttons, int cursorDistanceFromCenter) {
 		for (int i = 0; i < visitedLocations.Count; i++) {
-            if (UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject == buttons[i].gameObject) {
-				PauseMessage.S.SetText("<color=#FFFFFF>Warp to:</color> " + 
+			if (UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject == buttons[i].gameObject) {
+				PauseMessage.S.SetText("<color=#FFFFFF>Warp to:</color> " +
 				visitedLocations[i].name + "<color=#FFFFFF>?\nDescription:</color> " + visitedLocations[i].description, true);
 
 				// Cursor Position set to Selected Button
@@ -70,20 +70,20 @@ public class WarpManager : MonoBehaviour {
 				buttons[i].gameObject.GetComponentInChildren<Text>().color = new Color32(205, 208, 0, 255);
 
 				// Audio: Selection (when a new gameObject is selected)
-				Utilities.S.PlayButtonSelectedSFX(ref previousSelectedLocationGO);		
+				Utilities.S.PlayButtonSelectedSFX(ref previousSelectedLocationGO);
 			} else {
-                // Set non-selected button text color
-                buttons[i].gameObject.GetComponentInChildren<Text>().color = new Color32(255, 255, 255, 255);
-            }
-        }
+				// Set non-selected button text color
+				buttons[i].gameObject.GetComponentInChildren<Text>().color = new Color32(255, 255, 255, 255);
+			}
+		}
 	}
 
 	public void DeactivateUnusedButtonSlots(List<Button> buttons) {
-        for (int i = 0; i < buttons.Count; i++) {
+		for (int i = 0; i < buttons.Count; i++) {
 			buttons[i].gameObject.SetActive(false);
 
 			// Deactivate unique SpellScreen or ItemScreen buttons
-            if (Spells.S.menu.gameObject.activeInHierarchy) {
+			if (Spells.S.menu.gameObject.activeInHierarchy) {
 				Spells.S.menu.spellsButtonMPCostText[i].gameObject.SetActive(false);
 
 				Spells.S.menu.nameHeaderText.text = "Warp Destination:";
@@ -111,22 +111,22 @@ public class WarpManager : MonoBehaviour {
 			// Add listener to Button
 			int copy = i;
 			buttons[copy].onClick.AddListener(delegate {
-                StartCoroutine(Warp(
-                    visitedLocations[copy].position,
-                    true,
-                    visitedLocations[copy].sceneName,
+				StartCoroutine(Warp(
+					visitedLocations[copy].position,
+					true,
+					visitedLocations[copy].sceneName,
 					visitedLocations[copy].playerFacingDirection));
-            });
+			});
 		}
 	}
 
-    public void AssignButtonNames(List<Text> buttonsText) {
+	public void AssignButtonNames(List<Text> buttonsText) {
 		for (int i = 0; i < visitedLocations.Count; i++) {
 			// Assign Button Name Text
 			string ndx = (i + 1).ToString();
 			buttonsText[i].text = ndx + ") " + visitedLocations[i].name;
 		}
-    }
+	}
 
 	// Set the first and last button’s navigation 
 	public void SetButtonNavigation(List<Button> buttons) {
@@ -165,7 +165,7 @@ public class WarpManager : MonoBehaviour {
 							bool warpToNewScene,
 							string sceneName = "zTown",
 							int facingDirection = 99,
-							bool camFollows = true, 
+							bool camFollows = true,
 							Vector3 camWarpPos = default(Vector3)) {
 		// If used a warp potion, remove it from the inventory 
 		if (Items.S.menu.gameObject.activeInHierarchy) {
@@ -186,7 +186,7 @@ public class WarpManager : MonoBehaviour {
 		}
 
 		// Set Player facing direction
-		if(facingDirection != 99) {
+		if (facingDirection != 99) {
 			Player.S.lastDirection = facingDirection;
 
 			// Audio: Buff 2

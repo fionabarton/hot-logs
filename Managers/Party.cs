@@ -8,16 +8,16 @@ using UnityEngine;
 /// </summary>
 public class Party : MonoBehaviour {
 	[Header("Set Dynamically")]
-	private static Party			_S;
-	public static Party				S { get { return _S; } set { _S = value; } }
-
-	public List<PartyStats>			stats = new List<PartyStats>();
+	public List<PartyStats> stats = new List<PartyStats>();
 
 	// Amount of members in the party
-	public int 						partyNdx;
+	public int partyNdx;
 
 	// Amount of gold
-	public int						gold;
+	public int gold;
+
+	private static Party _S;
+	public static Party S { get { return _S; } set { _S = value; } }
 
 	void Awake() {
 		S = this;
@@ -26,7 +26,7 @@ public class Party : MonoBehaviour {
         //stats.Add(new PartyStats("Blob", 40, 40, 40, 6, 6, 6,
         //    2, 2, 2, 2, 1, 1, 1, 1,
         //    0, 1, 12,
-        //    new List<Spell> { SpellScreen.S.spellManager.spells[1], SpellScreen.S.spellManager.spells[0], SpellScreen.S.spellManager.spells[2], SpellScreen.S.spellManager.spells[4], SpellScreen.S.spellManager.spells[5], SpellScreen.S.spellManager.spells[3], SpellScreen.S.spellManager.spells[6], SpellScreen.S.spellManager.spells[7], SpellScreen.S.spellManager.spells[8], SpellScreen.S.spellManager.spells[9], SpellScreen.S.spellManager.spells[10], SpellScreen.S.spellManager.spells[11] },
+        //    new List<Spell> { Spells.S.spells[1], Spells.S.spells[0], Spells.S.spells[2], Spells.S.spells[4], Spells.S.spells[5], Spells.S.spells[3], Spells.S.spells[6], Spells.S.spells[7], Spells.S.spells[8], Spells.S.spells[9], Spells.S.spells[10], Spells.S.spells[11] },
         //    new List<bool>(new bool[30]),
         //    new List<int> { 0, 0, 7, 23, 47, 110, 220, 450, 800, 1300, 2000 },
         //    false, 0)
@@ -35,7 +35,7 @@ public class Party : MonoBehaviour {
         //stats.Add(new PartyStats("Bill", 32, 32, 32, 15, 15, 15,
         //    1, 1, 1, 1, 2, 2, 2, 2,
         //    0, 1, 12,
-        //    new List<Spell> { SpellScreen.S.spellManager.spells[3], SpellScreen.S.spellManager.spells[1], SpellScreen.S.spellManager.spells[0], SpellScreen.S.spellManager.spells[4], SpellScreen.S.spellManager.spells[5], SpellScreen.S.spellManager.spells[2], SpellScreen.S.spellManager.spells[6], SpellScreen.S.spellManager.spells[7], SpellScreen.S.spellManager.spells[8], SpellScreen.S.spellManager.spells[9], SpellScreen.S.spellManager.spells[10], SpellScreen.S.spellManager.spells[11] },
+        //    new List<Spell> { Spells.S.spells[3], Spells.S.spells[1], Spells.S.spells[0], Spells.S.spells[4], Spells.S.spells[5], Spells.S.spells[2], Spells.S.spells[6], Spells.S.spells[7], Spells.S.spells[8], Spells.S.spells[9], Spells.S.spells[10], Spells.S.spells[11] },
         //    new List<bool>(new bool[30]),
         //    new List<int> { 0, 0, 9, 23, 55, 110, 250, 450, 850, 1300, 2100 },
         //    false, 0)
@@ -44,45 +44,47 @@ public class Party : MonoBehaviour {
         //stats.Add(new PartyStats("Fake Bill", 25, 25, 25, 10, 10, 10,
         //    1, 1, 1, 1, 2, 2, 2, 2,
         //    0, 1, 12,
-        //    new List<Spell> { SpellScreen.S.spellManager.spells[3], SpellScreen.S.spellManager.spells[4], SpellScreen.S.spellManager.spells[0], SpellScreen.S.spellManager.spells[2], SpellScreen.S.spellManager.spells[1], SpellScreen.S.spellManager.spells[5], SpellScreen.S.spellManager.spells[6], SpellScreen.S.spellManager.spells[7], SpellScreen.S.spellManager.spells[8], SpellScreen.S.spellManager.spells[9] },
+        //    new List<Spell> { Spells.S.spells[3], Spells.S.spells[4], Spells.S.spells[0], Spells.S.spells[2], Spells.S.spells[1], Spells.S.spells[5], Spells.S.spells[6], Spells.S.spells[7], Spells.S.spells[8], Spells.S.spells[9] },
         //    new List<bool>(new bool[30]),
         //    new List<int> { 0, 0, 9, 23, 55, 110, 250, 450, 850, 1300, 2100 },
         //    false, 0)
         //);
     }
 
-    private void Start() {
-        // Player 1
-        stats.Add(new PartyStats("Blob", 40, 40, 40, 6, 6, 6,
-            2, 2, 2, 2, 1, 1, 1, 1,
-            0, 1, 12,
-            new List<Spell> { Spells.S.spells[1], Spells.S.spells[0], Spells.S.spells[2], Spells.S.spells[4], Spells.S.spells[5], Spells.S.spells[3], Spells.S.spells[6], Spells.S.spells[7], Spells.S.spells[8], Spells.S.spells[9], Spells.S.spells[10], Spells.S.spells[11] },
-            new List<bool>(new bool[30]),
-            new List<int> { 0, 0, 7, 23, 47, 110, 220, 450, 800, 1300, 2000 },
-            false, 0)
-        );
-        // Player 2
-        stats.Add(new PartyStats("Bill", 32, 32, 32, 15, 15, 15,
-            1, 1, 1, 1, 2, 2, 2, 2,
-            0, 1, 12,
-            new List<Spell> { Spells.S.spells[3], Spells.S.spells[1], Spells.S.spells[0], Spells.S.spells[4], Spells.S.spells[5], Spells.S.spells[2], Spells.S.spells[6], Spells.S.spells[7], Spells.S.spells[8], Spells.S.spells[9], Spells.S.spells[10], Spells.S.spells[11] },
-            new List<bool>(new bool[30]),
-            new List<int> { 0, 0, 9, 23, 55, 110, 250, 450, 850, 1300, 2100 },
-            false, 0)
-        );
-        // Player 3
-        stats.Add(new PartyStats("Fake Bill", 25, 25, 25, 10, 10, 10,
-            1, 1, 1, 1, 2, 2, 2, 2,
-            0, 1, 12,
-            new List<Spell> { Spells.S.spells[3], Spells.S.spells[4], Spells.S.spells[0], Spells.S.spells[2], Spells.S.spells[1], Spells.S.spells[5], Spells.S.spells[6], Spells.S.spells[7], Spells.S.spells[8], Spells.S.spells[9] },
-            new List<bool>(new bool[30]),
-            new List<int> { 0, 0, 9, 23, 55, 110, 250, 450, 850, 1300, 2100 },
-            false, 0)
-        );
-    }
+    public void Start() {
+		// Player 1
+		stats.Add(new PartyStats("Blob", 40, 40, 40, 6, 6, 6,
+			2, 2, 2, 2, 1, 1, 1, 1,
+			0, 1, 12,
+			new List<Spell> { Spells.S.spells[1], Spells.S.spells[0], Spells.S.spells[2], Spells.S.spells[4], Spells.S.spells[5], Spells.S.spells[3], Spells.S.spells[6], Spells.S.spells[7], Spells.S.spells[8], Spells.S.spells[9], Spells.S.spells[10], Spells.S.spells[11] },
+			new List<bool>(new bool[30]),
+			new List<int> { 0, 0, 7, 23, 47, 110, 220, 450, 800, 1300, 2000 },
+			false, 0)
+		);
+		// Player 2
+		stats.Add(new PartyStats("Bill", 32, 32, 32, 15, 15, 15,
+			1, 1, 1, 1, 2, 2, 2, 2,
+			0, 1, 12,
+			new List<Spell> { Spells.S.spells[3], Spells.S.spells[1], Spells.S.spells[0], Spells.S.spells[4], Spells.S.spells[5], Spells.S.spells[2], Spells.S.spells[6], Spells.S.spells[7], Spells.S.spells[8], Spells.S.spells[9], Spells.S.spells[10], Spells.S.spells[11] },
+			new List<bool>(new bool[30]),
+			new List<int> { 0, 0, 9, 23, 55, 110, 250, 450, 850, 1300, 2100 },
+			false, 0)
+		);
+		// Player 3
+		stats.Add(new PartyStats("Fake Bill", 25, 25, 25, 10, 10, 10,
+			1, 1, 1, 1, 2, 2, 2, 2,
+			0, 1, 12,
+			new List<Spell> { Spells.S.spells[3], Spells.S.spells[4], Spells.S.spells[0], Spells.S.spells[2], Spells.S.spells[1], Spells.S.spells[5], Spells.S.spells[6], Spells.S.spells[7], Spells.S.spells[8], Spells.S.spells[9] },
+			new List<bool>(new bool[30]),
+			new List<int> { 0, 0, 9, 23, 55, 110, 250, 450, 850, 1300, 2100 },
+			false, 0)
+		);
 
-	// HP
-	public int GetHP(int playerNdx, int LVL) {
+		EquipMenu.S.SetInitialEquipment();
+	}
+
+    // HP
+    public int GetHP(int playerNdx, int LVL) {
 		if (playerNdx == 0) {
 			return ((10) * (3 + LVL)); // Blob: Lvl 1 = 40
 		} else {
@@ -198,19 +200,19 @@ public class Party : MonoBehaviour {
 		return stats[playerNdx].expToNextLevel[stats[playerNdx].LVL + 1] - stats[playerNdx].EXP;
 	}
 
-	public void CheckForLevelUp () {
+	public void CheckForLevelUp() {
 		// Loop through all party members
-        for (int i = 0; i < stats.Count; i++) {
+		for (int i = 0; i < stats.Count; i++) {
 			// Loop through levels 10 through 2
-            for (int j = 10; j >= 2; j--) {
-                if (stats[i].EXP >= stats[i].expToNextLevel[j] && !stats[i].hasReachedThisLevel[j]) {
-                    LevelUp(j, i);
-                }
-            }
-        }
-    }
-		
-	void LevelUp (int newLVL, int playerNdx) {
+			for (int j = 10; j >= 2; j--) {
+				if (stats[i].EXP >= stats[i].expToNextLevel[j] && !stats[i].hasReachedThisLevel[j]) {
+					LevelUp(j, i);
+				}
+			}
+		}
+	}
+
+	void LevelUp(int newLVL, int playerNdx) {
 		stats[playerNdx].hasLeveledUp = true;
 
 		stats[playerNdx].previousLVL = stats[playerNdx].LVL;
@@ -227,10 +229,10 @@ public class Party : MonoBehaviour {
 
 		// Add current equipment's stat effect(s) to party member's stats
 		for (int i = 0; i < EquipMenu.S.playerEquipment[0].Count; i++) {
-            if (EquipMenu.S.playerEquipment[playerNdx][i] != null) {
+			if (EquipMenu.S.playerEquipment[playerNdx][i] != null) {
 				EquipMenu.S.equipStatsEffect.AddItemEffect(playerNdx, EquipMenu.S.playerEquipment[playerNdx][i]);
-            }
-        }
+			}
+		}
 
 		// Mark that this Level has been reached (and all previous levels)
 		for (int i = 0; i < newLVL + 1; i++) {
@@ -247,7 +249,7 @@ public class PartyStats {
 	public int MP;
 	public int maxMP;
 	public int baseMaxMP;
-	
+
 	public int STR;
 	public int baseSTR;
 	public int DEF;
@@ -256,7 +258,7 @@ public class PartyStats {
 	public int baseWIS;
 	public int AGI;
 	public int baseAGI;
-	
+
 	public int EXP;
 	public int LVL;
 	public int spellNdx;
@@ -268,7 +270,7 @@ public class PartyStats {
 
 	public PartyStats(string name, int HP, int maxHP, int baseMaxHP, int MP, int maxMP, int baseMaxMP,
 		int STR, int baseSTR, int DEF, int baseDEF, int WIS, int baseWIS, int AGI, int baseAGI,
-		int EXP, int LVL, int spellNdx, 
+		int EXP, int LVL, int spellNdx,
 		List<Spell> spells, List<bool> hasReachedThisLevel, List<int> expToNextLevel, bool hasLeveledUp, int previousLVL) {
 		this.name = name;
 		this.HP = HP;
@@ -286,7 +288,7 @@ public class PartyStats {
 		this.baseWIS = baseWIS;
 		this.AGI = AGI;
 		this.baseAGI = baseAGI;
-		
+
 		this.EXP = EXP;
 		this.LVL = LVL;
 		this.spellNdx = spellNdx;
