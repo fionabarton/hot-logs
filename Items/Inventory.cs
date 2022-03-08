@@ -6,17 +6,17 @@ using UnityEngine;
 /// Stores and manages the party's inventory
 /// </summary>
 public class Inventory : MonoBehaviour {
-	[Header("Set Dynamically")]
-	private static Inventory		_S;
-	public static Inventory			S { get { return _S; } set { _S = value; } }
+    [Header("Set Dynamically")]
+    private static Inventory _S;
+    public static Inventory S { get { return _S; } set { _S = value; } }
 
-	public Dictionary<Item, int>	items = new Dictionary<Item, int>();
+    public Dictionary<Item, int> items = new Dictionary<Item, int>();
 
-	void Awake() {
-		S = this;
-	}
+    void Awake() {
+        S = this;
+    }
 
-	void Start() {
+    void Start() {
         // Add items to inventory
         AddItemToInventory(Items.S.items[25]);
         AddItemToInventory(Items.S.items[25]);
@@ -63,19 +63,19 @@ public class Inventory : MonoBehaviour {
     }
 
     public void AddItemToInventory(Item name) {
-		if (items.ContainsKey(name)) {
-			items[name] += 1;
-		} else {
-			items[name] = 1;
-		}
-	}
+        if (items.ContainsKey(name)) {
+            items[name] += 1;
+        } else {
+            items[name] = 1;
+        }
+    }
 
     public void RemoveItemFromInventory(Item name) {
         items[name]--;
 
         // Update Pause & Overworld GUI
         Items.S.menu.AssignItemNames();
-        PauseScreen.S.UpdateGUI();
+        PauseMenu.S.UpdateGUI();
 
         // Remove the entry if the count goes to 0.
         if (items[name] == 0) {
@@ -85,15 +85,15 @@ public class Inventory : MonoBehaviour {
 
     // Return a List of all the Dictionary keys
     public List<Item> GetItemList() {
-		List<Item> list = new List<Item>(items.Keys);
-		return list;
-	}
+        List<Item> list = new List<Item>(items.Keys);
+        return list;
+    }
 
-	// Return how many of that item are in inventory
-	public int GetItemCount(Item name) {
-		if (items.ContainsKey(name)) {
-			return items[name];
-		}
-		return 0;
-	}
+    // Return how many of that item are in inventory
+    public int GetItemCount(Item name) {
+        if (items.ContainsKey(name)) {
+            return items[name];
+        }
+        return 0;
+    }
 }

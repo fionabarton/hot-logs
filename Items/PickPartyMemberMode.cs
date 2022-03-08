@@ -31,7 +31,7 @@ public class PickPartyMemberMode : MonoBehaviour {
 				AudioManager.S.PlaySFX(eSoundName.deny);
 
 				// Go back to PickItem mode
-				itemScreen.pickItemMode.Setup(Items.S.menu); 
+				itemScreen.pickItemMode.Setup(Items.S.menu);
 			}
 		}
 	}

@@ -4,66 +4,59 @@ using UnityEngine;
 using UnityEngine.UI;
 using System;
 
-public class ItemMenu : MonoBehaviour { 
+public class ItemMenu : MonoBehaviour {
 	[Header("Set in Inspector")]
 	// Item "Buttons"
-	public List<Button> 	itemButtons;
-	public List<Text> 	  	itemButtonsNameText;
-	public List<Text>		itemButtonsValueText;
-	public List<Text>		itemButtonsQTYOwnedText;
+	public List<Button> itemButtons;
+	public List<Text> itemButtonsNameText;
+	public List<Text> itemButtonsValueText;
+	public List<Text> itemButtonsQTYOwnedText;
 
-	public Text				nameHeaderText;
-	public GameObject		valueHeader;
-	public GameObject		QTYOwnedHeader;
+	public Text nameHeaderText;
+	public GameObject valueHeader;
+	public GameObject QTYOwnedHeader;
 
-	public Button			sortButton;
+	public Button sortButton;
 
 	[Header("Set Dynamically")]
-	//private static ItemMenu _S;
-	//public static ItemMenu S { get { return _S; } set { _S = value; } }
-
 	// For Input & Display Message
-	public eItemMenuMode  mode;
+	public eItemMenuMode mode;
 
 	// Allows parts of Loop() to be called once rather than repeatedly every frame.
-	public bool 			canUpdate;
+	public bool canUpdate;
 
-	public GameObject		previousSelectedGameObject;
+	public GameObject previousSelectedGameObject;
 
 	// Caches what index of the inventory is currently stored in the first item slot
-	public int				firstSlotNdx;
+	public int firstSlotNdx;
 
 	// Prevents instantly registering input when the first or last slot is selected
-	private bool			verticalAxisIsInUse;
-	private bool			firstOrLastSlotSelected;
+	private bool verticalAxisIsInUse;
+	private bool firstOrLastSlotSelected;
 
-	public PickItemMode			pickItemMode;
-	public PickPartyMemberMode	pickPartyMemberMode;
-	public UsedItemMode			usedItemMode;
+	public PickItemMode pickItemMode;
+	public PickPartyMemberMode pickPartyMemberMode;
+	public UsedItemMode usedItemMode;
 
 	void Awake() {
-		//S = this;
-
 		// Get components
 		pickItemMode = GetComponent<PickItemMode>();
 		pickPartyMemberMode = GetComponent<PickPartyMemberMode>();
 		usedItemMode = GetComponent<UsedItemMode>();
 	}
 
-	public void OnEnable () {
+	public void Activate() {
 		// Ensures first slot is selected when screen enabled
 		previousSelectedGameObject = itemButtons[0].gameObject;
 
 		firstSlotNdx = 0;
 
-		pickItemMode.Setup(Items.S.menu);
+		gameObject.SetActive(true);
 
 		// Add Loop() to Update Delgate
 		UpdateManager.updateDelegate += Loop;
-	}
 
-	public void Activate() {
-		gameObject.SetActive(true);
+		pickItemMode.Setup(Items.S.menu);
 
 		// Audio: Confirm
 		AudioManager.S.PlaySFX(eSoundName.confirm);
@@ -83,14 +76,14 @@ public class ItemMenu : MonoBehaviour {
 
 		if (GameManager.S.currentScene != "Battle") {
 			// Buttons Interactable
-			Utilities.S.ButtonsInteractable(PauseScreen.S.buttonCS, true);
+			Utilities.S.ButtonsInteractable(PauseMenu.S.buttonCS, true);
 
 			// Set Selected Gameobject (Pause Screen: Items Button)
-			Utilities.S.SetSelectedGO(PauseScreen.S.buttonGO[0]);
+			Utilities.S.SetSelectedGO(PauseMenu.S.buttonGO[0]);
 
 			PauseMessage.S.DisplayText("Welcome to the Pause Screen!");
 
-			PauseScreen.S.canUpdate = true;
+			PauseMenu.S.canUpdate = true;
 		}
 
 		if (playSound) {
@@ -107,16 +100,16 @@ public class ItemMenu : MonoBehaviour {
 		// Deactivate this gameObject
 		gameObject.SetActive(false);
 	}
-	
-	public void Loop () {
+
+	public void Loop() {
 		// Reset canUpdate
-		if (Input.GetAxisRaw ("Horizontal") != 0f || Input.GetAxisRaw ("Vertical") != 0f) { 
+		if (Input.GetAxisRaw("Horizontal") != 0f || Input.GetAxisRaw("Vertical") != 0f) {
 			canUpdate = true;
 		}
-		
+
 		// Deactivate ItemScreen during Battle
 		if (GameManager.S.currentScene == "Battle") {
-			if (Input.GetButtonDown ("SNES Y Button")) {
+			if (Input.GetButtonDown("SNES Y Button")) {
 				PauseMessage.S.gameObject.SetActive(false);
 				Deactivate(true);
 				Battle.S.PlayerTurn(true, false);
@@ -134,12 +127,12 @@ public class ItemMenu : MonoBehaviour {
 				break;
 			case eItemMenuMode.pickPartyMember:
 				pickPartyMemberMode.Loop(Items.S.menu);
-			break;
+				break;
 			case eItemMenuMode.pickAllPartyMembers:
 				if (Input.GetButtonDown("SNES Y Button")) {
 					GoBackToPickItemMode();
 				}
-			break;
+				break;
 			case eItemMenuMode.pickWhereToWarp:
 				if (canUpdate) {
 					WarpManager.S.DisplayButtonDescriptions(itemButtons, -170);
@@ -151,11 +144,11 @@ public class ItemMenu : MonoBehaviour {
 				break;
 			case eItemMenuMode.usedItem:
 				usedItemMode.Loop(Items.S.menu);
-			break;
+				break;
 		}
 
 		// TEST: Sort Inventory
-		if (Input.GetKeyDown (KeyCode.X)) {
+		if (Input.GetKeyDown(KeyCode.X)) {
 			//_items = SortItems.S.SortByABC(_items);
 			Inventory.S.items = SortItems.S.SortByValue(Inventory.S.items);
 		}
@@ -242,7 +235,7 @@ public class ItemMenu : MonoBehaviour {
 		}
 	}
 
-	public void AssignItemEffect() { 
+	public void AssignItemEffect() {
 		Utilities.S.RemoveListeners(itemButtons);
 
 		for (int i = 0; i < itemButtons.Count; i++) {
@@ -251,21 +244,21 @@ public class ItemMenu : MonoBehaviour {
 		}
 	}
 
-	public void AssignItemNames () {
+	public void AssignItemNames() {
 		for (int i = 0; i < itemButtons.Count; i++) {
-			if(firstSlotNdx + i < Inventory.S.GetItemList().Count) {
+			if (firstSlotNdx + i < Inventory.S.GetItemList().Count) {
 				string inventoryNdx = (firstSlotNdx + i + 1).ToString();
 
 				itemButtonsNameText[i].text = inventoryNdx + ") " + Inventory.S.GetItemList()[firstSlotNdx + i].name;
 				itemButtonsValueText[i].text = Inventory.S.GetItemList()[firstSlotNdx + i].value.ToString();
 				itemButtonsQTYOwnedText[i].text = Inventory.S.GetItemCount(Inventory.S.GetItemList()[firstSlotNdx + i]).ToString();
-			}	
+			}
 		}
 	}
 
-	public void ConsumeItem(Item item){
+	public void ConsumeItem(Item item) {
 		// Check if the item is in inventory
-		if (Inventory.S.items.ContainsKey (item)) {
+		if (Inventory.S.items.ContainsKey(item)) {
 			canUpdate = true;
 
 			if (GameManager.S.currentScene == "Battle") { // if Battle

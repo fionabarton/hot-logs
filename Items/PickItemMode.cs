@@ -23,7 +23,7 @@ public class PickItemMode : MonoBehaviour {
 			// Buttons Interactable
 			Utilities.S.ButtonsInteractable(itemScreen.itemButtons, true);
 			Utilities.S.ButtonsInteractable(PlayerButtons.S.buttonsCS, false);
-			Utilities.S.ButtonsInteractable(PauseScreen.S.buttonCS, false);
+			Utilities.S.ButtonsInteractable(PauseMenu.S.buttonCS, false);
 
 			itemScreen.canUpdate = true;
 

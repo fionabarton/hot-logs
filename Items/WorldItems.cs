@@ -7,7 +7,7 @@ using System;
 /// Outside of battle, handles what happens when an item button is clicked
 /// </summary>
 public class WorldItems : MonoBehaviour {
-	public void AddFunctionToButton(Action<int> functionToPass, string messageToDisplay, Item item) { 
+	public void AddFunctionToButton(Action<int> functionToPass, string messageToDisplay, Item item) {
 		// Buttons Interactable
 		Utilities.S.ButtonsInteractable(PlayerButtons.S.buttonsCS, true);
 		Utilities.S.ButtonsInteractable(Items.S.menu.itemButtons, false);
@@ -243,7 +243,7 @@ public class WorldItems : MonoBehaviour {
 
 		// Update GUI
 		PlayerButtons.S.UpdateGUI();
-		PauseScreen.S.UpdateGUI();
+		PauseMenu.S.UpdateGUI();
 
 		// Deactivate screen cursors
 		Utilities.S.SetActiveList(ScreenCursor.S.cursorGO, false);
@@ -258,7 +258,7 @@ public class WorldItems : MonoBehaviour {
 		Utilities.S.ButtonsInteractable(Items.S.menu.itemButtons, false);
 		Items.S.menu.mode = eItemMenuMode.usedItem;
 		PauseMessage.S.DisplayText("This item is not usable... sorry!");
-		
+
 		// Deactivate screen cursors
 		Utilities.S.SetActiveList(ScreenCursor.S.cursorGO, false);
 

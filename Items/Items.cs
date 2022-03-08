@@ -4,29 +4,29 @@ using UnityEngine;
 using System;
 
 public class Items : MonoBehaviour {
-	[Header("Set in Inspector")]
+    [Header("Set in Inspector")]
     // TBR: Has yet to be implemented; will be used to display image of item on ItemScreen
-	public Sprite [] 	itemSprite = new Sprite[30];
+    public Sprite[] itemSprite = new Sprite[30];
 
-	[Header("Set Dynamically")]
+    [Header("Set Dynamically")]
     public ItemMenu menu;
     public BattleItems battle;
     public WorldItems world;
 
     public Item[] items;
 
-    private static Items  _S;
-	public static Items   S { get { return _S; } set { _S = value; } }
+    private static Items _S;
+    public static Items S { get { return _S; } set { _S = value; } }
 
-	void Awake() {
-		S = this;
+    void Awake() {
+        S = this;
+
+        InitializeItems();
 
         // Get components
         menu = GetComponent<ItemMenu>();
         battle = GetComponent<BattleItems>();
         world = GetComponent<WorldItems>();
-
-        InitializeItems();
     }
 
     public void InitializeItems() {
@@ -146,36 +146,36 @@ public class Items : MonoBehaviour {
         "Wakes up a sleeping party member." + "\n Value: 5 Gold", itemSprite[27]);
     }
 
-    public Item GetItem(eItem itemNdx){
-		Item tItem = items[(int)itemNdx];
-		return tItem;
-	}
+    public Item GetItem(eItem itemNdx) {
+        Item tItem = items[(int)itemNdx];
+        return tItem;
+    }
 }
 
 public class Item {
-	public string 			name;
-	public eItemType 		type;
-	public eItemStatEffect 	statEffect;
-    public int              statEffectMinValue;
-    public int              statEffectMaxValue;
-    public int 				value;
-	public string 			description;
-	public Sprite 			sprite;
-    public bool             isEquipped;
-    public bool             multipleTargets;
+    public string name;
+    public eItemType type;
+    public eItemStatEffect statEffect;
+    public int statEffectMinValue;
+    public int statEffectMaxValue;
+    public int value;
+    public string description;
+    public Sprite sprite;
+    public bool isEquipped;
+    public bool multipleTargets;
 
-    public Item(string itemName, 
-                eItemType itemType, eItemStatEffect itemStatEffect, 
-                int itemStatEffectMinValue, int itemStatEffectMaxValue, int itemValue, string itemDescription, 
+    public Item(string itemName,
+                eItemType itemType, eItemStatEffect itemStatEffect,
+                int itemStatEffectMinValue, int itemStatEffectMaxValue, int itemValue, string itemDescription,
                 Sprite itemSprite, bool itemIsEquipped = false, bool itemMultipleTargets = false) {
-	    name = itemName;
-	    type = itemType;
-	    statEffect = itemStatEffect;
+        name = itemName;
+        type = itemType;
+        statEffect = itemStatEffect;
         statEffectMinValue = itemStatEffectMinValue;
         statEffectMaxValue = itemStatEffectMaxValue;
         value = itemValue;
-	    description = itemDescription;
-	    sprite = itemSprite;
+        description = itemDescription;
+        sprite = itemSprite;
         isEquipped = itemIsEquipped;
         multipleTargets = itemMultipleTargets;
     }

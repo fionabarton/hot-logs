@@ -7,13 +7,13 @@ using System;
 /// During battle, handles what happens when an item button is clicked
 /// </summary>
 public class BattleItems : MonoBehaviour {
-	[Header ("Set Dynamically")]
+	[Header("Set Dynamically")]
 	int amountToHeal;
 	int maxAmountToHeal;
 
 	private Battle _;
 
-	void Start () {
+	void Start() {
 		_ = Battle.S;
 	}
 
@@ -21,9 +21,9 @@ public class BattleItems : MonoBehaviour {
 		Items.S.menu.Deactivate();
 
 		// Deactivate PauseMessage
-		PauseMessage.S.gameObject.SetActive (false);
+		PauseMessage.S.gameObject.SetActive(false);
 
-		BattlePlayerActions.S.ButtonsInteractable (false, false, false, false, false, false, false, false, false, false, true, true);
+		BattlePlayerActions.S.ButtonsInteractable(false, false, false, false, false, false, false, false, false, false, true, true);
 
 		// Set a Player Button as Selected GameObject
 		Utilities.S.SetSelectedGO(BattlePlayerActions.S.playerButtonGO[_.PlayerNdx()].gameObject);
@@ -31,7 +31,7 @@ public class BattleItems : MonoBehaviour {
 		// Set previously selected GameObject
 		_.previousSelectedForAudio = BattlePlayerActions.S.playerButtonGO[_.PlayerNdx()].gameObject;
 
-		BattleDialogue.S.DisplayText (messageToDisplay);
+		BattleDialogue.S.DisplayText(messageToDisplay);
 
 		// Audio: Confirm
 		AudioManager.S.PlaySFX(eSoundName.confirm);
@@ -53,7 +53,7 @@ public class BattleItems : MonoBehaviour {
 	////////////////////////////////////////////////////////////////////////////////////////
 	// Heal party members
 	////////////////////////////////////////////////////////////////////////////////////////
-	
+
 	public void Heal(int ndx, Item item, int min, int max) {
 		// Get amount and max amount to heal
 		amountToHeal = UnityEngine.Random.Range(min, max);
@@ -71,27 +71,27 @@ public class BattleItems : MonoBehaviour {
 	}
 
 	public void HPPotion(int ndx, Item item) {
-        if (_.playerDead[ndx]) {
+		if (_.playerDead[ndx]) {
 			ItemIsNotUseful(Party.S.stats[ndx].name + " is dead...\n...and dead folk can't be healed, dummy!");
 			return;
 		}
 
-        // If HP is less than maxHP
-        if (Party.S.stats[ndx].HP < Party.S.stats[ndx].maxHP) {
+		// If HP is less than maxHP
+		if (Party.S.stats[ndx].HP < Party.S.stats[ndx].maxHP) {
 			Heal(ndx, item, item.statEffectMinValue, item.statEffectMaxValue);
 
 			// Display Text
 			if (amountToHeal >= maxAmountToHeal) {
-                BattleDialogue.S.DisplayText("Used " + item.name + "!\nHealed " + Party.S.stats[ndx].name + " back to Max HP!");
-            } else {
-                BattleDialogue.S.DisplayText("Used " + item.name + "!\nHealed " + Party.S.stats[ndx].name + " for " + amountToHeal + " HP!");
-            }
+				BattleDialogue.S.DisplayText("Used " + item.name + "!\nHealed " + Party.S.stats[ndx].name + " back to Max HP!");
+			} else {
+				BattleDialogue.S.DisplayText("Used " + item.name + "!\nHealed " + Party.S.stats[ndx].name + " for " + amountToHeal + " HP!");
+			}
 
 			ItemIsUseful(item);
 		} else {
 			ItemIsNotUseful(Party.S.stats[ndx].name + " already at full health...\n...no need to use this potion!");
 		}
-    }
+	}
 
 	public void MPPotion(int ndx, Item item) {
 		if (_.playerDead[ndx]) {
@@ -158,7 +158,7 @@ public class BattleItems : MonoBehaviour {
 			_.partyQty += 1;
 
 			// Add Player to Turn Order
-			 _.turnOrder.Add(Party.S.stats[ndx].name);
+			_.turnOrder.Add(Party.S.stats[ndx].name);
 
 			// Get 6-10% of max HP
 			float lowEnd = Party.S.stats[ndx].maxHP * 0.06f;
@@ -276,8 +276,8 @@ public class BattleItems : MonoBehaviour {
 		// Audio: Deny
 		AudioManager.S.PlaySFX(eSoundName.deny);
 
-        // Switch Mode
-        if (StatusEffects.S.HasStatusAilment(true, _.PlayerNdx())) {
+		// Switch Mode
+		if (StatusEffects.S.HasStatusAilment(true, _.PlayerNdx())) {
 			_.mode = eBattleMode.statusAilment;
 		} else {
 			_.mode = eBattleMode.playerTurn;
@@ -310,7 +310,7 @@ public class BattleItems : MonoBehaviour {
 
 		// Display Floating Score
 		if (displayFloatingScore) {
-            if (greenOrBlue) {
+			if (greenOrBlue) {
 				GameManager.S.InstantiateFloatingScore(_.playerSprite[ndx], scoreAmount.ToString(), Color.green);
 			} else {
 				GameManager.S.InstantiateFloatingScore(_.playerSprite[ndx], scoreAmount.ToString(), new Color32(39, 201, 255, 255));

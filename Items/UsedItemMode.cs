@@ -6,7 +6,7 @@ using UnityEngine;
 /// ItemScreen Mode/Step 3: UsedItemMode
 /// - Consumed an item
 /// </summary>
-public class UsedItemMode : MonoBehaviour { 
+public class UsedItemMode : MonoBehaviour {
 	public void Loop(ItemMenu itemScreen) {
 		if (PauseMessage.S.dialogueFinished) {
 			if (Input.GetButtonDown("SNES B Button")) {

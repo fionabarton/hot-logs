@@ -10,31 +10,31 @@ public class KeyItemManager : MonoBehaviour {
 	private static KeyItemManager _S;
 	public static KeyItemManager S { get { return _S; } set { _S = value; } }
 
-	public List<bool>    			isDeactivated = new List<bool> ();
+	public List<bool> isDeactivated = new List<bool>();
 
-	private Transform				tTransform;
+	private Transform tTransform;
 
-	void Awake(){
+	void Awake() {
 		S = this;
 	}
 
 	// Called in GameManager.cs
-	public void SetObjects () {
+	public void SetObjects() {
 		// In the scene that was just loaded, find the parent gameObject holding all key items within the scene
-		GameObject tGO = GameObject.Find ("Items");
+		GameObject tGO = GameObject.Find("Items");
 
 		if (tGO != null) {
 			tTransform = tGO.transform;
 
 			foreach (Transform child in tTransform) {
-				ItemTrigger tItem = child.gameObject.GetComponent<ItemTrigger> ();
+				ItemTrigger tItem = child.gameObject.GetComponent<ItemTrigger>();
 
 				if (tItem != null) {
 					for (int i = 0; i < isDeactivated.Count; i++) {
 						if (tItem.keyItemNdx == i) {
-							if (isDeactivated [i]) {
-								tItem.gameObject.SetActive (false);
-							} 
+							if (isDeactivated[i]) {
+								tItem.gameObject.SetActive(false);
+							}
 						}
 					}
 				}

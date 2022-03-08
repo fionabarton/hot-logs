@@ -7,16 +7,16 @@ using System.Linq;
 /// Functions used to sort items
 /// </summary>
 public class SortItems : MonoBehaviour {
-    [Header("Set Dynamically")]
-    private static SortItems _S;
-    public static SortItems S { get { return _S; } set { _S = value; } }
+	[Header("Set Dynamically")]
+	private static SortItems _S;
+	public static SortItems S { get { return _S; } set { _S = value; } }
 
-    // Temporary Items List (For Item/Equip Screens: Sort by ItemType: Weapon, Armor, Helmet, Other, Healing)
-    public List<Item> tItems;
+	// Temporary Items List (For Item/Equip Screens: Sort by ItemType: Weapon, Armor, Helmet, Other, Healing)
+	public List<Item> tItems;
 
-    void Awake() {
-        S = this;
-    }
+	void Awake() {
+		S = this;
+	}
 
 	// Sort Items Alphabetically
 	public Dictionary<Item, int> SortByABC(Dictionary<Item, int> items) {
