@@ -5,12 +5,12 @@ using UnityEngine.UI;
 
 public class LevelUpMessage : MonoBehaviour {
 	[Header("Set in Inspector")]
-	public GameObject	levelUpMessageGO;
-	
-	public Text			playerNameAndLevel;
-	public Text			amountIncreased;
-	public Text			statValues;
-	public Text			newSpellMessage;
+	public GameObject levelUpMessageGO;
+
+	public Text playerNameAndLevel;
+	public Text amountIncreased;
+	public Text statValues;
+	public Text newSpellMessage;
 
 	[Header("Set Dynamically")]
 	private static LevelUpMessage _S;
@@ -44,17 +44,17 @@ public class LevelUpMessage : MonoBehaviour {
 		// Display previous level stats compared to new level
 		int lvlNdx = Party.S.stats[ndx].LVL;
 		int prevLvlNdx = Party.S.stats[ndx].previousLVL;
-		s = Party.S.GetHPUpgrade(ndx) > 0 ? Party.S.GetHP(ndx, prevLvlNdx).ToString() + " > " + 
+		s = Party.S.GetHPUpgrade(ndx) > 0 ? Party.S.GetHP(ndx, prevLvlNdx).ToString() + " > " +
 			Party.S.GetHP(ndx, lvlNdx).ToString() + "\n" : s += Party.S.GetHP(ndx, lvlNdx).ToString() + "\n";
-		s += Party.S.GetMPUpgrade(ndx) > 0 ? Party.S.GetMP(ndx, prevLvlNdx).ToString() + " > " + 
+		s += Party.S.GetMPUpgrade(ndx) > 0 ? Party.S.GetMP(ndx, prevLvlNdx).ToString() + " > " +
 			Party.S.GetMP(ndx, lvlNdx).ToString() + "\n" : s += Party.S.GetMP(ndx, lvlNdx).ToString() + "\n";
-		s += Party.S.GetSTRUpgrade(ndx) > 0 ? Party.S.GetSTR(ndx, prevLvlNdx).ToString() + " > " + 
+		s += Party.S.GetSTRUpgrade(ndx) > 0 ? Party.S.GetSTR(ndx, prevLvlNdx).ToString() + " > " +
 			Party.S.GetSTR(ndx, lvlNdx).ToString() + "\n" : s += Party.S.GetSTR(ndx, lvlNdx).ToString() + "\n";
-		s += Party.S.GetDEFUpgrade(ndx) > 0 ? Party.S.GetDEF(ndx, prevLvlNdx).ToString() + " > " + 
+		s += Party.S.GetDEFUpgrade(ndx) > 0 ? Party.S.GetDEF(ndx, prevLvlNdx).ToString() + " > " +
 			Party.S.GetDEF(ndx, lvlNdx).ToString() + "\n" : s += Party.S.GetDEF(ndx, lvlNdx).ToString() + "\n";
-		s += Party.S.GetWISUpgrade(ndx) > 0 ? Party.S.GetWIS(ndx, prevLvlNdx).ToString() + " > " + 
-			Party.S.GetWIS(ndx, lvlNdx).ToString() + "\n" : s += Party.S.GetWIS(ndx, lvlNdx).ToString() + "\n";	
-		s += Party.S.GetAGIUpgrade(ndx) > 0 ? Party.S.GetAGI(ndx, prevLvlNdx).ToString() + " > " + 
+		s += Party.S.GetWISUpgrade(ndx) > 0 ? Party.S.GetWIS(ndx, prevLvlNdx).ToString() + " > " +
+			Party.S.GetWIS(ndx, lvlNdx).ToString() + "\n" : s += Party.S.GetWIS(ndx, lvlNdx).ToString() + "\n";
+		s += Party.S.GetAGIUpgrade(ndx) > 0 ? Party.S.GetAGI(ndx, prevLvlNdx).ToString() + " > " +
 			Party.S.GetAGI(ndx, lvlNdx).ToString() : s += Party.S.GetAGI(ndx, lvlNdx).ToString();
 		statValues.text = s;
 

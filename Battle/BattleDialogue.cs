@@ -94,7 +94,7 @@ public class BattleDialogue : MonoBehaviour{
 
 				dialogueSentences += dialogueWords[i] + " ";
 				displayMessageTextBottom.text = dialogueSentences;
-				yield return new WaitForSeconds(OptionsScreen.S.textSpeed);
+				yield return new WaitForSeconds(OptionsMenu.S.textSpeed);
 			}
 
 			// Activate cursor

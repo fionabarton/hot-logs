@@ -31,12 +31,6 @@ public class Battle : MonoBehaviour {
 	public bool				qteEnabled = true;
 
 	[Header("Set Dynamically")]
-	private static Battle	_S;
-	public static Battle	S { get { return _S; } set { _S = value; } }
-
-	// DontDestroyOnLoad
-	private static bool		exists;
-
 	public eBattleMode		mode;
 
 	// Attack Damage, Random Factor
@@ -82,6 +76,12 @@ public class Battle : MonoBehaviour {
 	// If an enemy announces its intent to perform a certain move during its next turn,
 	// store the move's index
 	public List<int>		nextTurnMoveNdx = new List<int>();
+
+	private static Battle _S;
+	public static Battle S { get { return _S; } set { _S = value; } }
+
+	// DontDestroyOnLoad
+	private static bool exists;
 
 	void Awake() {
 		S = this;

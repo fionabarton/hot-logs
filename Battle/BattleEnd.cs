@@ -140,7 +140,7 @@ public class BattleEnd : MonoBehaviour {
 			int randomNdx = Random.Range(0, _.enemyStats[ndx].itemsToDrop.Count);
 
             // Add item to droppedItems list
-            _.droppedItems.Add(ItemManager.S.GetItem(_.enemyStats[ndx].itemsToDrop[randomNdx]));
+            _.droppedItems.Add(Items.S.GetItem(_.enemyStats[ndx].itemsToDrop[randomNdx]));
 		}
     }
 

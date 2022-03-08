@@ -10,22 +10,22 @@ using UnityEngine.UI;
 public class BattlePlayerActions : MonoBehaviour {
 	[Header("Set in Inspector")]
 	// Action Buttons
-	public GameObject		spellGO; 
-	public GameObject		fightGO; 
-	public GameObject		itemGO; 
-	public GameObject		runGO;
+	public GameObject spellGO;
+	public GameObject fightGO;
+	public GameObject itemGO;
+	public GameObject runGO;
 
 	// Fight, Spell, Item, Defend, Run
 	public List<GameObject> buttonsGO;
-	public List<Button>		buttonsCS;
+	public List<Button> buttonsCS;
 
 	// Player Buttons (invisible, used to select party member)
 	public List<GameObject> playerButtonGO;
-	public List<Button>		playerButtonCS;
+	public List<Button> playerButtonCS;
 
 	// Enemy Buttons (invisible, used to select enemy)
 	public List<GameObject> enemyButtonGO;
-	public List<Button>		enemyButtonCS;
+	public List<Button> enemyButtonCS;
 
 	[Header("Set Dynamically")]
 	private static BattlePlayerActions _S;
@@ -61,8 +61,8 @@ public class BattlePlayerActions : MonoBehaviour {
 		// Switch Mode
 		_.mode = eBattleMode.canGoBackToFightButton;
 
-        // Audio: Confirm
-        if (playSound) {
+		// Audio: Confirm
+		if (playSound) {
 			AudioManager.S.PlaySFX(eSoundName.confirm);
 		}
 	}
@@ -112,9 +112,9 @@ public class BattlePlayerActions : MonoBehaviour {
 
 		// Enemy Death or Next Turn
 		if (_.enemyStats[ndx].HP < 1) {
-			BattleEnd.S.EnemyDeath(ndx); 
-		} else { 
-			_.NextTurn(); 
+			BattleEnd.S.EnemyDeath(ndx);
+		} else {
+			_.NextTurn();
 		}
 	}
 
@@ -161,7 +161,7 @@ public class BattlePlayerActions : MonoBehaviour {
 				}
 
 				// Deactivate Player Shields
-				Utilities.S.SetActiveList(StatusEffects.S.playerShields, false);;
+				Utilities.S.SetActiveList(StatusEffects.S.playerShields, false); ;
 
 				// You ran away, so the enemy is chasing after you!
 				EnemyManager.S.GetEnemyMovement(eMovement.pursueRun);
@@ -287,13 +287,13 @@ public class BattlePlayerActions : MonoBehaviour {
 		playerButtonCS[0].interactable = pButton1;
 		playerButtonCS[1].interactable = pButton2;
 	}
-		
+
 	public void ButtonsInitialInteractable() { ButtonsInteractable(true, true, true, true, true, false, false, false, false, false, false, false); }
-	
+
 	public void ButtonsDisableAll() { ButtonsInteractable(false, false, false, false, false, false, false, false, false, false, false, false); }
-	
+
 	public void SetSelectedEnemyButton() {
-		for(int i = _.enemyStats.Count - 1; i >= 0; i--) {
+		for (int i = _.enemyStats.Count - 1; i >= 0; i--) {
 			if (!_.enemyStats[i].isDead) {
 				Utilities.S.SetSelectedGO(enemyButtonGO[i]);
 
