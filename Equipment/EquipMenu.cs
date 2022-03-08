@@ -6,40 +6,40 @@ using System;
 
 public class EquipMenu : MonoBehaviour {
 	[Header("Set in Inspector")]
-	public Text				playerName;
-	public Text 			currentStats;
-	public GameObject		equippedItemTypeNames;
+	public Text playerName;
+	public Text currentStats;
+	public GameObject equippedItemTypeNames;
 
-	public Animator			playerAnim;
+	public Animator playerAnim;
 
 	// Equipped Buttons (the currently selected party member's equipment)
-	public List <Button>  	equippedButtons;
-	public List <Text>  	equippedButtonsTxt;
+	public List<Button> equippedButtons;
+	public List<Text> equippedButtonsTxt;
 
 	// Inventory Buttons (dynamic list of different types of items to be equipped (list of either weapon, armor, etc.))
-	public List <Button>  	inventoryButtons;
-	public List <Text>  	inventoryButtonsTxt;
+	public List<Button> inventoryButtons;
+	public List<Text> inventoryButtonsTxt;
 
 	[Header("Set Dynamically")]
-	public int 				playerNdx = 0;
+	public int playerNdx = 0;
 
 	// Each party member's current equipment ([playerNdx][Weapon, Armor, Helmet, Other])
 	public List<List<Item>> playerEquipment = new List<List<Item>>();
-		
+
 	public eEquipScreenMode equipScreenMode = eEquipScreenMode.pickPartyMember;
 
 	// Allows parts of Loop() to be called once rather than repeatedly every frame.
-	public bool				canUpdate;
+	public bool canUpdate;
 
-	public GameObject		previousSelectedGameObject;
+	public GameObject previousSelectedGameObject;
 
 	private static EquipMenu _S;
 	public static EquipMenu S { get { return _S; } set { _S = value; } }
 
-	public EquipStatsEffect					equipStatsEffect;
-	public EquipScreen_PickPartyMemberMode	pickPartyMemberMode;
-	public EquipScreen_PickTypeToEquipMode	pickTypeToEquipMode;
-	public EquipScreen_PickItemToEquipMode	pickItemToEquipMode;
+	public EquipStatsEffect equipStatsEffect;
+	public EquipScreen_PickPartyMemberMode pickPartyMemberMode;
+	public EquipScreen_PickTypeToEquipMode pickTypeToEquipMode;
+	public EquipScreen_PickItemToEquipMode pickItemToEquipMode;
 
 	void Awake() {
 		S = this;
@@ -51,22 +51,22 @@ public class EquipMenu : MonoBehaviour {
 		pickItemToEquipMode = GetComponent<EquipScreen_PickItemToEquipMode>();
 	}
 
-    private void Start() {
-        // Intialize the party's equipment 
-        playerEquipment.Add(new List<Item> {
-            Items.S.items[18], Items.S.items[19], Items.S.items[20], Items.S.items[21]
-        });
+	public void SetInitialEquipment() {
+		// Intialize the party's equipment 
+		playerEquipment.Add(new List<Item> {
+			Items.S.items[18], Items.S.items[19], Items.S.items[20], Items.S.items[21]
+		});
 
-        playerEquipment.Add(new List<Item> {
-            Items.S.items[18], Items.S.items[19], Items.S.items[20], Items.S.items[21]
-        });
+		playerEquipment.Add(new List<Item> {
+			Items.S.items[18], Items.S.items[19], Items.S.items[20], Items.S.items[21]
+		});
 
-        playerEquipment.Add(new List<Item> {
-            Items.S.items[18], Items.S.items[19], Items.S.items[20], Items.S.items[21]
-        });
+		playerEquipment.Add(new List<Item> {
+			Items.S.items[18], Items.S.items[19], Items.S.items[20], Items.S.items[21]
+		});
 
-        // Add effect of each party member's equipment
-        equipStatsEffect.AddItemEffect(0, Items.S.items[18]);
+		// Add effect of each party member's equipment
+		equipStatsEffect.AddItemEffect(0, Items.S.items[18]);
 		equipStatsEffect.AddItemEffect(0, Items.S.items[19]);
 		equipStatsEffect.AddItemEffect(0, Items.S.items[20]);
 		equipStatsEffect.AddItemEffect(0, Items.S.items[21]);
@@ -80,7 +80,7 @@ public class EquipMenu : MonoBehaviour {
 		equipStatsEffect.AddItemEffect(2, Items.S.items[19]);
 		equipStatsEffect.AddItemEffect(2, Items.S.items[20]);
 		equipStatsEffect.AddItemEffect(2, Items.S.items[21]);
-    }
+	}
 
 	public void Activate() {
 		gameObject.SetActive(true);
@@ -116,14 +116,14 @@ public class EquipMenu : MonoBehaviour {
 		// Go back to Pause Screen
 		if (GameManager.S.currentScene != "Battle") {
 			// Pause Buttons Interactable
-			Utilities.S.ButtonsInteractable(PauseScreen.S.buttonCS, true);
+			Utilities.S.ButtonsInteractable(PauseMenu.S.buttonCS, true);
 
 			// Set Selected Gameobject (Pause Screen: Equip Button)
-			Utilities.S.SetSelectedGO(PauseScreen.S.buttonGO[1]);
+			Utilities.S.SetSelectedGO(PauseMenu.S.buttonGO[1]);
 
 			PauseMessage.S.DisplayText("Welcome to the Pause Screen!");
 
-			PauseScreen.S.canUpdate = true;
+			PauseMenu.S.canUpdate = true;
 		}
 
 		if (playSound) {
@@ -135,7 +135,7 @@ public class EquipMenu : MonoBehaviour {
 		PlayerButtons.S.gameObject.SetActive(false);
 
 		// Deactivate inventory buttons
-		for(int i = 0; i < inventoryButtons.Count; i++) {
+		for (int i = 0; i < inventoryButtons.Count; i++) {
 			inventoryButtons[i].gameObject.SetActive(false);
 		}
 
@@ -146,28 +146,28 @@ public class EquipMenu : MonoBehaviour {
 		gameObject.SetActive(false);
 	}
 
-	public void Loop(){
+	public void Loop() {
 		// Reset canUpdate
-		if (Input.GetAxisRaw ("Horizontal") != 0f || Input.GetAxisRaw ("Vertical") != 0f) { 
+		if (Input.GetAxisRaw("Horizontal") != 0f || Input.GetAxisRaw("Vertical") != 0f) {
 			canUpdate = true;
-        } 
+		}
 
 		switch (equipScreenMode) {
-		case eEquipScreenMode.pickPartyMember:
-			pickPartyMemberMode.Loop(S);
-			break;
-		case eEquipScreenMode.pickTypeToEquip:
-			pickTypeToEquipMode.Loop(S);
-			break;
-		case eEquipScreenMode.pickItemToEquip:
-			pickItemToEquipMode.Loop(S);
-			break;
-		case eEquipScreenMode.noInventory:
-		case eEquipScreenMode.equippedItem:
-			// Go back to pickTypeToEquip mode 
-			GoBackToPickTypeToEquipMode("SNES B Button", 99);
-			GoBackToPickTypeToEquipMode("SNES Y Button", 99);
-			break;
+			case eEquipScreenMode.pickPartyMember:
+				pickPartyMemberMode.Loop(S);
+				break;
+			case eEquipScreenMode.pickTypeToEquip:
+				pickTypeToEquipMode.Loop(S);
+				break;
+			case eEquipScreenMode.pickItemToEquip:
+				pickItemToEquipMode.Loop(S);
+				break;
+			case eEquipScreenMode.noInventory:
+			case eEquipScreenMode.equippedItem:
+				// Go back to pickTypeToEquip mode 
+				GoBackToPickTypeToEquipMode("SNES B Button", 99);
+				GoBackToPickTypeToEquipMode("SNES Y Button", 99);
+				break;
 		}
 	}
 
@@ -193,9 +193,9 @@ public class EquipMenu : MonoBehaviour {
 			}
 		}
 	}
-	
+
 	// Display member's name and current stats
-	public void DisplayCurrentStats(int playerNdx){
+	public void DisplayCurrentStats(int playerNdx) {
 		playerName.text = Party.S.stats[playerNdx].name;
 		currentStats.text = Party.S.stats[playerNdx].LVL + "\n" + Party.S.stats[playerNdx].HP + "/" + Party.S.stats[playerNdx].maxHP + "\n" + Party.S.stats[playerNdx].MP + "/" + Party.S.stats[playerNdx].maxMP;
 		equipStatsEffect.currentAttributeAmounts.text = Party.S.stats[playerNdx].STR + "\n" + Party.S.stats[playerNdx].DEF + "\n" + Party.S.stats[playerNdx].WIS + "\n" + Party.S.stats[playerNdx].AGI;
@@ -203,15 +203,15 @@ public class EquipMenu : MonoBehaviour {
 	}
 
 	// Display the names of the member's current equipment
-	public void DisplayCurrentEquipmentNames(int playerNdx){ 
+	public void DisplayCurrentEquipmentNames(int playerNdx) {
 		// Set Button Text
-		for(int i = 0; i < equippedButtonsTxt.Count; i++) {
+		for (int i = 0; i < equippedButtonsTxt.Count; i++) {
 			equippedButtonsTxt[i].text = playerEquipment[playerNdx][i].name;
 		}
 	}
 
 	// eEquipScreenMode.equippedItem /////////////////////////////////////////////////////////////
-	
+
 	// Remove equipped item and equip new item
 	public void EquipItem(int playerNdx, Item item) {
 		// Remove Listeners
@@ -267,14 +267,14 @@ public class EquipMenu : MonoBehaviour {
 
 	public int GetEquippedItemCount(Item item) {
 		int count = 0;
-		
+
 		// Loop through each party member
 		for (int i = 0; i <= Party.S.partyNdx; i++) {
 			// Loop through each equipment slot (weapon, armor, helmet, accessory)
 			for (int j = 0; j < 4; j++) {
-				if(playerEquipment[i][j].name == item.name) {
+				if (playerEquipment[i][j].name == item.name) {
 					count += 1;
-                }
+				}
 			}
 		}
 		return count;

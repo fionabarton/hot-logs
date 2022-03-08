@@ -41,7 +41,7 @@ public class EquipScreen_PickTypeToEquipMode : MonoBehaviour {
 	public void Loop(EquipMenu equipScreen) {
 		if (equipScreen.canUpdate) {
 			DisplayCurrentEquipmentDescriptions(equipScreen.playerNdx, equipScreen);
-			
+
 			// Display items in the inventory of the currently selected equipment type
 			for (int i = 0; i < equipScreen.equippedButtons.Count; i++) {
 				if (UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject == equipScreen.equippedButtons[i].gameObject) {

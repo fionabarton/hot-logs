@@ -6,11 +6,11 @@ using UnityEngine.UI;
 public class EquipStatsEffect : MonoBehaviour {
 	[Header("Set in Inspector")]
 	// Potential Stats
-	public GameObject		potentialStatHolder;
-	public Text				currentAttributeAmounts; // STR, DEF, WIS, AGI
-	public Text				potentialStats;
+	public GameObject potentialStatHolder;
+	public Text currentAttributeAmounts; // STR, DEF, WIS, AGI
+	public Text potentialStats;
 	public List<GameObject> arrowGO;
-	public List<Animator>	arrowAnim;
+	public List<Animator> arrowAnim;
 
 	void OnDisable() {
 		// Deactivate Arrow Sprites
@@ -60,14 +60,14 @@ public class EquipStatsEffect : MonoBehaviour {
 
 		// Subtract stats of currently equipped item 
 		switch (playerEquipment[playerNdx][(int)tItem.type].statEffect) {
-            case eItemStatEffect.STR: potential[0] -= playerEquipment[playerNdx][(int)tItem.type].statEffectMaxValue; break;
-            case eItemStatEffect.DEF: potential[1] -= playerEquipment[playerNdx][(int)tItem.type].statEffectMaxValue; break;
-            case eItemStatEffect.WIS: potential[2] -= playerEquipment[playerNdx][(int)tItem.type].statEffectMaxValue; break;
-            case eItemStatEffect.AGI: potential[3] -= playerEquipment[playerNdx][(int)tItem.type].statEffectMaxValue; break;
-        }
+			case eItemStatEffect.STR: potential[0] -= playerEquipment[playerNdx][(int)tItem.type].statEffectMaxValue; break;
+			case eItemStatEffect.DEF: potential[1] -= playerEquipment[playerNdx][(int)tItem.type].statEffectMaxValue; break;
+			case eItemStatEffect.WIS: potential[2] -= playerEquipment[playerNdx][(int)tItem.type].statEffectMaxValue; break;
+			case eItemStatEffect.AGI: potential[3] -= playerEquipment[playerNdx][(int)tItem.type].statEffectMaxValue; break;
+		}
 
-        // Add stats of item to be potentially equipped
-        switch (tItem.statEffect) {
+		// Add stats of item to be potentially equipped
+		switch (tItem.statEffect) {
 			case eItemStatEffect.STR: potential[0] += tItem.statEffectMaxValue; break;
 			case eItemStatEffect.DEF: potential[1] += tItem.statEffectMaxValue; break;
 			case eItemStatEffect.WIS: potential[2] += tItem.statEffectMaxValue; break;

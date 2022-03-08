@@ -75,7 +75,7 @@ public class EquipScreen_PickItemToEquipMode : MonoBehaviour {
 				equipScreen.inventoryButtons[0]);
 			//}
 		}
-    }
+	}
 
 	public void Loop(EquipMenu equipScreen) {
 		if (equipScreen.canUpdate) {
