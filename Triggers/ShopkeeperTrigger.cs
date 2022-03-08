@@ -8,14 +8,14 @@ using UnityEngine;
 /// triggering something unintentionally
 /// </summary>
 public class ShopkeeperTrigger : ActivateOnButtonPress {
-	[Header("Set in Inspector")]
-	// Shop Inventory
-	public List<eItem>       itemsToPopulateInventory;
+    [Header("Set in Inspector")]
+    // Shop Inventory
+    public List<eItem> itemsToPopulateInventory;
 
-    public eShopkeeperMode   mode = eShopkeeperMode.pickBuyOrSell; // 0: Nothing, 1: Buy, 2: Sell
+    public eShopkeeperMode mode = eShopkeeperMode.pickBuyOrSell; // 0: Nothing, 1: Buy, 2: Sell
 
     [Header("Set Dynamically")]
-    public List<Item>        inventory = new List<Item>();
+    public List<Item> inventory = new List<Item>();
 
     private void Start() {
         // Convert eItem enumeration into Item
@@ -33,16 +33,16 @@ public class ShopkeeperTrigger : ActivateOnButtonPress {
 
         // Set Text
         DialogueManager.S.DisplayText("<color=yellow><Shop Keeper></color> Wanna buy some hot junk? Or maybe you'd rather sell some hot junk instead? Hmmm?");
-		GameManager.S.gameSubMenu.SetText("Buy junk!", "Sell junk!", "No thanks.", "", 3);
+        GameManager.S.gameSubMenu.SetText("Buy junk!", "Sell junk!", "No thanks.", "", 3);
 
-		// Activate Sub Menu after Dialogue 
-		DialogueManager.S.activateSubMenu = true;
-		// Don't activate Text Box Cursor 
-		DialogueManager.S.dontActivateCursor = true;
-		// Gray Out Text Box after Dialogue 
-		DialogueManager.S.grayOutTextBox = true;
+        // Activate Sub Menu after Dialogue 
+        DialogueManager.S.activateSubMenu = true;
+        // Don't activate Text Box Cursor 
+        DialogueManager.S.dontActivateCursor = true;
+        // Gray Out Text Box after Dialogue 
+        DialogueManager.S.grayOutTextBox = true;
 
-		// Set OnClick Methods
+        // Set OnClick Methods
         Utilities.S.RemoveListeners(GameManager.S.gameSubMenu.buttonCS);
         GameManager.S.gameSubMenu.buttonCS[0].onClick.AddListener(Buy);
         GameManager.S.gameSubMenu.buttonCS[1].onClick.AddListener(Sell);
@@ -55,7 +55,7 @@ public class ShopkeeperTrigger : ActivateOnButtonPress {
         Utilities.S.SetButtonNavigation(GameManager.S.gameSubMenu.buttonCS[2], GameManager.S.gameSubMenu.buttonCS[1], GameManager.S.gameSubMenu.buttonCS[0]);
     }
 
-	void Buy() {
+    void Buy() {
         // Audio: Confirm
         AudioManager.S.PlaySFX(eSoundName.confirm);
 
@@ -64,7 +64,7 @@ public class ShopkeeperTrigger : ActivateOnButtonPress {
         mode = eShopkeeperMode.pickedBuy;
     }
 
-	void Sell() {
+    void Sell() {
         // Audio: Confirm
         AudioManager.S.PlaySFX(eSoundName.confirm);
 
@@ -73,15 +73,15 @@ public class ShopkeeperTrigger : ActivateOnButtonPress {
         mode = eShopkeeperMode.pickedSell;
     }
 
-	void No() {
+    void No() {
         // Audio: Deny
         AudioManager.S.PlaySFX(eSoundName.deny);
 
         DialogueManager.S.ResetSettings();
-		DialogueManager.S.DisplayText("Hmmm? Oh, okay, that's cool. Please come again soon!");
-	}
+        DialogueManager.S.DisplayText("Hmmm? Oh, okay, that's cool. Please come again soon!");
+    }
 
-	public void ThisLoop() {
+    public void ThisLoop() {
         // Remove ThisLoop() from UpdateManager delegate on scene change.
         // This prevents an occasional bug when the Player is within this trigger on scene change.
         // Would prefer a better solution... 
@@ -118,7 +118,7 @@ public class ShopkeeperTrigger : ActivateOnButtonPress {
         }
     }
 
-	protected override void OnTriggerEnter2D(Collider2D coll) {
+    protected override void OnTriggerEnter2D(Collider2D coll) {
         if (coll.gameObject.CompareTag("PlayerTrigger")) {
             // Add ThisLoop() to Update Delgate
             UpdateManager.updateDelegate += ThisLoop;
@@ -127,8 +127,8 @@ public class ShopkeeperTrigger : ActivateOnButtonPress {
         }
     }
 
-	protected override void OnTriggerExit2D(Collider2D coll) {
-		if (coll.gameObject.CompareTag("PlayerTrigger")) {
+    protected override void OnTriggerExit2D(Collider2D coll) {
+        if (coll.gameObject.CompareTag("PlayerTrigger")) {
             base.OnTriggerExit2D(coll);
 
             // Remove ThisLoop() from Update Delgate

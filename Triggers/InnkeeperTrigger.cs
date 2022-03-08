@@ -58,7 +58,7 @@ public class InnkeeperTrigger : ActivateOnButtonPress {
 		// Deactivate player input
 		GameManager.S.paused = true;
 
-		BattleCurtain.S.Close();
+		Curtain.S.Close();
 
 		// Audio: Win
 		StartCoroutine(AudioManager.S.PlaySongThenResumePreviousSong(6));
@@ -70,7 +70,7 @@ public class InnkeeperTrigger : ActivateOnButtonPress {
 	IEnumerator OpenCurtains() {
 		DialogueManager.S.DeactivateTextBox();
 
-		BattleCurtain.S.Open();
+		Curtain.S.Open();
 
 		yield return new WaitForSeconds(0.75f);
 		DisplayDialogue();

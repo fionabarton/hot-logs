@@ -10,8 +10,8 @@ public class PurchaseTrigger : ActivateOnButtonPress {
         // Set Camera to Item gameObject
         CamManager.S.ChangeTarget(gameObject, true);
 
-        DialogueManager.S.DisplayText("I'm a " + ItemManager.S.items[(int)item].name + 
-                                         "! Wanna purchase me for " + ItemManager.S.items[(int)item].value + 
+        DialogueManager.S.DisplayText("I'm a " + Items.S.items[(int)item].name + 
+                                         "! Wanna purchase me for " + Items.S.items[(int)item].value + 
                                          " gold?");
 
         // Set SubMenu Text
@@ -37,7 +37,7 @@ public class PurchaseTrigger : ActivateOnButtonPress {
     void Yes() {
         DialogueManager.S.ResetSettings();
 
-        Item tItem = ItemManager.S.items[(int)item];
+        Item tItem = Items.S.items[(int)item];
 
         if (Party.S.gold >= tItem.value) {
             // Added to Player Inventory

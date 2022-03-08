@@ -27,7 +27,7 @@ public class DoorTrigger : ActivateOnButtonPress {
 		switch (doorMode) {
 		case eDoorMode.locked:
 			// If Player has Key, unlock the door
-			if (Inventory.S.GetItemCount(ItemManager.S.GetItem(eItem.smallKey)) > 0) {
+			if (Inventory.S.GetItemCount(Items.S.GetItem(eItem.smallKey)) > 0) {
 				UnlockDoor();
 			} else {
 				// Display Text
@@ -46,7 +46,7 @@ public class DoorTrigger : ActivateOnButtonPress {
 		// Change Sprite
 		sRend.sprite = closedDoorSprite;
 		// Remove Item from Inventory
-		Inventory.S.RemoveItemFromInventory (ItemManager.S.GetItem(eItem.smallKey));
+		Inventory.S.RemoveItemFromInventory (Items.S.GetItem(eItem.smallKey));
 		// Display Text
 		DialogueManager.S.DisplayText ("Great! You unlocked the stupid door!");
 

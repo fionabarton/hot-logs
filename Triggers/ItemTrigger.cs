@@ -25,10 +25,10 @@ public class ItemTrigger : ActivateOnButtonPress {
 		InteractableCursor.S.Deactivate();
 
 		// Add Item to Inventory
-		Inventory.S.AddItemToInventory(ItemManager.S.items[(int)item]);
+		Inventory.S.AddItemToInventory(Items.S.items[(int)item]);
 
 		// Display Dialogue 
-		DialogueManager.S.DisplayText("Neat, a " + ItemManager.S.items[(int)item].name + "! The party adds it to their inventory!");
+		DialogueManager.S.DisplayText("Neat, a " + Items.S.items[(int)item].name + "! The party adds it to their inventory!");
 
 		// Audio: Buff 1
 		AudioManager.S.PlaySFX(eSoundName.buff1);

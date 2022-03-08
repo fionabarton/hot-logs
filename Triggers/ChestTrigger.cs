@@ -43,7 +43,7 @@ public class ChestTrigger : ActivateOnButtonPress {
 		sRendTop.sprite = openChestTop;
 
 		// Add Item to Inventory
-		Item tItem = ItemManager.S.GetItem(item);
+		Item tItem = Items.S.GetItem(item);
 		Inventory.S.AddItemToInventory(tItem);
 
 		// Display Dialogue 
