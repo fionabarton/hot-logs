@@ -7,39 +7,39 @@ using System;
 public class ShopMenu : MonoBehaviour {
 	[Header("Set in Inspector")]
 	// Inventory Buttons
-	public List<Button> 	inventoryButtons;
-	public List<Text> 		inventoryButtonsNameText;
-	public List<Text>		inventoryButtonsPriceText;
-	public List<Text>		inventoryButtonsQTYOwnedText;
-	public List<Text>		inventoryButtonsQTYEquippedText;
+	public List<Button> inventoryButtons;
+	public List<Text> inventoryButtonsNameText;
+	public List<Text> inventoryButtonsPriceText;
+	public List<Text> inventoryButtonsQTYOwnedText;
+	public List<Text> inventoryButtonsQTYEquippedText;
 
 	[Header("Set Dynamically")]
 	// For Input & Display Message
-	public eShopScreenMode  shopScreenMode = eShopScreenMode.pickItem;
+	public eShopScreenMode shopScreenMode = eShopScreenMode.pickItem;
 
-	public bool				buyOrSellMode;
+	public bool buyOrSellMode;
 
 	// Allows parts of Loop() to be called once rather than repeatedly every frame.
-	public bool 			canUpdate;
+	public bool canUpdate;
 
-	public GameObject		previousSelectedGameObject;
-	public int				previousSelectedNdx;
+	public GameObject previousSelectedGameObject;
+	public int previousSelectedNdx;
 
 	// Caches what index of the inventory is currently stored in the first item slot
-	public int				firstSlotNdx;
+	public int firstSlotNdx;
 
 	// Prevents instantly registering input when the first or last slot is selected
-	private bool			verticalAxisIsInUse;
-	private bool			firstOrLastSlotSelected;
+	private bool verticalAxisIsInUse;
+	private bool firstOrLastSlotSelected;
 
-	public List<Item>		inventory = new List<Item>();
+	public List<Item> inventory = new List<Item>();
 
 	private static ShopMenu _S;
 	public static ShopMenu S { get { return _S; } set { _S = value; } }
 
-	public ShopScreen_PickItemMode				pickItemMode;
-	public ShopScreen_ItemPurchasedOrSoldMode	itemPurchasedOrSoldMode;
-	public ShopScreen_DisplayPotentialStats		displayPotentialStats;
+	public ShopScreen_PickItemMode pickItemMode;
+	public ShopScreen_ItemPurchasedOrSoldMode itemPurchasedOrSoldMode;
+	public ShopScreen_DisplayPotentialStats displayPotentialStats;
 
 	void Awake() {
 		S = this;
@@ -88,31 +88,31 @@ public class ShopMenu : MonoBehaviour {
 		gameObject.SetActive(false);
 	}
 
-	public void Loop () {
+	public void Loop() {
 		// Reset canUpdate
-		if (Input.GetAxisRaw ("Horizontal") != 0f || Input.GetAxisRaw ("Vertical") != 0f) { 
+		if (Input.GetAxisRaw("Horizontal") != 0f || Input.GetAxisRaw("Vertical") != 0f) {
 			canUpdate = true;
 		}
 
 		// Deactivate ShopScreen
-		if(Input.GetButtonDown ("SNES Y Button")) {
+		if (Input.GetButtonDown("SNES Y Button")) {
 			// Audio: Deny
 			AudioManager.S.PlaySFX(eSoundName.deny);
 			Deactivate();
 		}
 
 		switch (shopScreenMode) {
-		case eShopScreenMode.pickItem:
-			// On vertical input, scroll the item list when the first or last slot is selected
-			if (inventory.Count > inventoryButtons.Count) {
-				ScrollItemList();
-			}
+			case eShopScreenMode.pickItem:
+				// On vertical input, scroll the item list when the first or last slot is selected
+				if (inventory.Count > inventoryButtons.Count) {
+					ScrollItemList();
+				}
 
-			pickItemMode.Loop(S);
-			break;
-		case eShopScreenMode.itemPurchasedOrSold:
-			itemPurchasedOrSoldMode.Loop(S);
-			break;
+				pickItemMode.Loop(S);
+				break;
+			case eShopScreenMode.itemPurchasedOrSold:
+				itemPurchasedOrSoldMode.Loop(S);
+				break;
 		}
 	}
 

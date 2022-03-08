@@ -75,7 +75,7 @@ public class ShopScreen_ItemPurchasedOrSoldMode : MonoBehaviour {
 		// Deactivate screen cursors
 		Utilities.S.SetActiveList(ScreenCursor.S.cursorGO, false);
 
-		if(shopScreen.firstSlotNdx != 0) {
+		if (shopScreen.firstSlotNdx != 0) {
 			shopScreen.firstSlotNdx -= 1;
 		}
 

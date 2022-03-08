@@ -70,14 +70,15 @@ public class ShopScreen_PickItemMode : MonoBehaviour {
 
 			// Activate PauseMessage
 			PauseMessage.S.gameObject.SetActive(true);
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			Debug.Log(e);
 		}
 	}
 
 	public void Loop(ShopMenu shopScreen) {
 		if (shopScreen.canUpdate) {
-			if(shopScreen.inventory.Count > 0) {
+			if (shopScreen.inventory.Count > 0) {
 				DisplayItemDescriptions(shopScreen);
 			}
 			shopScreen.canUpdate = false;
@@ -121,7 +122,7 @@ public class ShopScreen_PickItemMode : MonoBehaviour {
 				shopScreen.inventoryButtonsNameText[i].text = inventoryNdx + ") " + shopScreen.inventory[shopScreen.firstSlotNdx + i].name;
 				shopScreen.inventoryButtonsPriceText[i].text = shopScreen.inventory[shopScreen.firstSlotNdx + i].value.ToString();
 				shopScreen.inventoryButtonsQTYOwnedText[i].text = Inventory.S.GetItemCount(shopScreen.inventory[shopScreen.firstSlotNdx + i]).ToString();
-				shopScreen.inventoryButtonsQTYEquippedText[i].text = EquipScreen.S.GetEquippedItemCount(shopScreen.inventory[shopScreen.firstSlotNdx + i]).ToString();
+				shopScreen.inventoryButtonsQTYEquippedText[i].text = EquipMenu.S.GetEquippedItemCount(shopScreen.inventory[shopScreen.firstSlotNdx + i]).ToString();
 			}
 		}
 	}

@@ -11,7 +11,7 @@ public class ShopScreen_DisplayPotentialStats : MonoBehaviour {
 
 	public List<Animator> anim;
 
-    public void ActivatePotentialStats() {
+	public void ActivatePotentialStats() {
 		// Deactivate all potential stats gameObjects
 		for (int i = 0; i < nameText.Count; i++) {
 			nameText[i].gameObject.transform.parent.gameObject.SetActive(false);
@@ -37,7 +37,7 @@ public class ShopScreen_DisplayPotentialStats : MonoBehaviour {
 			nameText[i].gameObject.transform.parent.gameObject.SetActive(true);
 
 			// This item is already equipped
-			if (tItem == EquipScreen.S.playerEquipment[i][(int)tItem.type]) {
+			if (tItem == EquipMenu.S.playerEquipment[i][(int)tItem.type]) {
 				statsNameText[i].text = "Already equipped!";
 				statsAmountText[i].text = "";
 				anim[i].CrossFade("Idle", 0);
@@ -48,11 +48,11 @@ public class ShopScreen_DisplayPotentialStats : MonoBehaviour {
 			List<int> potential = new List<int>() { Party.S.stats[i].STR, Party.S.stats[i].DEF, Party.S.stats[i].WIS, Party.S.stats[i].AGI };
 
 			// Subtract stats of currently equipped item 
-			switch (EquipScreen.S.playerEquipment[i][(int)tItem.type].statEffect) {
-				case eItemStatEffect.STR: potential[0] -= EquipScreen.S.playerEquipment[i][(int)tItem.type].statEffectMaxValue; break;
-				case eItemStatEffect.DEF: potential[1] -= EquipScreen.S.playerEquipment[i][(int)tItem.type].statEffectMaxValue; break;
-				case eItemStatEffect.WIS: potential[2] -= EquipScreen.S.playerEquipment[i][(int)tItem.type].statEffectMaxValue; break;
-				case eItemStatEffect.AGI: potential[3] -= EquipScreen.S.playerEquipment[i][(int)tItem.type].statEffectMaxValue; break;
+			switch (EquipMenu.S.playerEquipment[i][(int)tItem.type].statEffect) {
+				case eItemStatEffect.STR: potential[0] -= EquipMenu.S.playerEquipment[i][(int)tItem.type].statEffectMaxValue; break;
+				case eItemStatEffect.DEF: potential[1] -= EquipMenu.S.playerEquipment[i][(int)tItem.type].statEffectMaxValue; break;
+				case eItemStatEffect.WIS: potential[2] -= EquipMenu.S.playerEquipment[i][(int)tItem.type].statEffectMaxValue; break;
+				case eItemStatEffect.AGI: potential[3] -= EquipMenu.S.playerEquipment[i][(int)tItem.type].statEffectMaxValue; break;
 			}
 
 			// Add stats of item to be potentially equipped
@@ -71,9 +71,9 @@ public class ShopScreen_DisplayPotentialStats : MonoBehaviour {
 			int totaStatDifference = 0;
 
 			// Build stat name and amount strings
-			for(int j = 0; j < statDifference.Count; j++) {
+			for (int j = 0; j < statDifference.Count; j++) {
 				if (statDifference[j] != 0) {
-                    switch (j) {
+					switch (j) {
 						case 0:
 							nameString += "STR\n";
 							break;
@@ -102,13 +102,13 @@ public class ShopScreen_DisplayPotentialStats : MonoBehaviour {
 			statsAmountText[i].text = amountString;
 
 			// Set animation
-			if(totaStatDifference > 0) {
+			if (totaStatDifference > 0) {
 				anim[i].CrossFade("Success", 0);
-            } else if (totaStatDifference < 0) {
+			} else if (totaStatDifference < 0) {
 				anim[i].CrossFade("Fail", 0);
-            } else {
+			} else {
 				anim[i].CrossFade("Idle", 0);
 			}
 		}
 	}
-} 
+}
