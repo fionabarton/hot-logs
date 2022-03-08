@@ -7,7 +7,7 @@ using System;
 /// Outside of battle, handles what happens when a spell button is clicked
 /// </summary>
 public class WorldSpells : MonoBehaviour {
-    public void AddFunctionToButton(Action<int> functionToPass, string messageToDisplay, Spell spell) {
+	public void AddFunctionToButton(Action<int> functionToPass, string messageToDisplay, Spell spell) {
 		if (Party.S.stats[Spells.S.menu.playerNdx].MP >= spell.cost) {
 			// Audio: Confirm
 			AudioManager.S.PlaySFX(eSoundName.confirm);
@@ -64,7 +64,7 @@ public class WorldSpells : MonoBehaviour {
 	//////////////////////////////////////////////////////////
 	/// Heal - Heal the selected party member 
 	//////////////////////////////////////////////////////////
-	public void HealSelectedPartyMember(int ndx) { 
+	public void HealSelectedPartyMember(int ndx) {
 		if (Party.S.stats[ndx].HP < Party.S.stats[ndx].maxHP) {
 			// Set animation to success
 			PlayerButtons.S.anim[ndx].CrossFade("Success", 0);

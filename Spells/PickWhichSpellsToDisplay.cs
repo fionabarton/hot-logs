@@ -12,14 +12,6 @@ public class PickWhichSpellsToDisplay : MonoBehaviour {
 	[Header("Set in Inspector")]
 	public Text titleText;
 
-	//[Header("Set Dynamically")]
-	//private static PickWhichSpellsToDisplay _S;
-	//public static PickWhichSpellsToDisplay S { get { return _S; } set { _S = value; } }
-
-	//void Awake() {
- //       S = this;
- //   }
-
 	public void Setup(SpellMenu spellScreen) {
 		spellScreen.firstSlotNdx = 0;
 
@@ -63,7 +55,8 @@ public class PickWhichSpellsToDisplay : MonoBehaviour {
 				// Set Turn Cursor sorting layer BELOW UI
 				BattleUI.S.turnCursorSRend.sortingLayerName = "0";
 			}
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			Debug.Log(e);
 		}
 	}

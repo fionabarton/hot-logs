@@ -123,7 +123,7 @@ public class Spells : MonoBehaviour {
 
 			// Switch ScreenMode 
 			menu.mode = eSpellScreenMode.cantUseSpell;
-        } else {
+		} else {
 			SpellHelper();
 		}
 	}

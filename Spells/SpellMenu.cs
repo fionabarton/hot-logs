@@ -11,39 +11,39 @@ public class SpellMenu : MonoBehaviour {
 
 	[Header("Set in Inspector")]
 	// Spells "Buttons"
-	public List<Button> 	spellsButtons;
-	public List<Text> 	  	spellsButtonNameText;
-	public List<Text>		spellsButtonMPCostText;
-	
-	public Text				nameHeaderText;
-	public GameObject		MPCostHeader;
+	public List<Button> spellsButtons;
+	public List<Text> spellsButtonNameText;
+	public List<Text> spellsButtonMPCostText;
 
-	public GameObject		previousSelectedSpellGO;
+	public Text nameHeaderText;
+	public GameObject MPCostHeader;
+
+	public GameObject previousSelectedSpellGO;
 
 	[Header("Set Dynamically")]
-	public int 				playerNdx = 0; // Used to set Player 1 or 2 for DisplaySpellsDescriptions(), set in LoadSpells()
+	public int playerNdx = 0; // Used to set Player 1 or 2 for DisplaySpellsDescriptions(), set in LoadSpells()
 
 	// For Input & Display MessageRemoveAllListeners
-	public eSpellScreenMode	mode;
+	public eSpellScreenMode mode;
 
 	// Allows parts of Loop() to be called once rather than repeatedly every frame.
-	public bool 			canUpdate;
+	public bool canUpdate;
 
-	public GameObject		previousSelectedPlayerGO;
+	public GameObject previousSelectedPlayerGO;
 
 	// Caches what index of the inventory is currently stored in the first item slot
-	public int				firstSlotNdx;
+	public int firstSlotNdx;
 
 	// Prevents instantly registering input when the first or last slot is selected
-	private bool			verticalAxisIsInUse;
-	private bool			firstOrLastSlotSelected;
+	private bool verticalAxisIsInUse;
+	private bool firstOrLastSlotSelected;
 
 	public PickWhichSpellsToDisplay pickWhichSpellsToDisplay;
-	public PickSpell				pickSpell;
-	public DoesntKnowSpells			doesntKnowSpells;
-	public PickWhichMemberToHeal	pickWhichMemberToHeal;
-	public UsedSpell				usedSpell;
-	public CantUseSpell				cantUseSpell;
+	public PickSpell pickSpell;
+	public DoesntKnowSpells doesntKnowSpells;
+	public PickWhichMemberToHeal pickWhichMemberToHeal;
+	public UsedSpell usedSpell;
+	public CantUseSpell cantUseSpell;
 
 	void Awake() {
 		// Get components	
@@ -71,14 +71,14 @@ public class SpellMenu : MonoBehaviour {
 
 		// Activate MP Cost header
 		MPCostHeader.SetActive(true);
-		
+
 		gameObject.SetActive(true);
 
 		// Audio: Confirm
 		AudioManager.S.PlaySFX(eSoundName.confirm);
 	}
 
-	public void Deactivate (bool playSound = false) {
+	public void Deactivate(bool playSound = false) {
 		// Set Battle Turn Cursor sorting layer ABOVE UI
 		BattleUI.S.turnCursorSRend.sortingLayerName = "Above UI";
 
@@ -109,7 +109,7 @@ public class SpellMenu : MonoBehaviour {
 			Utilities.S.SetActiveList(ScreenCursor.S.cursorGO, false);
 		}
 
-        if (playSound) {
+		if (playSound) {
 			// Audio: Deny
 			AudioManager.S.PlaySFX(eSoundName.deny);
 		}
@@ -124,21 +124,21 @@ public class SpellMenu : MonoBehaviour {
 		gameObject.SetActive(false);
 	}
 
-	public void Loop () {
+	public void Loop() {
 		// Reset canUpdate
-		if (Input.GetAxisRaw ("Horizontal") != 0f || Input.GetAxisRaw ("Vertical") != 0f) { 
+		if (Input.GetAxisRaw("Horizontal") != 0f || Input.GetAxisRaw("Vertical") != 0f) {
 			canUpdate = true;
 		}
 
 		// Deactivate SpellScreen
 		if (GameManager.S.currentScene != "Battle") {
 			if (mode == eSpellScreenMode.pickWhichSpellsToDisplay) {
-				if (Input.GetButtonDown ("SNES Y Button")) {
+				if (Input.GetButtonDown("SNES Y Button")) {
 					Deactivate(true);
 				}
 			}
 		} else {
-			if (Input.GetButtonDown ("SNES Y Button")) {
+			if (Input.GetButtonDown("SNES Y Button")) {
 				// Audio: Deny
 				AudioManager.S.PlaySFX(eSoundName.deny);
 				ScreenOffPlayerTurn();
@@ -146,49 +146,49 @@ public class SpellMenu : MonoBehaviour {
 		}
 
 		switch (mode) {
-		case eSpellScreenMode.pickWhichSpellsToDisplay:
-			pickWhichSpellsToDisplay.Loop(Spells.S.menu);
-		break;
-		case eSpellScreenMode.pickSpell:
-			// On vertical input, scroll the item list when the first or last slot is selected
-			if (Party.S.stats[playerNdx].spellNdx > spellsButtons.Count) {
-				ScrollSpellList();
-			}
+			case eSpellScreenMode.pickWhichSpellsToDisplay:
+				pickWhichSpellsToDisplay.Loop(Spells.S.menu);
+				break;
+			case eSpellScreenMode.pickSpell:
+				// On vertical input, scroll the item list when the first or last slot is selected
+				if (Party.S.stats[playerNdx].spellNdx > spellsButtons.Count) {
+					ScrollSpellList();
+				}
 
-			pickSpell.Loop(Spells.S.menu);
-		break;
-		case eSpellScreenMode.doesntKnowSpells:
-			doesntKnowSpells.Loop(Spells.S.menu);
-		break;
-		case eSpellScreenMode.pickWhichMemberToHeal:
-			pickWhichMemberToHeal.Loop(Spells.S.menu);
-		break;
-		case eSpellScreenMode.pickAllMembersToHeal:
-			if (Input.GetButtonDown("SNES Y Button")) {
-				GoBackToPickSpellMode();
-			}
-		break;
-		case eSpellScreenMode.pickWhereToWarp:
-			if (canUpdate) {
-				WarpManager.S.DisplayButtonDescriptions(spellsButtons, -160);
-			}
+				pickSpell.Loop(Spells.S.menu);
+				break;
+			case eSpellScreenMode.doesntKnowSpells:
+				doesntKnowSpells.Loop(Spells.S.menu);
+				break;
+			case eSpellScreenMode.pickWhichMemberToHeal:
+				pickWhichMemberToHeal.Loop(Spells.S.menu);
+				break;
+			case eSpellScreenMode.pickAllMembersToHeal:
+				if (Input.GetButtonDown("SNES Y Button")) {
+					GoBackToPickSpellMode();
+				}
+				break;
+			case eSpellScreenMode.pickWhereToWarp:
+				if (canUpdate) {
+					WarpManager.S.DisplayButtonDescriptions(spellsButtons, -160);
+				}
 
-			if (Input.GetButtonDown("SNES Y Button")) {
-				GoBackToPickSpellMode();
+				if (Input.GetButtonDown("SNES Y Button")) {
+					GoBackToPickSpellMode();
 
-				// Activate MP Cost header
-				MPCostHeader.SetActive(true);
-				// Reset Slot Headers Text 
-				nameHeaderText.text = "Name:";
-			}
-		break;
-		case eSpellScreenMode.usedSpell:
-			usedSpell.Loop(Spells.S.menu);
-		break;
-		// During Battle... "Not Enough MP Message", then back to Player Turn w/ Button Press
-		case eSpellScreenMode.cantUseSpell:
-			cantUseSpell.Loop(Spells.S.menu);
-		break;
+					// Activate MP Cost header
+					MPCostHeader.SetActive(true);
+					// Reset Slot Headers Text 
+					nameHeaderText.text = "Name:";
+				}
+				break;
+			case eSpellScreenMode.usedSpell:
+				usedSpell.Loop(Spells.S.menu);
+				break;
+			// During Battle... "Not Enough MP Message", then back to Player Turn w/ Button Press
+			case eSpellScreenMode.cantUseSpell:
+				cantUseSpell.Loop(Spells.S.menu);
+				break;
 		}
 	}
 
@@ -205,7 +205,7 @@ public class SpellMenu : MonoBehaviour {
 							if (Input.GetAxisRaw("Vertical") > 0) {
 								if (firstSlotNdx == 0) {
 									firstSlotNdx = Party.S.stats[playerNdx].spellNdx - spellsButtons.Count;
-									
+
 									// Set  selected GameObject
 									Utilities.S.SetSelectedGO(spellsButtons[9].gameObject);
 								} else {
@@ -271,8 +271,8 @@ public class SpellMenu : MonoBehaviour {
 			LoadSpells(playerNdx); // Go Back
 		}
 	}
-	
-	public void LoadSpells(int playerNdx, bool playSound = false){
+
+	public void LoadSpells(int playerNdx, bool playSound = false) {
 		PlayerButtons.S.SetSelectedAnim("Idle");
 
 		// Buttons Interactable
@@ -334,7 +334,7 @@ public class SpellMenu : MonoBehaviour {
 		SetButtonNavigation();
 	}
 
-	public void DisplaySpellsDescriptions (int playerNdx) {
+	public void DisplaySpellsDescriptions(int playerNdx) {
 		for (int i = 0; i < spellsButtons.Count; i++) {
 			if (UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject == spellsButtons[i].gameObject) {
 				PauseMessage.S.SetText(Party.S.stats[playerNdx].spells[i + firstSlotNdx].description);
@@ -355,8 +355,8 @@ public class SpellMenu : MonoBehaviour {
 			}
 		}
 	}
-	
-	public void DeactivateUnusedSpellsSlots (int playerNdx) {
+
+	public void DeactivateUnusedSpellsSlots(int playerNdx) {
 		for (int i = 0; i < spellsButtons.Count; i++) {
 			if (i < Party.S.stats[playerNdx].spellNdx) {
 				spellsButtons[i].gameObject.SetActive(true);
@@ -364,11 +364,11 @@ public class SpellMenu : MonoBehaviour {
 			} else {
 				spellsButtons[i].gameObject.SetActive(false);
 				spellsButtonMPCostText[i].gameObject.SetActive(false);
-			} 
+			}
 		}
 	}
 
-	public void AssignSpellsEffect(int playerNdx) { 
+	public void AssignSpellsEffect(int playerNdx) {
 		Utilities.S.RemoveListeners(PlayerButtons.S.buttonsCS);
 		Utilities.S.RemoveListeners(spellsButtons);
 
@@ -425,8 +425,8 @@ public class SpellMenu : MonoBehaviour {
 		}
 	}
 
-	public void ScreenOffPlayerTurn (){
-		PauseMessage.S.gameObject.SetActive (false);
+	public void ScreenOffPlayerTurn() {
+		PauseMessage.S.gameObject.SetActive(false);
 
 		Deactivate(true);
 
@@ -435,10 +435,10 @@ public class SpellMenu : MonoBehaviour {
 		}
 	}
 
-	public void ScreenOffEnemyDeath (int enemyNdx){
+	public void ScreenOffEnemyDeath(int enemyNdx) {
 		Deactivate();
 
-		BattleEnd.S.EnemyDeath(enemyNdx); 
+		BattleEnd.S.EnemyDeath(enemyNdx);
 	}
 
 	// Inspired by ConsumeItem() in ItemScreen.cs

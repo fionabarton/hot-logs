@@ -134,15 +134,15 @@ public class BattleSpells : MonoBehaviour {
 
 		Heal(ndx, spell.statEffectMinValue, spell.statEffectMaxValue);
 
-        // Display Text
-        if (amountToHeal >= maxAmountToHeal) {
-            BattleDialogue.S.DisplayText("Used " + spell.name + " Spell!\nHealed " + Party.S.stats[ndx].name + " back to Max HP!");
-        } else {
-            BattleDialogue.S.DisplayText("Used " + spell.name + " Spell!\nHealed " + Party.S.stats[ndx].name + " for " + amountToHeal + " HP!");
-        }
+		// Display Text
+		if (amountToHeal >= maxAmountToHeal) {
+			BattleDialogue.S.DisplayText("Used " + spell.name + " Spell!\nHealed " + Party.S.stats[ndx].name + " back to Max HP!");
+		} else {
+			BattleDialogue.S.DisplayText("Used " + spell.name + " Spell!\nHealed " + Party.S.stats[ndx].name + " for " + amountToHeal + " HP!");
+		}
 
-        // Audio: Buff 1
-        AudioManager.S.PlaySFX(eSoundName.buff1);
+		// Audio: Buff 1
+		AudioManager.S.PlaySFX(eSoundName.buff1);
 
 		_.NextTurn();
 	}
@@ -236,7 +236,7 @@ public class BattleSpells : MonoBehaviour {
 		ColorScreen.S.targetNdx = ndx;
 		ColorScreen.S.spell = spell;
 	}
-	
+
 	public void AttackSelectedEnemy(int ndx, Spell spell) {
 		// Subtract Spell cost from Player's MP
 		GameManager.S.SubtractPlayerMP(_.PlayerNdx(), spell.cost);
@@ -597,7 +597,7 @@ public class BattleSpells : MonoBehaviour {
 		AudioManager.S.PlaySFX(eSoundName.deny);
 
 		// Switch Mode
-        if (StatusEffects.S.HasStatusAilment(true, _.PlayerNdx())) {
+		if (StatusEffects.S.HasStatusAilment(true, _.PlayerNdx())) {
 			_.mode = eBattleMode.statusAilment;
 		} else {
 			_.mode = eBattleMode.playerTurn;
@@ -636,8 +636,8 @@ public class BattleSpells : MonoBehaviour {
 		// Shake Enemy Anim 
 		_.enemyAnimator[ndx].CrossFade("Damage", 0);
 
-        // Audio: Damage
-        if (playDamageSFX) {
+		// Audio: Damage
+		if (playDamageSFX) {
 			AudioManager.S.PlayRandomDamageSFX();
 		}
 	}
