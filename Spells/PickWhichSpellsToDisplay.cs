@@ -53,7 +53,7 @@ public class PickWhichSpellsToDisplay : MonoBehaviour {
 				ScreenCursor.S.cursorGO[0].SetActive(true);
 			} else {
 				// Set Turn Cursor sorting layer BELOW UI
-				BattleUI.S.turnCursorSRend.sortingLayerName = "0";
+				Battle.S.UI.turnCursorSRend.sortingLayerName = "0";
 			}
 		}
 		catch (Exception e) {

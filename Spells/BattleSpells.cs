@@ -23,42 +23,42 @@ public class BattleSpells : MonoBehaviour {
 			AudioManager.S.PlaySFX(eSoundName.confirm);
 
 			// Remove all listeners
-			Utilities.S.RemoveListeners(BattlePlayerActions.S.playerButtonCS);
+			Utilities.S.RemoveListeners(_.playerActions.playerButtonCS);
 
 			if (spell.type == eSpellType.healing) {
-				BattlePlayerActions.S.ButtonsInteractable(false, false, false, false, false, false, false, false, false, false, true, true);
+				_.playerActions.ButtonsInteractable(false, false, false, false, false, false, false, false, false, false, true, true);
 
 				// Set a Player Button as Selected GameObject
-				Utilities.S.SetSelectedGO(BattlePlayerActions.S.playerButtonGO[_.PlayerNdx()].gameObject);
+				Utilities.S.SetSelectedGO(_.playerActions.playerButtonGO[_.PlayerNdx()].gameObject);
 
 				// Set previously selected GameObject
-				_.previousSelectedForAudio = BattlePlayerActions.S.playerButtonGO[_.PlayerNdx()].gameObject;
+				_.previousSelectedForAudio = _.playerActions.playerButtonGO[_.PlayerNdx()].gameObject;
 
 				// Add Item Listeners to Player Buttons
-				BattlePlayerActions.S.playerButtonCS[0].onClick.AddListener(delegate { functionToPass(0, spell); });
-				BattlePlayerActions.S.playerButtonCS[1].onClick.AddListener(delegate { functionToPass(1, spell); });
-				BattlePlayerActions.S.playerButtonCS[2].onClick.AddListener(delegate { functionToPass(2, spell); });
+				_.playerActions.playerButtonCS[0].onClick.AddListener(delegate { functionToPass(0, spell); });
+				_.playerActions.playerButtonCS[1].onClick.AddListener(delegate { functionToPass(1, spell); });
+				_.playerActions.playerButtonCS[2].onClick.AddListener(delegate { functionToPass(2, spell); });
 
 				// If multiple targets
 				if (spell.multipleTargets) {
-					BattleUI.S.TargetAllPartyMembers();
+					_.UI.TargetAllPartyMembers();
 				}
 			} else if (spell.type == eSpellType.offensive) {
-				BattlePlayerActions.S.ButtonsInteractable(false, false, false, false, false, true, true, true, true, true, false, false);
+				_.playerActions.ButtonsInteractable(false, false, false, false, false, true, true, true, true, true, false, false);
 
 				// Set an Enemy Button as Selected GameObject
-				BattlePlayerActions.S.SetSelectedEnemyButton();
+				_.playerActions.SetSelectedEnemyButton();
 
 				// Add Item Listeners to Enemy Buttons
-				BattlePlayerActions.S.enemyButtonCS[0].onClick.AddListener(delegate { functionToPass(0, spell); });
-				BattlePlayerActions.S.enemyButtonCS[1].onClick.AddListener(delegate { functionToPass(1, spell); });
-				BattlePlayerActions.S.enemyButtonCS[2].onClick.AddListener(delegate { functionToPass(2, spell); });
-				BattlePlayerActions.S.enemyButtonCS[3].onClick.AddListener(delegate { functionToPass(3, spell); });
-				BattlePlayerActions.S.enemyButtonCS[4].onClick.AddListener(delegate { functionToPass(4, spell); });
+				_.playerActions.enemyButtonCS[0].onClick.AddListener(delegate { functionToPass(0, spell); });
+				_.playerActions.enemyButtonCS[1].onClick.AddListener(delegate { functionToPass(1, spell); });
+				_.playerActions.enemyButtonCS[2].onClick.AddListener(delegate { functionToPass(2, spell); });
+				_.playerActions.enemyButtonCS[3].onClick.AddListener(delegate { functionToPass(3, spell); });
+				_.playerActions.enemyButtonCS[4].onClick.AddListener(delegate { functionToPass(4, spell); });
 
 				// If multiple targets
 				if (spell.multipleTargets) {
-					BattleUI.S.TargetAllEnemies();
+					_.UI.TargetAllEnemies();
 				}
 			}
 		} else {
@@ -70,7 +70,7 @@ public class BattleSpells : MonoBehaviour {
 		Spells.S.menu.Deactivate();
 		PauseMessage.S.gameObject.SetActive(false);
 
-		BattleDialogue.S.DisplayText(messageToDisplay);
+		_.dialogue.DisplayText(messageToDisplay);
 
 		// If multiple targets
 		if (!spell.multipleTargets) {
@@ -81,10 +81,10 @@ public class BattleSpells : MonoBehaviour {
 	}
 
 	public void SpellHelper() {
-		BattlePlayerActions.S.ButtonsDisableAll();
+		_.playerActions.ButtonsDisableAll();
 
-		Utilities.S.RemoveListeners(BattlePlayerActions.S.playerButtonCS);
-		Utilities.S.RemoveListeners(BattlePlayerActions.S.enemyButtonCS);
+		Utilities.S.RemoveListeners(_.playerActions.playerButtonCS);
+		Utilities.S.RemoveListeners(_.playerActions.enemyButtonCS);
 	}
 
 	////////////////////////////////////////////////////////////////////////////////////////
@@ -136,9 +136,9 @@ public class BattleSpells : MonoBehaviour {
 
 		// Display Text
 		if (amountToHeal >= maxAmountToHeal) {
-			BattleDialogue.S.DisplayText("Used " + spell.name + " Spell!\nHealed " + Party.S.stats[ndx].name + " back to Max HP!");
+			_.dialogue.DisplayText("Used " + spell.name + " Spell!\nHealed " + Party.S.stats[ndx].name + " back to Max HP!");
 		} else {
-			BattleDialogue.S.DisplayText("Used " + spell.name + " Spell!\nHealed " + Party.S.stats[ndx].name + " for " + amountToHeal + " HP!");
+			_.dialogue.DisplayText("Used " + spell.name + " Spell!\nHealed " + Party.S.stats[ndx].name + " for " + amountToHeal + " HP!");
 		}
 
 		// Audio: Buff 1
@@ -176,7 +176,7 @@ public class BattleSpells : MonoBehaviour {
 		}
 
 		// Display Text
-		BattleDialogue.S.DisplayText("Used " + spell.name + " Spell!\nHealed ALL party members for an average of "
+		_.dialogue.DisplayText("Used " + spell.name + " Spell!\nHealed ALL party members for an average of "
 			+ Utilities.S.CalculateAverage(totalAmountToHeal, _.playerDead.Count) + " HP!");
 
 		// Audio: Buff 1
@@ -214,9 +214,9 @@ public class BattleSpells : MonoBehaviour {
 
 		// Display Text
 		if (amountToHeal >= maxAmountToHeal) {
-			BattleDialogue.S.DisplayText("Used " + spell.name + " Spell!\nHealed " + Party.S.stats[ndx].name + " back to Max HP!");
+			_.dialogue.DisplayText("Used " + spell.name + " Spell!\nHealed " + Party.S.stats[ndx].name + " back to Max HP!");
 		} else {
-			BattleDialogue.S.DisplayText("Used " + spell.name + " Spell!\nHealed " + Party.S.stats[ndx].name + " for " + amountToHeal + " HP!");
+			_.dialogue.DisplayText("Used " + spell.name + " Spell!\nHealed " + Party.S.stats[ndx].name + " for " + amountToHeal + " HP!");
 		}
 
 		// Audio: Buff 1
@@ -248,9 +248,9 @@ public class BattleSpells : MonoBehaviour {
 			_.playerAnimator[_.PlayerNdx()].CrossFade("Fail_Spell", 0);
 
 			if (UnityEngine.Random.value <= 0.5f) {
-				BattleDialogue.S.DisplayText(Party.S.stats[_.PlayerNdx()].name + " attempted the spell... but missed " + _.enemyStats[ndx].name + " completely!");
+				_.dialogue.DisplayText(Party.S.stats[_.PlayerNdx()].name + " attempted the spell... but missed " + _.enemyStats[ndx].name + " completely!");
 			} else {
-				BattleDialogue.S.DisplayText(Party.S.stats[_.PlayerNdx()].name + " cast the spell, but " + _.enemyStats[ndx].name + " deftly dodged out of the way!");
+				_.dialogue.DisplayText(Party.S.stats[_.PlayerNdx()].name + " cast the spell, but " + _.enemyStats[ndx].name + " deftly dodged out of the way!");
 			}
 
 			// Audio: Deny
@@ -282,7 +282,7 @@ public class BattleSpells : MonoBehaviour {
 				Spells.S.menu.ScreenOffEnemyDeath(ndx);
 			} else {
 				// Deactivate Spells Screen then Enemy Turn
-				BattleDialogue.S.DisplayText("Used " + spell.name + " Spell!\nHit " + _.enemyStats[ndx].name + " for " + _.attackDamage + " HP!");
+				_.dialogue.DisplayText("Used " + spell.name + " Spell!\nHit " + _.enemyStats[ndx].name + " for " + _.attackDamage + " HP!");
 
 				// Audio: Fireball
 				AudioManager.S.PlaySFX(eSoundName.fireball);
@@ -310,9 +310,9 @@ public class BattleSpells : MonoBehaviour {
 			_.playerAnimator[_.PlayerNdx()].CrossFade("Fail_Spell", 0);
 
 			if (UnityEngine.Random.value <= 0.5f) {
-				BattleDialogue.S.DisplayText(Party.S.stats[_.PlayerNdx()].name + " attempted the spell... but missed those goons completely!");
+				_.dialogue.DisplayText(Party.S.stats[_.PlayerNdx()].name + " attempted the spell... but missed those goons completely!");
 			} else {
-				BattleDialogue.S.DisplayText(Party.S.stats[_.PlayerNdx()].name + " cast the spell, but these dummies you're fighting deftly dodged out of the way!");
+				_.dialogue.DisplayText(Party.S.stats[_.PlayerNdx()].name + " cast the spell, but these dummies you're fighting deftly dodged out of the way!");
 			}
 
 			// Audio: Deny
@@ -367,7 +367,7 @@ public class BattleSpells : MonoBehaviour {
 
 			// If no one is killed...
 			if (deadEnemies.Count <= 0) {
-				BattleDialogue.S.DisplayText("Used " + spell.name + " Spell!\nHit ALL Enemies for an average of " + Utilities.S.CalculateAverage(totalAttackDamage, _.enemyStats.Count) + " HP!");
+				_.dialogue.DisplayText("Used " + spell.name + " Spell!\nHit ALL Enemies for an average of " + Utilities.S.CalculateAverage(totalAttackDamage, _.enemyStats.Count) + " HP!");
 
 				// Audio: Fireblast
 				AudioManager.S.PlaySFX(eSoundName.fireblast);
@@ -382,15 +382,15 @@ public class BattleSpells : MonoBehaviour {
 	// Handle enemy deaths
 	public void EnemiesDeath(List<int> deadEnemies, int totalAttackDamage) {
 		switch (deadEnemies.Count) {
-			case 1: BattleDialogue.S.DisplayText("Used Fire BLAST Spell!\nHit ALL Enemies for an average of " + Utilities.S.CalculateAverage(totalAttackDamage, _.enemyStats.Count) + " HP!" + "\nOne enemy has been felled!"); break;
-			case 2: BattleDialogue.S.DisplayText("Used Fire BLAST Spell!\nHit ALL Enemies for an average of " + Utilities.S.CalculateAverage(totalAttackDamage, _.enemyStats.Count) + " HP!" + "\nTwo enemies have been felled!"); break;
-			case 3: BattleDialogue.S.DisplayText("Used Fire BLAST Spell!\nHit ALL Enemies for an average of " + Utilities.S.CalculateAverage(totalAttackDamage, _.enemyStats.Count) + " HP!" + "\nThree enemies have been felled!"); break;
-			case 4: BattleDialogue.S.DisplayText("Used Fire BLAST Spell!\nHit ALL Enemies for an average of " + Utilities.S.CalculateAverage(totalAttackDamage, _.enemyStats.Count) + " HP!" + "\nFour enemies have been felled!"); break;
-			case 5: BattleDialogue.S.DisplayText("Used Fire BLAST Spell!\nHit ALL Enemies for an average of " + Utilities.S.CalculateAverage(totalAttackDamage, _.enemyStats.Count) + " HP!" + "\nFive enemies have been felled!"); break;
+			case 1: _.dialogue.DisplayText("Used Fire BLAST Spell!\nHit ALL Enemies for an average of " + Utilities.S.CalculateAverage(totalAttackDamage, _.enemyStats.Count) + " HP!" + "\nOne enemy has been felled!"); break;
+			case 2: _.dialogue.DisplayText("Used Fire BLAST Spell!\nHit ALL Enemies for an average of " + Utilities.S.CalculateAverage(totalAttackDamage, _.enemyStats.Count) + " HP!" + "\nTwo enemies have been felled!"); break;
+			case 3: _.dialogue.DisplayText("Used Fire BLAST Spell!\nHit ALL Enemies for an average of " + Utilities.S.CalculateAverage(totalAttackDamage, _.enemyStats.Count) + " HP!" + "\nThree enemies have been felled!"); break;
+			case 4: _.dialogue.DisplayText("Used Fire BLAST Spell!\nHit ALL Enemies for an average of " + Utilities.S.CalculateAverage(totalAttackDamage, _.enemyStats.Count) + " HP!" + "\nFour enemies have been felled!"); break;
+			case 5: _.dialogue.DisplayText("Used Fire BLAST Spell!\nHit ALL Enemies for an average of " + Utilities.S.CalculateAverage(totalAttackDamage, _.enemyStats.Count) + " HP!" + "\nFive enemies have been felled!"); break;
 		}
 
 		for (int i = 0; i < deadEnemies.Count; i++) {
-			BattleEnd.S.EnemyDeath(deadEnemies[i], false);
+			_.end.EnemyDeath(deadEnemies[i], false);
 		}
 	}
 
@@ -424,7 +424,7 @@ public class BattleSpells : MonoBehaviour {
 		StatusEffects.S.RemovePoisoned(true, ndx);
 
 		// Display Text
-		BattleDialogue.S.DisplayText("Used " + spell.name + " Spell!\n" + Party.S.stats[ndx].name + " is no longer poisoned!");
+		_.dialogue.DisplayText("Used " + spell.name + " Spell!\n" + Party.S.stats[ndx].name + " is no longer poisoned!");
 
 		CurePlayerAnimation(ndx, false);
 
@@ -460,7 +460,7 @@ public class BattleSpells : MonoBehaviour {
 		StatusEffects.S.RemoveParalyzed(true, ndx);
 
 		// Display Text
-		BattleDialogue.S.DisplayText("Used " + spell.name + " Spell!\n" + Party.S.stats[ndx].name + " is no longer paralyzed!");
+		_.dialogue.DisplayText("Used " + spell.name + " Spell!\n" + Party.S.stats[ndx].name + " is no longer paralyzed!");
 
 		CurePlayerAnimation(ndx, false);
 
@@ -496,7 +496,7 @@ public class BattleSpells : MonoBehaviour {
 		StatusEffects.S.RemoveSleeping(true, ndx);
 
 		// Display Text
-		BattleDialogue.S.DisplayText("Used " + spell.name + " Spell!\n" + Party.S.stats[ndx].name + " is no longer sleeping!");
+		_.dialogue.DisplayText("Used " + spell.name + " Spell!\n" + Party.S.stats[ndx].name + " is no longer sleeping!");
 
 		CurePlayerAnimation(ndx, false);
 
@@ -588,10 +588,10 @@ public class BattleSpells : MonoBehaviour {
 
 	public void SpellIsNotUseful(string message) {
 		// Display Text
-		BattleDialogue.S.DisplayText(message);
+		_.dialogue.DisplayText(message);
 
 		// Deactivate Cursors
-		Utilities.S.SetActiveList(BattleUI.S.targetCursors, false);
+		Utilities.S.SetActiveList(_.UI.targetCursors, false);
 
 		// Audio: Deny
 		AudioManager.S.PlaySFX(eSoundName.deny);

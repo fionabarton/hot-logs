@@ -80,7 +80,7 @@ public class SpellMenu : MonoBehaviour {
 
 	public void Deactivate(bool playSound = false) {
 		// Set Battle Turn Cursor sorting layer ABOVE UI
-		BattleUI.S.turnCursorSRend.sortingLayerName = "Above UI";
+		Battle.S.UI.turnCursorSRend.sortingLayerName = "Above UI";
 
 		// Remove Listeners
 		Utilities.S.RemoveListeners(spellsButtons);
@@ -438,7 +438,7 @@ public class SpellMenu : MonoBehaviour {
 	public void ScreenOffEnemyDeath(int enemyNdx) {
 		Deactivate();
 
-		BattleEnd.S.EnemyDeath(enemyNdx);
+		Battle.S.end.EnemyDeath(enemyNdx);
 	}
 
 	// Inspired by ConsumeItem() in ItemScreen.cs
