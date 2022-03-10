@@ -3,18 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class BattleEnd : MonoBehaviour {
-    [Header("Set Dynamically")]
-	private static BattleEnd _S;
-	public static BattleEnd S { get { return _S; } set { _S = value; } }
+	[Header("Set Dynamically")]
+	public LevelUpMessage levelUpMessage;
 
 	private Battle _;
 
-    void Awake() {
-		S = this;
-	}
-
 	void Start() {
-        _ = Battle.S;
+		// Get components
+		levelUpMessage = GetComponent<LevelUpMessage>();
+
+		_ = Battle.S;
     }
 
 	public void RemoveEnemy(int ndx) {
@@ -22,7 +20,7 @@ public class BattleEnd : MonoBehaviour {
         _.enemyAmount -= 1;
 
 		// Deactivate Enemy Button & Shadow
-		BattlePlayerActions.S.EnemyButtonSetActive(ndx, false);
+		_.playerActions.EnemyButtonSetActive(ndx, false);
 
 		// Set Selected GameObject (Fight Button)
 		_.enemyStats[ndx].isDead = true;
@@ -39,8 +37,8 @@ public class BattleEnd : MonoBehaviour {
 		// Deactivate '...' Word Bubble
 		_.dotDotDotWordBubble.SetActive(false);
 
-		BattleUI.S.turnCursor.SetActive(false); // Deactivate Turn Cursor
-		Utilities.S.SetActiveList(BattleUI.S.targetCursors, false);
+		_.UI.turnCursor.SetActive(false); // Deactivate Turn Cursor
+		Utilities.S.SetActiveList(_.UI.targetCursors, false);
 	}
 
     public void EnemyRun(int ndx) {
@@ -51,7 +49,7 @@ public class BattleEnd : MonoBehaviour {
 			// Animation: Enemy RUN
 			_.enemyAnimator[ndx].CrossFade("Run", 0);
 
-			BattleDialogue.S.DisplayText(_.enemyStats[ndx].name + " ran away!\nCOWARD! HO HO HO!");
+			_.dialogue.DisplayText(_.enemyStats[ndx].name + " ran away!\nCOWARD! HO HO HO!");
 
 			// Subtract EXP/Gold
 			_.expToAdd -= _.enemyStats[ndx].EXP;
@@ -82,7 +80,7 @@ public class BattleEnd : MonoBehaviour {
 				_.NextTurn();
 			}
 		} else {
-			BattleDialogue.S.DisplayText(_.enemyStats[ndx].name + " attempts to run...\n...but the party has blocked the path!");
+			_.dialogue.DisplayText(_.enemyStats[ndx].name + " attempts to run...\n...but the party has blocked the path!");
 
 			// Audio: Deny
 			AudioManager.S.PlaySFX(eSoundName.deny);
@@ -101,7 +99,7 @@ public class BattleEnd : MonoBehaviour {
         _.enemyAnimator[ndx].CrossFade("Death", 0);
 
         if (displayText) {
-			BattleDialogue.S.DisplayText(_.enemyStats[ndx].name + " has been felled!");
+			_.dialogue.DisplayText(_.enemyStats[ndx].name + " has been felled!");
 		}
 
 		// Randomly select DropItem
@@ -121,7 +119,7 @@ public class BattleEnd : MonoBehaviour {
 			}
 
 			// Deactivate top display message
-			BattleDialogue.S.displayMessageTextTop.gameObject.transform.parent.gameObject.SetActive(false);
+			_.dialogue.displayMessageTextTop.gameObject.transform.parent.gameObject.SetActive(false);
 
 			// DropItem or AddExpAndGold
 			if (_.droppedItems.Count >= 1) {
@@ -152,7 +150,7 @@ public class BattleEnd : MonoBehaviour {
 		AudioManager.S.PlaySong(eSongName.win);
 
 		// Display text
-		BattleDialogue.S.DisplayText(WordManager.S.GetRandomExclamation() + "!\nThey dropped a " + item.name + "...\n...y'all add it to the inventory!") ;
+		_.dialogue.DisplayText(WordManager.S.GetRandomExclamation() + "!\nThey dropped a " + item.name + "...\n...y'all add it to the inventory!") ;
 
 		// Remove item from list
 		Battle.S.droppedItems.RemoveAt(0);
@@ -184,7 +182,7 @@ public class BattleEnd : MonoBehaviour {
 		_.turnOrder.Remove(Party.S.stats[ndx].name);
 
         if (displayText) {
-			BattleDialogue.S.DisplayText("Oh no!\n" + Party.S.stats[ndx].name + " has been felled!");
+			_.dialogue.DisplayText("Oh no!\n" + Party.S.stats[ndx].name + " has been felled!");
 		}
 
 		// Add PartyDeath or NextTurn 
@@ -192,13 +190,13 @@ public class BattleEnd : MonoBehaviour {
 		if (_.partyQty < 0) { _.mode = eBattleMode.partyDeath; } else { _.NextTurn(); }
 	}
 	public void PartyDeath() {
-		BattleUI.S.turnCursor.SetActive(false);
-		Utilities.S.SetActiveList(BattleUI.S.targetCursors, false);
+		_.UI.turnCursor.SetActive(false);
+		Utilities.S.SetActiveList(_.UI.targetCursors, false);
 
 		// You died, so the enemy is chasing after you!
 		EnemyManager.S.GetEnemyMovement(eMovement.pursueRun);
 
-		BattleDialogue.S.DisplayText("Failure is the party!\nY'all've been wiped out/felled!");
+		_.dialogue.DisplayText("Failure is the party!\nY'all've been wiped out/felled!");
 
 		// Audio: Lose
 		AudioManager.S.PlaySong(eSongName.lose);
@@ -232,16 +230,16 @@ public class BattleEnd : MonoBehaviour {
 
 		// Display Text
 		if (_.partyQty >= 1) {
-			BattleDialogue.S.message = new List<string>() { "The party has earned " + _.expToAdd + " EXP...",
+			_.dialogue.message = new List<string>() { "The party has earned " + _.expToAdd + " EXP...",
 			"...and stolen " + _.goldToAdd + " GP!"};
-			BattleDialogue.S.DisplayText(BattleDialogue.S.message);
+			_.dialogue.DisplayText(_.dialogue.message);
 		} else {
 			if (!_.playerDead[0]) {
-				BattleDialogue.S.DisplayText(Party.S.stats[0].name + " has earned " + _.expToAdd + " EXP " + "\nand stolen " + _.goldToAdd + " GP!");
+				_.dialogue.DisplayText(Party.S.stats[0].name + " has earned " + _.expToAdd + " EXP " + "\nand stolen " + _.goldToAdd + " GP!");
 			} else if (!_.playerDead[1]) {
-				BattleDialogue.S.DisplayText(Party.S.stats[1].name + " has earned " + _.expToAdd + " EXP " + "\nand stolen " + _.goldToAdd + " GP!");
+				_.dialogue.DisplayText(Party.S.stats[1].name + " has earned " + _.expToAdd + " EXP " + "\nand stolen " + _.goldToAdd + " GP!");
 			} else if (!_.playerDead[2]) {
-				BattleDialogue.S.DisplayText(Party.S.stats[2].name + " has earned " + _.expToAdd + " EXP " + "\nand stolen " + _.goldToAdd + " GP!");
+				_.dialogue.DisplayText(Party.S.stats[2].name + " has earned " + _.expToAdd + " EXP " + "\nand stolen " + _.goldToAdd + " GP!");
 			}
 		}
 
@@ -268,12 +266,12 @@ public class BattleEnd : MonoBehaviour {
 
 	public List<int> membersToLevelUp = new List<int>();
 	public void LevelUp(int ndx) {
-		LevelUpMessage.S.Initialize(ndx);
+		levelUpMessage.Initialize(ndx);
 
 		// Audio: Buff 1
 		AudioManager.S.PlaySFX(eSoundName.buff1);
 
-		BattleDialogue.S.DisplayText(
+		_.dialogue.DisplayText(
 		Party.S.stats[ndx].name + " has reached level " + Party.S.stats[ndx].LVL + "!" +
 			"\nHP +" + Party.S.GetHPUpgrade(ndx) +
 			", MP +" + Party.S.GetMPUpgrade(ndx) + "," +
@@ -290,7 +288,7 @@ public class BattleEnd : MonoBehaviour {
 
 		// If there are any more members that have levelled up...
 		if (membersToLevelUp.Count <= 0) {
-			LevelUpMessage.S.Initialize(ndx);
+			levelUpMessage.Initialize(ndx);
 
 			ReturnToWorldDelay();
 		}
@@ -301,11 +299,11 @@ public class BattleEnd : MonoBehaviour {
 		_.mode = eBattleMode.returnToWorld;
 	}
 	public void ReturnToWorld() {
-		LevelUpMessage.S.levelUpMessageGO.SetActive(false);
+		levelUpMessage.levelUpMessageGO.SetActive(false);
 
 		_.mode = eBattleMode.actionButtons;
 
-		BattleDialogue.S.dialogueNdx = 99;
+		_.dialogue.dialogueNdx = 99;
 
 		CancelInvoke(); // Cancels coroutines so they don't continue past this point
 

@@ -7,10 +7,6 @@ public class BattleQTE : MonoBehaviour {
 	// QTE Progress bar
 	public ProgressBar healthBar;
 
-	[Header("Set Dynamically")]
-	private static BattleQTE _S;
-	public static BattleQTE S { get { return _S; } set { _S = value; } }
-
 	// QTE Mode/Type
 	public int qteType = 2; // 0: Mash, 1: Hold, 2: Sequence, 3: Stop, 4: Block
 
@@ -54,10 +50,6 @@ public class BattleQTE : MonoBehaviour {
 	[Header("Set Dynamically")]
 	private Battle _;
 
-	void Awake() {
-		S = this;
-	}
-
 	void Start() {
 		_ = Battle.S;
 	}
@@ -88,20 +80,20 @@ public class BattleQTE : MonoBehaviour {
         // Provide instructions to player
         switch (qteType) {
             case 0:
-				BattleDialogue.S.displayMessageTextTop.text = "Get ready to MASH!";
-				BattleDialogue.S.DisplayText("MASH the action button 'til the progress bar is completely full!");
+				_.dialogue.displayMessageTextTop.text = "Get ready to MASH!";
+				_.dialogue.DisplayText("MASH the action button 'til the progress bar is completely full!");
 				break;
             case 1:
-				BattleDialogue.S.displayMessageTextTop.text = "Get ready to HOLD!";
-				BattleDialogue.S.DisplayText("HOLD the action button DOWN 'til the progress bar is nearly full... then LET GO!");
+				_.dialogue.displayMessageTextTop.text = "Get ready to HOLD!";
+				_.dialogue.DisplayText("HOLD the action button DOWN 'til the progress bar is nearly full... then LET GO!");
                 break;
             case 2:
-				BattleDialogue.S.displayMessageTextTop.text = "Get ready to SEQUENCE!";
-				BattleDialogue.S.DisplayText("Before time's up, INPUT the following sequence of directions!");
+				_.dialogue.displayMessageTextTop.text = "Get ready to SEQUENCE!";
+				_.dialogue.DisplayText("Before time's up, INPUT the following sequence of directions!");
 				break;
 			case 3:
-				BattleDialogue.S.displayMessageTextTop.text = "Get ready to STOP!";
-				BattleDialogue.S.DisplayText("WAIT until the progress bar is nearly full, then press the action button!");
+				_.dialogue.displayMessageTextTop.text = "Get ready to STOP!";
+				_.dialogue.DisplayText("WAIT until the progress bar is nearly full, then press the action button!");
 				break;
 		}
     }
@@ -126,7 +118,7 @@ public class BattleQTE : MonoBehaviour {
 				AudioManager.S.PlaySFX(eSoundName.confirm);
 
 				// Display Text
-				BattleDialogue.S.displayMessageTextTop.text = "<color=#FF0000FF>MASH</color>\nTHAT BUTTON!";
+				_.dialogue.displayMessageTextTop.text = "<color=#FF0000FF>MASH</color>\nTHAT BUTTON!";
 				break;
 			case 1: /////////// HOLD ///////////
 				// Reset 
@@ -142,11 +134,11 @@ public class BattleQTE : MonoBehaviour {
 				AudioManager.S.PlaySFX(eSoundName.confirm);
 
 				// Display Text
-				BattleDialogue.S.displayMessageTextTop.text = "<color=#FF0000>HOLD</color>\nTHAT BUTTON!";
+				_.dialogue.displayMessageTextTop.text = "<color=#FF0000>HOLD</color>\nTHAT BUTTON!";
 				break;
 			case 2: /////////// SEQUENCE ///////////
 				// Reset Strings
-				BattleDialogue.S.displayMessageTextTop.text = "";
+				_.dialogue.displayMessageTextTop.text = "";
 				inputString = "";
 				goalString = "";
 
@@ -175,21 +167,21 @@ public class BattleQTE : MonoBehaviour {
 				AudioManager.S.PlaySFX(eSoundName.confirm);
 
 				// Display Text
-				BattleDialogue.S.displayMessageTextTop.text = "<color=#FF0000>STOP</color>\nTHAT BUTTON!";
+				_.dialogue.displayMessageTextTop.text = "<color=#FF0000>STOP</color>\nTHAT BUTTON!";
 				break;
 			case 4: /////////// BLOCK ///////////
 				// Activate Text
-				BattleDialogue.S.displayMessageTextTop.gameObject.transform.parent.gameObject.SetActive(true);
+				_.dialogue.displayMessageTextTop.gameObject.transform.parent.gameObject.SetActive(true);
 
 				// Reset Strings
-				BattleDialogue.S.displayMessageTextTop.text = "";
+				_.dialogue.displayMessageTextTop.text = "";
 				inputString = "";
 				goalString = "";
 
 				// Set Goal (only ONE input)
 				int directionToType = Random.Range(0, 4);
 				goalString += directionToType.ToString();
-				BattleDialogue.S.displayMessageTextTop.text = "Press " + ConvertDirections(goalString[0]) + " to\nBLOCK!";
+				_.dialogue.displayMessageTextTop.text = "Press " + ConvertDirections(goalString[0]) + " to\nBLOCK!";
 
 				// Set Timer
 				tooLateTime = 1.5f;
@@ -267,7 +259,7 @@ public class BattleQTE : MonoBehaviour {
         }
 	}
 
-	// Separate loop for blocking: Accept input to block regardless of BattleDialogue.S.dialogueFinished
+	// Separate loop for blocking: Accept input to block regardless of _.dialogue.dialogueFinished
 	public void BlockLoop() {
 		DirectionalButtonsDown();
 	}
@@ -413,7 +405,7 @@ public class BattleQTE : MonoBehaviour {
 		if (goodOrBad) {
 			if (qteType != 4) {
 				// POSITIVE Result Message
-				BattleDialogue.S.displayMessageTextTop.text = "<color=#00FF00>NICE!</color>";
+				_.dialogue.displayMessageTextTop.text = "<color=#00FF00>NICE!</color>";
 
 				// Animation: QTE SUCCESS
 				_.playerAnimator[_.animNdx].CrossFade("QTE_Success", 0);
@@ -474,7 +466,7 @@ public class BattleQTE : MonoBehaviour {
         } else {
 			if (qteType != 4) {
 				// NEGATIVE Result Message
-				BattleDialogue.S.displayMessageTextTop.text = "<color=#FF0000FF>FAIL!</color>";
+				_.dialogue.displayMessageTextTop.text = "<color=#FF0000FF>FAIL!</color>";
 
 				// Animation: QTE FAIL
 				_.playerAnimator[_.animNdx].CrossFade("QTE_Fail", 0);
@@ -486,10 +478,10 @@ public class BattleQTE : MonoBehaviour {
 
 		if(qteType != 4) {
 			// Attack Enemy with bonus damage
-			BattlePlayerActions.S.AttackEnemy(_.targetNdx);
+			_.playerActions.AttackEnemy(_.targetNdx);
         } else {
 			// Deactivate Battle Text
-			BattleDialogue.S.displayMessageTextTop.gameObject.transform.parent.gameObject.SetActive(false);
+			_.dialogue.displayMessageTextTop.gameObject.transform.parent.gameObject.SetActive(false);
 
 			_.NextTurn();
 		}
@@ -518,7 +510,7 @@ public class BattleQTE : MonoBehaviour {
 		
 		// stagger display of UI text
 		for (int i = 0; i < goalString.Length; i++) {
-			BattleDialogue.S.displayMessageTextTop.text += ConvertDirections(goalString[i]);
+			_.dialogue.displayMessageTextTop.text += ConvertDirections(goalString[i]);
 
 			ActivateInputSprites(i, goalString[i]);
 
@@ -582,7 +574,7 @@ public class BattleQTE : MonoBehaviour {
 					if (inputString[0] != goalString[0]) { // 1st char of string
 						Result(false);
 					} else {
-						BattleDialogue.S.displayMessageTextTop.text = "<color=#00FF00>" + ConvertDirections(goalString[0]) + "</color>" + ConvertDirections(goalString[1]);
+						_.dialogue.displayMessageTextTop.text = "<color=#00FF00>" + ConvertDirections(goalString[0]) + "</color>" + ConvertDirections(goalString[1]);
 
 						// Audio: Confirm
 						AudioManager.S.PlaySFX(eSoundName.confirm);
@@ -594,7 +586,7 @@ public class BattleQTE : MonoBehaviour {
 							if (inputString[0] != goalString[0]) { // 1st char of string
 								Result(false);
 							} else {
-								BattleDialogue.S.displayMessageTextTop.text = "<color=#00FF00>" + ConvertDirections(goalString[0]) + "</color>" + ConvertDirections(goalString[1]) + ConvertDirections(goalString[2]);
+								_.dialogue.displayMessageTextTop.text = "<color=#00FF00>" + ConvertDirections(goalString[0]) + "</color>" + ConvertDirections(goalString[1]) + ConvertDirections(goalString[2]);
 
 								// Audio: Confirm
 								AudioManager.S.PlaySFX(eSoundName.confirm);
@@ -604,7 +596,7 @@ public class BattleQTE : MonoBehaviour {
 							if (inputString[1] != goalString[1]) { // 2nd char of string
 								Result(false);
 							} else {
-								BattleDialogue.S.displayMessageTextTop.text = "<color=#00FF00>" + ConvertDirections(goalString[0]) + ConvertDirections(goalString[1]) + "</color>" + ConvertDirections(goalString[2]);
+								_.dialogue.displayMessageTextTop.text = "<color=#00FF00>" + ConvertDirections(goalString[0]) + ConvertDirections(goalString[1]) + "</color>" + ConvertDirections(goalString[2]);
 
 								// Audio: Confirm
 								AudioManager.S.PlaySFX(eSoundName.confirm);

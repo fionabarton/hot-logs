@@ -4,14 +4,7 @@ using UnityEngine;
 
 public class BattleEnemyAI : MonoBehaviour {
 	[Header("Set Dynamically")]
-	private static BattleEnemyAI _S;
-	public static BattleEnemyAI S { get { return _S; } set { _S = value; } }
-
 	private Battle _;
-
-	void Awake() {
-		S = this;
-	}
 
 	void Start() {
 		_ = Battle.S;
@@ -19,7 +12,7 @@ public class BattleEnemyAI : MonoBehaviour {
 
 	// More Spells, Use Items, Call for Backup
 	public void EnemyAI(int enemyId) {
-		BattlePlayerActions.S.ButtonsDisableAll();
+		_.playerActions.ButtonsDisableAll();
 
         switch (enemyId) {
             case 0:
@@ -51,7 +44,7 @@ public class BattleEnemyAI : MonoBehaviour {
                 break;
         }
 
-        // BattleEnemyActions.S.Defend();
+        // _.enemyActions.Defend();
 
         //// Poison
         //int playerToPoison = BattleStats.S.GetRandomPlayerNdx();
@@ -60,12 +53,12 @@ public class BattleEnemyAI : MonoBehaviour {
         //    ChanceToCallMove(0, 1);
         //} else {
         //    //if (Random.value < 0.5f) {
-        //    //    BattleEnemyActions.S.Poison(playerToPoison);
+        //    //    _.enemyActions.Poison(playerToPoison);
         //    //} else {
         //    //    // Attack OR Defend
         //    //    ChanceToCallMove(0, 1);
         //    //}
-        //    BattleEnemyActions.S.Poison(playerToPoison);
+        //    _.enemyActions.Poison(playerToPoison);
         //}
         //return;
 
@@ -78,12 +71,12 @@ public class BattleEnemyAI : MonoBehaviour {
         //    ChanceToCallMove(0, 1);
         //} else {
         //    //if (Random.value < 0.5f) {
-        //    //    BattleEnemyActions.S.Paralyze(playerToParalyze);
+        //    //    _.enemyActions.Paralyze(playerToParalyze);
         //    //} else {
         //    //    // Attack OR Defend
         //    //    ChanceToCallMove(0, 1);
         //    //}
-        //    BattleEnemyActions.S.Paralyze(playerToParalyze);
+        //    _.enemyActions.Paralyze(playerToParalyze);
         //}
         //return;
 
@@ -94,12 +87,12 @@ public class BattleEnemyAI : MonoBehaviour {
         //    ChanceToCallMove(0, 1);
         //} else {
         //    //if (Random.value < 0.5f) {
-        //    //    BattleEnemyActions.S.Sleep(playerToSleep);
+        //    //    _.enemyActions.Sleep(playerToSleep);
         //    //} else {
         //    //    // Attack OR Defend
         //    //    ChanceToCallMove(0, 1);
         //    //}
-        //    BattleEnemyActions.S.Sleep(playerToSleep);
+        //    _.enemyActions.Sleep(playerToSleep);
         //}
         //return;
 
@@ -147,7 +140,7 @@ public class BattleEnemyAI : MonoBehaviour {
                 break;
             case eEnemyAI.FocusOnHeal:
                 // If any enemy's HP is less than 25%...
-                if (BattleStats.S.EnemiesNeedsHeal()) {
+                if (_.stats.EnemiesNeedsHeal()) {
                     // If MP is less than 10%...
                     if (Utilities.S.GetPercentage(_.enemyStats[_.EnemyNdx()].MP, _.enemyStats[_.EnemyNdx()].maxMP) < 0.1f) {
                         // Defend OR Run 
@@ -188,7 +181,7 @@ public class BattleEnemyAI : MonoBehaviour {
                         ChanceToCallMove(5, 8);
                     }
                 } else {
-                    BattleEnemyActions.S.Charge();
+                    _.enemyActions.Charge();
                 }
                 break;
             case eEnemyAI.DontUseMP:
@@ -231,20 +224,20 @@ public class BattleEnemyAI : MonoBehaviour {
 
 	public void CallEnemyMove(int moveNdx) {
 		switch (moveNdx) {
-			case 0: BattleEnemyActions.S.Attack(); break;
-			case 1: BattleEnemyActions.S.Defend(); break;
-			case 2: BattleEnemyActions.S.Run(); break;
-			case 3: BattleEnemyActions.S.Stunned(); break;
-			case 4: BattleEnemyActions.S.AttemptHealSpell(); break;
-			case 5: BattleEnemyActions.S.AttemptAttackAll(); break;
-			case 6: BattleEnemyActions.S.CallForBackup(); break;
-			case 7: BattleEnemyActions.S.CallForBackupNextTurn(); break;
-			case 8: BattleEnemyActions.S.AttemptAttackSingle(); break;
-            case 9: BattleEnemyActions.S.Charge(); break;
-            //case 10: BattleEnemyActions.S.Poison(); break;
-            //case 11: BattleEnemyActions.S.Paralyze(); break;
-            //case 12: BattleEnemyActions.S.Sleep(); break;
-            default: BattleEnemyActions.S.Attack(); break;
+			case 0: _.enemyActions.Attack(); break;
+			case 1: _.enemyActions.Defend(); break;
+			case 2: _.enemyActions.Run(); break;
+			case 3: _.enemyActions.Stunned(); break;
+			case 4: _.enemyActions.AttemptHealSpell(); break;
+			case 5: _.enemyActions.AttemptAttackAll(); break;
+			case 6: _.enemyActions.CallForBackup(); break;
+			case 7: _.enemyActions.CallForBackupNextTurn(); break;
+			case 8: _.enemyActions.AttemptAttackSingle(); break;
+            case 9: _.enemyActions.Charge(); break;
+            //case 10: _.enemyActions.Poison(); break;
+            //case 11: _.enemyActions.Paralyze(); break;
+            //case 12: _.enemyActions.Sleep(); break;
+            default: _.enemyActions.Attack(); break;
 		}
 	}
 }

@@ -4,15 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class BattleEnemyActions : MonoBehaviour {
-	[Header ("Set Dynamically")]
-	private static BattleEnemyActions _S;
-	public static BattleEnemyActions S { get { return _S; } set { _S = value; } }
-
 	private Battle _;
-
-	void Awake() {
-		S = this;
-	}
 
 	void Start () {
 		_ = Battle.S;
@@ -22,10 +14,10 @@ public class BattleEnemyActions : MonoBehaviour {
 	// Attack ONE Party Member
 	public void Attack() {
 		// Randomly select party member to attack
-		int playerToAttack = BattleStats.S.GetRandomPlayerNdx();
+		int playerToAttack = _.stats.GetRandomPlayerNdx();
 
 		// Calculate Attack Damage
-		BattleStats.S.GetAttackDamage(_.enemyStats[_.EnemyNdx()].LVL,
+		_.stats.GetAttackDamage(_.enemyStats[_.EnemyNdx()].LVL,
 									   _.enemyStats[_.EnemyNdx()].STR, _.enemyStats[_.EnemyNdx()].AGI,
 									   Party.S.stats[playerToAttack].DEF, Party.S.stats[playerToAttack].AGI,
 									   _.enemyStats[_.EnemyNdx()].name, Party.S.stats[playerToAttack].name,
@@ -40,25 +32,25 @@ public class BattleEnemyActions : MonoBehaviour {
 
 		// Player Death or Next Turn
 		if (Party.S.stats[playerToAttack].HP < 1) {
-			BattleEnd.S.PlayerDeath(playerToAttack);
+			_.end.PlayerDeath(playerToAttack);
 		} else {
 			// If not sleeping or paralyzed...attempt to block!
             if (!StatusEffects.S.CheckIfParalyzed(true, playerToAttack) &&
 				!StatusEffects.S.CheckIfSleeping(true, playerToAttack)) {
 				// Index of the party member that is blocking
-				BattleQTE.S.blockerNdx = playerToAttack;
+				_.qte.blockerNdx = playerToAttack;
 
 				// Set qteType to Block
-				BattleQTE.S.qteType = 4;
+				_.qte.qteType = 4;
 
 				// Enable progress bar/timer 
-				BattleQTE.S.Initialize();
+				_.qte.Initialize();
 
 				// Set battleMode to QTE
 				_.mode = eBattleMode.qte;
 			} else {
 				// Deactivate Battle Text
-				BattleDialogue.S.displayMessageTextTop.gameObject.transform.parent.gameObject.SetActive(false);
+				_.dialogue.displayMessageTextTop.gameObject.transform.parent.gameObject.SetActive(false);
 
 				_.NextTurn();
 			}
@@ -82,7 +74,7 @@ public class BattleEnemyActions : MonoBehaviour {
 	public void Defend(){
 		StatusEffects.S.AddDefender(false, _.EnemyNdx());
 
-		BattleDialogue.S.DisplayText (_.enemyStats [_.EnemyNdx()].name + " defends themself until their next turn!");
+		_.dialogue.DisplayText (_.enemyStats [_.EnemyNdx()].name + " defends themself until their next turn!");
 
 		_.NextTurn();
 	}
@@ -90,7 +82,7 @@ public class BattleEnemyActions : MonoBehaviour {
 	// Index = 2
 	// Run
 	public void Run(){
-		BattleEnd.S.EnemyRun(_.EnemyNdx());
+		_.end.EnemyRun(_.EnemyNdx());
 	}
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Index = 3
@@ -99,7 +91,7 @@ public class BattleEnemyActions : MonoBehaviour {
 		// Audio: Deny
 		AudioManager.S.PlaySFX(eSoundName.deny);
 
-		BattleDialogue.S.DisplayText (_.enemyStats [_.EnemyNdx()].name + " is stunned and doesn't move!\nWhat a rube!");
+		_.dialogue.DisplayText (_.enemyStats [_.EnemyNdx()].name + " is stunned and doesn't move!\nWhat a rube!");
 		_.NextTurn();
 	}
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -110,7 +102,7 @@ public class BattleEnemyActions : MonoBehaviour {
 		if (_.enemyStats [_.EnemyNdx()].MP >= 3) {
 
 			// Get index of enemy with the lowest HP
-			int enemyNdx = BattleStats.S.GetEnemyWithLowestHP();
+			int enemyNdx = _.stats.GetEnemyWithLowestHP();
 
 			// Not at Full HP
 			if (enemyNdx != -1) {
@@ -118,7 +110,7 @@ public class BattleEnemyActions : MonoBehaviour {
 				ColorScreen.S.targetNdx = enemyNdx;
 			} else {
 				// Already at Full HP
-				BattleDialogue.S.DisplayText(_.enemyStats[_.EnemyNdx()].name + " thought about casting a Heal Spell...\n...But then remembered everyone's at full health...\n...and gave up!");
+				_.dialogue.DisplayText(_.enemyStats[_.EnemyNdx()].name + " thought about casting a Heal Spell...\n...But then remembered everyone's at full health...\n...and gave up!");
 
 				// Audio: Deny
 				AudioManager.S.PlaySFX(eSoundName.deny);
@@ -127,7 +119,7 @@ public class BattleEnemyActions : MonoBehaviour {
 			}
 		} else {
 			// Not enough MP
-			BattleDialogue.S.DisplayText(_.enemyStats[_.EnemyNdx()].name + " attempts to cast a Heal Spell...\n...But doesn't have enough MP to do so!");
+			_.dialogue.DisplayText(_.enemyStats[_.EnemyNdx()].name + " attempts to cast a Heal Spell...\n...But doesn't have enough MP to do so!");
 
 			// Audio: Deny
 			AudioManager.S.PlaySFX(eSoundName.deny);
@@ -153,18 +145,18 @@ public class BattleEnemyActions : MonoBehaviour {
 		// Display Text
 		if (amountToHeal >= maxAmountToHeal) {
 			if(ndx == _.EnemyNdx()) {
-				BattleDialogue.S.DisplayText(_.enemyStats[ndx].name + " casts a Heal Spell!\nHealed itself back to Max HP!");
+				_.dialogue.DisplayText(_.enemyStats[ndx].name + " casts a Heal Spell!\nHealed itself back to Max HP!");
 			} else {
-				BattleDialogue.S.DisplayText(_.enemyStats[_.EnemyNdx()].name + " casts a Heal Spell!\nHealed "+ _.enemyStats[ndx].name + " back to Max HP!");
+				_.dialogue.DisplayText(_.enemyStats[_.EnemyNdx()].name + " casts a Heal Spell!\nHealed "+ _.enemyStats[ndx].name + " back to Max HP!");
 			}
 
 			// Prevents Floating Score being higher than the acutal amount healed
 			amountToHeal = maxAmountToHeal;
 		} else {
 			if (ndx == _.EnemyNdx()) {
-				BattleDialogue.S.DisplayText(_.enemyStats[ndx].name + " casts a Heal Spell!\nHealed itself for " + amountToHeal + " HP!");
+				_.dialogue.DisplayText(_.enemyStats[ndx].name + " casts a Heal Spell!\nHealed itself for " + amountToHeal + " HP!");
 			} else {
-				BattleDialogue.S.DisplayText(_.enemyStats[_.EnemyNdx()].name + " casts a Heal Spell!\nHealed " + _.enemyStats[ndx].name + " for " + amountToHeal + " HP!");
+				_.dialogue.DisplayText(_.enemyStats[_.EnemyNdx()].name + " casts a Heal Spell!\nHealed " + _.enemyStats[ndx].name + " for " + amountToHeal + " HP!");
 			}
 		}
 
@@ -189,7 +181,7 @@ public class BattleEnemyActions : MonoBehaviour {
 			ColorScreen.S.PlayClip("Flicker", 3);
 		} else {
 			// Not enough MP
-			BattleDialogue.S.DisplayText(_.enemyStats[_.EnemyNdx()].name + " attempts to cast Fireball...\n...But doesn't have enough MP to do so!");
+			_.dialogue.DisplayText(_.enemyStats[_.EnemyNdx()].name + " attempts to cast Fireball...\n...But doesn't have enough MP to do so!");
 
 			// Audio: Deny
 			AudioManager.S.PlaySFX(eSoundName.deny);
@@ -209,9 +201,9 @@ public class BattleEnemyActions : MonoBehaviour {
 		// ...but 10% chance if Defender WIS is more than Attacker's 
 		if (Random.value <= 0.05f || (_.enemyStats[_.EnemyNdx()].WIS > Party.S.stats[0].WIS && Random.value < 0.10f)) {
 			if (Random.value <= 0.5f) {
-				BattleDialogue.S.DisplayText(_.enemyStats[_.EnemyNdx()].name + " attempted to cast Fireball... but missed the party completely!");
+				_.dialogue.DisplayText(_.enemyStats[_.EnemyNdx()].name + " attempted to cast Fireball... but missed the party completely!");
 			} else {
-				BattleDialogue.S.DisplayText(_.enemyStats[_.EnemyNdx()].name + " cast Fireball, but the party deftly dodged out of the way!");
+				_.dialogue.DisplayText(_.enemyStats[_.EnemyNdx()].name + " cast Fireball, but the party deftly dodged out of the way!");
 			}
 
 			// Animation: Enemy ATTACK in center
@@ -223,7 +215,7 @@ public class BattleEnemyActions : MonoBehaviour {
 			_.NextTurn();
 		} else {
 			// Randomly select party member to attack
-			int playerToAttack = BattleStats.S.GetRandomPlayerNdx();
+			int playerToAttack = _.stats.GetRandomPlayerNdx();
 
 			// Subtract 8-12 HP
 			_.attackDamage = Random.Range(8, 12);
@@ -236,9 +228,9 @@ public class BattleEnemyActions : MonoBehaviour {
 
 			// Player Death or Next Turn
 			if (Party.S.stats[playerToAttack].HP < 1) {
-				BattleEnd.S.PlayerDeath(playerToAttack);
+				_.end.PlayerDeath(playerToAttack);
 			} else {
-				BattleDialogue.S.DisplayText("Used Fireball Spell!\nHit " + Party.S.stats[playerToAttack].name + " for " + _.attackDamage + " HP!");
+				_.dialogue.DisplayText("Used Fireball Spell!\nHit " + Party.S.stats[playerToAttack].name + " for " + _.attackDamage + " HP!");
 
 				// Audio: Fireblast
 				AudioManager.S.PlaySFX(eSoundName.fireball);
@@ -256,7 +248,7 @@ public class BattleEnemyActions : MonoBehaviour {
 			ColorScreen.S.PlayClip("Flicker", 2);
 		} else {
 			// Not enough MP
-			BattleDialogue.S.DisplayText(_.enemyStats[_.EnemyNdx()].name + " attempts to cast Fireblast...\n...But doesn't have enough MP to do so!");
+			_.dialogue.DisplayText(_.enemyStats[_.EnemyNdx()].name + " attempts to cast Fireblast...\n...But doesn't have enough MP to do so!");
 
 			// Audio: Deny
 			AudioManager.S.PlaySFX(eSoundName.deny);
@@ -279,9 +271,9 @@ public class BattleEnemyActions : MonoBehaviour {
 		// ...but 10% chance if Defender WIS is more than Attacker's 
 		if (Random.value <= 0.05f || (_.enemyStats[_.EnemyNdx()].WIS > Party.S.stats[0].WIS && Random.value < 0.10f)) {
 			if (Random.value <= 0.5f) {
-				BattleDialogue.S.DisplayText (_.enemyStats [_.EnemyNdx()].name + " attempted to cast Fireblast... but missed the party completely!");
+				_.dialogue.DisplayText (_.enemyStats [_.EnemyNdx()].name + " attempted to cast Fireblast... but missed the party completely!");
 			} else {
-				BattleDialogue.S.DisplayText (_.enemyStats [_.EnemyNdx()].name + " cast Fireblast, but the party deftly dodged out of the way!");
+				_.dialogue.DisplayText (_.enemyStats [_.EnemyNdx()].name + " cast Fireblast, but the party deftly dodged out of the way!");
 			}
 
 			// Audio: Deny
@@ -351,7 +343,7 @@ public class BattleEnemyActions : MonoBehaviour {
 
 			// If no one is killed...
 			if (deadPlayers.Count <= 0) {
-				BattleDialogue.S.DisplayText ("Used Fireblast Spell!\nHit ENTIRE party for an average of " + Utilities.S.CalculateAverage (totalAttackDamage, (Party.S.partyNdx + 1)) + " HP!");
+				_.dialogue.DisplayText ("Used Fireblast Spell!\nHit ENTIRE party for an average of " + Utilities.S.CalculateAverage (totalAttackDamage, (Party.S.partyNdx + 1)) + " HP!");
 
 				// Audio: Fireblast
 				AudioManager.S.PlaySFX(eSoundName.fireblast);
@@ -371,7 +363,7 @@ public class BattleEnemyActions : MonoBehaviour {
 		// Activate Enemy "Help" Word Bubble
 		_.enemyHelpBubbles[_.EnemyNdx()].SetActive(true);
 
-		BattleDialogue.S.DisplayText(_.enemyStats[_.EnemyNdx()].name + " is getting ready to call for help!");
+		_.dialogue.DisplayText(_.enemyStats[_.EnemyNdx()].name + " is getting ready to call for help!");
 		_.NextTurn();
 	}
 
@@ -392,7 +384,7 @@ public class BattleEnemyActions : MonoBehaviour {
 		} else if (_.enemyStats[4].isDead) {
 			CallForBackupHelper(4);
 		} else {
-			BattleDialogue.S.DisplayText(_.enemyStats[_.EnemyNdx()].name + " called for backup...\n...but no one came!");
+			_.dialogue.DisplayText(_.enemyStats[_.EnemyNdx()].name + " called for backup...\n...but no one came!");
 
 			// Audio: Deny
 			AudioManager.S.PlaySFX(eSoundName.deny);
@@ -417,7 +409,7 @@ public class BattleEnemyActions : MonoBehaviour {
 		_.goldToAdd += _.enemyStats[enemyNdx].Gold;
 
 		// Activate/Deactivate Enemy Buttons, Stats, Sprites
-		BattlePlayerActions.S.EnemyButtonSetActive(enemyNdx, true);
+		_.playerActions.EnemyButtonSetActive(enemyNdx, true);
 		_.enemySprite[enemyNdx].enabled = true;
 
 		// Enable/Update Health Bars
@@ -434,18 +426,18 @@ public class BattleEnemyActions : MonoBehaviour {
 		AudioManager.S.PlaySFX(eSoundName.run);
 
 		// Display Text
-		BattleDialogue.S.DisplayText(_.enemyStats[_.EnemyNdx()].name + " called for backup...\n...and someone came!");
+		_.dialogue.DisplayText(_.enemyStats[_.EnemyNdx()].name + " called for backup...\n...and someone came!");
 	}
 
 	public void PlayersDeath(List<int> deadPlayers, int totalAttackDamage) {
 		switch (deadPlayers.Count) {
-			case 1: BattleDialogue.S.DisplayText("Used Fireblast Spell!\nHit ENTIRE party for an average of " + Utilities.S.CalculateAverage(totalAttackDamage, (Party.S.partyNdx + 1)) + " HP!" + "\nOne party member has been felled!"); break;
-			case 2: BattleDialogue.S.DisplayText("Used Fireblast Spell!\nHit ENTIRE party for an average of " + Utilities.S.CalculateAverage(totalAttackDamage, (Party.S.partyNdx + 1)) + " HP!" + "\nTwo party members have been felled!"); break;
-			case 3: BattleDialogue.S.DisplayText("Used Fireblast Spell!\nHit ENTIRE party for an average of " + Utilities.S.CalculateAverage(totalAttackDamage, (Party.S.partyNdx + 1)) + " HP!" + "\nThree party members have been felled!"); break;
+			case 1: _.dialogue.DisplayText("Used Fireblast Spell!\nHit ENTIRE party for an average of " + Utilities.S.CalculateAverage(totalAttackDamage, (Party.S.partyNdx + 1)) + " HP!" + "\nOne party member has been felled!"); break;
+			case 2: _.dialogue.DisplayText("Used Fireblast Spell!\nHit ENTIRE party for an average of " + Utilities.S.CalculateAverage(totalAttackDamage, (Party.S.partyNdx + 1)) + " HP!" + "\nTwo party members have been felled!"); break;
+			case 3: _.dialogue.DisplayText("Used Fireblast Spell!\nHit ENTIRE party for an average of " + Utilities.S.CalculateAverage(totalAttackDamage, (Party.S.partyNdx + 1)) + " HP!" + "\nThree party members have been felled!"); break;
 		}
 
 		for (int i = 0; i < deadPlayers.Count; i++) {
-			BattleEnd.S.PlayerDeath(deadPlayers[i], false);
+			_.end.PlayerDeath(deadPlayers[i], false);
 		}
 	}
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -455,7 +447,7 @@ public class BattleEnemyActions : MonoBehaviour {
 		// Audio: Buff
 		AudioManager.S.PlaySFX(eSoundName.buff2);
 
-		BattleDialogue.S.DisplayText(_.enemyStats[_.EnemyNdx()].name + " is getting ready to do something cool...\n...what could it be?!");
+		_.dialogue.DisplayText(_.enemyStats[_.EnemyNdx()].name + " is getting ready to do something cool...\n...what could it be?!");
 		_.NextTurn();
 	}
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////

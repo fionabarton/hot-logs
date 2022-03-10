@@ -16,14 +16,7 @@ public class BattleUI : MonoBehaviour {
 	public Text				turnOrderTxt;
 
 	[Header("Set Dynamically")]
-	private static BattleUI _S;
-	public static BattleUI S { get { return _S; } set { _S = value; } }
-
 	private Battle _;
-
-	void Awake() {
-		S = this;
-	}
 
 	void Start() {
 		_ = Battle.S;
@@ -73,28 +66,28 @@ public class BattleUI : MonoBehaviour {
 
 		// Position Cursor & Set Anim
 		if (targetCursors[0].activeInHierarchy) {
-			if (go == BattlePlayerActions.S.playerButtonGO[0]) {
+			if (go == _.playerActions.playerButtonGO[0]) {
 				targetCursors[0].transform.localPosition = new Vector2((_.playerSprite[0].transform.position.x + 1), (_.playerSprite[0].transform.position.y + y));
 				targetCursorAnims[0].CrossFade("Target_Cursor_Flash_Left", 0);
-			} else if (go == BattlePlayerActions.S.playerButtonGO[1]) {
+			} else if (go == _.playerActions.playerButtonGO[1]) {
 				targetCursors[0].transform.localPosition = new Vector2((_.playerSprite[1].transform.position.x + 1), (_.playerSprite[1].transform.position.y + y));
 				targetCursorAnims[0].CrossFade("Target_Cursor_Flash_Left", 0);
-			} else if (go == BattlePlayerActions.S.playerButtonGO[2]) {
+			} else if (go == _.playerActions.playerButtonGO[2]) {
 				targetCursors[0].transform.localPosition = new Vector2((_.playerSprite[2].transform.position.x + 1), (_.playerSprite[2].transform.position.y + y));
 				targetCursorAnims[0].CrossFade("Target_Cursor_Flash_Left", 0);
-			} else if (go == BattlePlayerActions.S.enemyButtonGO[0]) {
+			} else if (go == _.playerActions.enemyButtonGO[0]) {
 				targetCursors[0].transform.localPosition = new Vector2((_.enemySprite[0].transform.position.x + -1), (_.enemySprite[0].transform.position.y + y));
 				targetCursorAnims[0].CrossFade("Target_Cursor_Flash_Right", 0);
-			} else if (go == BattlePlayerActions.S.enemyButtonGO[1]) {
+			} else if (go == _.playerActions.enemyButtonGO[1]) {
 				targetCursors[0].transform.localPosition = new Vector2((_.enemySprite[1].transform.position.x + -1), (_.enemySprite[1].transform.position.y + y));
 				targetCursorAnims[0].CrossFade("Target_Cursor_Flash_Right", 0);
-			} else if (go == BattlePlayerActions.S.enemyButtonGO[2]) {
+			} else if (go == _.playerActions.enemyButtonGO[2]) {
 				targetCursors[0].transform.localPosition = new Vector2((_.enemySprite[2].transform.position.x + -1), (_.enemySprite[2].transform.position.y + y));
 				targetCursorAnims[0].CrossFade("Target_Cursor_Flash_Right", 0);
-			} else if (go == BattlePlayerActions.S.enemyButtonGO[3]) {
+			} else if (go == _.playerActions.enemyButtonGO[3]) {
 				targetCursors[0].transform.localPosition = new Vector2((_.enemySprite[3].transform.position.x + -1), (_.enemySprite[3].transform.position.y + y));
 				targetCursorAnims[0].CrossFade("Target_Cursor_Flash_Right", 0);
-			} else if (go == BattlePlayerActions.S.enemyButtonGO[4]) {
+			} else if (go == _.playerActions.enemyButtonGO[4]) {
 				targetCursors[0].transform.localPosition = new Vector2((_.enemySprite[4].transform.position.x + -1), (_.enemySprite[4].transform.position.y + y));
 				targetCursorAnims[0].CrossFade("Target_Cursor_Flash_Right", 0);
 			} else {

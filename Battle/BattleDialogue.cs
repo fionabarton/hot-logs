@@ -12,18 +12,10 @@ public class BattleDialogue : MonoBehaviour{
 	// Cursors
 	public GameObject	dialogueCursor;
 
-	[Header("Set Dynamically")]
-	private static BattleDialogue _S;
-	public static BattleDialogue S { get { return _S; } set { _S = value; } }
-
 	// Dialogue
 	public bool			dialogueFinished = true;
 	public int			dialogueNdx = 99;
 	public List<string> message;
-
-	void Awake() {
-		S = this;
-	}
 
 	public void Initialize() {
 		// Reset Dialogue

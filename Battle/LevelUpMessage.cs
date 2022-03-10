@@ -12,13 +12,6 @@ public class LevelUpMessage : MonoBehaviour {
 	public Text statValues;
 	public Text newSpellMessage;
 
-	[Header("Set Dynamically")]
-	private static LevelUpMessage _S;
-	public static LevelUpMessage S { get { return _S; } set { _S = value; } }
-	void Awake() {
-		S = this;
-	}
-
 	void Start() {
 		levelUpMessageGO.SetActive(false);
 	}

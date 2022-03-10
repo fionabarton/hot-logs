@@ -4,14 +4,7 @@ using UnityEngine;
 
 public class BattleStats : MonoBehaviour {
 	[Header("Set Dynamically")]
-	private static BattleStats _S;
-	public static BattleStats S { get { return _S; } set { _S = value; } }
-
 	private Battle _;
-
-	void Awake() {
-		S = this;
-	}
 
 	void Start() {
 		_ = Battle.S;
@@ -133,16 +126,16 @@ public class BattleStats : MonoBehaviour {
 				// If the bonus damage doesn't kill the defender...
 				if (defenderHP > _.qteBonusDamage) {
 					if (Random.value <= 0.5f) {
-						BattleDialogue.S.DisplayText(attackerName + "'s attack attempt nearly failed, but scraped " + defenderName + " for " + _.attackDamage + " points!");
+						_.dialogue.DisplayText(attackerName + "'s attack attempt nearly failed, but scraped " + defenderName + " for " + _.attackDamage + " points!");
 					} else {
-						BattleDialogue.S.DisplayText(attackerName + " nearly missed the mark, but knicked " + defenderName + " for " + _.attackDamage + " points!");
+						_.dialogue.DisplayText(attackerName + " nearly missed the mark, but knicked " + defenderName + " for " + _.attackDamage + " points!");
 					}
 				}
 			} else {
 				if (Random.value <= 0.5f) {
-					BattleDialogue.S.DisplayText(attackerName + " attempted to attack " + defenderName + "... but missed!");
+					_.dialogue.DisplayText(attackerName + " attempted to attack " + defenderName + "... but missed!");
 				} else {
-					BattleDialogue.S.DisplayText(attackerName + " missed the mark! " + defenderName + " dodged out of the way!");
+					_.dialogue.DisplayText(attackerName + " missed the mark! " + defenderName + " dodged out of the way!");
 				}
 			}
 		} else {
@@ -176,9 +169,9 @@ public class BattleStats : MonoBehaviour {
 			// Display Text
 			if (defenderHP > _.attackDamage) {
 				if (isCriticalHit) {
-					BattleDialogue.S.DisplayText("Critical hit!\n" + attackerName + " struck " + defenderName + " for " + _.attackDamage + " points!");
+					_.dialogue.DisplayText("Critical hit!\n" + attackerName + " struck " + defenderName + " for " + _.attackDamage + " points!");
 				} else {
-					BattleDialogue.S.DisplayText(attackerName + " struck " + defenderName + " for " + _.attackDamage + " points!");
+					_.dialogue.DisplayText(attackerName + " struck " + defenderName + " for " + _.attackDamage + " points!");
 				}
 			}
 		}

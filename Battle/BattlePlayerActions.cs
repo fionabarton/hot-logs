@@ -27,15 +27,7 @@ public class BattlePlayerActions : MonoBehaviour {
 	public List<GameObject> enemyButtonGO;
 	public List<Button> enemyButtonCS;
 
-	[Header("Set Dynamically")]
-	private static BattlePlayerActions _S;
-	public static BattlePlayerActions S { get { return _S; } set { _S = value; } }
-
 	private Battle _;
-
-	void Awake() {
-		S = this;
-	}
 
 	void Start() {
 		_ = Battle.S;
@@ -46,7 +38,7 @@ public class BattlePlayerActions : MonoBehaviour {
 		// Cache Selected Gameobject (Fight Button) 
 		Battle.S.previousSelectedGameObject = buttonsGO[0];
 
-		BattleDialogue.S.DisplayText("Attack which enemy?");
+		_.dialogue.DisplayText("Attack which enemy?");
 		ButtonsInteractable(false, false, false, false, false, true, true, true, true, true, false, false);
 
 		SetSelectedEnemyButton();
@@ -78,9 +70,9 @@ public class BattlePlayerActions : MonoBehaviour {
 
 			// Animation: Player run FIGHT in center
 			_.playerAnimator[_.animNdx].CrossFade("RunToCenter", 0);
-			BattleUI.S.turnCursor.SetActive(false);
+			_.UI.turnCursor.SetActive(false);
 
-			BattleQTE.S.StartQTE();
+			_.qte.StartQTE();
 		} else {
 			// attack enemy
 			AttackEnemy(ndx);
@@ -92,7 +84,7 @@ public class BattlePlayerActions : MonoBehaviour {
 
 	public void AttackEnemy(int ndx) {
 		// Calculate Attack Damage
-		BattleStats.S.GetAttackDamage(Party.S.stats[_.PlayerNdx()].LVL,
+		_.stats.GetAttackDamage(Party.S.stats[_.PlayerNdx()].LVL,
 								Party.S.stats[_.PlayerNdx()].STR, Party.S.stats[_.PlayerNdx()].AGI,
 								_.enemyStats[ndx].DEF, _.enemyStats[ndx].AGI,
 								Party.S.stats[_.PlayerNdx()].name, _.enemyStats[ndx].name,
@@ -112,7 +104,7 @@ public class BattlePlayerActions : MonoBehaviour {
 
 		// Enemy Death or Next Turn
 		if (_.enemyStats[ndx].HP < 1) {
-			BattleEnd.S.EnemyDeath(ndx);
+			_.end.EnemyDeath(ndx);
 		} else {
 			_.NextTurn();
 		}
@@ -124,7 +116,7 @@ public class BattlePlayerActions : MonoBehaviour {
 		Utilities.S.RemoveListeners(enemyButtonCS);
 
 		// Deactivate target cursors
-		Utilities.S.SetActiveList(BattleUI.S.targetCursors, false);
+		Utilities.S.SetActiveList(_.UI.targetCursors, false);
 
 		_.PlayerTurn(true, false);
 
@@ -143,14 +135,14 @@ public class BattlePlayerActions : MonoBehaviour {
 		// Not a "boss battle", so the party can attempt to run
 		if (_.enemyStats[0].questNdx == 0) {
 			if (Random.value < _.chanceToRun) {     // || Stats.S.LVL[0] - enemyStats[0].LVL >= 5
-				BattleUI.S.turnCursor.SetActive(false);
-				Utilities.S.SetActiveList(BattleUI.S.targetCursors, false);
+				_.UI.turnCursor.SetActive(false);
+				Utilities.S.SetActiveList(_.UI.targetCursors, false);
 
 				// Display Text
 				if (_.partyQty >= 1) {
-					BattleDialogue.S.DisplayText("The party has fled the battle!");
+					_.dialogue.DisplayText("The party has fled the battle!");
 				} else {
-					BattleDialogue.S.DisplayText(Party.S.stats[_.PlayerNdx()].name + " has fled the battle!");
+					_.dialogue.DisplayText(Party.S.stats[_.PlayerNdx()].name + " has fled the battle!");
 				}
 
 				// Animation: Party RUN
@@ -167,12 +159,12 @@ public class BattlePlayerActions : MonoBehaviour {
 				EnemyManager.S.GetEnemyMovement(eMovement.pursueRun);
 
 				// Return to Overworld
-				BattleEnd.S.ReturnToWorldDelay();
+				_.end.ReturnToWorldDelay();
 
 				// Audio: Run
 				AudioManager.S.PlaySFX(eSoundName.run);
 			} else {
-				BattleDialogue.S.DisplayText(_.enemyStats[0].name + " has blocked the path!");
+				_.dialogue.DisplayText(_.enemyStats[0].name + " has blocked the path!");
 				_.NextTurn();
 
 				// Increase chance to run
@@ -184,8 +176,8 @@ public class BattlePlayerActions : MonoBehaviour {
 		} else { // It's a "boss battle", so the party cannot run
 			_.mode = eBattleMode.triedToRunFromBoss;
 
-			Utilities.S.SetActiveList(BattleUI.S.targetCursors, false);
-			BattleDialogue.S.DisplayText(_.enemyStats[0].name + " is deadly serious...\n...there is ZERO chance of running away!");
+			Utilities.S.SetActiveList(_.UI.targetCursors, false);
+			_.dialogue.DisplayText(_.enemyStats[0].name + " is deadly serious...\n...there is ZERO chance of running away!");
 
 			// Audio: Deny
 			AudioManager.S.PlaySFX(eSoundName.deny);
@@ -199,7 +191,7 @@ public class BattlePlayerActions : MonoBehaviour {
 		// Defend until next turn
 		StatusEffects.S.AddDefender(true, _.PlayerNdx());
 
-		BattleDialogue.S.DisplayText(Party.S.stats[_.PlayerNdx()].name + " defends themself until their next turn!");
+		_.dialogue.DisplayText(Party.S.stats[_.PlayerNdx()].name + " defends themself until their next turn!");
 
 		_.NextTurn();
 	}
@@ -211,7 +203,7 @@ public class BattlePlayerActions : MonoBehaviour {
 		Battle.S.previousSelectedGameObject = buttonsGO[1];
 
 		if (Party.S.stats[_.PlayerNdx()].spellNdx > 0) {
-			Utilities.S.SetActiveList(BattleUI.S.targetCursors, false);
+			Utilities.S.SetActiveList(_.UI.targetCursors, false);
 
 			// Switch Mode
 			_.mode = eBattleMode.itemOrSpellMenu;
@@ -229,7 +221,7 @@ public class BattlePlayerActions : MonoBehaviour {
 			UpdateManager.updateDelegate += Spells.S.menu.Loop;
 		} else {
 			// Knows no Spells, go back to Player Turn
-			BattleDialogue.S.DisplayText(Party.S.stats[_.PlayerNdx()].name + " doesn't know any spells!");
+			_.dialogue.DisplayText(Party.S.stats[_.PlayerNdx()].name + " doesn't know any spells!");
 
 			// Switch Mode
 			_.mode = eBattleMode.playerTurn;
@@ -247,7 +239,7 @@ public class BattlePlayerActions : MonoBehaviour {
 
 		// If Player has an Item 
 		if (Inventory.S.GetItemList().Count > 0) {
-			Utilities.S.SetActiveList(BattleUI.S.targetCursors, false);
+			Utilities.S.SetActiveList(_.UI.targetCursors, false);
 
 			// Switch Mode
 			_.mode = eBattleMode.itemOrSpellMenu;
@@ -262,7 +254,7 @@ public class BattlePlayerActions : MonoBehaviour {
 			Items.S.menu.Activate();
 		} else {
 			// Has no Items, go back to Player Turn 
-			BattleDialogue.S.DisplayText(Party.S.stats[_.PlayerNdx()].name + " has no items!");
+			_.dialogue.DisplayText(Party.S.stats[_.PlayerNdx()].name + " has no items!");
 
 			// Switch Mode
 			_.mode = eBattleMode.playerTurn;

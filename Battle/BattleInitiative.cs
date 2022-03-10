@@ -31,20 +31,12 @@ public class BattleInitiative : MonoBehaviour {
 		3, 2, 4, 1, 5
 	};
 
-	[Header ("Set Dynamically")]
-	private static BattleInitiative _S;
-	public static BattleInitiative S { get { return _S; } set { _S = value; } }
-
 	private Battle 					_;
 
 	// Initiative
 	private int d20;
 	// Key: Character Name, Value: Turn Order
 	private Dictionary<string, int> 	turnOrder = new Dictionary<string, int> ();
-
-	void Awake() {
-		S = this;
-	}
 
 	void Start () {
 		_ = Battle.S;
@@ -64,7 +56,7 @@ public class BattleInitiative : MonoBehaviour {
 		
 		// Deactivate Party Member Stats/Sprite
 		for(int i = 0; i < _.playerDead.Count; i++) {
-			BattlePlayerActions.S.PlayerButtonAndStatsSetActive(i, false);
+			_.playerActions.PlayerButtonAndStatsSetActive(i, false);
 
 			// Reset PlayerDead bools
 			_.playerDead[i] = true;
@@ -72,7 +64,7 @@ public class BattleInitiative : MonoBehaviour {
 
 		// Activate Party Member Stats/Sprite
 		for (int i = 0; i <= _.partyQty; i++) {
-			BattlePlayerActions.S.PlayerButtonAndStatsSetActive(i, true);
+			_.playerActions.PlayerButtonAndStatsSetActive(i, true);
 
 			// Reset PlayerDead bools
 			_.playerDead[i] = false;
@@ -112,7 +104,7 @@ public class BattleInitiative : MonoBehaviour {
 		// Deactivate all enemies
 		for (int i = 0; i < _.enemySprite.Count; i++) {
 			// Deactivate Enemy Buttons, Stats, Sprites
-			BattlePlayerActions.S.EnemyButtonSetActive(i, false);
+			_.playerActions.EnemyButtonSetActive(i, false);
 			_.enemySprite[i].enabled = false;
 
 			// Reset EnemyDead bools:  For EnemyDeaths
@@ -124,7 +116,7 @@ public class BattleInitiative : MonoBehaviour {
 		// Activate enemies
 		for (int i = 0; i < _.enemyAmount; i++) {
 			// Deactivate Enemy Buttons, Stats, Sprites
-			BattlePlayerActions.S.EnemyButtonSetActive(i, true);
+			_.playerActions.EnemyButtonSetActive(i, true);
 			_.enemySprite[i].enabled = true;
 
 			Battle.S.enemyAnimator[i].CrossFade("Arrival", 0);
@@ -170,14 +162,14 @@ public class BattleInitiative : MonoBehaviour {
 
 		// Set button positions directly over their respective enemy sprite
 		for (int i = 0; i < _.enemyGameObjectHolders.Count; i++) {
-			Utilities.S.SetUIObjectPosition(_.enemyGameObjectHolders[i], BattlePlayerActions.S.enemyButtonGO[i]);
+			Utilities.S.SetUIObjectPosition(_.enemyGameObjectHolders[i], _.playerActions.enemyButtonGO[i]);
 		}
 
 		// Set Turn Order
 		_.randomFactor = Random.Range (0, 100);
 		// No Surprise  
 		if (_.randomFactor >= 50) {
-			BattleDialogue.S.DisplayText ("Beware! A " + _.enemyStats[0].name + " has appeared!");
+			_.dialogue.DisplayText ("Beware! A " + _.enemyStats[0].name + " has appeared!");
 
 			// Calculate Initiative
 			CalculateInitiative ();
@@ -186,14 +178,14 @@ public class BattleInitiative : MonoBehaviour {
 		} else if (_.randomFactor < 50) {
 			// Party goes first!
 			if (_.randomFactor < 25) {
-				BattleDialogue.S.DisplayText(Party.S.stats[0].name + " surprises the Enemy!");
+				_.dialogue.DisplayText(Party.S.stats[0].name + " surprises the Enemy!");
 
 				// Calculate Initiative
 				CalculateInitiative ("party");
 
 			// Enemies go first!
 			} else {
-				BattleDialogue.S.DisplayText(_.enemyStats[0].name + " surprises the Player!");
+				_.dialogue.DisplayText(_.enemyStats[0].name + " surprises the Player!");
 
                 // Calculate Initiative
                 CalculateInitiative ("enemies");
