@@ -153,7 +153,7 @@ public class StatusEffects : MonoBehaviour {
 			// Activate poisoned icon
 			enemyPoisonedIcons[ndx].SetActive(true);
 
-			BattleDialogue.S.DisplayText(Party.S.stats[_.PlayerNdx()].name + " has poisoned " + _.enemyStats[ndx].name + " indefinitely" + "...\n...not nice!");
+			_.dialogue.DisplayText(Party.S.stats[_.PlayerNdx()].name + " has poisoned " + _.enemyStats[ndx].name + " indefinitely" + "...\n...not nice!");
 		} else {
 			playerIsPoisoned[ndx] = true;
 
@@ -163,7 +163,7 @@ public class StatusEffects : MonoBehaviour {
 			// Activate poisoned icon
 			playerPoisonedIcons[ndx].SetActive(true);
 
-			BattleDialogue.S.DisplayText(_.enemyStats[_.EnemyNdx()].name + " has poisoned " + Party.S.stats[ndx].name + " indefinitely" + " ...\n...not nice!");
+			_.dialogue.DisplayText(_.enemyStats[_.EnemyNdx()].name + " has poisoned " + Party.S.stats[ndx].name + " indefinitely" + " ...\n...not nice!");
 		}
 
 		// Audio: Buff 2
@@ -180,7 +180,7 @@ public class StatusEffects : MonoBehaviour {
 			playerPoisonedIcons[ndx].SetActive(false);
 
 			// Display text
-			BattleDialogue.S.DisplayText(Party.S.stats[ndx].name + " is no longer poisoned!");
+			_.dialogue.DisplayText(Party.S.stats[ndx].name + " is no longer poisoned!");
 		} else {
 			enemyIsPoisoned[ndx] = false;
 
@@ -213,17 +213,17 @@ public class StatusEffects : MonoBehaviour {
 			_.attackDamage = (int)Random.Range(lowEnd, highEnd);
 
 			// Play attack animations, SFX, and spawn objects
-			BattleEnemyActions.S.PlaySingleAttackAnimsAndSFX(ndx, false);
+			_.enemyActions.PlaySingleAttackAnimsAndSFX(ndx, false);
 
 			// Decrement HP
 			GameManager.S.SubtractPlayerHP(ndx, _.attackDamage);
 
 			// Display text
-			BattleDialogue.S.DisplayText(poisoned + " suffers the consequences of being poisoned...\n...damaged for " + _.attackDamage + " HP!");
+			_.dialogue.DisplayText(poisoned + " suffers the consequences of being poisoned...\n...damaged for " + _.attackDamage + " HP!");
 
 			// Check if dead
 			if (Party.S.stats[ndx].HP < 1) {
-				BattleEnd.S.PlayerDeath(ndx);
+				_.end.PlayerDeath(ndx);
 				return;
 			}
 		} else {
@@ -238,11 +238,11 @@ public class StatusEffects : MonoBehaviour {
 			GameManager.S.SubtractEnemyHP(ndx, _.attackDamage);
 
 			// Display text
-			BattleDialogue.S.DisplayText(poisoned + " suffers the consequences of being poisoned...\n...damaged for " + _.attackDamage + " HP!");
+			_.dialogue.DisplayText(poisoned + " suffers the consequences of being poisoned...\n...damaged for " + _.attackDamage + " HP!");
 
 			// Check if dead
 			if (_.enemyStats[ndx].HP < 1) {
-				BattleEnd.S.EnemyDeath(ndx);
+				_.end.EnemyDeath(ndx);
 				return;
 			}
 		}
@@ -266,7 +266,7 @@ public class StatusEffects : MonoBehaviour {
 			// If defending...stop defending
 			RemoveDefender(false, ndx);
 
-			BattleDialogue.S.DisplayText(Party.S.stats[_.PlayerNdx()].name + " has temporarily paralyzed " + _.enemyStats[ndx].name + "...\n...not nice!");
+			_.dialogue.DisplayText(Party.S.stats[_.PlayerNdx()].name + " has temporarily paralyzed " + _.enemyStats[ndx].name + "...\n...not nice!");
 		} else {
 			playerIsParalyzed[ndx] = Random.Range(2, 4);
 
@@ -279,7 +279,7 @@ public class StatusEffects : MonoBehaviour {
 			// If defending...stop defending
 			RemoveDefender(true, ndx);
 
-			BattleDialogue.S.DisplayText(_.enemyStats[_.EnemyNdx()].name + " has temporarily paralyzed " + Party.S.stats[ndx].name + "...\n...not nice!");
+			_.dialogue.DisplayText(_.enemyStats[_.EnemyNdx()].name + " has temporarily paralyzed " + Party.S.stats[ndx].name + "...\n...not nice!");
 		}
 
 		// Audio: Buff 2
@@ -296,7 +296,7 @@ public class StatusEffects : MonoBehaviour {
 			playerParalyzedIcons[ndx].SetActive(false);
 
 			// Display text
-			BattleDialogue.S.DisplayText(Party.S.stats[ndx].name + " is no longer paralyzed!");
+			_.dialogue.DisplayText(Party.S.stats[ndx].name + " is no longer paralyzed!");
 		} else {
 			enemyIsParalyzed[ndx] = 0;
 
@@ -347,7 +347,7 @@ public class StatusEffects : MonoBehaviour {
 			}
 		} else {
 			// Display text
-			BattleDialogue.S.DisplayText(paralyzed + " is paralyzed and cannot move!");
+			_.dialogue.DisplayText(paralyzed + " is paralyzed and cannot move!");
 
 			// Audio: Deny
 			AudioManager.S.PlaySFX(eSoundName.deny);
@@ -372,7 +372,7 @@ public class StatusEffects : MonoBehaviour {
 			// If defending...stop defending
 			RemoveDefender(false, ndx);
 
-			BattleDialogue.S.DisplayText(Party.S.stats[_.PlayerNdx()].name + " has temporarily put " + _.enemyStats[ndx].name + " to sleep...\n...not nice!");
+			_.dialogue.DisplayText(Party.S.stats[_.PlayerNdx()].name + " has temporarily put " + _.enemyStats[ndx].name + " to sleep...\n...not nice!");
 		} else {
 			playerIsSleeping[ndx] = Random.Range(2, 4);
 
@@ -385,7 +385,7 @@ public class StatusEffects : MonoBehaviour {
 			// If defending...stop defending
 			RemoveDefender(true, ndx);
 
-			BattleDialogue.S.DisplayText(_.enemyStats[_.EnemyNdx()].name + " has temporarily put " + Party.S.stats[ndx].name + " to sleep...\n...not nice!");
+			_.dialogue.DisplayText(_.enemyStats[_.EnemyNdx()].name + " has temporarily put " + Party.S.stats[ndx].name + " to sleep...\n...not nice!");
 		}
 
 		// Audio: Buff 2
@@ -402,7 +402,7 @@ public class StatusEffects : MonoBehaviour {
 			playerSleepingIcons[ndx].SetActive(false);
 
 			// Display text
-			BattleDialogue.S.DisplayText(Party.S.stats[ndx].name + " is no longer asleep!");
+			_.dialogue.DisplayText(Party.S.stats[ndx].name + " is no longer asleep!");
 		} else {
 			enemyIsSleeping[ndx] = 0;
 
@@ -453,7 +453,7 @@ public class StatusEffects : MonoBehaviour {
 			}
 		} else {
 			// Display text
-			BattleDialogue.S.DisplayText(sleeping + " is asleep and won't wake up!");
+			_.dialogue.DisplayText(sleeping + " is asleep and won't wake up!");
 
 			// Audio: Deny
 			AudioManager.S.PlaySFX(eSoundName.deny);
