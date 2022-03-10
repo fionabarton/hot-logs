@@ -49,7 +49,7 @@ public class ColorScreen : MonoBehaviour {
         Battle.S.mode = eBattleMode.noInputPermitted;
 
         // Remove all listeners
-        Utilities.S.RemoveListeners(BattlePlayerActions.S.playerButtonCS);
+        Utilities.S.RemoveListeners(Battle.S.playerActions.playerButtonCS);
 
         anim.Play("Clear Screen", 0, 0);
 
@@ -94,7 +94,7 @@ public class ColorScreen : MonoBehaviour {
                 Spells.S.battle.HealSinglePartyMember(targetNdx, spell);
                 break;
             case 1: // Enemy: Heal Spell
-                BattleEnemyActions.S.HealSpell(targetNdx);
+                Battle.S.enemyActions.HealSpell(targetNdx);
                 break;
             case 2: // Party: Heal All Spell
                  Spells.S.battle.HealAll(targetNdx, spell);
@@ -126,10 +126,10 @@ public class ColorScreen : MonoBehaviour {
                  Spells.S.battle.AttackAllEnemies(targetNdx, spell);
                 break;
             case 2: // Enemy: Attack All Spell
-                BattleEnemyActions.S.AttackAll();
+                Battle.S.enemyActions.AttackAll();
                 break;
             case 3: // Enemy: Attack Single Spell
-                BattleEnemyActions.S.AttackSingle();
+                Battle.S.enemyActions.AttackSingle();
                 break;
             case 4: // Party: Poison Single Spell
                  Spells.S.battle.PoisonSingle(targetNdx, spell);
