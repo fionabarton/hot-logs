@@ -9,6 +9,7 @@ public class ShopMenu : MonoBehaviour {
 	// Inventory Buttons
 	public List<Button> inventoryButtons;
 	public List<Text> inventoryButtonsNameText;
+	public List<Text> inventoryButtonsTypeText;
 	public List<Text> inventoryButtonsPriceText;
 	public List<Text> inventoryButtonsQTYOwnedText;
 	public List<Text> inventoryButtonsQTYEquippedText;

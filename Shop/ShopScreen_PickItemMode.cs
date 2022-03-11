@@ -89,11 +89,13 @@ public class ShopScreen_PickItemMode : MonoBehaviour {
 		for (int i = 0; i < shopScreen.inventoryButtons.Count; i++) {
 			if (i < shopScreen.inventory.Count) {
 				shopScreen.inventoryButtons[i].gameObject.SetActive(true);
+				shopScreen.inventoryButtonsTypeText[i].gameObject.SetActive(true);
 				shopScreen.inventoryButtonsPriceText[i].gameObject.SetActive(true);
 				shopScreen.inventoryButtonsQTYOwnedText[i].gameObject.SetActive(true);
 				shopScreen.inventoryButtonsQTYEquippedText[i].gameObject.SetActive(true);
 			} else {
 				shopScreen.inventoryButtons[i].gameObject.SetActive(false);
+				shopScreen.inventoryButtonsTypeText[i].gameObject.SetActive(false);
 				shopScreen.inventoryButtonsPriceText[i].gameObject.SetActive(false);
 				shopScreen.inventoryButtonsQTYOwnedText[i].gameObject.SetActive(false);
 				shopScreen.inventoryButtonsQTYEquippedText[i].gameObject.SetActive(false);
@@ -120,6 +122,7 @@ public class ShopScreen_PickItemMode : MonoBehaviour {
 				string inventoryNdx = (shopScreen.firstSlotNdx + i + 1).ToString();
 
 				shopScreen.inventoryButtonsNameText[i].text = inventoryNdx + ") " + shopScreen.inventory[shopScreen.firstSlotNdx + i].name;
+				shopScreen.inventoryButtonsTypeText[i].text = shopScreen.inventory[shopScreen.firstSlotNdx + i].type.ToString();
 				shopScreen.inventoryButtonsPriceText[i].text = shopScreen.inventory[shopScreen.firstSlotNdx + i].value.ToString();
 				shopScreen.inventoryButtonsQTYOwnedText[i].text = Inventory.S.GetItemCount(shopScreen.inventory[shopScreen.firstSlotNdx + i]).ToString();
 				shopScreen.inventoryButtonsQTYEquippedText[i].text = EquipMenu.S.GetEquippedItemCount(shopScreen.inventory[shopScreen.firstSlotNdx + i]).ToString();
@@ -140,6 +143,7 @@ public class ShopScreen_PickItemMode : MonoBehaviour {
 
 				// Set selected button text color	
 				shopScreen.inventoryButtonsNameText[i].color = new Color32(205, 208, 0, 255);
+				shopScreen.inventoryButtonsTypeText[i].color = new Color32(205, 208, 0, 255);
 				shopScreen.inventoryButtonsPriceText[i].color = new Color32(205, 208, 0, 255);
 				shopScreen.inventoryButtonsQTYOwnedText[i].color = new Color32(205, 208, 0, 255);
 				shopScreen.inventoryButtonsQTYEquippedText[i].color = new Color32(205, 208, 0, 255);
@@ -151,6 +155,7 @@ public class ShopScreen_PickItemMode : MonoBehaviour {
 			} else {
 				// Set non-selected button text color
 				shopScreen.inventoryButtonsNameText[i].color = new Color32(255, 255, 255, 255);
+				shopScreen.inventoryButtonsTypeText[i].color = new Color32(255, 255, 255, 255);
 				shopScreen.inventoryButtonsPriceText[i].color = new Color32(255, 255, 255, 255);
 				shopScreen.inventoryButtonsQTYOwnedText[i].color = new Color32(255, 255, 255, 255);
 				shopScreen.inventoryButtonsQTYEquippedText[i].color = new Color32(255, 255, 255, 255);
