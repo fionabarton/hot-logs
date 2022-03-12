@@ -32,24 +32,26 @@ public class InnkeeperTrigger : ActivateOnButtonPress {
 	}
 
 	public void Yes() {
-		AudioManager.S.PlaySFX(eSoundName.confirm);
+		if (!GameManager.S.paused) {
+			AudioManager.S.PlaySFX(eSoundName.confirm);
 
-		int price = 10;
+			int price = 10;
 
-		if (Party.S.gold >= price) {
-			// Subtract item price from Player's Gold
-			Party.S.gold -= price;
+			if (Party.S.gold >= price) {
+				// Subtract item price from Player's Gold
+				Party.S.gold -= price;
 
-			// Max HP/MP
-			Party.S.stats[0].HP = Party.S.stats[0].maxHP;
-			Party.S.stats[0].MP = Party.S.stats[0].maxMP;
-			Party.S.stats[1].HP = Party.S.stats[1].maxHP;
-			Party.S.stats[1].MP = Party.S.stats[1].maxMP;
+				// Max HP/MP
+				Party.S.stats[0].HP = Party.S.stats[0].maxHP;
+				Party.S.stats[0].MP = Party.S.stats[0].maxMP;
+				Party.S.stats[1].HP = Party.S.stats[1].maxHP;
+				Party.S.stats[1].MP = Party.S.stats[1].maxMP;
 
-			StartCoroutine("CloseCurtains");
-		} else {
-			// Display Text: Not enough Gold
-			DialogueManager.S.DisplayText("Begone with you, penniless fool! Waste not my worthless time!"); 
+				StartCoroutine("CloseCurtains");
+			} else {
+				// Display Text: Not enough Gold
+				DialogueManager.S.DisplayText("Begone with you, penniless fool! Waste not my worthless time!");
+			}
 		}
 	}
 
@@ -62,7 +64,7 @@ public class InnkeeperTrigger : ActivateOnButtonPress {
 
 		// Audio: Win
 		StartCoroutine(AudioManager.S.PlaySongThenResumePreviousSong(6));
-
+		
 		yield return new WaitForSeconds(1.5f);
 		StartCoroutine("OpenCurtains");
 	}
