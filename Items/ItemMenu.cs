@@ -8,15 +8,16 @@ public class ItemMenu : MonoBehaviour {
 	[Header("Set in Inspector")]
 	// Item "Buttons"
 	public List<Button> itemButtons;
-	public List<Text> itemButtonsNameText;
-	public List<Text> itemButtonsValueText;
-	public List<Text> itemButtonsQTYOwnedText;
+	public List<Text>	itemButtonsNameText;
+	public List<Text>	itemButtonsTypeText;
+	public List<Text>	itemButtonsValueText;
+	public List<Text>	itemButtonsQTYOwnedText;
+	public List<Text>	itemButtonsQTYEquippedText;
 
-	public Text nameHeaderText;
-	public GameObject valueHeader;
-	public GameObject QTYOwnedHeader;
+	public Text			nameHeaderText;
+	public GameObject	slotHeadersHolder;
 
-	public Button sortButton;
+	public Button		sortButton;
 
 	[Header("Set Dynamically")]
 	// For Input & Display Message
@@ -69,7 +70,7 @@ public class ItemMenu : MonoBehaviour {
 		}
 
 		// Set Battle Turn Cursor sorting layer ABOVE UI
-		BattleUI.S.turnCursorSRend.sortingLayerName = "Above UI";
+		Battle.S.UI.turnCursorSRend.sortingLayerName = "Above UI";
 
 		// Remove Listeners
 		Utilities.S.RemoveListeners(itemButtons);
@@ -250,8 +251,10 @@ public class ItemMenu : MonoBehaviour {
 				string inventoryNdx = (firstSlotNdx + i + 1).ToString();
 
 				itemButtonsNameText[i].text = inventoryNdx + ") " + Inventory.S.GetItemList()[firstSlotNdx + i].name;
+				itemButtonsTypeText[i].text = Inventory.S.GetItemList()[firstSlotNdx + i].type.ToString();
 				itemButtonsValueText[i].text = Inventory.S.GetItemList()[firstSlotNdx + i].value.ToString();
 				itemButtonsQTYOwnedText[i].text = Inventory.S.GetItemCount(Inventory.S.GetItemList()[firstSlotNdx + i]).ToString();
+				itemButtonsQTYEquippedText[i].text = EquipMenu.S.GetEquippedItemCount(Inventory.S.GetItemList()[firstSlotNdx + i]).ToString();
 			}
 		}
 	}

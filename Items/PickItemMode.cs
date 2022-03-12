@@ -34,8 +34,7 @@ public class PickItemMode : MonoBehaviour {
 
 			// Activate Slot Headers 
 			itemScreen.nameHeaderText.text = "Name:";
-			itemScreen.valueHeader.SetActive(true);
-			itemScreen.QTYOwnedHeader.SetActive(true);
+			itemScreen.slotHeadersHolder.SetActive(true);
 
 			// If Inventory Empty 
 			if (Inventory.S.GetItemList().Count == 0) {
@@ -64,7 +63,7 @@ public class PickItemMode : MonoBehaviour {
 			}
 
 			// Set Battle Turn Cursor sorting layer BELOW UI
-			BattleUI.S.turnCursorSRend.sortingLayerName = "0";
+			Battle.S.UI.turnCursorSRend.sortingLayerName = "0";
 		}
 		catch (NullReferenceException) { }
 
@@ -131,8 +130,10 @@ public class PickItemMode : MonoBehaviour {
 
 				// Set selected button text color	
 				itemScreen.itemButtonsNameText[i].color = new Color32(205, 208, 0, 255);
+				itemScreen.itemButtonsTypeText[i].color = new Color32(205, 208, 0, 255);
 				itemScreen.itemButtonsValueText[i].color = new Color32(205, 208, 0, 255);
 				itemScreen.itemButtonsQTYOwnedText[i].color = new Color32(205, 208, 0, 255);
+				itemScreen.itemButtonsQTYEquippedText[i].color = new Color32(205, 208, 0, 255);
 
 				// Audio: Selection (when a new gameObject is selected)
 				Utilities.S.PlayButtonSelectedSFX(ref Items.S.menu.previousSelectedGameObject);
@@ -141,8 +142,10 @@ public class PickItemMode : MonoBehaviour {
 			} else {
 				// Set non-selected button text color
 				itemScreen.itemButtonsNameText[i].color = new Color32(255, 255, 255, 255);
+				itemScreen.itemButtonsTypeText[i].color = new Color32(255, 255, 255, 255);
 				itemScreen.itemButtonsValueText[i].color = new Color32(255, 255, 255, 255);
 				itemScreen.itemButtonsQTYOwnedText[i].color = new Color32(255, 255, 255, 255);
+				itemScreen.itemButtonsQTYEquippedText[i].color = new Color32(255, 255, 255, 255);
 			}
 		}
 	}
@@ -151,12 +154,16 @@ public class PickItemMode : MonoBehaviour {
 		for (int i = 0; i < itemScreen.itemButtons.Count; i++) {
 			if (i < Inventory.S.GetItemList().Count) {
 				itemScreen.itemButtons[i].gameObject.SetActive(true);
+				itemScreen.itemButtonsTypeText[i].gameObject.SetActive(true);
 				itemScreen.itemButtonsValueText[i].gameObject.SetActive(true);
 				itemScreen.itemButtonsQTYOwnedText[i].gameObject.SetActive(true);
+				itemScreen.itemButtonsQTYEquippedText[i].gameObject.SetActive(true);
 			} else {
 				itemScreen.itemButtons[i].gameObject.SetActive(false);
+				itemScreen.itemButtonsTypeText[i].gameObject.SetActive(false);
 				itemScreen.itemButtonsValueText[i].gameObject.SetActive(false);
 				itemScreen.itemButtonsQTYOwnedText[i].gameObject.SetActive(false);
+				itemScreen.itemButtonsQTYEquippedText[i].gameObject.SetActive(false);
 			}
 		}
 	}
