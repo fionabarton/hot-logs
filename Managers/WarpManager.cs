@@ -5,10 +5,6 @@ using UnityEngine.UI;
 
 public class WarpManager : MonoBehaviour {
 	[Header("Set Dynamically")]
-	// Singleton
-	private static WarpManager _S;
-	public static WarpManager S { get { return _S; } set { _S = value; } }
-
 	// All warp locations 
 	public List<WarpLocation> locations = new List<WarpLocation>();
 
@@ -22,6 +18,9 @@ public class WarpManager : MonoBehaviour {
 	public int locationNdx;
 	public string locationName;
 	public string visitedLocationNdxs;
+
+	private static WarpManager _S;
+	public static WarpManager S { get { return _S; } set { _S = value; } }
 
 	void Awake() {
 		S = this;
@@ -90,12 +89,13 @@ public class WarpManager : MonoBehaviour {
 				Spells.S.menu.MPCostHeader.SetActive(false);
 
 			} else if (Items.S.menu.gameObject.activeInHierarchy) {
+				Items.S.menu.itemButtonsTypeText[i].gameObject.SetActive(false);
 				Items.S.menu.itemButtonsValueText[i].gameObject.SetActive(false);
 				Items.S.menu.itemButtonsQTYOwnedText[i].gameObject.SetActive(false);
+				Items.S.menu.itemButtonsQTYEquippedText[i].gameObject.SetActive(false);
 
 				Items.S.menu.nameHeaderText.text = "Warp Destination:";
-				Items.S.menu.valueHeader.SetActive(false);
-				Items.S.menu.QTYOwnedHeader.SetActive(false);
+				Items.S.menu.slotHeadersHolder.SetActive(false);
 			}
 		}
 
