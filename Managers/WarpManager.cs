@@ -83,10 +83,11 @@ public class WarpManager : MonoBehaviour {
 
 			// Deactivate unique SpellScreen or ItemScreen buttons
 			if (Spells.S.menu.gameObject.activeInHierarchy) {
-				Spells.S.menu.spellsButtonMPCostText[i].gameObject.SetActive(false);
+				Spells.S.menu.spellsButtonTypeText[i].gameObject.SetActive(false);
+				Spells.S.menu.spellsButtonMPCostText[i].gameObject.SetActive(false);	
 
 				Spells.S.menu.nameHeaderText.text = "Warp Destination:";
-				Spells.S.menu.MPCostHeader.SetActive(false);
+				Spells.S.menu.slotHeadersHolder.SetActive(false);
 
 			} else if (Items.S.menu.gameObject.activeInHierarchy) {
 				Items.S.menu.itemButtonsTypeText[i].gameObject.SetActive(false);
