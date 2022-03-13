@@ -30,62 +30,62 @@ public class Spells : MonoBehaviour {
 
 		// Heal
 		spells[0] = new Spell("Heal",
-			eSpellType.healing, eSpellStatEffect.HP, eSpellUseableMode.any, 30, 45, 3,
+			eSpellType.Healing, eSpellStatEffect.HP, eSpellUseableMode.any, 30, 45, 3,
 			"Heals a single party member for at least 30 HP." + "\n Cost: 3 MP");
 
 		// Fireball
 		spells[1] = new Spell("Fireball",
-			eSpellType.offensive, eSpellStatEffect.HP, eSpellUseableMode.battle, 8, 12, 2,
+			eSpellType.Offensive, eSpellStatEffect.HP, eSpellUseableMode.battle, 8, 12, 2,
 			"Blasts a single enemy for at least 8 HP." + "\n Cost: 2 MP");
 
 		// Warp
 		spells[2] = new Spell("Warp",
-			eSpellType.world, eSpellStatEffect.none, eSpellUseableMode.world, 0, 0, 1,
+			eSpellType.World, eSpellStatEffect.none, eSpellUseableMode.world, 0, 0, 1,
 			"Instantaneously transports the party to a previously visited location." + "\n Cost: 1 MP");
 
 		// Fireblast
 		spells[3] = new Spell("Fireblast",
-			eSpellType.offensive, eSpellStatEffect.HP, eSpellUseableMode.battle, 12, 20, 3,
+			eSpellType.Offensive, eSpellStatEffect.HP, eSpellUseableMode.battle, 12, 20, 3,
 			"Blasts ALL enemies for at least 12 HP." + "\n Cost: 3 MP", true);
 
 		// Heal All
 		spells[4] = new Spell("Heal All",
-			eSpellType.healing, eSpellStatEffect.HP, eSpellUseableMode.battle, 12, 20, 6,
+			eSpellType.Healing, eSpellStatEffect.HP, eSpellUseableMode.battle, 12, 20, 6,
 			"Heals ALL party members for at least 12 HP." + "\n Cost: 6 MP", true);
 
 		// Revive
 		spells[5] = new Spell("Revive",
-			eSpellType.healing, eSpellStatEffect.HP, eSpellUseableMode.battle, 12, 20, 6,
+			eSpellType.Healing, eSpellStatEffect.HP, eSpellUseableMode.battle, 12, 20, 6,
 			"Revives a fallen party member and restores a small amount of their HP." + "\n Cost: 6 MP");
 
 		// Detoxify 
 		spells[6] = new Spell("Detoxify",
-			eSpellType.healing, eSpellStatEffect.none, eSpellUseableMode.battle, 0, 0, 2,
+			eSpellType.Healing, eSpellStatEffect.none, eSpellUseableMode.battle, 0, 0, 2,
 			"Eradicates any toxins that have infected a poisoned party member." + "\n Cost: 2 MP");
 
 		// Mobilize 
 		spells[7] = new Spell("Mobilize",
-			eSpellType.healing, eSpellStatEffect.none, eSpellUseableMode.battle, 0, 0, 2,
+			eSpellType.Healing, eSpellStatEffect.none, eSpellUseableMode.battle, 0, 0, 2,
 			"Restores the mobility of a paralyzed party member." + "\n Cost: 2 MP");
 
 		// Wake 
 		spells[8] = new Spell("Wake",
-			eSpellType.healing, eSpellStatEffect.none, eSpellUseableMode.battle, 0, 0, 2,
+			eSpellType.Healing, eSpellStatEffect.none, eSpellUseableMode.battle, 0, 0, 2,
 			"Wakes up a sleeping party member." + "\n Cost: 2 MP");
 
 		// Poison 
 		spells[9] = new Spell("Poison",
-			eSpellType.offensive, eSpellStatEffect.none, eSpellUseableMode.battle, 0, 0, 1,
+			eSpellType.Offensive, eSpellStatEffect.none, eSpellUseableMode.battle, 0, 0, 1,
 			"Poisons a single enemy.\nAt the start of each turn, it damages the enemy for a small amount of HP." + "\n Cost: 1 MP");
 
 		// Paralyze 
 		spells[10] = new Spell("Paralyze",
-			eSpellType.offensive, eSpellStatEffect.none, eSpellUseableMode.battle, 0, 0, 1,
+			eSpellType.Offensive, eSpellStatEffect.none, eSpellUseableMode.battle, 0, 0, 1,
 			"Temporarily paralyzes a single enemy for a few turns." + "\n Cost: 1 MP");
 
 		// Sleep 
 		spells[11] = new Spell("Sleep",
-			eSpellType.offensive, eSpellStatEffect.none, eSpellUseableMode.battle, 0, 0, 1,
+			eSpellType.Offensive, eSpellStatEffect.none, eSpellUseableMode.battle, 0, 0, 1,
 			"Temporarily puts a single enemy to sleep for a few turns." + "\n Cost: 1 MP");
 	}
 
@@ -129,9 +129,6 @@ public class Spells : MonoBehaviour {
 	}
 }
 
-public enum eSpellUseableMode { battle, world, any };
-public enum eSpellType { healing, offensive, world };
-public enum eSpellStatEffect { HP, MP, STR, DEF, WIS, AGI, none };
 public class Spell {
 	public string name;
 	public eSpellType type;

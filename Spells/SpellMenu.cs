@@ -14,9 +14,12 @@ public class SpellMenu : MonoBehaviour {
 	public List<Button> spellsButtons;
 	public List<Text> spellsButtonNameText;
 	public List<Text> spellsButtonMPCostText;
+	public List<Text> spellsButtonTypeText;
 
 	public Text nameHeaderText;
 	public GameObject MPCostHeader;
+	public GameObject slotHeadersHolder;
+
 
 	public GameObject previousSelectedSpellGO;
 
@@ -70,7 +73,7 @@ public class SpellMenu : MonoBehaviour {
 		UpdateManager.updateDelegate += Loop;
 
 		// Activate MP Cost header
-		MPCostHeader.SetActive(true);
+		slotHeadersHolder.SetActive(true);
 
 		gameObject.SetActive(true);
 
@@ -177,7 +180,7 @@ public class SpellMenu : MonoBehaviour {
 					GoBackToPickSpellMode();
 
 					// Activate MP Cost header
-					MPCostHeader.SetActive(true);
+					slotHeadersHolder.SetActive(true);
 					// Reset Slot Headers Text 
 					nameHeaderText.text = "Name:";
 				}
@@ -344,6 +347,7 @@ public class SpellMenu : MonoBehaviour {
 
 				// Set selected button text color	
 				spellsButtonNameText[i].color = new Color32(205, 208, 0, 255);
+				spellsButtonTypeText[i].color = new Color32(205, 208, 0, 255);
 				spellsButtonMPCostText[i].color = new Color32(205, 208, 0, 255);
 
 				// Audio: Selection (when a new gameObject is selected)
@@ -351,6 +355,7 @@ public class SpellMenu : MonoBehaviour {
 			} else {
 				// Set non-selected button text color
 				spellsButtonNameText[i].color = new Color32(255, 255, 255, 255);
+				spellsButtonTypeText[i].color = new Color32(255, 255, 255, 255);
 				spellsButtonMPCostText[i].color = new Color32(255, 255, 255, 255);
 			}
 		}
@@ -360,9 +365,11 @@ public class SpellMenu : MonoBehaviour {
 		for (int i = 0; i < spellsButtons.Count; i++) {
 			if (i < Party.S.stats[playerNdx].spellNdx) {
 				spellsButtons[i].gameObject.SetActive(true);
+				spellsButtonTypeText[i].gameObject.SetActive(true);
 				spellsButtonMPCostText[i].gameObject.SetActive(true);
 			} else {
 				spellsButtons[i].gameObject.SetActive(false);
+				spellsButtonTypeText[i].gameObject.SetActive(false);
 				spellsButtonMPCostText[i].gameObject.SetActive(false);
 			}
 		}
@@ -388,6 +395,7 @@ public class SpellMenu : MonoBehaviour {
 				// Assign Button Name Text
 				string ndx = (firstSlotNdx + i + 1).ToString();
 				spellsButtonNameText[i].text = ndx + ") " + Party.S.stats[playerNdx].spells[firstSlotNdx + i].name;
+				spellsButtonTypeText[i].text = Party.S.stats[playerNdx].spells[firstSlotNdx + i].type.ToString();
 				spellsButtonMPCostText[i].text = Party.S.stats[playerNdx].spells[firstSlotNdx + i].cost.ToString();
 			}
 		}
