@@ -55,6 +55,10 @@ public enum eSoundName {
     run, fireball, fireblast, buff1, buff2, highBeep1, highBeep2, swell, flicker
 };
 
+public enum eSpellUseableMode { battle, world, any };
+public enum eSpellType { Healing, Offensive, World, Defensive, Buff, Debuff, Thievery };
+public enum eSpellStatEffect { HP, MP, STR, DEF, WIS, AGI, none };
+
 public enum eSpellScreenMode {
     pickWhichSpellsToDisplay, pickSpell, doesntKnowSpells,
     pickWhichMemberToHeal, pickAllMembersToHeal, usedSpell, cantUseSpell, pickWhereToWarp
