@@ -118,6 +118,13 @@ public class BattleEnd : MonoBehaviour {
 				}
 			}
 
+			// Remove temporary status effects 
+			for (int i = 0; i <= Party.S.partyNdx; i++) {
+				StatusEffects.S.RemoveDefender(true, i);
+				StatusEffects.S.RemoveParalyzed(true, i);
+				StatusEffects.S.RemoveSleeping(true, i);
+			}
+
 			// Deactivate top display message
 			_.dialogue.displayMessageTextTop.gameObject.transform.parent.gameObject.SetActive(false);
 
