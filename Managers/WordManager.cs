@@ -38,4 +38,12 @@ public class WordManager : MonoBehaviour {
         // Return random exclamation
         return exclamations[randomNdx];
     }
+
+    public string GetRandomInterjection() {
+        // Get random index
+        int randomNdx = Random.Range(0, interjections.Count);
+
+        // Return random interjection
+        return interjections[randomNdx];
+    }
 }
