@@ -116,6 +116,9 @@ public class PickItemMode : MonoBehaviour {
 		if (GameManager.S.currentScene != "Battle") {
 			if (Input.GetButtonDown("SNES Y Button")) {
 				itemScreen.Deactivate(true);
+
+				// Activate Cursor
+				ScreenCursor.S.cursorGO[0].SetActive(true);
 			}
 		}
 	}
