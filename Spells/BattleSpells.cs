@@ -25,7 +25,7 @@ public class BattleSpells : MonoBehaviour {
 			// Remove all listeners
 			Utilities.S.RemoveListeners(_.playerActions.playerButtonCS);
 
-			if (spell.type == eSpellType.healing) {
+			if (spell.type == eSpellType.Healing) {
 				_.playerActions.ButtonsInteractable(false, false, false, false, false, false, false, false, false, false, true, true);
 
 				// Set a Player Button as Selected GameObject
@@ -43,7 +43,7 @@ public class BattleSpells : MonoBehaviour {
 				if (spell.multipleTargets) {
 					_.UI.TargetAllPartyMembers();
 				}
-			} else if (spell.type == eSpellType.offensive) {
+			} else if (spell.type == eSpellType.Offensive || spell.type == eSpellType.Thievery) {
 				_.playerActions.ButtonsInteractable(false, false, false, false, false, true, true, true, true, true, false, false);
 
 				// Set an Enemy Button as Selected GameObject
@@ -577,10 +577,40 @@ public class BattleSpells : MonoBehaviour {
 	}
 
 	////////////////////////////////////////////////////////////////////////////////////////
-	// Cure status ailments
+	// Thievery
 	////////////////////////////////////////////////////////////////////////////////////////
 
-	// Steal - Detoxify a single party member 
+	// Steal
+	public void AttemptStealSinglePartyMember(int ndx, Spell spell) {
+		SpellHelper();
+		ColorScreen.S.PlayClip("Flicker", 7);
+		ColorScreen.S.targetNdx = ndx;
+		ColorScreen.S.spell = spell;
+	}
+	public void StealSingle(int ndx, Spell spell) {
+		// Subtract Spell cost from Player's MP
+		GameManager.S.SubtractPlayerMP(_.PlayerNdx(), spell.cost);
+
+		// 50% chance to miss...
+		if (UnityEngine.Random.value <= 0.5f) {
+			DamageEnemyAnimation(ndx);
+
+			// Get random enemy item index and item
+			int itemNdx = UnityEngine.Random.Range(0, _.enemyStats[ndx].itemsToDrop.Count);
+			Item tItem = Items.S.GetItem(_.enemyStats[ndx].itemsToDrop[itemNdx]);
+
+			// Add item to party inventory
+			Inventory.S.AddItemToInventory(tItem);
+
+			// Display text
+			_.dialogue.DisplayText(Party.S.stats[_.PlayerNdx()].name + " swiped a " + tItem.name + " from " + _.enemyStats[ndx].name + ".\n" + WordManager.S.GetRandomExclamation() + "!");
+		} else {
+			// Display text
+			_.dialogue.DisplayText(Party.S.stats[_.PlayerNdx()].name + " attempted to swipe an item from " + _.enemyStats[ndx].name + "...\n...but missed the mark!\n" + WordManager.S.GetRandomInterjection() + "!");
+		}
+
+		_.NextTurn();
+	}
 
 	////////////////////////////////////////////////////////////////////////////////////////
 	// Helper functions

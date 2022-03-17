@@ -17,9 +17,7 @@ public class SpellMenu : MonoBehaviour {
 	public List<Text> spellsButtonTypeText;
 
 	public Text nameHeaderText;
-	public GameObject MPCostHeader;
 	public GameObject slotHeadersHolder;
-
 
 	public GameObject previousSelectedSpellGO;
 
@@ -195,9 +193,9 @@ public class SpellMenu : MonoBehaviour {
 		}
 	}
 
-	// On vertical input, scroll the item list when the first or last slot is selected
+	// On vertical input, scroll the spell list when the first or last slot is selected
 	void ScrollSpellList() {
-		if (Inventory.S.GetItemList().Count > 1) {
+		if (Party.S.stats[playerNdx].spellNdx > 0) {
 			// If first or last slot selected...
 			if (firstOrLastSlotSelected) {
 				if (Input.GetAxisRaw("Vertical") == 0) {
@@ -476,6 +474,8 @@ public class SpellMenu : MonoBehaviour {
 				Spells.S.battle.AddFunctionToButton(Spells.S.battle.AttemptParalyzeSinglePartyMember, "Temporarily paralyze which enemy?", spell);
 			} else if (spell.name == "Sleep") {
 				Spells.S.battle.AddFunctionToButton(Spells.S.battle.AttemptSleepSinglePartyMember, "Temporarily put which enemy to sleep?", spell);
+			} else if (spell.name == "Steal") {
+				Spells.S.battle.AddFunctionToButton(Spells.S.battle.AttemptStealSinglePartyMember, "Attempt to steal an item from which enemy?", spell);
 			} else {
 				Spells.S.CantUseSpell("Can't use this spell during battle!");
 			}

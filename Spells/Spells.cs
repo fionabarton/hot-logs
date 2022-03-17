@@ -87,6 +87,11 @@ public class Spells : MonoBehaviour {
 		spells[11] = new Spell("Sleep",
 			eSpellType.Offensive, eSpellStatEffect.none, eSpellUseableMode.battle, 0, 0, 1,
 			"Temporarily puts a single enemy to sleep for a few turns." + "\n Cost: 1 MP");
+
+		// Steal 
+		spells[12] = new Spell("Steal",
+			eSpellType.Thievery, eSpellStatEffect.none, eSpellUseableMode.battle, 0, 0, 1,
+			"Attempts to steal an item from an enemy." + "\n Cost: 1 MP");
 	}
 
 	// Spell Utilities ////////////////////////////////////////////
