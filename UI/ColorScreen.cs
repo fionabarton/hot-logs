@@ -140,6 +140,9 @@ public class ColorScreen : MonoBehaviour {
             case 6: // Party: Sleep Single Spell
                  Spells.S.battle.SleepSingle(targetNdx, spell);
                 break;
+            case 7: // Party: Steal Single Spell
+                Spells.S.battle.StealSingle(targetNdx, spell);
+                break;
         }
 
         // Remove all animation events
