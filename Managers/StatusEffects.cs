@@ -287,7 +287,7 @@ public class StatusEffects : MonoBehaviour {
 
 		_.NextTurn();
 	}
-	public void RemoveParalyzed(bool isPlayer, int ndx) {
+	public void RemoveParalyzed(bool isPlayer, int ndx, bool displayText = true) {
 		// If this turn is a player's turn...
 		if (isPlayer) {
 			playerIsParalyzed[ndx] = 0;
@@ -296,7 +296,9 @@ public class StatusEffects : MonoBehaviour {
 			playerParalyzedIcons[ndx].SetActive(false);
 
 			// Display text
-			_.dialogue.DisplayText(Party.S.stats[ndx].name + " is no longer paralyzed!");
+			if (displayText) {
+				_.dialogue.DisplayText(Party.S.stats[ndx].name + " is no longer paralyzed!");
+			}
 		} else {
 			enemyIsParalyzed[ndx] = 0;
 
@@ -393,7 +395,7 @@ public class StatusEffects : MonoBehaviour {
 
 		_.NextTurn();
 	}
-	public void RemoveSleeping(bool isPlayer, int ndx) {
+	public void RemoveSleeping(bool isPlayer, int ndx, bool displayText = true) {
 		// If this turn is a player's turn...
 		if (isPlayer) {
 			playerIsSleeping[ndx] = 0;
@@ -401,8 +403,10 @@ public class StatusEffects : MonoBehaviour {
 			// Deactivate status ailment icon
 			playerSleepingIcons[ndx].SetActive(false);
 
-			// Display text
-			_.dialogue.DisplayText(Party.S.stats[ndx].name + " is no longer asleep!");
+            // Display text
+            if (displayText) {
+				_.dialogue.DisplayText(Party.S.stats[ndx].name + " is no longer asleep!");
+			}
 		} else {
 			enemyIsSleeping[ndx] = 0;
 
