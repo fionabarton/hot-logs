@@ -381,16 +381,34 @@ public class BattleSpells : MonoBehaviour {
 
 	// Handle enemy deaths
 	public void EnemiesDeath(List<int> deadEnemies, int totalAttackDamage) {
-		switch (deadEnemies.Count) {
-			case 1: _.dialogue.DisplayText("Used Fire BLAST Spell!\nHit ALL Enemies for an average of " + Utilities.S.CalculateAverage(totalAttackDamage, _.enemyStats.Count) + " HP!" + "\nOne enemy has been felled!"); break;
-			case 2: _.dialogue.DisplayText("Used Fire BLAST Spell!\nHit ALL Enemies for an average of " + Utilities.S.CalculateAverage(totalAttackDamage, _.enemyStats.Count) + " HP!" + "\nTwo enemies have been felled!"); break;
-			case 3: _.dialogue.DisplayText("Used Fire BLAST Spell!\nHit ALL Enemies for an average of " + Utilities.S.CalculateAverage(totalAttackDamage, _.enemyStats.Count) + " HP!" + "\nThree enemies have been felled!"); break;
-			case 4: _.dialogue.DisplayText("Used Fire BLAST Spell!\nHit ALL Enemies for an average of " + Utilities.S.CalculateAverage(totalAttackDamage, _.enemyStats.Count) + " HP!" + "\nFour enemies have been felled!"); break;
-			case 5: _.dialogue.DisplayText("Used Fire BLAST Spell!\nHit ALL Enemies for an average of " + Utilities.S.CalculateAverage(totalAttackDamage, _.enemyStats.Count) + " HP!" + "\nFive enemies have been felled!"); break;
+		bool hasStolenItems = false;
+		for(int i = 0; i < deadEnemies.Count; i++) {
+			// Check if any enemy has stolen an item from the party
+			if (_.enemyStats[deadEnemies[i]].stolenItems.Count > 0) {
+				hasStolenItems = true;
+			}
+
+			// Handle enemy death
+			_.end.EnemyDeath(deadEnemies[i], false);
 		}
 
-		for (int i = 0; i < deadEnemies.Count; i++) {
-			_.end.EnemyDeath(deadEnemies[i], false);
+		// Display different text whether the enemy has stolen anything
+        if (hasStolenItems) {
+			switch (deadEnemies.Count) {
+				case 1: _.dialogue.DisplayText("Used Fire BLAST Spell!\nHit ALL Enemies for an average of " + Utilities.S.CalculateAverage(totalAttackDamage, _.enemyStats.Count) + " HP!" + "\nOne enemy has been felled!\nWhat they've stolen is returned to the party!"); break;
+				case 2: _.dialogue.DisplayText("Used Fire BLAST Spell!\nHit ALL Enemies for an average of " + Utilities.S.CalculateAverage(totalAttackDamage, _.enemyStats.Count) + " HP!" + "\nTwo enemies have been felled!\nWhat they've stolen is returned to the party!"); break;
+				case 3: _.dialogue.DisplayText("Used Fire BLAST Spell!\nHit ALL Enemies for an average of " + Utilities.S.CalculateAverage(totalAttackDamage, _.enemyStats.Count) + " HP!" + "\nThree enemies have been felled!\nWhat they've stolen is returned to the party!"); break;
+				case 4: _.dialogue.DisplayText("Used Fire BLAST Spell!\nHit ALL Enemies for an average of " + Utilities.S.CalculateAverage(totalAttackDamage, _.enemyStats.Count) + " HP!" + "\nFour enemies have been felled!\nWhat they've stolen is returned to the party!"); break;
+				case 5: _.dialogue.DisplayText("Used Fire BLAST Spell!\nHit ALL Enemies for an average of " + Utilities.S.CalculateAverage(totalAttackDamage, _.enemyStats.Count) + " HP!" + "\nFive enemies have been felled!\nWhat they've stolen is returned to the party!"); break;
+			}
+		} else {
+			switch (deadEnemies.Count) {
+				case 1: _.dialogue.DisplayText("Used Fire BLAST Spell!\nHit ALL Enemies for an average of " + Utilities.S.CalculateAverage(totalAttackDamage, _.enemyStats.Count) + " HP!" + "\nOne enemy has been felled!"); break;
+				case 2: _.dialogue.DisplayText("Used Fire BLAST Spell!\nHit ALL Enemies for an average of " + Utilities.S.CalculateAverage(totalAttackDamage, _.enemyStats.Count) + " HP!" + "\nTwo enemies have been felled!"); break;
+				case 3: _.dialogue.DisplayText("Used Fire BLAST Spell!\nHit ALL Enemies for an average of " + Utilities.S.CalculateAverage(totalAttackDamage, _.enemyStats.Count) + " HP!" + "\nThree enemies have been felled!"); break;
+				case 4: _.dialogue.DisplayText("Used Fire BLAST Spell!\nHit ALL Enemies for an average of " + Utilities.S.CalculateAverage(totalAttackDamage, _.enemyStats.Count) + " HP!" + "\nFour enemies have been felled!"); break;
+				case 5: _.dialogue.DisplayText("Used Fire BLAST Spell!\nHit ALL Enemies for an average of " + Utilities.S.CalculateAverage(totalAttackDamage, _.enemyStats.Count) + " HP!" + "\nFive enemies have been felled!"); break;
+			}
 		}
 	}
 
@@ -590,23 +608,46 @@ public class BattleSpells : MonoBehaviour {
 	public void StealSingle(int ndx, Spell spell) {
 		// Subtract Spell cost from Player's MP
 		GameManager.S.SubtractPlayerMP(_.PlayerNdx(), spell.cost);
+		
+		if(_.enemyStats[ndx].amountToSteal > 0) {
+			// 50% chance to miss...
+			if (UnityEngine.Random.value <= 0.5f) {
+				DamageEnemyAnimation(ndx);
 
-		// 50% chance to miss...
-		if (UnityEngine.Random.value <= 0.5f) {
-			DamageEnemyAnimation(ndx);
+				Item tItem;
+				// If the enemy hasn't stolen an item from the party
+				if (_.enemyStats[ndx].stolenItems.Count <= 0) {
+					// Get random enemy item index and item
+					int itemNdx = UnityEngine.Random.Range(0, _.enemyStats[ndx].itemsToDrop.Count);
+					tItem = Items.S.GetItem(_.enemyStats[ndx].itemsToDrop[itemNdx]);
+				} else {
+					// Get an item that was stolen from the party
+					tItem = _.enemyStats[ndx].stolenItems[0];
 
-			// Get random enemy item index and item
-			int itemNdx = UnityEngine.Random.Range(0, _.enemyStats[ndx].itemsToDrop.Count);
-			Item tItem = Items.S.GetItem(_.enemyStats[ndx].itemsToDrop[itemNdx]);
+					// Remove item from stolenItems list
+					_.enemyStats[ndx].stolenItems.RemoveAt(0);
+				}
 
-			// Add item to party inventory
-			Inventory.S.AddItemToInventory(tItem);
+				_.enemyStats[ndx].amountToSteal -= 1;
 
-			// Display text
-			_.dialogue.DisplayText(Party.S.stats[_.PlayerNdx()].name + " swiped a " + tItem.name + " from " + _.enemyStats[ndx].name + ".\n" + WordManager.S.GetRandomExclamation() + "!");
+				// Add item to party inventory
+				Inventory.S.AddItemToInventory(tItem);
+
+				// Display text: item stolen
+				_.dialogue.DisplayText(Party.S.stats[_.PlayerNdx()].name + " swiped a " + tItem.name + " from " + _.enemyStats[ndx].name + ".\n" + WordManager.S.GetRandomExclamation() + "!");
+			} else {
+				// Audio: Deny
+				AudioManager.S.PlaySFX(eSoundName.deny);
+
+				// Display text: miss
+				_.dialogue.DisplayText(Party.S.stats[_.PlayerNdx()].name + " attempted to loot an item from " + _.enemyStats[ndx].name + "...\n...but missed the mark!\n" + WordManager.S.GetRandomInterjection() + "!");
+			}
 		} else {
-			// Display text
-			_.dialogue.DisplayText(Party.S.stats[_.PlayerNdx()].name + " attempted to swipe an item from " + _.enemyStats[ndx].name + "...\n...but missed the mark!\n" + WordManager.S.GetRandomInterjection() + "!");
+			// Audio: Deny
+			AudioManager.S.PlaySFX(eSoundName.deny);
+
+			// Display text: no items to steal
+			_.dialogue.DisplayText(Party.S.stats[_.PlayerNdx()].name + " attempted to steal an item from " + _.enemyStats[ndx].name + "...\n...but they've got nothing!\n" + WordManager.S.GetRandomInterjection() + "!");
 		}
 
 		_.NextTurn();
