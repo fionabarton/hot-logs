@@ -92,19 +92,33 @@ public class BattleEnd : MonoBehaviour {
 	public void EnemyDeath(int ndx, bool displayText = true) {
 		RemoveEnemy(ndx);
 
+		// If the enemy has stolen an item from the party
+		if (_.enemyStats[ndx].stolenItems.Count >= 1) {
+			for(int i = 0; i < _.enemyStats[ndx].stolenItems.Count; i++) {
+				// Return stolen items
+				Inventory.S.AddItemToInventory(_.enemyStats[ndx].stolenItems[i]);
+			}
+
+			if (displayText) {
+				_.dialogue.DisplayText(_.enemyStats[ndx].name + " has been felled!\nWhat they've stolen is returned to the party!");
+			}
+		} else {
+			if (displayText) {
+				_.dialogue.DisplayText(_.enemyStats[ndx].name + " has been felled!");
+			}
+		}
+
+		// Randomly drop an item if everything hasn't aleady been stolen
+		if (_.enemyStats[ndx].amountToSteal > 0) {
+			AddDroppedItems(ndx);
+		}
+
 		// Audio: Death
 		AudioManager.S.PlaySFX(eSoundName.death);
 
-        // Animation: Enemy DEATH
-        _.enemyAnimator[ndx].CrossFade("Death", 0);
-
-        if (displayText) {
-			_.dialogue.DisplayText(_.enemyStats[ndx].name + " has been felled!");
-		}
-
-		// Randomly select DropItem
-		AddDroppedItems(ndx);
-
+		// Animation: Enemy DEATH
+		_.enemyAnimator[ndx].CrossFade("Death", 0);
+		
 		CheckIfAllEnemiesDead();
 	}
 
@@ -121,8 +135,8 @@ public class BattleEnd : MonoBehaviour {
 			// Remove temporary status effects 
 			for (int i = 0; i <= Party.S.partyNdx; i++) {
 				StatusEffects.S.RemoveDefender(true, i);
-				StatusEffects.S.RemoveParalyzed(true, i);
-				StatusEffects.S.RemoveSleeping(true, i);
+				StatusEffects.S.RemoveParalyzed(true, i, false);
+				StatusEffects.S.RemoveSleeping(true, i, false);
 			}
 
 			// Deactivate top display message
@@ -140,12 +154,14 @@ public class BattleEnd : MonoBehaviour {
 	}
 
 	public void AddDroppedItems(int ndx) {
-		if (Random.value < _.enemyStats[ndx].chanceToDrop) {
-			// Get random item index
-			int randomNdx = Random.Range(0, _.enemyStats[ndx].itemsToDrop.Count);
+		if(_.enemyStats[ndx].amountToSteal > 0) {
+			if (Random.value < _.enemyStats[ndx].chanceToDrop) {
+				// Get random item index
+				int randomNdx = Random.Range(0, _.enemyStats[ndx].itemsToDrop.Count);
 
-            // Add item to droppedItems list
-            _.droppedItems.Add(Items.S.GetItem(_.enemyStats[ndx].itemsToDrop[randomNdx]));
+				// Add item to droppedItems list
+				_.droppedItems.Add(Items.S.GetItem(_.enemyStats[ndx].itemsToDrop[randomNdx]));
+			}
 		}
     }
 
