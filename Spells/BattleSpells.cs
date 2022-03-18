@@ -388,18 +388,18 @@ public class BattleSpells : MonoBehaviour {
 				hasStolenItems = true;
 			}
 
-			// Handle enemy death
-			_.end.EnemyDeath(deadEnemies[i], false);
-		}
+            // Handle enemy death
+            _.end.EnemyDeath(deadEnemies[i], false);
+        }
 
 		// Display different text whether the enemy has stolen anything
         if (hasStolenItems) {
 			switch (deadEnemies.Count) {
-				case 1: _.dialogue.DisplayText("Used Fire BLAST Spell!\nHit ALL Enemies for an average of " + Utilities.S.CalculateAverage(totalAttackDamage, _.enemyStats.Count) + " HP!" + "\nOne enemy has been felled!\nWhat they've stolen is returned to the party!"); break;
-				case 2: _.dialogue.DisplayText("Used Fire BLAST Spell!\nHit ALL Enemies for an average of " + Utilities.S.CalculateAverage(totalAttackDamage, _.enemyStats.Count) + " HP!" + "\nTwo enemies have been felled!\nWhat they've stolen is returned to the party!"); break;
-				case 3: _.dialogue.DisplayText("Used Fire BLAST Spell!\nHit ALL Enemies for an average of " + Utilities.S.CalculateAverage(totalAttackDamage, _.enemyStats.Count) + " HP!" + "\nThree enemies have been felled!\nWhat they've stolen is returned to the party!"); break;
-				case 4: _.dialogue.DisplayText("Used Fire BLAST Spell!\nHit ALL Enemies for an average of " + Utilities.S.CalculateAverage(totalAttackDamage, _.enemyStats.Count) + " HP!" + "\nFour enemies have been felled!\nWhat they've stolen is returned to the party!"); break;
-				case 5: _.dialogue.DisplayText("Used Fire BLAST Spell!\nHit ALL Enemies for an average of " + Utilities.S.CalculateAverage(totalAttackDamage, _.enemyStats.Count) + " HP!" + "\nFive enemies have been felled!\nWhat they've stolen is returned to the party!"); break;
+				case 1: _.dialogue.DisplayText("Used Fire BLAST Spell!\nHit ALL Enemies for an average of " + Utilities.S.CalculateAverage(totalAttackDamage, _.enemyStats.Count) + " HP!" + "\nOne enemy has been felled; stolen items are returned to the party!"); break;
+				case 2: _.dialogue.DisplayText("Used Fire BLAST Spell!\nHit ALL Enemies for an average of " + Utilities.S.CalculateAverage(totalAttackDamage, _.enemyStats.Count) + " HP!" + "\nTwo enemies have been felled; stolen items are returned to the party!"); break;
+				case 3: _.dialogue.DisplayText("Used Fire BLAST Spell!\nHit ALL Enemies for an average of " + Utilities.S.CalculateAverage(totalAttackDamage, _.enemyStats.Count) + " HP!" + "\nThree enemies have been felled; stolen items are returned to the party!"); break;
+				case 4: _.dialogue.DisplayText("Used Fire BLAST Spell!\nHit ALL Enemies for an average of " + Utilities.S.CalculateAverage(totalAttackDamage, _.enemyStats.Count) + " HP!" + "\nFour enemies have been felled; stolen items are returned to the party!"); break;
+				case 5: _.dialogue.DisplayText("Used Fire BLAST Spell!\nHit ALL Enemies for an average of " + Utilities.S.CalculateAverage(totalAttackDamage, _.enemyStats.Count) + " HP!" + "\nFive enemies have been felled; stolen items are returned to the party!"); break;
 			}
 		} else {
 			switch (deadEnemies.Count) {
@@ -410,6 +410,11 @@ public class BattleSpells : MonoBehaviour {
 				case 5: _.dialogue.DisplayText("Used Fire BLAST Spell!\nHit ALL Enemies for an average of " + Utilities.S.CalculateAverage(totalAttackDamage, _.enemyStats.Count) + " HP!" + "\nFive enemies have been felled!"); break;
 			}
 		}
+
+		//for (int i = 0; i < deadEnemies.Count; i++) {
+		//	// Handle enemy death
+		//	_.end.EnemyDeath(deadEnemies[i], false);
+		//}
 	}
 
 	////////////////////////////////////////////////////////////////////////////////////////
