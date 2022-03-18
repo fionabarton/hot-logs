@@ -99,7 +99,7 @@ public class BattleInitiative : MonoBehaviour {
 		}
 
 		// Set Enemy Amount (for testing)
-		//_.enemyAmount = 5;
+		//_.enemyAmount = 1;
 
 		// Deactivate all enemies
 		for (int i = 0; i < _.enemySprite.Count; i++) {
@@ -124,6 +124,10 @@ public class BattleInitiative : MonoBehaviour {
 			// HP/MP
 			_.enemyStats[i].HP = _.enemyStats[i].maxHP;
 			_.enemyStats[i].MP = _.enemyStats[i].maxMP;
+
+			// Amount of items to steal
+			_.enemyStats[i].amountToSteal = _.enemyStats[i].maxAmountToSteal;
+			_.enemyStats[i].stolenItems.Clear();
 
 			// Gold/EXP payout
 			_.expToAdd += _.enemyStats[i].EXP;

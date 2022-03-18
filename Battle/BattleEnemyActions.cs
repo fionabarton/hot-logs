@@ -15,7 +15,7 @@ public class BattleEnemyActions : MonoBehaviour {
 	public void Attack() {
 		// Randomly select party member to attack
 		int playerToAttack = _.stats.GetRandomPlayerNdx();
-
+		
 		// Calculate Attack Damage
 		_.stats.GetAttackDamage(_.enemyStats[_.EnemyNdx()].LVL,
 									   _.enemyStats[_.EnemyNdx()].STR, _.enemyStats[_.EnemyNdx()].AGI,
@@ -479,6 +479,59 @@ public class BattleEnemyActions : MonoBehaviour {
 
 		// Play attack animations, SFX, and spawn objects
 		PlaySingleAttackAnimsAndSFX(ndx, true, false);
+	}
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// Index = 13
+	// Steal
+	public void AttemptSteal() {
+		ColorScreen.S.targetNdx = _.stats.GetRandomPlayerNdx();
+		ColorScreen.S.PlayClip("Flicker", 8);
+	}
+
+	public void Steal(int ndx) {
+		if (Inventory.S.GetItemList().Count != 0) {
+			// 50% chance to miss...
+			if (Random.value <= 0.5f) {
+				// Get random party item index and item
+				int itemNdx = Random.Range(0, Inventory.S.GetItemList().Count);
+				Item tItem = Inventory.S.GetItemList()[itemNdx];
+
+				if(tItem.type != eItemType.Important) {
+					// Remove item from party inventory
+					Inventory.S.RemoveItemFromInventory(tItem);
+
+					// Add item to stolen items inventory
+					_.enemyStats[_.EnemyNdx()].stolenItems.Add(tItem);
+					_.enemyStats[_.EnemyNdx()].amountToSteal += 1;
+
+					// Play attack animations, SFX, and spawn objects
+					PlaySingleAttackAnimsAndSFX(ndx, true, false);
+
+					// Display text: item stolen
+					_.dialogue.DisplayText(_.enemyStats[_.EnemyNdx()].name + " swiped a " + tItem.name + " from " + Party.S.stats[ndx].name + ".\n" + WordManager.S.GetRandomInterjection() + "!");
+				} else {
+					// Audio: Deny
+					AudioManager.S.PlaySFX(eSoundName.deny);
+
+					// Display text: can't steal an important item
+					_.dialogue.DisplayText(_.enemyStats[_.EnemyNdx()].name + " attempted to steal a "+ tItem.name + " from " + Party.S.stats[ndx].name + "...\n...but it can't be stolen!\n" + WordManager.S.GetRandomExclamation() + "!");
+				}
+			} else {
+				// Audio: Deny
+				AudioManager.S.PlaySFX(eSoundName.deny);
+
+				// Display text: miss
+				_.dialogue.DisplayText(_.enemyStats[_.EnemyNdx()].name + " attempted to loot an item from " + Party.S.stats[ndx].name + "...\n...but missed the mark!\n" + WordManager.S.GetRandomExclamation() + "!");
+			}
+		} else {
+			// Audio: Deny
+			AudioManager.S.PlaySFX(eSoundName.deny);
+
+			// Display text: no items to steal
+			_.dialogue.DisplayText(_.enemyStats[_.EnemyNdx()].name + " attempted to steal an item from " + Party.S.stats[ndx].name + "...\n...but they've got nothing!\n" + WordManager.S.GetRandomExclamation() + "!");
+		}
+
+		_.NextTurn();
 	}
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Play attack animations, SFX, and spawn objects
