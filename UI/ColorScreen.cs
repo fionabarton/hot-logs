@@ -143,6 +143,9 @@ public class ColorScreen : MonoBehaviour {
             case 7: // Party: Steal Single Spell
                 Spells.S.battle.StealSingle(targetNdx, spell);
                 break;
+            case 8: // Enemy: Steal 
+                Battle.S.enemyActions.Steal(targetNdx);
+                break;
         }
 
         // Remove all animation events
