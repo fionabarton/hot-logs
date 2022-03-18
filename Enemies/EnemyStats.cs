@@ -23,6 +23,11 @@ public class EnemyStats : ScriptableObject
 	// Drop Item
 	public List<eItem>	itemsToDrop = new List<eItem>();
 	public float		chanceToDrop;
+	public int			maxAmountToSteal; // amount of items that can be stolen from this enemy
+	public int			amountToSteal; // set to maxAmountToSteal in BattleInitiative.cs
+
+	// Items stolen from party
+	public List<Item>	stolenItems = new List<Item>();
 
 	// AI
 	public eEnemyAI		AI;
