@@ -161,8 +161,8 @@ public class BattleItems : MonoBehaviour {
 			_.turnOrder.Add(Party.S.stats[ndx].name);
 
 			// Get 6-10% of max HP
-			float lowEnd = Party.S.stats[ndx].maxHP * 0.06f;
-			float highEnd = Party.S.stats[ndx].maxHP * 0.10f;
+			float lowEnd = Mathf.Max(1, Party.S.stats[ndx].maxHP * 0.06f);
+			float highEnd = Mathf.Max(1, Party.S.stats[ndx].maxHP * 0.10f);
 			Heal(ndx, item, (int)lowEnd, (int)highEnd);
 
 			// Display Text
