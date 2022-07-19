@@ -132,16 +132,7 @@ public class WarpManager : MonoBehaviour {
 	// Set the first and last button’s navigation 
 	public void SetButtonNavigation(List<Button> buttons) {
 		// Reset all button's navigation to automatic
-		for (int i = 0; i < buttons.Count; i++) {
-			// Get the Navigation data
-			Navigation navigation = buttons[i].navigation;
-
-			// Switch mode to Automatic
-			navigation.mode = Navigation.Mode.Automatic;
-
-			// Reassign the struct data to the button
-			buttons[i].navigation = navigation;
-		}
+		Utilities.S.ResetButtonNavigation(buttons);
 
 		// Set button navigation if inventory is less than 10
 		//if (visitedLocations.Count < buttons.Count) {
