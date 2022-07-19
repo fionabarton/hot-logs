@@ -178,6 +178,20 @@ public class Utilities : MonoBehaviour {
 	}
 
 	////////////////////////////////////////////////////////////////////////////////
+	// Reset all button's navigation to automatic
+	public void ResetButtonNavigation(List<Button> buttons) {
+		for (int i = 0; i < buttons.Count; i++) {
+			// Get the Navigation data
+			Navigation navigation = buttons[i].navigation;
+
+			// Switch mode to Automatic
+			navigation.mode = Navigation.Mode.Automatic;
+
+			// Reassign the struct data to the button
+			buttons[i].navigation = navigation;
+		}
+	}
+
 	// Explicitly set a button's navigation
 	public void SetButtonNavigation(Button button, Button buttonSelectOnUp = null, Button buttonSelectOnDown = null, Button buttonSelectOnLeft = null, Button buttonSelectOnRight = null) {
 		// Get the Navigation data
